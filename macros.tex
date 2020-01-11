@@ -1,0 +1,125 @@
+% !TEX root = hazelnut-popl17.tex
+
+% Violet hotdogs; highlight color helps distinguish them
+\newcommand{\llparenthesiscolor}{\textcolor{violet}{\llparenthesis}}
+\newcommand{\rrparenthesiscolor}{\textcolor{violet}{\rrparenthesis}}
+
+% HTyp and HExp
+\newcommand{\hcomplete}[1]{#1~\mathsf{complete}}
+
+% HTyp
+\newcommand{\htau}{\dot{\tau}}
+\newcommand{\tarr}[2]{\inparens{#1 \rightarrow #2}}
+\newcommand{\tarrnp}[2]{#1 \rightarrow #2}
+\newcommand{\tnum}{\mathtt{num}}
+\newcommand{\tehole}{\llparenthesiscolor\rrparenthesiscolor}
+\newcommand{\tsum}[2]{\inparens{{#1} + {#2}}}
+
+\newcommand{\tcompat}[2]{#1 \sim #2}
+\newcommand{\tincompat}[2]{#1 \nsim #2}
+
+% HExp
+\newcommand{\hexp}{\dot{e}}
+\newcommand{\hlam}[2]{\inparens{\lambda #1.#2}}
+\newcommand{\hap}[2]{#1(#2)}
+\newcommand{\hapP}[2]{(#1)~(#2)} % Extra paren around function term
+\newcommand{\hnum}[1]{\underline{#1}}
+\newcommand{\hadd}[2]{\inparens{#1 + #2}}
+\newcommand{\hehole}{\llparenthesiscolor\rrparenthesiscolor}
+\newcommand{\hhole}[1]{\llparenthesiscolor#1\rrparenthesiscolor}
+\newcommand{\hindet}[1]{\lceil#1\rceil}
+\newcommand{\hinj}[2]{\mathtt{inj}_{#1}({#2})}
+\newcommand{\hcase}[5]{\mathtt{case}({#1},{#2}.{#3},{#4}.{#5})}
+
+\newcommand{\hGamma}{\dot{\Gamma}}
+\newcommand{\domof}[1]{\text{dom}(#1)}
+\newcommand{\hsyn}[3]{#1 \vdash #2 \Rightarrow #3}
+\newcommand{\hana}[3]{#1 \vdash #2 \Leftarrow #3}
+
+% ZTyp and ZExp
+\newcommand{\zlsel}[1]{{\bowtie}{#1}}
+\newcommand{\zrsel}[1]{{#1}{\bowtie}}
+\newcommand{\zwsel}[1]{
+  \setlength{\fboxsep}{0pt}
+  \colorbox{green!10!white!100}{
+    \ensuremath{{{\textcolor{Green}{{\hspace{-2px}\triangleright}}}}{#1}{\textcolor{Green}{\triangleleft{\vphantom{\tehole}}}}}}
+}
+
+\newcommand{\removeSel}[1]{#1^{\diamond}}
+
+% ZTyp
+\newcommand{\ztau}{\hat{\tau}}
+
+% ZExp
+\newcommand{\zexp}{\hat{e}}
+
+% Direction
+\newcommand{\dParent}{\mathtt{parent}}
+\newcommand{\dChildn}[1]{\mathtt{child}~\mathtt{{#1}}}
+\newcommand{\dChildnm}[1]{\mathtt{child}~{#1}}
+
+% Action
+\newcommand{\aMove}[1]{\mathtt{move}~#1}
+	\newcommand{\zrightmost}[1]{\mathsf{rightmost}(#1)}
+	\newcommand{\zleftmost}[1]{\mathsf{leftmost}(#1)}
+\newcommand{\aSelect}[1]{\mathtt{sel}~#1}
+\newcommand{\aDel}{\mathtt{del}}
+\newcommand{\aReplace}[1]{\mathtt{replace}~#1}
+\newcommand{\aConstruct}[1]{\mathtt{construct}~#1}
+\newcommand{\aConstructx}[1]{#1}
+\newcommand{\aFinish}{\mathtt{finish}}
+
+\newcommand{\performAna}[5]{#1 \vdash #2 \xlongrightarrow{#4} #5 \Leftarrow #3}
+\newcommand{\performAnaI}[5]{#1 \vdash #2 \xlongrightarrow{#4}\hspace{-3px}{}^{*}~ #5 \Leftarrow #3}
+\newcommand{\performSyn}[6]{#1 \vdash #2 \Rightarrow #3 \xlongrightarrow{#4} #5 \Rightarrow #6}
+\newcommand{\performSynI}[6]{#1 \vdash #2 \Rightarrow #3 \xlongrightarrow{#4}\hspace{-3px}{}^{*}~ #5 \Rightarrow #6}
+\newcommand{\performTyp}[3]{#1 \xlongrightarrow{#2} #3}
+\newcommand{\performTypI}[3]{#1 \xlongrightarrow{#2}\hspace{-3px}{}^{*}~#3}
+
+\newcommand{\performMove}[3]{#1 \xlongrightarrow{#2} #3}
+\newcommand{\performDel}[2]{#1 \xlongrightarrow{\aDel} #2}
+
+% Form
+\newcommand{\farr}{\mathtt{arrow}}
+\newcommand{\fnum}{\mathtt{num}}
+\newcommand{\fsum}{\mathtt{sum}}
+
+\newcommand{\fasc}{\mathtt{asc}}
+\newcommand{\fvar}[1]{\mathtt{var}~#1}
+\newcommand{\flam}[1]{\mathtt{lam}~#1}
+\newcommand{\fap}{\mathtt{ap}}
+% \newcommand{\farg}{\mathtt{arg}}
+\newcommand{\fnumlit}[1]{\mathtt{lit}~#1}
+\newcommand{\fplus}{\mathtt{plus}}
+\newcommand{\fhole}{\mathtt{hole}}
+\newcommand{\fnehole}{\mathtt{nehole}}
+
+\newcommand{\finj}[1]{\mathtt{inj}~#1}
+\newcommand{\fcase}[2]{\mathtt{case}~#1~#2}
+
+% Talk about formal rules in example
+\newcommand{\refrule}[1]{\textrm{Rule~(#1)}}
+
+\newcommand{\herase}[1]{\left|#1\right|_\textsf{erase}}
+
+\newcommand{\arrmatch}[2]{#1 \blacktriangleright_{\rightarrow} #2}
+
+
+\newcommand{\TABperformAna}[5]{#1 \vdash & #2                & \xlongrightarrow{#4} & #5 & \Leftarrow #3}
+\newcommand{\TABperformSyn}[6]{#1 \vdash & #2 \Rightarrow #3 & \xlongrightarrow{#4} & #5 \Rightarrow #6}
+\newcommand{\TABperformTyp}[3]{& #1 & \xlongrightarrow{#2} & #3}
+
+\newcommand{\TABperformMove}[3]{#1 & \xlongrightarrow{#2} & #3}
+\newcommand{\TABperformDel}[2]{#1 \xlongrightarrow{\aDel} #2}
+
+\newcommand{\sumhasmatched}[2]{#1 \mathrel{\textcolor{black}{\blacktriangleright_{+}}} #2}
+
+\newcommand{\subminsyn}[1]{\mathsf{submin}_{\Rightarrow}(#1)}
+\newcommand{\subminana}[1]{\mathsf{submin}_{\Leftarrow}(#1)}
+
+
+\newcommand{\inparens}[1]{{\color{gray}(}#1{\color{gray})}}
+
+%% rule names for appendix
+\newcommand{\rname}[1]{\textsc{#1}}
+\newcommand{\gap}{\vspace{7pt}}

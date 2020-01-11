@@ -1,0 +1,90 @@
+\def\OPTIONConf{1}%
+\newif\iftr\trtrue
+\RequirePackage{etex}
+\documentclass[9pt]{sigplanconf}
+\toappear{}
+% \usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{ stmaryrd }
+\usepackage{mathpartir}
+\usepackage{balance}
+\usepackage{stmaryrd}
+\usepackage{wasysym}
+\usepackage{multicol}
+\usepackage{extarrows}
+
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\definecolor{light-gray}{gray}{0.9}
+\usepackage{soul}
+\setulcolor{red}
+\usepackage{mathpazo}
+\usepackage{colortab}
+\usepackage[lowtilde]{url}
+\usepackage{todonotes}
+\usepackage{listings}
+\lstset{tabsize=2,
+basicstyle=\ttfamily\fontsize{8pt}{1em}\selectfont}
+\usepackage{microtype}
+\sloppy
+\def \TirNameStyle #1{\small\rulename{#1}}
+\renewcommand{\MathparLineskip}{\lineskiplimit=.3\baselineskip\lineskip=.3\baselineskip plus .2\baselineskip}
+
+\usepackage{joshuadunfield}
+\iftr
+
+\else
+	\usepackage{times}
+\fi
+% \usepackage{newtxtt}
+\usepackage{llproof}
+\usepackage{rulelinks}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newenvironment{proof-sketch}{\noindent{\emph{Proof Sketch.}}}{\qed}
+\makeatletter
+
+\renewcommand\topfraction{0.85}
+\renewcommand\bottomfraction{0.85}
+\renewcommand\textfraction{0.1}
+\renewcommand\floatpagefraction{0.85}
+
+\AtBeginDocument{%
+ \abovedisplayskip=2pt plus 4pt
+ \abovedisplayshortskip=0pt
+ \belowdisplayskip=2pt plus 4pt
+ \belowdisplayshortskip=0pt
+}
+
+\setlength{\floatsep}{10pt}
+\setlength{\textfloatsep}{12pt}
+
+\usepackage[compact]{titlesec}
+\titlespacing*{\section}{0pt plus 3pt}{4pt plus 3pt}{2pt plus 3pt}
+\titlespacing*{\subsection}{0pt plus 3pt}{4pt plus 3pt}{2pt plus 3pt}
+\titlespacing*{\subsubsection}{0pt plus 3pt}{4pt plus 3pt}{2pt plus 3pt}
+\titlespacing*{\paragraph}{0pt}{4pt}{3pt}
+\setlength{\skip\footins}{3pt plus 1px minus 5px}
+
+% known bug: http://tex.stackexchange.com/questions/1522/pdfendlink-ended-up-in-different-nesting-level-than-pdfstartlink
+\usepackage[hidelinks,breaklinks,draft=false]{hyperref}
+
+
+\usepackage{enumitem}
+\makeatletter
+\def\thm@space@setup{%
+  \thm@preskip=4px plus 2px minus 2px
+  \thm@postskip=\thm@preskip % or whatever, if you don't want them to be equal
+}
+\makeatother
+
+\usepackage{todonotes}
+\usepackage{xcolor}
+
+\input{macros}
+\begin{document}
+\input{formally}
+\end{document}
