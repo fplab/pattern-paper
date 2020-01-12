@@ -11,30 +11,44 @@
 \newcommand{\htau}{\dot{\tau}}
 \newcommand{\tarr}[2]{\inparens{#1 \rightarrow #2}}
 \newcommand{\tarrnp}[2]{#1 \rightarrow #2}
+\newcommand{\ttrans}[2]{\inparens{#1 \leadsto #2}}
 \newcommand{\tnum}{\mathtt{num}}
 \newcommand{\tehole}{\llparenthesiscolor\rrparenthesiscolor}
 \newcommand{\tsum}[2]{\inparens{{#1} + {#2}}}
+\newcommand{\tprod}[2]{\inparens{{#1} \times {#2}}}
+\newcommand{\tunit}{\mathtt{1}}
+\newcommand{\tvoid}{\mathtt{0}}
 
 \newcommand{\tcompat}[2]{#1 \sim #2}
 \newcommand{\tincompat}[2]{#1 \nsim #2}
 
 % HExp
 \newcommand{\hexp}{\dot{e}}
-\newcommand{\hlam}[2]{\inparens{\lambda #1.#2}}
+\newcommand{\hlam}[3]{\inparens{\lambda #1:#2.#3}}
 \newcommand{\hap}[2]{#1(#2)}
 \newcommand{\hapP}[2]{(#1)~(#2)} % Extra paren around function term
 \newcommand{\hnum}[1]{\underline{#1}}
 \newcommand{\hadd}[2]{\inparens{#1 + #2}}
+\newcommand{\hpair}[2]{\inparens{#1 , #2}}
+\newcommand{\htriv}{\inparens{}}
 \newcommand{\hehole}{\llparenthesiscolor\rrparenthesiscolor}
 \newcommand{\hhole}[1]{\llparenthesiscolor#1\rrparenthesiscolor}
 \newcommand{\hindet}[1]{\lceil#1\rceil}
 \newcommand{\hinj}[2]{\mathtt{inj}_{#1}({#2})}
+\newcommand{\hinl}[2]{\mathtt{inl}_{#1}({#2})}
+\newcommand{\hinr}[2]{\mathtt{inr}_{#1}({#2})}
+\newcommand{\hmatch}[2]{\mathtt{match}(#1) \{#2\}}
 \newcommand{\hcase}[5]{\mathtt{case}({#1},{#2}.{#3},{#4}.{#5})}
+\newcommand{\hrules}[2]{\inparens{#1 \mid #2}}
+\newcommand{\hrul}[2]{#1 \Rightarrow #2}
 
 \newcommand{\hGamma}{\dot{\Gamma}}
 \newcommand{\domof}[1]{\text{dom}(#1)}
 \newcommand{\hsyn}[3]{#1 \vdash #2 \Rightarrow #3}
 \newcommand{\hana}[3]{#1 \vdash #2 \Leftarrow #3}
+\newcommand{\htypjudge}[3]{#1 \vdash #2 : #3}
+\newcommand{\htrans}[4]{#1 \vdash #2 : \ttrans{#3}{#4}}
+\newcommand{\hpatmatch}[3]{#1 : #2 \dashv #3}
 
 % ZTyp and ZExp
 \newcommand{\zlsel}[1]{{\bowtie}{#1}}

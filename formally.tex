@@ -1,20 +1,161 @@
+\begin{figure}[h]
+$\arraycolsep=4pt\begin{array}{lll}
+\tau & ::= &
+  \tnum ~\vert~
+  \tarr{\tau_1}{\tau_2} ~\vert~
+  \tprod{\tau_1}{\tau_2} ~\vert~
+  \tsum{\tau_1}{\tau_2} ~\vert~
+  \tunit ~\vert~
+  \tvoid \\
+e & ::= &
+  x ~\vert~
+  \hnum{n} \\
+  & ~\vert~ &
+  \hlam{x}{\tau}{e} ~\vert~
+  \hap{e_1}{e_2} \\
+  & ~\vert~ &
+  \hpair{e_1}{e_2} ~\vert~
+  \htriv \\
+  & ~\vert~ &
+  \hinl{\tau}{e} ~\vert~
+  \hinr{\tau}{e} ~\vert~
+  \hmatch{e}{rs} \\
+rs & ::= &
+  \cdot ~\vert~ \hrules{r}{rs'} \\
+r & ::= &
+  \hrul{p}{e} \\
+p & ::= &
+  x ~\vert~
+  \_ ~\vert~
+  \hpair{p_1}{p_2} ~\vert~
+  \htriv ~\vert~
+  \hinl{\tau}{p} ~\vert~
+  \hinr{\tau}{p}
+\end{array}$
+\end{figure}
 
+\begin{figure}[h]
+\fbox{$\htypjudge{\Gamma}{e}{\tau}$}
+\begin{subequations}
+\begin{equation}
+  \inferrule[VAR]{ }{
+    \htypjudge{\Gamma, x : \tau}{x}{\tau}
+  }
+\end{equation}
+\begin{equation}
+\inferrule[LAM]{
+  \htypjudge{\Gamma, x : \tau_1}{e}{\tau_2}
+}{
+  \htypjudge{\Gamma}{\hlam{x}{\tau_1}{e}}{\tarr{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[AP]{
+  \htypjudge{\Gamma}{e_1}{\tarr{\tau_2}{\tau}} \\
+  \htypjudge{\Gamma}{e_2}{\tau_2}
+}{
+  \htypjudge{\Gamma}{\hap{e_1}{e_2}}{\tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[PAIR]{
+  \htypjudge{\Gamma}{e_1}{\tau_1} \\
+  \htypjudge{\Gamma}{e_2}{\tau_2}
+}{
+  \htypjudge{\Gamma}{\hpair{e_1}{e_2}}{\tprod{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[TRIV]{ }{
+  \htypjudge{\Gamma}{\htriv}{\tunit}
+}
+\end{equation}
+\begin{equation}
+\inferrule[INL]{
+  \htypjudge{\Gamma}{e}{\tau_1}
+}{
+  \htypjudge{\Gamma}{\hinl{\tau_2}{e}}{\tsum{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[INR]{
+  \htypjudge{\Gamma}{e}{\tau_2}
+}{
+  \htypjudge{\Gamma}{\hinr{\tau_1}{e}}{\tsum{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MATCH]{
+  \htypjudge{\Gamma}{e_1}{\tau_1} \\
+  \htrans{\Gamma}{rs}{\tau_1}{\tau}
+}{
+  \htypjudge{\Gamma}{\hmatch{e_1}{rs}}{\tau}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
 
+\begin{figure}[h]
+\fbox{$\htrans{\Gamma}{rs}{\tau_1}{\tau_2}$}
+\begin{subequations}
+\begin{equation}
+\inferrule[RULE]{
+  \hpatmatch{p}{\tau_1}{\Gamma'} \\
+  \htypjudge{\Gamma \uplus \Gamma'}{e}{\tau_2}
+}{
+  \htrans{\Gamma}{\hrul{p}{e}}{\tau_1}{\tau_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[RULES]{
+  \htrans{\Gamma}{r}{\tau_1}{\tau_2} \\
+  \htrans{\Gamma}{rs'}{\tau_1}{\tau_2}
+}{
+  \htrans{\Gamma}{\hrules{r}{rs'}}{\tau_1}{\tau_2}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\begin{figure}[h]
+\fbox{$\hpatmatch{p}{\tau}{\Gamma}$}
+\begin{subequations}
+\begin{equation}
+\inferrule[VAR]{ }{
+  \hpatmatch{x}{\tau}{x : \tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[WILD]{ }{
+  \hpatmatch{\_}{\tau}{\cdot}
+}
+\end{equation}
+\begin{equation}
+\inferrule[PAIR]{
+  \hpatmatch{p_1}{\tau_1}{\Gamma_1} \\
+  \hpatmatch{p_2}{\tau_2}{\Gamma_2}
+}{
+  \hpatmatch{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}{\Gamma_1 \uplus \Gamma_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[TRIV]{ }{
+  \hpatmatch{\htriv}{\tunit}{\cdot}
+}
+\end{equation}
+\begin{equation}
+\inferrule[INL]{
+  \hpatmatch{p}{\tau_1}{\Gamma}
+}{
+  \hpatmatch{\hinl{\tau_2}{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
+}
+\end{equation}
+\begin{equation}
+\inferrule[INR]{
+  \hpatmatch{p}{\tau_2}{\Gamma}
+}{
+  \hpatmatch{\hinr{\tau_1}{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
