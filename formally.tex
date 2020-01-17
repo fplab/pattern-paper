@@ -1,3 +1,4 @@
+% !TEX root = ./patterns-paper.tex
 \begin{figure}[h]
 $\arraycolsep=4pt\begin{array}{lll}
 \tau & ::= &
@@ -29,8 +30,8 @@ p & ::= &
   \_ ~\vert~
   \hpair{p_1}{p_2} ~\vert~
   \htriv ~\vert~
-  \hinl{\tau}{p} ~\vert~
-  \hinr{\tau}{p}
+  \hinlp{p} ~\vert~
+  \hinrp{p}
 \end{array}$
 \end{figure}
 
@@ -147,14 +148,14 @@ p & ::= &
 \inferrule[INL]{
   \hpatmatch{p}{\tau_1}{\Gamma}
 }{
-  \hpatmatch{\hinl{\tau_2}{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
+  \hpatmatch{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
 }
 \end{equation}
 \begin{equation}
 \inferrule[INR]{
   \hpatmatch{p}{\tau_2}{\Gamma}
 }{
-  \hpatmatch{\hinr{\tau_1}{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
+  \hpatmatch{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
 }
 \end{equation}
 \end{subequations}
