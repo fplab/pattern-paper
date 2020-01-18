@@ -36,126 +36,126 @@ p & ::= &
 \end{figure}
 
 \begin{figure}[h]
-\fbox{$\htypjudge{\Gamma}{e}{\tau}$}
+\fbox{$\hexptyp{\Gamma}{e}{\tau}$}
 \begin{subequations}
 \begin{equation}
   \inferrule[VAR]{ }{
-    \htypjudge{\Gamma, x : \tau}{x}{\tau}
+    \hexptyp{\Gamma, x : \tau}{x}{\tau}
   }
 \end{equation}
 \begin{equation}
 \inferrule[LAM]{
-  \htypjudge{\Gamma, x : \tau_1}{e}{\tau_2}
+  \hexptyp{\Gamma, x : \tau_1}{e}{\tau_2}
 }{
-  \htypjudge{\Gamma}{\hlam{x}{\tau_1}{e}}{\tarr{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\hlam{x}{\tau_1}{e}}{\tarr{\tau_1}{\tau_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[AP]{
-  \htypjudge{\Gamma}{e_1}{\tarr{\tau_2}{\tau}} \\
-  \htypjudge{\Gamma}{e_2}{\tau_2}
+  \hexptyp{\Gamma}{e_1}{\tarr{\tau_2}{\tau}} \\
+  \hexptyp{\Gamma}{e_2}{\tau_2}
 }{
-  \htypjudge{\Gamma}{\hap{e_1}{e_2}}{\tau}
+  \hexptyp{\Gamma}{\hap{e_1}{e_2}}{\tau}
 }
 \end{equation}
 \begin{equation}
 \inferrule[PAIR]{
-  \htypjudge{\Gamma}{e_1}{\tau_1} \\
-  \htypjudge{\Gamma}{e_2}{\tau_2}
+  \hexptyp{\Gamma}{e_1}{\tau_1} \\
+  \hexptyp{\Gamma}{e_2}{\tau_2}
 }{
-  \htypjudge{\Gamma}{\hpair{e_1}{e_2}}{\tprod{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\hpair{e_1}{e_2}}{\tprod{\tau_1}{\tau_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[TRIV]{ }{
-  \htypjudge{\Gamma}{\htriv}{\tunit}
+  \hexptyp{\Gamma}{\htriv}{\tunit}
 }
 \end{equation}
 \begin{equation}
 \inferrule[INL]{
-  \htypjudge{\Gamma}{e}{\tau_1}
+  \hexptyp{\Gamma}{e}{\tau_1}
 }{
-  \htypjudge{\Gamma}{\hinl{\tau_2}{e}}{\tsum{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\hinl{\tau_2}{e}}{\tsum{\tau_1}{\tau_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[INR]{
-  \htypjudge{\Gamma}{e}{\tau_2}
+  \hexptyp{\Gamma}{e}{\tau_2}
 }{
-  \htypjudge{\Gamma}{\hinr{\tau_1}{e}}{\tsum{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\hinr{\tau_1}{e}}{\tsum{\tau_1}{\tau_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[MATCH]{
-  \htypjudge{\Gamma}{e_1}{\tau_1} \\
-  \htrans{\Gamma}{rs}{\tau_1}{\tau}
+  \hexptyp{\Gamma}{e_1}{\tau_1} \\
+  \hexptyp{\Gamma}{rs}{\trul{\tau_1}{\tau}}
 }{
-  \htypjudge{\Gamma}{\hmatch{e_1}{rs}}{\tau}
+  \hexptyp{\Gamma}{\hmatch{e_1}{rs}}{\tau}
 }
 \end{equation}
 \end{subequations}
 \end{figure}
 
 \begin{figure}[h]
-\fbox{$\htrans{\Gamma}{rs}{\tau_1}{\tau_2}$}
+\fbox{$\hexptyp{\Gamma}{rs}{\hrul{\tau_1}{\tau_2}}$}
 \begin{subequations}
 \begin{equation}
 \inferrule[RULE]{
-  \hpatmatch{p}{\tau_1}{\Gamma'} \\
-  \htypjudge{\Gamma \uplus \Gamma'}{e}{\tau_2}
+  \hpattyp{p}{\tau_1}{\Gamma'} \\
+  \hexptyp{\Gamma \uplus \Gamma'}{e}{\tau_2}
 }{
-  \htrans{\Gamma}{\hrul{p}{e}}{\tau_1}{\tau_2}
+  \hexptyp{\Gamma}{\hrul{p}{e}}{\hrul{\tau_1}{\tau_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[RULES]{
-  \htrans{\Gamma}{r}{\tau_1}{\tau_2} \\
-  \htrans{\Gamma}{rs'}{\tau_1}{\tau_2}
+  \hexptyp{\Gamma}{r}{\hrul{\tau_1}{\tau_2}} \\
+  \hexptyp{\Gamma}{rs'}{\hrul{\tau_1}{\tau_2}}
 }{
-  \htrans{\Gamma}{\hrules{r}{rs'}}{\tau_1}{\tau_2}
+  \hexptyp{\Gamma}{\hrules{r}{rs'}}{\hrul{\tau_1}{\tau_2}}
 }
 \end{equation}
 \end{subequations}
 \end{figure}
 
 \begin{figure}[h]
-\fbox{$\hpatmatch{p}{\tau}{\Gamma}$}
+\fbox{$\hpattyp{p}{\tau}{\Gamma}$}
 \begin{subequations}
 \begin{equation}
 \inferrule[VAR]{ }{
-  \hpatmatch{x}{\tau}{x : \tau}
+  \hpattyp{x}{\tau}{x : \tau}
 }
 \end{equation}
 \begin{equation}
 \inferrule[WILD]{ }{
-  \hpatmatch{\_}{\tau}{\cdot}
+  \hpattyp{\_}{\tau}{\cdot}
 }
 \end{equation}
 \begin{equation}
 \inferrule[PAIR]{
-  \hpatmatch{p_1}{\tau_1}{\Gamma_1} \\
-  \hpatmatch{p_2}{\tau_2}{\Gamma_2}
+  \hpattyp{p_1}{\tau_1}{\Gamma_1} \\
+  \hpattyp{p_2}{\tau_2}{\Gamma_2}
 }{
-  \hpatmatch{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}{\Gamma_1 \uplus \Gamma_2}
+  \hpattyp{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}{\Gamma_1 \uplus \Gamma_2}
 }
 \end{equation}
 \begin{equation}
 \inferrule[TRIV]{ }{
-  \hpatmatch{\htriv}{\tunit}{\cdot}
+  \hpattyp{\htriv}{\tunit}{\cdot}
 }
 \end{equation}
 \begin{equation}
 \inferrule[INL]{
-  \hpatmatch{p}{\tau_1}{\Gamma}
+  \hpattyp{p}{\tau_1}{\Gamma}
 }{
-  \hpatmatch{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
+  \hpattyp{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
 }
 \end{equation}
 \begin{equation}
 \inferrule[INR]{
-  \hpatmatch{p}{\tau_2}{\Gamma}
+  \hpattyp{p}{\tau_2}{\Gamma}
 }{
-  \hpatmatch{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
+  \hpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
 }
 \end{equation}
 \end{subequations}

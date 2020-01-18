@@ -11,7 +11,7 @@
 \newcommand{\htau}{\dot{\tau}}
 \newcommand{\tarr}[2]{\inparens{#1 \rightarrow #2}}
 \newcommand{\tarrnp}[2]{#1 \rightarrow #2}
-\newcommand{\ttrans}[2]{\inparens{#1 \Rightarrow #2}}
+\newcommand{\trul}[2]{\inparens{#1 \Rightarrow #2}}
 \newcommand{\tnum}{\mathtt{num}}
 \newcommand{\tehole}{\llparenthesiscolor\rrparenthesiscolor}
 \newcommand{\tsum}[2]{\inparens{{#1} + {#2}}}
@@ -48,10 +48,9 @@
 \newcommand{\domof}[1]{\text{dom}(#1)}
 \newcommand{\hsyn}[3]{#1 \vdash #2 \Rightarrow #3}
 \newcommand{\hana}[3]{#1 \vdash #2 \Leftarrow #3}
-\newcommand{\htypjudge}[3]{#1 \vdash #2 : #3}
-\newcommand{\htrans}[4]{#1 \vdash #2 : \ttrans{#3}{#4}}
+\newcommand{\hexptyp}[3]{#1 \vdash #2 : #3}
+\newcommand{\hpattyp}[3]{#1 : #2 \dashV #3}
 \newcommand{\dashV}{\mathbin{\rotatebox[origin=c]{180}{$\Vdash$}}}
-\newcommand{\hpatmatch}[3]{#1 : #2 \dashV #3}
 
 % ZTyp and ZExp
 \newcommand{\zlsel}[1]{{\bowtie}{#1}}
