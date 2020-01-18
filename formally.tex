@@ -27,6 +27,7 @@ r & ::= &
   \hrul{p}{e} \\
 p & ::= &
   x ~\vert~
+  \hnum{n} ~\vert~
   \_ ~\vert~
   \hpair{p_1}{p_2} ~\vert~
   \htriv ~\vert~
@@ -127,6 +128,11 @@ p & ::= &
 }
 \end{equation}
 \begin{equation}
+\inferrule[NUM]{ }{
+  \hpattyp{\hnum{n}}{\tnum}{\cdot}
+}
+\end{equation}
+\begin{equation}
 \inferrule[WILD]{ }{
   \hpattyp{\_}{\tau}{\cdot}
 }
@@ -156,6 +162,248 @@ p & ::= &
   \hpattyp{p}{\tau_2}{\Gamma}
 }{
   \hpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{figure}[h]
+\fbox{$\theta : \Gamma$}
+\begin{subequations}
+\begin{equation}
+\inferrule[EMPTY]{ }{
+  \phi : \cdot
+}
+\end{equation}
+\begin{equation}
+\inferrule[EXTENSION]{
+  \theta : \Gamma \\
+  \hexptyp{\cdot}{e}{\tau}
+}{
+  \theta , x \hookrightarrow e :
+    \Gamma , e : \tau
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{figure}[h]
+\fbox{$\hpatmatch{e}{p}{\theta}$}
+\begin{subequations}
+\begin{equation}
+\inferrule[VAR]{ }{
+  \hpatmatch{e}{x}{x \hookrightarrow e}
+}
+\end{equation}
+\begin{equation}
+\inferrule[NUM]{ }{
+  \hpatmatch{\hnum{n}}{\hnum{n}}{\cdot}
+}
+\end{equation}
+\begin{equation}
+\inferrule[WILD]{ }{
+  \hpatmatch{e}{\_}{\cdot}
+}
+\end{equation}
+\begin{equation}
+\inferrule[UNIT]{ }{
+  \hpatmatch{\htriv}{\htriv}{\cdot}
+}
+\end{equation}
+\begin{equation}
+\inferrule[PAIR]{
+  \hpatmatch{e_1}{p_1}{\theta_1} \\
+  \hpatmatch{e_2}{p_2}{\theta_2}
+}{
+  \hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[INL]{
+  \hpatmatch{e}{p}{\theta}
+}{
+  \hpatmatch{\hinl{\tau}{e}}{\hinlp{p}}{\theta}
+}
+\end{equation}
+\begin{equation}
+\inferrule[INR]{
+  \hpatmatch{e}{p}{\theta}
+}{
+  \hpatmatch{\hinr{\tau}{e}}{\hinrp{p}}{\theta}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{figure}[h]
+\fbox{$e \bot p$}
+\begin{subequations}
+\begin{equation}
+\inferrule[PAIR1]{
+  e_1 \bot p_1
+}{
+  \hpair{e_1}{e_2} \bot \hpair{p_1}{p_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[PAIR2]{
+  e_2 \bot p_2
+}{
+  \hpair{e_1}{e_2} \bot \hpair{p_1}{p_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[OPPOR]{ }{
+  \hinl{\tau}{e} \bot \hinrp{p}
+}
+\end{equation}
+\begin{equation}
+\inferrule[OPPOL]{ }{
+  \hinr{\tau}{e} \bot \hinlp{p}
+}
+\end{equation}
+\begin{equation}
+\inferrule[INL]{
+  e \bot p
+}{
+  \hinl{\tau}{e} \bot \hinlp{p}
+}
+\end{equation}
+\begin{equation}
+\inferrule[INR]{
+  e \bot p
+}{
+  \hinr{\tau}{e} \bot \hinrp{p}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{figure}[h]
+\fbox{$\hval{e}$}
+\begin{subequations}
+\begin{equation}
+\inferrule[NUM]{ }{
+  \hval{\hnum{n}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[TRIV]{ }{
+  \hval{\htriv}
+}
+\end{equation}
+\begin{equation}
+\inferrule[LAM]{ }{
+  \hval{\hlam{x}{\tau}{e}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[PAIR]{
+  \hval{e_1} \\
+  \hval{e_2}
+}{\hval{\hpair{e_1}{e_2}}}
+\end{equation}
+\begin{equation}
+\inferrule[INL]{
+  \hval{e}
+}{
+  \hval{\hinl{\tau}{e}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[INR]{
+  \hval{e}
+}{
+  \hval{\hinr{\tau}{e}}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{figure}[h]
+\fbox{$e \mapsto e'$}
+\begin{subequations}
+\begin{equation}
+\inferrule[AP1]{
+  e_1 \mapsto e_1'
+}{
+  \hap{e_1}{e_2} \mapsto \hap{e_1'}{e_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[AP2]{
+  \hval{e_1} \\
+  e_2 \mapsto e_2'
+}{
+  \hap{e_1}{e_2} \mapsto \hap{e_1}{e_2'}
+}
+\end{equation}
+\begin{equation}
+\inferrule[AP]{
+  \hval{e_2}
+}{
+  \hap{\hlam{x}{\tau}{e_1}}{e_2} \mapsto
+    [e_2/x]e_1
+}
+\end{equation}
+\begin{equation}
+\inferrule[PAIR1]{
+  e_1 \mapsto e_1'
+}{
+  \hpair{e_1}{e_2} \mapsto \hpair{e_1'}{e_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[PAIR2]{
+  \hval{e_1} \\
+  e_2 \mapsto e_2'
+}{
+  \hpair{e_1}{e_2} \mapsto \hpair{e_1}{e_2'}
+}
+\end{equation}
+\begin{equation}
+\inferrule[INL]{
+  e \mapsto e'
+}{
+  \hinl{\tau}{e} \mapsto \hinl{\tau}{e'}
+}
+\end{equation}
+\begin{equation}
+\inferrule[INR]{
+  e \mapsto e'
+}{
+  \hinr{\tau}{e} \mapsto \hinr{\tau}{e'}
+}
+\end{equation}
+\begin{equation}
+\inferrule[EXPMATCH]{
+  e \mapsto e'
+}{
+  \hmatch{e}{rs} \mapsto \hmatch{e'}{rs}
+}
+\end{equation}
+\begin{equation}
+\inferrule[EXHMATCH]{
+  \hval{e}
+}{
+  \herr{\hmatch{e}{}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[SUCCMATCH]{
+  \hval{e} \\
+  \hpatmatch{e}{p_0}{\theta}
+}{
+  \hmatch{e}{\hrules{\hrul{p_0}{e_0}}{rs}} \mapsto \hat{\theta}(e_0)
+}
+\end{equation}
+\begin{equation}
+\inferrule[FAILMATCH]{
+  \hval{e} \\
+  e \bot p_0 \\
+  \hmatch{e}{rs} \mapsto e'
+}{
+  \hmatch{e}{\hrules{\hrul{p_0}{e_0}}{rs}} \mapsto e'
 }
 \end{equation}
 \end{subequations}

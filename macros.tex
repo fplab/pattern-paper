@@ -1,5 +1,8 @@
 % !TEX root = ./patterns-paper.tex
 
+% reverse Vdash
+\newcommand{\dashV}{\mathbin{\rotatebox[origin=c]{180}{$\Vdash$}}}
+
 % Violet hotdogs; highlight color helps distinguish them
 \newcommand{\llparenthesiscolor}{\textcolor{violet}{\llparenthesis}}
 \newcommand{\rrparenthesiscolor}{\textcolor{violet}{\rrparenthesis}}
@@ -30,7 +33,7 @@
 \newcommand{\hnum}[1]{\underline{#1}}
 \newcommand{\hadd}[2]{\inparens{#1 + #2}}
 \newcommand{\hpair}[2]{\inparens{#1 , #2}}
-\newcommand{\htriv}{\inparens{}}
+\newcommand{\htriv}{()}
 \newcommand{\hehole}{\llparenthesiscolor\rrparenthesiscolor}
 \newcommand{\hhole}[1]{\llparenthesiscolor#1\rrparenthesiscolor}
 \newcommand{\hindet}[1]{\lceil#1\rceil}
@@ -50,7 +53,9 @@
 \newcommand{\hana}[3]{#1 \vdash #2 \Leftarrow #3}
 \newcommand{\hexptyp}[3]{#1 \vdash #2 : #3}
 \newcommand{\hpattyp}[3]{#1 : #2 \dashV #3}
-\newcommand{\dashV}{\mathbin{\rotatebox[origin=c]{180}{$\Vdash$}}}
+\newcommand{\hpatmatch}[3]{#1 \vartriangleright #2 \dashV #3}
+\newcommand{\hval}[1]{#1 ~\mathtt{val}}
+\newcommand{\herr}[1]{#1 ~\mathtt{err}}
 
 % ZTyp and ZExp
 \newcommand{\zlsel}[1]{{\bowtie}{#1}}
