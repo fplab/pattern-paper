@@ -15,6 +15,7 @@
 \newcommand{\tarr}[2]{\inparens{#1 \rightarrow #2}}
 \newcommand{\tarrnp}[2]{#1 \rightarrow #2}
 \newcommand{\trul}[2]{\inparens{#1 \Rightarrow #2}}
+\newcommand{\trulnp}[2]{#1 \Rightarrow #2}
 \newcommand{\tnum}{\mathtt{num}}
 \newcommand{\tehole}{\llparenthesiscolor\rrparenthesiscolor}
 \newcommand{\tsum}[2]{\inparens{{#1} + {#2}}}
@@ -44,8 +45,10 @@
 \newcommand{\hinrp}[1]{\mathtt{inr}(#1)}
 \newcommand{\hmatch}[2]{\mathtt{match}(#1) \{#2\}}
 \newcommand{\hcase}[5]{\mathtt{case}({#1},{#2}.{#3},{#4}.{#5})}
-\newcommand{\hrules}[2]{\inparens{#1 \mid #2}}
+\newcommand{\hrules}[2]{#1 \mid #2}
+\newcommand{\hrulesP}[2]{\inparens{#1 \mid #2}}
 \newcommand{\hrul}[2]{#1 \Rightarrow #2}
+\newcommand{\hrulP}[2]{\inparens{#1 \Rightarrow #2}}
 
 \newcommand{\hGamma}{\dot{\Gamma}}
 \newcommand{\domof}[1]{\text{dom}(#1)}
@@ -53,7 +56,10 @@
 \newcommand{\hana}[3]{#1 \vdash #2 \Leftarrow #3}
 \newcommand{\hexptyp}[3]{#1 \vdash #2 : #3}
 \newcommand{\hpattyp}[3]{#1 : #2 \dashV #3}
+\newcommand{\hsubstyp}[2]{#1 : #2}
 \newcommand{\hpatmatch}[3]{#1 \vartriangleright #2 \dashV #3}
+\newcommand{\hnotmatch}[2]{#1 \mathbin{\bot} #2}
+\newcommand{\htrans}[2]{#1 \mapsto #2}
 \newcommand{\hval}[1]{#1 ~\mathtt{val}}
 \newcommand{\herr}[1]{#1 ~\mathtt{err}}
 

@@ -22,7 +22,7 @@ e & ::= &
   \hinr{\tau}{e} ~\vert~
   \hmatch{e}{rs} \\
 rs & ::= &
-  \cdot ~\vert~ \hrules{r}{rs'} \\
+  \cdot ~\vert~ \hrulesP{r}{rs'} \\
 r & ::= &
   \hrul{p}{e} \\
 p & ::= &
@@ -37,22 +37,22 @@ p & ::= &
 \end{figure}
 
 \begin{figure}[h]
-\fbox{$\hexptyp{\Gamma}{e}{\tau}$}
+\fbox{$\hexptyp{\Gamma}{e}{\tau}$}~~\text{$e$ is of type $\tau$}
 \begin{subequations}
 \begin{equation}
-  \inferrule[VAR]{ }{
+  \inferrule[TVar]{ }{
     \hexptyp{\Gamma, x : \tau}{x}{\tau}
   }
 \end{equation}
 \begin{equation}
-\inferrule[LAM]{
+\inferrule[TLam]{
   \hexptyp{\Gamma, x : \tau_1}{e}{\tau_2}
 }{
   \hexptyp{\Gamma}{\hlam{x}{\tau_1}{e}}{\tarr{\tau_1}{\tau_2}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[AP]{
+\inferrule[TAp]{
   \hexptyp{\Gamma}{e_1}{\tarr{\tau_2}{\tau}} \\
   \hexptyp{\Gamma}{e_2}{\tau_2}
 }{
@@ -60,7 +60,7 @@ p & ::= &
 }
 \end{equation}
 \begin{equation}
-\inferrule[PAIR]{
+\inferrule[TPair]{
   \hexptyp{\Gamma}{e_1}{\tau_1} \\
   \hexptyp{\Gamma}{e_2}{\tau_2}
 }{
@@ -68,26 +68,26 @@ p & ::= &
 }
 \end{equation}
 \begin{equation}
-\inferrule[TRIV]{ }{
+\inferrule[TTriv]{ }{
   \hexptyp{\Gamma}{\htriv}{\tunit}
 }
 \end{equation}
 \begin{equation}
-\inferrule[INL]{
+\inferrule[TInL]{
   \hexptyp{\Gamma}{e}{\tau_1}
 }{
   \hexptyp{\Gamma}{\hinl{\tau_2}{e}}{\tsum{\tau_1}{\tau_2}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[INR]{
+\inferrule[TInR]{
   \hexptyp{\Gamma}{e}{\tau_2}
 }{
   \hexptyp{\Gamma}{\hinr{\tau_1}{e}}{\tsum{\tau_1}{\tau_2}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[MATCH]{
+\inferrule[TMatch]{
   \hexptyp{\Gamma}{e_1}{\tau_1} \\
   \hexptyp{\Gamma}{rs}{\trul{\tau_1}{\tau}}
 }{
@@ -98,47 +98,58 @@ p & ::= &
 \end{figure}
 
 \begin{figure}[h]
-\fbox{$\hexptyp{\Gamma}{rs}{\hrul{\tau_1}{\tau_2}}$}
+\fbox{$\hexptyp{\Gamma}{r}{\trul{\tau_1}{\tau_2}}$}~~\text{$r$ is of type $\trulnp{\tau_1}{\tau_2}$}
 \begin{subequations}
 \begin{equation}
-\inferrule[RULE]{
+\inferrule[TRule]{
   \hpattyp{p}{\tau_1}{\Gamma'} \\
   \hexptyp{\Gamma \uplus \Gamma'}{e}{\tau_2}
 }{
-  \hexptyp{\Gamma}{\hrul{p}{e}}{\hrul{\tau_1}{\tau_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[RULES]{
-  \hexptyp{\Gamma}{r}{\hrul{\tau_1}{\tau_2}} \\
-  \hexptyp{\Gamma}{rs'}{\hrul{\tau_1}{\tau_2}}
-}{
-  \hexptyp{\Gamma}{\hrules{r}{rs'}}{\hrul{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\hrulP{p}{e}}{\trul{\tau_1}{\tau_2}}
 }
 \end{equation}
 \end{subequations}
 \end{figure}
 
 \begin{figure}[h]
-\fbox{$\hpattyp{p}{\tau}{\Gamma}$}
+\fbox{$\hexptyp{\Gamma}{rs}{\trul{\tau_1}{\tau_2}}$}~~\text{$rs$ is of type $\trulnp{\tau_1}{\tau_2}$}
 \begin{subequations}
 \begin{equation}
-\inferrule[VAR]{ }{
+\inferrule[TZeroRule]{ }{
+  \hexptyp{\Gamma}{\cdot}{\trul{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[TRules]{
+  \hexptyp{\Gamma}{r}{\trul{\tau_1}{\tau_2}} \\
+  \hexptyp{\Gamma}{rs}{\trul{\tau_1}{\tau_2}}
+}{
+  \hexptyp{\Gamma}{\hrulesP{r}{rs}}{\trul{\tau_1}{\tau_2}}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{figure}[h]
+\fbox{$\hpattyp{p}{\tau}{\Gamma}$}~~\text{Analyzing $p$ against type $\tau$ emits $\Gamma$}
+\begin{subequations}
+\begin{equation}
+\inferrule[PTVar]{ }{
   \hpattyp{x}{\tau}{x : \tau}
 }
 \end{equation}
 \begin{equation}
-\inferrule[NUM]{ }{
+\inferrule[PTNum]{ }{
   \hpattyp{\hnum{n}}{\tnum}{\cdot}
 }
 \end{equation}
 \begin{equation}
-\inferrule[WILD]{ }{
+\inferrule[PTWild]{ }{
   \hpattyp{\_}{\tau}{\cdot}
 }
 \end{equation}
 \begin{equation}
-\inferrule[PAIR]{
+\inferrule[PTPair]{
   \hpattyp{p_1}{\tau_1}{\Gamma_1} \\
   \hpattyp{p_2}{\tau_2}{\Gamma_2}
 }{
@@ -146,19 +157,19 @@ p & ::= &
 }
 \end{equation}
 \begin{equation}
-\inferrule[TRIV]{ }{
+\inferrule[PTTriv]{ }{
   \hpattyp{\htriv}{\tunit}{\cdot}
 }
 \end{equation}
 \begin{equation}
-\inferrule[INL]{
+\inferrule[PTInL]{
   \hpattyp{p}{\tau_1}{\Gamma}
 }{
   \hpattyp{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
 }
 \end{equation}
 \begin{equation}
-\inferrule[INR]{
+\inferrule[PTInR]{
   \hpattyp{p}{\tau_2}{\Gamma}
 }{
   \hpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
@@ -168,50 +179,49 @@ p & ::= &
 \end{figure}
 
 \begin{figure}[h]
-\fbox{$\theta : \Gamma$}
+\fbox{$\hsubstyp{\theta}{\Gamma}$}~~\text{Substitution $\theta$ is of type $\Gamma$}
 \begin{subequations}
 \begin{equation}
-\inferrule[EMPTY]{ }{
-  \phi : \cdot
+\inferrule[STEmpty]{ }{
+  \hsubstyp{\emptyset}{\cdot}
 }
 \end{equation}
 \begin{equation}
-\inferrule[EXTENSION]{
-  \theta : \Gamma \\
+\inferrule[STExtend]{
+  \hsubstyp{\theta}{\Gamma} \\
   \hexptyp{\cdot}{e}{\tau}
 }{
-  \theta , x \hookrightarrow e :
-    \Gamma , e : \tau
+  \hsubstyp{\theta , x / e}{\Gamma , e : \tau}
 }
 \end{equation}
 \end{subequations}
 \end{figure}
 
 \begin{figure}[h]
-\fbox{$\hpatmatch{e}{p}{\theta}$}
+\fbox{$\hpatmatch{e}{p}{\theta}$}~~\text{Pattern matching $e$ on $p$ emits $\theta$}
 \begin{subequations}
 \begin{equation}
-\inferrule[VAR]{ }{
-  \hpatmatch{e}{x}{x \hookrightarrow e}
+\inferrule[PMVar]{ }{
+  \hpatmatch{e}{x}{x / e}
 }
 \end{equation}
 \begin{equation}
-\inferrule[NUM]{ }{
+\inferrule[PMNum]{ }{
   \hpatmatch{\hnum{n}}{\hnum{n}}{\cdot}
 }
 \end{equation}
 \begin{equation}
-\inferrule[WILD]{ }{
+\inferrule[PMWild]{ }{
   \hpatmatch{e}{\_}{\cdot}
 }
 \end{equation}
 \begin{equation}
-\inferrule[UNIT]{ }{
+\inferrule[PMTriv]{ }{
   \hpatmatch{\htriv}{\htriv}{\cdot}
 }
 \end{equation}
 \begin{equation}
-\inferrule[PAIR]{
+\inferrule[PMPair]{
   \hpatmatch{e_1}{p_1}{\theta_1} \\
   \hpatmatch{e_2}{p_2}{\theta_2}
 }{
@@ -219,14 +229,14 @@ p & ::= &
 }
 \end{equation}
 \begin{equation}
-\inferrule[INL]{
+\inferrule[PMInL]{
   \hpatmatch{e}{p}{\theta}
 }{
   \hpatmatch{\hinl{\tau}{e}}{\hinlp{p}}{\theta}
 }
 \end{equation}
 \begin{equation}
-\inferrule[INR]{
+\inferrule[PMInR]{
   \hpatmatch{e}{p}{\theta}
 }{
   \hpatmatch{\hinr{\tau}{e}}{\hinrp{p}}{\theta}
@@ -236,82 +246,82 @@ p & ::= &
 \end{figure}
 
 \begin{figure}[h]
-\fbox{$e \bot p$}
+\fbox{$\hnotmatch{e}{p}$}~~\text{$e$ doesn't match $p$}
 \begin{subequations}
 \begin{equation}
-\inferrule[PAIR1]{
-  e_1 \bot p_1
+\inferrule[NMPair1]{
+  \hnotmatch{e_1}{p_1}
 }{
-  \hpair{e_1}{e_2} \bot \hpair{p_1}{p_2}
+  \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[PAIR2]{
-  e_2 \bot p_2
+\inferrule[NMPair2]{
+  \hnotmatch{e_2}{p_2}
 }{
-  \hpair{e_1}{e_2} \bot \hpair{p_1}{p_2}
+  \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[OPPOR]{ }{
-  \hinl{\tau}{e} \bot \hinrp{p}
+\inferrule[NMConfL]{ }{
+  \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[OPPOL]{ }{
-  \hinr{\tau}{e} \bot \hinlp{p}
+\inferrule[NMConfR]{ }{
+  \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[INL]{
-  e \bot p
+\inferrule[NMInjL]{
+  \hnotmatch{e}{p}
 }{
-  \hinl{\tau}{e} \bot \hinlp{p}
+  \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[INR]{
-  e \bot p
+\inferrule[NMInjR]{
+  \hnotmatch{e}{p}
 }{
-  \hinr{\tau}{e} \bot \hinrp{p}
+  \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
 }
 \end{equation}
 \end{subequations}
 \end{figure}
 
 \begin{figure}[h]
-\fbox{$\hval{e}$}
+\fbox{$\hval{e}$}~~\text{$e$ is a value}
 \begin{subequations}
 \begin{equation}
-\inferrule[NUM]{ }{
+\inferrule[VNum]{ }{
   \hval{\hnum{n}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[TRIV]{ }{
+\inferrule[VTriv]{ }{
   \hval{\htriv}
 }
 \end{equation}
 \begin{equation}
-\inferrule[LAM]{ }{
+\inferrule[VLam]{ }{
   \hval{\hlam{x}{\tau}{e}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[PAIR]{
+\inferrule[VPair]{
   \hval{e_1} \\
   \hval{e_2}
 }{\hval{\hpair{e_1}{e_2}}}
 \end{equation}
 \begin{equation}
-\inferrule[INL]{
+\inferrule[VInL]{
   \hval{e}
 }{
   \hval{\hinl{\tau}{e}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[INR]{
+\inferrule[VinR]{
   \hval{e}
 }{
   \hval{\hinr{\tau}{e}}
@@ -321,25 +331,80 @@ p & ::= &
 \end{figure}
 
 \begin{figure}[h]
-\fbox{$e \mapsto e'$}
+\fbox{$\herr{e}$}~~\text{$e$ results in a checked error}
 \begin{subequations}
 \begin{equation}
-\inferrule[AP1]{
-  e_1 \mapsto e_1'
+\inferrule[EAp1]{
+  \herr{e_1}
 }{
-  \hap{e_1}{e_2} \mapsto \hap{e_1'}{e_2}
+  \herr{\hap{e_1}{e_2}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[AP2]{
+\inferrule[EAp2]{
+  \hval{e_1} \\ \herr{e_2}
+}{
+  \herr{\hap{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[EPair1]{
+  \herr{e_1}
+}{
+  \herr{\hpair{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[EPair2]{
+  \herr{e_2}
+}{
+  \herr{\hpair{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[EInL]{
+  \herr{e}
+}{
+  \herr{\hinl{\tau}{e}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[EInR]{
+  \herr{e}
+}{
+  \herr{\hinr{\tau}{e}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[EMatch]{
+  \herr{e}
+}{
+  \herr{\hmatch{e}{rs}}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{figure}[h]
+\fbox{$e \mapsto e'$}~~\text{$e$ takes an instruction transition to $e'$}
+\begin{subequations}
+\begin{equation}
+\inferrule[ITAp1]{
+  \htrans{e_1}{e_1'}
+}{
+  \htrans{\hap{e_1}{e_2}}{\hap{e_1'}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITAp2]{
   \hval{e_1} \\
-  e_2 \mapsto e_2'
+  \htrans{e_2}{e_2'}
 }{
-  \hap{e_1}{e_2} \mapsto \hap{e_1}{e_2'}
+  \htrans{\hap{e_1}{e_2}}{\hap{e_1}{e_2'}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[AP]{
+\inferrule[ITAP]{
   \hval{e_2}
 }{
   \hap{\hlam{x}{\tau}{e_1}}{e_2} \mapsto
@@ -347,63 +412,70 @@ p & ::= &
 }
 \end{equation}
 \begin{equation}
-\inferrule[PAIR1]{
-  e_1 \mapsto e_1'
+\inferrule[ITPair1]{
+  \htrans{e_1}{e_1'}
 }{
-  \hpair{e_1}{e_2} \mapsto \hpair{e_1'}{e_2}
+  \htrans{\hpair{e_1}{e_2}}{\hpair{e_1'}{e_2}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[PAIR2]{
+\inferrule[ITPair2]{
   \hval{e_1} \\
-  e_2 \mapsto e_2'
+  \htrans{e_2}{e_2'}
 }{
-  \hpair{e_1}{e_2} \mapsto \hpair{e_1}{e_2'}
+  \htrans{\hpair{e_1}{e_2}}{\hpair{e_1}{e_2'}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[INL]{
-  e \mapsto e'
+\inferrule[ITInL]{
+  \htrans{e}{e'}
 }{
-  \hinl{\tau}{e} \mapsto \hinl{\tau}{e'}
+  \htrans{\hinl{\tau}{e}}{\hinl{\tau}{e'}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[INR]{
-  e \mapsto e'
+\inferrule[ITInR]{
+  \htrans{e}{e'}
 }{
-  \hinr{\tau}{e} \mapsto \hinr{\tau}{e'}
+  \htrans{\hinr{\tau}{e}}{\hinr{\tau}{e'}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[EXPMATCH]{
-  e \mapsto e'
+\inferrule[ITExpMatch]{
+  \htrans{e}{e'}
 }{
-  \hmatch{e}{rs} \mapsto \hmatch{e'}{rs}
+  \htrans{\hmatch{e}{rs}}{\hmatch{e'}{rs}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[EXHMATCH]{
+\inferrule[ITExhMatch]{
   \hval{e}
 }{
-  \herr{\hmatch{e}{}}
+  \herr{\hmatch{e}{\cdot}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[SUCCMATCH]{
+\inferrule[ITSuccMatch]{
   \hval{e} \\
   \hpatmatch{e}{p_0}{\theta}
 }{
-  \hmatch{e}{\hrules{\hrul{p_0}{e_0}}{rs}} \mapsto \hat{\theta}(e_0)
+  \htrans{
+    \hmatch{e}{\hrules{\hrul{p_0}{e_0}}{rs}}
+  }{
+    [\theta](e_0)
+  }
 }
 \end{equation}
 \begin{equation}
-\inferrule[FAILMATCH]{
+\inferrule[ITFailMatch]{
   \hval{e} \\
   e \bot p_0 \\
-  \hmatch{e}{rs} \mapsto e'
 }{
-  \hmatch{e}{\hrules{\hrul{p_0}{e_0}}{rs}} \mapsto e'
+  \htrans{
+    \hmatch{e}{\hrules{\hrul{p_0}{e_0}}{rs}}
+  }{
+    \hmatch{e}{rs}
+  }
 }
 \end{equation}
 \end{subequations}
