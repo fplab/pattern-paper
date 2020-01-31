@@ -1,5 +1,5 @@
 % !TEX root = ./patterns-paper.tex
-\begin{figure}[h]
+\begin{figure}[t]
 $\arraycolsep=4pt\begin{array}{lll}
 \tau & ::= &
   \tnum ~\vert~
@@ -36,7 +36,7 @@ p & ::= &
 \end{array}$
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
 \fbox{$\hexptyp{\Gamma}{e}{\tau}$}~~\text{$e$ is of type $\tau$}
 \begin{subequations}
 \begin{equation}
@@ -97,7 +97,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
 \fbox{$\hexptyp{\Gamma}{r}{\trul{\tau_1}{\tau_2}}$}~~\text{$r$ is of type $\trulnp{\tau_1}{\tau_2}$}
 \begin{subequations}
 \begin{equation}
@@ -111,7 +111,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
 \fbox{$\hexptyp{\Gamma}{rs}{\trul{\tau_1}{\tau_2}}$}~~\text{$rs$ is of type $\trulnp{\tau_1}{\tau_2}$}
 \begin{subequations}
 \begin{equation}
@@ -130,7 +130,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
 \fbox{$\hpattyp{p}{\tau}{\Gamma}$}~~\text{Analyzing $p$ against type $\tau$ emits $\Gamma$}
 \begin{subequations}
 \begin{equation}
@@ -178,7 +178,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
 \fbox{$\hsubstyp{\theta}{\Gamma}$}~~\text{Substitution $\theta$ is of type $\Gamma$}
 \begin{subequations}
 \begin{equation}
@@ -197,7 +197,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
 \fbox{$\hpatmatch{e}{p}{\theta}$}~~\text{Pattern matching $e$ on $p$ emits $\theta$}
 \begin{subequations}
 \begin{equation}
@@ -245,7 +245,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
 \fbox{$\hnotmatch{e}{p}$}~~\text{$e$ doesn't match $p$}
 \begin{subequations}
 \begin{equation}
@@ -289,7 +289,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
 \fbox{$\hval{e}$}~~\text{$e$ is a value}
 \begin{subequations}
 \begin{equation}
@@ -330,7 +330,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
 \fbox{$\herr{e}$}~~\text{$e$ results in a checked error}
 \begin{subequations}
 \begin{equation}
@@ -385,7 +385,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
 \fbox{$e \mapsto e'$}~~\text{$e$ takes an instruction transition to $e'$}
 \begin{subequations}
 \begin{equation}
@@ -480,3 +480,45 @@ p & ::= &
 \end{equation}
 \end{subequations}
 \end{figure}
+
+\begin{theorem}[Preservation]
+  \label{thrm:preservation}
+  If $\hexptyp{\cdot}{e}{\tau}$ and $\htrans{e}{e'}$
+  then $\hexptyp{\cdot}{e'}{\tau}$
+\end{theorem}
+
+\begin{lemma}[Substitution]
+  \label{lemma:substitution}
+  If $\hexptyp{\Gamma, x : \tau}{e_0}{\tau_0}$ and $\hexptyp{\Gamma}{e}{\tau}$
+  then $\hexptyp{\Gamma}{[e/x]e_0}{\tau_0}$
+\end{lemma}
+
+\begin{lemma}[Simultaneous Substitution]
+  \label{lemma:simult-substitution}
+  If $\hexptyp{\Gamma \uplus \Gamma'}{e}{\tau}$ and $\hsubstyp{\theta}{\Gamma'}$
+  then $\hexptyp{\Gamma}{[\theta]e}{\tau}$
+\end{lemma}
+Proof by induction on the derivation of $\hexptyp{\Gamma \uplus \Gamma'}{e}{\tau}$.
+
+\begin{lemma}[Substitution Typing]
+  \label{lemma:subs-typing}
+  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}$
+  then $\hsubstyp{\theta}{\Gamma}$
+\end{lemma}
+Proof by induction on the derivation of $\hpatmatch{e}{p}{\theta}$.
+
+To apply this lemma in ITSuccMatch case, first apply inversion lemma on premise of preservation theorem,
+\emph{i.e.}, $\hexptyp{\cdot}{\hpatmatch{e}{p}{\theta}}{\trul{\tau_1}{\tau_2}}$
+
+\begin{theorem}[Progress]
+  \label{thrm:progrs}
+  If $\hexptyp{\cdot}{e}{\tau}$
+  then $\htrans{e}{e'}$ or $\hval{e}$ or $\herr{e}$
+\end{theorem}
+
+\begin{lemma}[Matching Progress]
+  \label{lemma:match-progress}
+  If $\hexptyp{\cdot}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}$
+  then $\hnotmatch{e}{p}$ or $\hpatmatch{e}{p}{\theta}$
+\end{lemma}
+Proof by induction on two premises.
