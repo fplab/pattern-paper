@@ -131,7 +131,7 @@ p & ::= &
 \end{figure}
 
 \begin{figure}[t]
-\fbox{$\hpattyp{p}{\tau}{\Gamma}$}~~\text{Analyzing $p$ against type $\tau$ emits $\Gamma$}
+\fbox{$\hpattyp{p}{\tau}{\Gamma}$}~~\text{$p$ matches expression of type $\tau$ and generates $\Gamma$}
 \begin{subequations}
 \begin{equation}
 \inferrule[PTVar]{ }{
@@ -356,6 +356,7 @@ p & ::= &
 \end{equation}
 \begin{equation}
 \inferrule[EPair2]{
+  \hval{e_1} \\
   \herr{e_2}
 }{
   \herr{\hpair{e_1}{e_2}}
@@ -376,10 +377,17 @@ p & ::= &
 }
 \end{equation}
 \begin{equation}
-\inferrule[EMatch]{
+\inferrule[EExpMatch]{
   \herr{e}
 }{
   \herr{\hmatch{e}{rs}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[EExhMatch]{
+  \hval{e}
+}{
+  \herr{\hmatch{e}{\cdot}}
 }
 \end{equation}
 \end{subequations}
@@ -448,13 +456,6 @@ p & ::= &
 }
 \end{equation}
 \begin{equation}
-\inferrule[ITExhMatch]{
-  \hval{e}
-}{
-  \herr{\hmatch{e}{\cdot}}
-}
-\end{equation}
-\begin{equation}
 \inferrule[ITSuccMatch]{
   \hval{e} \\
   \hpatmatch{e}{p_0}{\theta}
@@ -469,7 +470,7 @@ p & ::= &
 \begin{equation}
 \inferrule[ITFailMatch]{
   \hval{e} \\
-  e \bot p_0 \\
+  \hnotmatch{e}{p_0} \\
 }{
   \htrans{
     \hmatch{e}{\hrules{\hrul{p_0}{e_0}}{rs}}
