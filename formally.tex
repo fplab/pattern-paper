@@ -514,12 +514,12 @@ To apply this lemma in ITSuccMatch case, first apply inversion lemma on premise 
 \begin{theorem}[Progress]
   \label{thrm:progrs}
   If $\hexptyp{\cdot}{e}{\tau}$
-  then $\htrans{e}{e'}$ or $\hval{e}$ or $\herr{e}$
+  then $\hval{e}$ or $\herr{e}$ or $\htrans{e}{e'}$ for some $e'$
 \end{theorem}
 
 \begin{lemma}[Matching Progress]
   \label{lemma:match-progress}
   If $\hexptyp{\cdot}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}$
-  then $\hnotmatch{e}{p}$ or $\hpatmatch{e}{p}{\theta}$
+  then $\hnotmatch{e}{p}$ or $\hpatmatch{e}{p}{\theta}$ for some $\theta$
 \end{lemma}
 Proof by induction on two premises.
