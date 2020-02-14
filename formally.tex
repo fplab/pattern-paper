@@ -32,7 +32,9 @@ p & ::= &
   \hpair{p_1}{p_2} ~\vert~
   \htriv ~\vert~
   \hinlp{p} ~\vert~
-  \hinrp{p}
+  \hinrp{p} ~\vert~
+  \hehole{u} ~\vert~
+  \hhole{p}{u}
 \end{array}$
 \end{figure}
 
@@ -131,48 +133,61 @@ p & ::= &
 \end{figure}
 
 \begin{figure}[t]
-\fbox{$\hpattyp{p}{\tau}{\Gamma}$}~~\text{$p$ matches expression of type $\tau$ and generates $\Gamma$}
+\fbox{$\hpattyp{p}{\tau}{\Gamma}{\Sigma}$}~~\text{$p$ matches expression of type $\tau$ and generates context $\Gamma$ and hole context $\Sigma$}
 \begin{subequations}
 \begin{equation}
 \inferrule[PTVar]{ }{
-  \hpattyp{x}{\tau}{x : \tau}
+  \hpattyp{x}{\tau}{x : \tau}{\cdot}
 }
 \end{equation}
 \begin{equation}
 \inferrule[PTNum]{ }{
-  \hpattyp{\hnum{n}}{\tnum}{\cdot}
+  \hpattyp{\hnum{n}}{\tnum}{\cdot}{\cdot}
 }
 \end{equation}
 \begin{equation}
 \inferrule[PTWild]{ }{
-  \hpattyp{\_}{\tau}{\cdot}
+  \hpattyp{\_}{\tau}{\cdot}{\cdot}
 }
 \end{equation}
 \begin{equation}
 \inferrule[PTPair]{
-  \hpattyp{p_1}{\tau_1}{\Gamma_1} \\
-  \hpattyp{p_2}{\tau_2}{\Gamma_2}
+  \hpattyp{p_1}{\tau_1}{\Gamma_1}{\Sigma_1} \\
+  \hpattyp{p_2}{\tau_2}{\Gamma_2}{\Sigma_2}
 }{
-  \hpattyp{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}{\Gamma_1 \uplus \Gamma_2}
+  \hpattyp{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}{\Gamma_1 \uplus \Gamma_2}{\Sigma_1 \cup \Sigma_2}
 }
 \end{equation}
 \begin{equation}
 \inferrule[PTTriv]{ }{
-  \hpattyp{\htriv}{\tunit}{\cdot}
+  \hpattyp{\htriv}{\tunit}{\cdot}{\cdot}
 }
 \end{equation}
 \begin{equation}
 \inferrule[PTInL]{
-  \hpattyp{p}{\tau_1}{\Gamma}
+  \hpattyp{p}{\tau_1}{\Gamma}{\Sigma}
 }{
-  \hpattyp{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
+  \hpattyp{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}{\Sigma}
 }
 \end{equation}
 \begin{equation}
 \inferrule[PTInR]{
-  \hpattyp{p}{\tau_2}{\Gamma}
+  \hpattyp{p}{\tau_2}{\Gamma}{\Sigma}
 }{
-  \hpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}
+  \hpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}{\Sigma}
+}
+\end{equation}
+\begin{equation}
+\inferrule[PTEHole]{ }{
+  \hpattyp{\hehole{u}}{\tau}{\cdot}{u :: \tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[PTHole]{
+  \hpattyp{p}{\tau'}{\Gamma}{\Sigma}
+}{
+  \hpattyp{\hhole{p}{u}}{\tau}
+  {\Gamma}{\Sigma , u :: \tau}
 }
 \end{equation}
 \end{subequations}
@@ -246,6 +261,54 @@ p & ::= &
 \end{figure}
 
 \begin{figure}[t]
+\fbox{$\hmaymatch{e}{p}$}~~\text{$e$ may match $p$}
+\begin{subequations}
+\begin{equation}
+\inferrule[MMEHole]{ }{
+  \hmaymatch{e}{\hehole{u}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMPair1]{
+  \hmaymatch{e_1}{p_1} \\
+  \hpatmatch{e_2}{p_2}{\theta_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMPair2]{
+  \hpatmatch{e_1}{p_1}{\theta_1} \\
+  \hmaymatch{e_2}{p_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMPair3]{
+  \hmaymatch{e_1}{p_1} \\
+  \hmaymatch{e_2}{p_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMInL]{
+  \hmaymatch{e}{p}
+}{
+  \hmaymatch{\hinl{\tau}{e}}{\hinlp{p}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMInR]{
+  \hmaymatch{e}{p}
+}{
+  \hmaymatch{\hinr{\tau}{e}}{\hinrp{p}}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+\begin{figure}[t]
 \fbox{$\hnotmatch{e}{p}$}~~\text{$e$ doesn't match $p$}
 \begin{subequations}
 \begin{equation}
@@ -290,104 +353,168 @@ p & ::= &
 \end{figure}
 
 \begin{figure}[t]
-\fbox{$\hval{e}$}~~\text{$e$ is a value}
+\fbox{$\isVal{e}$}~~\text{$e$ is a value}
 \begin{subequations}
 \begin{equation}
 \inferrule[VNum]{ }{
-  \hval{\hnum{n}}
+  \isVal{\hnum{n}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[VTriv]{ }{
-  \hval{\htriv}
+  \isVal{\htriv}
 }
 \end{equation}
 \begin{equation}
 \inferrule[VLam]{ }{
-  \hval{\hlam{x}{\tau}{e}}
+  \isVal{\hlam{x}{\tau}{e}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[VPair]{
-  \hval{e_1} \\
-  \hval{e_2}
-}{\hval{\hpair{e_1}{e_2}}}
+  \isVal{e_1} \\
+  \isVal{e_2}
+}{\isVal{\hpair{e_1}{e_2}}}
 \end{equation}
 \begin{equation}
 \inferrule[VInL]{
-  \hval{e}
+  \isVal{e}
 }{
-  \hval{\hinl{\tau}{e}}
+  \isVal{\hinl{\tau}{e}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[VinR]{
-  \hval{e}
+  \isVal{e}
 }{
-  \hval{\hinr{\tau}{e}}
+  \isVal{\hinr{\tau}{e}}
 }
 \end{equation}
 \end{subequations}
 \end{figure}
 
 \begin{figure}[t]
-\fbox{$\herr{e}$}~~\text{$e$ results in a checked error}
+\fbox{$\isIndet{e}$}~~\text{$e$ is indeterminate}
+\begin{subequations}
+\begin{equation}
+\inferrule[IAp1]{
+  \isIndet{e_1}
+}{
+  \isIndet{\hap{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[IAp2]{
+  \isVal{e_1} \\ \isIndet{e_2}
+}{
+  \isIndet{\hap{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[IPair1]{
+  \isIndet{e_1}
+}{
+  \isIndet{\hpair{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[IPair2]{
+  \isVal{e_1} \\
+  \isIndet{e_2}
+}{
+  \isIndet{\hpair{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[IInL]{
+  \isIndet{e}
+}{
+  \isIndet{\hinl{\tau}{e}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[IInR]{
+  \isIndet{e}
+}{
+  \isIndet{\hinr{\tau}{e}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[IExpMatch]{
+  \isIndet{e}
+}{
+  \isIndet{\hmatch{e}{rs}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[IMayMatch]{
+  \isVal{e} \\
+  \hmaymatch{e}{p_0}
+}{
+  \isIndet{\hmatch{e}{\hrules{\hrul{p_0}{e_0}}{rs}}}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{figure}[t]
+\fbox{$\isErr{e}$}~~\text{$e$ results in a checked error}
 \begin{subequations}
 \begin{equation}
 \inferrule[EAp1]{
-  \herr{e_1}
+  \isErr{e_1}
 }{
-  \herr{\hap{e_1}{e_2}}
+  \isErr{\hap{e_1}{e_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[EAp2]{
-  \hval{e_1} \\ \herr{e_2}
+  \isVal{e_1} \\ \isErr{e_2}
 }{
-  \herr{\hap{e_1}{e_2}}
+  \isErr{\hap{e_1}{e_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[EPair1]{
-  \herr{e_1}
+  \isErr{e_1}
 }{
-  \herr{\hpair{e_1}{e_2}}
+  \isErr{\hpair{e_1}{e_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[EPair2]{
-  \hval{e_1} \\
-  \herr{e_2}
+  \isVal{e_1} \\
+  \isErr{e_2}
 }{
-  \herr{\hpair{e_1}{e_2}}
+  \isErr{\hpair{e_1}{e_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[EInL]{
-  \herr{e}
+  \isErr{e}
 }{
-  \herr{\hinl{\tau}{e}}
+  \isErr{\hinl{\tau}{e}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[EInR]{
-  \herr{e}
+  \isErr{e}
 }{
-  \herr{\hinr{\tau}{e}}
+  \isErr{\hinr{\tau}{e}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[EExpMatch]{
-  \herr{e}
+  \isErr{e}
 }{
-  \herr{\hmatch{e}{rs}}
+  \isErr{\hmatch{e}{rs}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[EExhMatch]{
-  \hval{e}
+  \isVal{e}
 }{
-  \herr{\hmatch{e}{\cdot}}
+  \isErr{\hmatch{e}{\cdot}}
 }
 \end{equation}
 \end{subequations}
@@ -405,7 +532,7 @@ p & ::= &
 \end{equation}
 \begin{equation}
 \inferrule[ITAp2]{
-  \hval{e_1} \\
+  \isVal{e_1} \\
   \htrans{e_2}{e_2'}
 }{
   \htrans{\hap{e_1}{e_2}}{\hap{e_1}{e_2'}}
@@ -413,7 +540,7 @@ p & ::= &
 \end{equation}
 \begin{equation}
 \inferrule[ITAP]{
-  \hval{e_2}
+  \isVal{e_2}
 }{
   \hap{\hlam{x}{\tau}{e_1}}{e_2} \mapsto
     [e_2/x]e_1
@@ -428,7 +555,7 @@ p & ::= &
 \end{equation}
 \begin{equation}
 \inferrule[ITPair2]{
-  \hval{e_1} \\
+  \isVal{e_1} \\
   \htrans{e_2}{e_2'}
 }{
   \htrans{\hpair{e_1}{e_2}}{\hpair{e_1}{e_2'}}
@@ -457,7 +584,7 @@ p & ::= &
 \end{equation}
 \begin{equation}
 \inferrule[ITSuccMatch]{
-  \hval{e} \\
+  \isVal{e} \\
   \hpatmatch{e}{p_0}{\theta}
 }{
   \htrans{
@@ -469,7 +596,7 @@ p & ::= &
 \end{equation}
 \begin{equation}
 \inferrule[ITFailMatch]{
-  \hval{e} \\
+  \isVal{e} \\
   \hnotmatch{e}{p_0} \\
 }{
   \htrans{
@@ -515,12 +642,28 @@ To apply this lemma in ITSuccMatch case, first apply inversion lemma on premise 
 \begin{thm}[Progress]
   \label{thrm:progrs}
   If $\hexptyp{\cdot}{e}{\tau}$
-  then $\hval{e}$ or $\herr{e}$ or $\htrans{e}{e'}$ for some $e'$
+  then $\isVal{e}$ or $\isErr{e}$ or $\isIndet{e}$ or $\htrans{e}{e'}$ for some $e'$
 \end{thm}
 
 \begin{lem}[Matching Progress]
   \label{lemma:match-progress}
   If $\hexptyp{\cdot}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}$
-  then $\hnotmatch{e}{p}$ or $\hpatmatch{e}{p}{\theta}$ for some $\theta$
+  then $\hnotmatch{e}{p}$ or $\hmaymatch{e}{p}$ or $\hpatmatch{e}{p}{\theta}$ for some $\theta$
 \end{lem}
 Proof by induction on two premises.
+
+\begin{thm}[Stepping Determinism]
+  \label{thrm:step-determinism}
+  If $\htrans{e}{e'}$ and $\htrans{e}{e''}$ then $e' = e''$
+\end{thm}
+
+\begin{thm}[Determinism]
+  \label{thrm:determinism}
+  If $\hexptyp{\cdot}{e}{\tau}$ then exactly one of the following holds
+  \begin{enumerate}
+    \item $\isVal{e}$
+    \item $\isErr{e}$
+    \item $\isIndet{e}$
+    \item $\htrans{e}{e'}$ for some unique $e'$
+  \end{enumerate}
+\end{thm}

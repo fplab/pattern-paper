@@ -35,8 +35,8 @@
 \newcommand{\hadd}[2]{\inparens{#1 + #2}}
 \newcommand{\hpair}[2]{\inparens{#1 , #2}}
 \newcommand{\htriv}{()}
-\newcommand{\hehole}{\llparenthesiscolor\rrparenthesiscolor}
-\newcommand{\hhole}[1]{\llparenthesiscolor#1\rrparenthesiscolor}
+\newcommand{\hehole}[1]{\llparenthesiscolor\rrparenthesiscolor^{#1}}
+\newcommand{\hhole}[2]{\llparenthesiscolor#1\rrparenthesiscolor^{#2}}
 \newcommand{\hindet}[1]{\lceil#1\rceil}
 \newcommand{\hinj}[2]{\mathtt{inj}_{#1}({#2})}
 \newcommand{\hinl}[2]{\mathtt{inl}_{#1}({#2})}
@@ -55,13 +55,16 @@
 \newcommand{\hsyn}[3]{#1 \vdash #2 \Rightarrow #3}
 \newcommand{\hana}[3]{#1 \vdash #2 \Leftarrow #3}
 \newcommand{\hexptyp}[3]{#1 \vdash #2 : #3}
-\newcommand{\hpattyp}[3]{#1 : #2 \dashV #3}
+\newcommand{\hpattyp}[4]{#1 : #2 \dashV #3 \mathbin{;} #4}
 \newcommand{\hsubstyp}[2]{#1 : #2}
 \newcommand{\hpatmatch}[3]{#1 \vartriangleright #2 \dashV #3}
 \newcommand{\hnotmatch}[2]{#1 \mathbin{\bot} #2}
+\newcommand{\hmaymatch}[2]{#1 \mathbin{?} #2}
 \newcommand{\htrans}[2]{#1 \mapsto #2}
-\newcommand{\hval}[1]{#1 ~\mathtt{val}}
-\newcommand{\herr}[1]{#1 ~\mathtt{err}}
+
+\newcommand{\isVal}[1]{#1 ~\mathtt{val}}
+\newcommand{\isErr}[1]{#1 ~\mathtt{err}}
+\newcommand{\isIndet}[1]{#1 ~\mathtt{indet}}
 
 % ZTyp and ZExp
 \newcommand{\zlsel}[1]{{\bowtie}{#1}}
