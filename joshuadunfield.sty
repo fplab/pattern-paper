@@ -1,6 +1,6 @@
 \ProvidesClass{joshuadunfield}[2015/06/20 - Minor revision]
 
-\RequirePackage{etex}
+% \RequirePackage{etex}
 \RequirePackage{amsmath}
 
 %
@@ -446,7 +446,7 @@
 % Letters
 %
 
-\newcommand{\C}{\mathcal{C}}
+\newcommand{\Cee}{\mathcal{C}}
 \newcommand{\Dee}{\mathcal{D}}
 \newcommand{\E}{\mathcal{E}}
 \newcommand{\Judg}{\mathcal{J}}
@@ -501,7 +501,8 @@
 %             {\text{USING ENTIRE LINE HEIGHT}}
 %
 
-\def \TirNameStyle #1{{#1}}
+\newcommand{\rulename}[1]{\texttt{#1}}
+\def \TirNameStyle #1{\rulename{#1}}
 \newcommand{\Infer}[3]{\inferrule*[right={\text{\strut#1}}]{{}#2\mathstrut}{{}#3\mathstrut}}
 
 %
@@ -576,8 +577,10 @@
 \fi
 
 \newcommand{\judgbox}[2]{%
-      {\raggedright \textgraybox{\ensuremath{\judgboxfontsize{#1}}}\!\begin{tabular}[c]{l} #2 \end{tabular} %
-      \ifnum\OPTIONConf=1 \\[-1.5ex] \else \\[-1.8ex] \fi%
+      %% {\raggedright \textgraybox{\ensuremath{\judgboxfontsize{#1}}}\!\begin{tabular}[c]{l} #2 \end{tabular} %
+      %% \ifnum\OPTIONConf=1 \\[-1.5ex] \else \\[-1.8ex] \fi%
+      {\raggedright \textgraybox{\ensuremath{\judgboxfontsize{#1}}}\!\begin{tabular}[c]{l}\hspace{0.03in} #2 \end{tabular} %
+      \ifnum\OPTIONConf=1 \\[-1.0ex] \else \\[-1.8ex] \fi%
 }}
 
 % Horribly named variants of \judgbox.  The \judgbox spacing is supposed

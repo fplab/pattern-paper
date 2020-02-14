@@ -1,90 +1,341 @@
-\def\OPTIONConf{1}%
-\newif\iftr\trtrue
-\RequirePackage{etex}
-\documentclass[9pt]{sigplanconf}
-\toappear{}
-% \usepackage[T1]{fontenc}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{amsthm}
-\usepackage{ stmaryrd }
-\usepackage{mathpartir}
-\usepackage{balance}
-\usepackage{stmaryrd}
-\usepackage{wasysym}
-\usepackage{multicol}
-\usepackage{extarrows}
-
-\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
-\definecolor{light-gray}{gray}{0.9}
-\usepackage{soul}
-\setulcolor{red}
-\usepackage{mathpazo}
-\usepackage{colortab}
-\usepackage[lowtilde]{url}
-\usepackage{todonotes}
-\usepackage{listings}
-\lstset{tabsize=2,
-basicstyle=\ttfamily\fontsize{8pt}{1em}\selectfont}
-\usepackage{microtype}
-\sloppy
-\def \TirNameStyle #1{\small\rulename{#1}}
-\renewcommand{\MathparLineskip}{\lineskiplimit=.3\baselineskip\lineskip=.3\baselineskip plus .2\baselineskip}
-
-\usepackage{joshuadunfield}
-\iftr
-
+\PassOptionsToPackage{svgnames,dvipsnames,svgnames}{xcolor}
+\newif\ifarxiv
+\arxivtrue
+% \arxivfalse
+\ifarxiv
+\documentclass[acmsmall,screen,nonacm]{acmart}
 \else
-	\usepackage{times}
+%%% Note: arxiv does not want line numbers (they are detected somehow, and are not allowed)
+\documentclass[acmsmall,screen]{acmart}
+% \settopmatter{printfolios=false,printccs=false,printacmref=false}
+% \settopmatter{printccs=false,printacmref=false}
 \fi
-% \usepackage{newtxtt}
-\usepackage{llproof}
-\usepackage{rulelinks}
-\newtheorem{theorem}{Theorem}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{corollary}{Corollary}
-\newtheorem{definition}{Definition}
-\newenvironment{proof-sketch}{\noindent{\emph{Proof Sketch.}}}{\qed}
-\makeatletter
 
-\renewcommand\topfraction{0.85}
-\renewcommand\bottomfraction{0.85}
-\renewcommand\textfraction{0.1}
-\renewcommand\floatpagefraction{0.85}
+\ifarxiv
+\newcommand{\appendixName}{appendix}
+\else
+\newcommand{\appendixName}{extended appendix}
+\fi
 
-\AtBeginDocument{%
- \abovedisplayskip=2pt plus 4pt
- \abovedisplayshortskip=0pt
- \belowdisplayskip=2pt plus 4pt
- \belowdisplayshortskip=0pt
+%% For single-blind review submission
+%\documentclass[acmlarge,review]{acmart}\settopmatter{printfolios=true}
+%% For final camera-ready submission
+%\documentclass[acmlarge]{acmart}\settopmatter{}
+
+%% Note: Authors migrating a paper from PACMPL format to traditional
+%% SIGPLAN proceedings format should change 'acmlarge' to
+%% 'sigplan,10pt'.
+
+% \bibliographystyle{ACM-Reference-Format}
+
+
+%% Some recommended packages.
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+
+%% Cyrus packages
+\usepackage{microtype}
+\usepackage{mdframed}
+\usepackage{colortab}
+\usepackage{mathpartir}
+\usepackage{enumitem}
+\usepackage{bbm}
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+\usepackage{leftidx}
+\usepackage{todonotes}
+\usepackage{xspace}
+\usepackage{wrapfig}
+\usepackage{extarrows}
+% \usepackage[subtle]{savetrees}
+
+\usepackage{listings}%
+\lstloadlanguages{ML}
+\lstset{tabsize=2, 
+basicstyle=\footnotesize\ttfamily, 
+% keywordstyle=\sffamily,
+commentstyle=\itshape\ttfamily\color{gray}, 
+stringstyle=\ttfamily\color{purple},
+mathescape=false,escapechar=\#,
+numbers=left, numberstyle=\scriptsize\color{gray}\ttfamily, language=ML, showspaces=false,showstringspaces=false,xleftmargin=15pt, 
+morekeywords={string, float, int, bool},
+classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount,
+moredelim=**[is][\color{red}]{SSTR}{ESTR}
 }
+\newcommand{\li}[1]{\lstinline[basicstyle=\ttfamily\fontsize{9pt}{1em}\selectfont]{#1}}
+\newcommand{\lismall}[1]{\lstinline[basicstyle=\ttfamily\fontsize{9pt}{1em}\selectfont]{#1}}
 
-\setlength{\floatsep}{10pt}
-\setlength{\textfloatsep}{12pt}
+%% Joshua Dunfield macros
+\def\OPTIONConf{1}%
+\usepackage{joshuadunfield}
 
-\usepackage[compact]{titlesec}
-\titlespacing*{\section}{0pt plus 3pt}{4pt plus 3pt}{2pt plus 3pt}
-\titlespacing*{\subsection}{0pt plus 3pt}{4pt plus 3pt}{2pt plus 3pt}
-\titlespacing*{\subsubsection}{0pt plus 3pt}{4pt plus 3pt}{2pt plus 3pt}
-\titlespacing*{\paragraph}{0pt}{4pt}{3pt}
-\setlength{\skip\footins}{3pt plus 1px minus 5px}
-
-% known bug: http://tex.stackexchange.com/questions/1522/pdfendlink-ended-up-in-different-nesting-level-than-pdfstartlink
-\usepackage[hidelinks,breaklinks,draft=false]{hyperref}
-
+%% Can remove this eventually
+\usepackage{blindtext}
 
 \usepackage{enumitem}
-\makeatletter
-\def\thm@space@setup{%
-  \thm@preskip=4px plus 2px minus 2px
-  \thm@postskip=\thm@preskip % or whatever, if you don't want them to be equal
-}
-\makeatother
 
-\usepackage{todonotes}
-\usepackage{xcolor}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Matt says: Cyrus, this package `adjustbox` seems directly related
+%% to the `clipbox` error; To get rid of the error, I moved it last
+%% (after other usepackages) and I added the line just above it, which
+%% permits it to redefine `clipbox` (apparently also defined in
+%% `pstricks`, and due to latex's complete lack of namespace
+%% management, these would otherwise names clash).
+\let\clipbox\relax
+\usepackage[export]{adjustbox}% http://ctan.org/pkg/adjustbox
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{draftwatermark}
+%\SetWatermarkText{DRAFT}
+%\SetWatermarkScale{1}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% A macro for the name of the system being described by ``this paper''
+\newcommand{\HazelnutLive}{\textsf{Hazelnut Live}\xspace}
+\newcommand{\Hazelnut}{\textsf{Hazelnut}\xspace}
+% The mockup, work-in-progress system.
+\newcommand{\Hazel}{\textsf{Hazel}\xspace}
+
+% \newtheorem{theorem}{Theorem}[chapter]
+% \newtheorem{lemma}[theorem]{Lemma}
+% \newtheorem{corollary}[theorem]{Corollary}
+% \newtheorem{definition}[theorem]{Definition}
+% \newtheorem{assumption}[theorem]{Assumption}
+% \newtheorem{condition}[theorem]{Condition}
+
+\newtheoremstyle{slplain}% name
+  {.15\baselineskip\@plus.1\baselineskip\@minus.1\baselineskip}% Space above
+  {.15\baselineskip\@plus.1\baselineskip\@minus.1\baselineskip}% Space below
+  {\slshape}% Body font
+  {\parindent}%Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries}%  Thm head font
+  {.}%       Punctuation after thm head
+  { }%      Space after thm head: " " = normal interword space;
+        %       \newline = linebreak
+  {}%       Thm head spec
+\theoremstyle{slplain}
+\newtheorem{thm}{Theorem}  % Numbered with the equation counter
+\numberwithin{thm}{section}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{corol}[thm]{Corollary}
+% \newtheorem{cor}[section]{Corollary}     
+% \newtheorem{lem}[section]{Lemma}         
+% \newtheorem{prop}[section]{Proposition}  
+
+% \setlength{\abovedisplayskip}{0pt}
+% \setlength{\belowdisplayskip}{0pt}
+% \setlength{\abovedisplayshortskip}{0pt}
+% \setlength{\belowdisplayshortskip}{0pt}
+
+
+\ifarxiv
+\setcopyright{rightsretained} 
+\acmJournal{PACMPL}
+\acmYear{2019} \acmVolume{3} \acmNumber{POPL} \ifarxiv \acmArticle{1} \else \acmArticle{14} \fi \acmMonth{1} \acmPrice{}\acmDOI{10.1145/3290327}
+\copyrightyear{2019}
+\else
+%%% The following is specific to POPL '19 and the paper
+%%% 'Live Functional Programming with Typed Holes'
+%%% by Cyrus Omar, Ian Voysey, Ravi Chugh, and Matthew A. Hammer.
+%%%
+\setcopyright{rightsretained}
+\acmPrice{}
+\acmDOI{10.1145/3290327}
+\acmYear{2019}
+\copyrightyear{2019}
+\acmJournal{PACMPL}
+\acmVolume{3}
+\acmNumber{POPL}
+\acmArticle{14}
+\acmMonth{1}
+\fi
+
+
+% \fancyfoot{} % suppresses the footer (also need \thispagestyle{empty} after \maketitle below)
+
+
+%% Bibliography style
+\bibliographystyle{ACM-Reference-Format}
+%% Citation style
+%% Note: author/year citations are required for papers published as an
+%% issue of PACMPL.
+\citestyle{acmauthoryear}   %% For author/year citations
+
+\input{commands}
 \input{macros}
+
+\setlength{\abovecaptionskip}{4pt plus 3pt minus 2pt} % Chosen fairly arbitrarily
+\setlength{\belowcaptionskip}{-4pt plus 3pt minus 2pt} % Chosen fairly arbitrarily
+
+
 \begin{document}
+
+%% Title information
+\title{patterns paper}         %% [Short Title] is optional;
+\ifarxiv
+\subtitle{Extended Version}
+\subtitlenote{The original version of this article was published in the POPL 2019 edition of PACMPL \cite{HazelnutLive}. This extended version includes an additional appendix.}
+\fi
+                                        %% when present, will be used in
+
+                                        %% header instead of Full Title.
+% \titlenote{with title note}             %% \titlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+% \subtitle{Subtitle}                     %% \subtitle is optional
+% \subtitlenote{with subtitle note}       %% \subtitlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+
+
+%% Author information
+%% Contents and number of authors suppressed with 'anonymous'.
+%% Each author should be introduced by \author, followed by
+%% \authornote (optional), \orcid (optional), \affiliation, and
+%% \email.
+%% An author may have multiple affiliations and/or emails; repeat the
+%% appropriate command.
+%% Many elements are not rendered, but should be provided for metadata
+%% extraction tools.
+
+%% Author with single affiliation.
+% \author{Cyrus Omar}
+% \authornote{with author1 note}          %% \authornote is optional;
+                                        %% can be repeated if necessary
+% \orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+% \affiliation{
+  % \position{Position1}
+  % \department{Department1}              %% \department is recommended
+  % \institution{University of Chicago, USA}            %% \institution is required
+  % \streetaddress{Street1 Address1}
+  % \city{City1}
+  % \state{State1}
+  % \postcode{Post-Code1}
+  % \country{Country1}
+% }
+% \email{comar@cs.uchicago.edu}          %% \email is recommended
+
+
+% %% Author with two affiliations and emails.
+% \author{First2 Last2}
+% \authornote{with author2 note}          %% \authornote is optional;
+%                                         %% can be repeated if necessary
+% \orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+% \affiliation{
+%   \position{Position2a}
+%   \department{Department2a}             %% \department is recommended
+%   \institution{Institution2a}           %% \institution is required
+%   \streetaddress{Street2a Address2a}
+%   \city{City2a}
+%   \state{State2a}
+%   \postcode{Post-Code2a}
+%   \country{Country2a}
+% }
+% \email{first2.last2@inst2a.com}         %% \email is recommended
+% \affiliation{
+%   \position{Position2b}
+%   \department{Department2b}             %% \department is recommended
+%   \institution{Institution2b}           %% \institution is required
+%   \streetaddress{Street3b Address2b}
+%   \city{City2b}
+%   \state{State2b}
+%   \postcode{Post-Code2b}
+%   \country{Country2b}
+% }
+% \email{first2.last2@inst2b.org}         %% \email is recommended
+
+
+%% Paper note
+%% The \thanks command may be used to create a "paper note" ---
+%% similar to a title note or an author note, but not explicitly
+%% associated with a particular element.  It will appear immediately
+%% above the permission/copyright statement.
+% \thanks{with paper note}                %% \thanks is optional
+                                        %% can be repeated if necesary
+                                        %% contents suppressed with 'anonymous'
+
+
+%% Abstract
+%% Note: \begin{abstract}...\end{abstract} environment must come
+%% before \maketitle command
+% \input{abstract}
+
+
+%% 2012 ACM Computing Classification System (CSS) concepts
+%% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
+% \begin{CCSXML}
+% <ccs2012>
+% <concept>
+% <concept_id>10011007.10011006.10011008</concept_id>
+% <concept_desc>Software and its engineering~General programming languages</concept_desc>
+% <concept_significance>500</concept_significance>
+% </concept>
+% <concept>
+% <concept_id>10003456.10003457.10003521.10003525</concept_id>
+% <concept_desc>Social and professional topics~History of programming languages</concept_desc>
+% <concept_significance>300</concept_significance>
+% </concept>
+% </ccs2012>
+% \end{CCSXML}
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10011007.10011006.10011008.10011009.10011012</concept_id>
+<concept_desc>Software and its engineering~Functional languages</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+% <concept>
+% <concept_id>10003752.10010124.10010131.10010134</concept_id>
+% <concept_desc>Theory of computation~Operational semantics</concept_desc>
+% <concept_significance>500</concept_significance>
+% </concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Software and its engineering~Functional languages}
+% \ccsdesc[500]{Theory of computation~Operational semantics}
+%% End of generated code
+
+
+%% Keywords
+%% comma separated list
+% \keywords{live programming, gradual typing, contextual modal type theory, typed holes, structured editing}  %% \keywords is optional
+
+
+%% \maketitle
+%% Note: \maketitle command must come after title commands, author
+%% commands, abstract environment, Computing Classification System
+%% environment and commands, and keywords command.
+% \maketitle
+% \thispagestyle{empty} % suppresses the footer
+
+% \input{intro}
+% \input{examples}
+% \input{calculus}
+% \input{implementation}
+% \input{related-work}
+% \input{discussion}
+
 \input{formally}
+%\clearpage
+\bibliography{all.short}
+
+\ifarxiv
+\clearpage
+\appendix
+%\input{appendix-defns}
+%\input{extensions}
+\else
+
+\fi
+% \input{misc}
+% \input{implementation-appendix}
+
 \end{document}
