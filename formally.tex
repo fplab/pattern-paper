@@ -33,8 +33,8 @@ p & ::= &
   \htriv ~\vert~
   \hinlp{p} ~\vert~
   \hinrp{p} ~\vert~
-  \hehole{u} ~\vert~
-  \hhole{p}{u}
+  \hehole{w} ~\vert~
+  \hhole{p}{w}
 \end{array}$
 \end{figure}
 
@@ -155,7 +155,8 @@ p & ::= &
   \hpattyp{p_1}{\tau_1}{\Gamma_1}{\Sigma_1} \\
   \hpattyp{p_2}{\tau_2}{\Gamma_2}{\Sigma_2}
 }{
-  \hpattyp{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}{\Gamma_1 \uplus \Gamma_2}{\Sigma_1 \cup \Sigma_2}
+  \hpattyp{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}
+    {\Gamma_1 \uplus \Gamma_2}{\Sigma_1 \uplus \Sigma_2}
 }
 \end{equation}
 \begin{equation}
@@ -179,15 +180,15 @@ p & ::= &
 \end{equation}
 \begin{equation}
 \inferrule[PTEHole]{ }{
-  \hpattyp{\hehole{u}}{\tau}{\cdot}{u :: \tau}
+  \hpattyp{\hehole{w}}{\tau}{\cdot}{u :: \tau}
 }
 \end{equation}
 \begin{equation}
 \inferrule[PTHole]{
   \hpattyp{p}{\tau'}{\Gamma}{\Sigma}
 }{
-  \hpattyp{\hhole{p}{u}}{\tau}
-  {\Gamma}{\Sigma , u :: \tau}
+  \hpattyp{\hhole{p}{w}}{\tau}
+  {\Gamma}{\Sigma , w :: \tau}
 }
 \end{equation}
 \end{subequations}
@@ -265,7 +266,12 @@ p & ::= &
 \begin{subequations}
 \begin{equation}
 \inferrule[MMEHole]{ }{
-  \hmaymatch{e}{\hehole{u}}
+  \hmaymatch{e}{\hehole{w}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMHole]{ }{
+  \hmaymatch{e}{\hhole{p}{w}}
 }
 \end{equation}
 \begin{equation}
@@ -440,15 +446,8 @@ p & ::= &
 }
 \end{equation}
 \begin{equation}
-\inferrule[IExpMatch]{
-  \isIndet{e}
-}{
-  \isIndet{\hmatch{e}{rs}}
-}
-\end{equation}
-\begin{equation}
 \inferrule[IMayMatch]{
-  \isVal{e} \\
+  \isFinal{e} \\
   \hmaymatch{e}{p_0}
 }{
   \isIndet{\hmatch{e}{\hrules{\hrul{p_0}{e_0}}{rs}}}
@@ -512,9 +511,29 @@ p & ::= &
 \end{equation}
 \begin{equation}
 \inferrule[EExhMatch]{
-  \isVal{e}
+  \isFinal{e}
 }{
   \isErr{\hmatch{e}{\cdot}}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{figure}
+\fbox{$\isFinal{e}$}~~\text{$e$ is final}
+\begin{subequations}
+\begin{equation}
+\inferrule[FVal]{
+  \isVal{e}
+}{
+  \isFinal{e}
+}
+\end{equation}
+\begin{equation}
+\inferrule[FIndet]{
+  \isIndet{e}
+}{
+  \isFinal{e}
 }
 \end{equation}
 \end{subequations}
@@ -584,7 +603,7 @@ p & ::= &
 \end{equation}
 \begin{equation}
 \inferrule[ITSuccMatch]{
-  \isVal{e} \\
+  \isFinal{e} \\
   \hpatmatch{e}{p_0}{\theta}
 }{
   \htrans{
@@ -596,7 +615,7 @@ p & ::= &
 \end{equation}
 \begin{equation}
 \inferrule[ITFailMatch]{
-  \isVal{e} \\
+  \isFinal{e} \\
   \hnotmatch{e}{p_0} \\
 }{
   \htrans{
@@ -667,3 +686,13 @@ Proof by induction on two premises.
     \item $\htrans{e}{e'}$ for some unique $e'$
   \end{enumerate}
 \end{thm}
+
+\begin{lem}[Matching Determinism]
+  \label{lemma:match-determinism}
+  If $\hexptyp{\cdot}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}$ then exactly one of the following holds
+  \begin{enumerate}
+    \item $\hpatmatch{e}{p}{\theta}$ for some $\theta$
+    \item $\hmaymatch{e}{p}$
+    \item $\hnotmatch{e}{p}$
+  \end{enumerate}
+\end{lem}
