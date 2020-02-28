@@ -21,6 +21,9 @@ e & ::= &
   \hinl{\tau}{e} ~\vert~
   \hinr{\tau}{e} ~\vert~
   \hmatch{e}{rs} \\
+  & ~\vert~ &
+  \hehole{u} ~\vert~
+  \hhole{e}{u} \\
 rs & ::= &
   \cdot ~\vert~ \hrulesP{r}{rs'} \\
 r & ::= &
@@ -39,94 +42,106 @@ p & ::= &
 \end{figure}
 
 \begin{figure}[t]
-\fbox{$\hexptyp{\Gamma}{e}{\tau}$}~~\text{$e$ is of type $\tau$}
+  \fbox{$\hexptyp{\Gamma}{\Delta}{e}{\tau}$}~~\text{$e$ is of type $\tau$}
 \begin{subequations}
 \begin{equation}
   \inferrule[TVar]{ }{
-    \hexptyp{\Gamma, x : \tau}{x}{\tau}
+    \hexptyp{\Gamma, x : \tau}{\Delta}{x}{\tau}
   }
 \end{equation}
 \begin{equation}
 \inferrule[TLam]{
-  \hexptyp{\Gamma, x : \tau_1}{e}{\tau_2}
+  \hexptyp{\Gamma, x : \tau_1}{\Delta}{e}{\tau_2}
 }{
-  \hexptyp{\Gamma}{\hlam{x}{\tau_1}{e}}{\tarr{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\Delta}{\hlam{x}{\tau_1}{e}}{\tarr{\tau_1}{\tau_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[TAp]{
-  \hexptyp{\Gamma}{e_1}{\tarr{\tau_2}{\tau}} \\
-  \hexptyp{\Gamma}{e_2}{\tau_2}
+  \hexptyp{\Gamma}{\Delta}{e_1}{\tarr{\tau_2}{\tau}} \\
+  \hexptyp{\Gamma}{\Delta}{e_2}{\tau_2}
 }{
-  \hexptyp{\Gamma}{\hap{e_1}{e_2}}{\tau}
+  \hexptyp{\Gamma}{\Delta}{\hap{e_1}{e_2}}{\tau}
 }
 \end{equation}
 \begin{equation}
 \inferrule[TPair]{
-  \hexptyp{\Gamma}{e_1}{\tau_1} \\
-  \hexptyp{\Gamma}{e_2}{\tau_2}
+  \hexptyp{\Gamma}{\Delta}{e_1}{\tau_1} \\
+  \hexptyp{\Gamma}{\Delta}{e_2}{\tau_2}
 }{
-  \hexptyp{\Gamma}{\hpair{e_1}{e_2}}{\tprod{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\Delta}{\hpair{e_1}{e_2}}{\tprod{\tau_1}{\tau_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[TTriv]{ }{
-  \hexptyp{\Gamma}{\htriv}{\tunit}
+  \hexptyp{\Gamma}{\Delta}{\htriv}{\tunit}
 }
 \end{equation}
 \begin{equation}
 \inferrule[TInL]{
-  \hexptyp{\Gamma}{e}{\tau_1}
+  \hexptyp{\Gamma}{\Delta}{e}{\tau_1}
 }{
-  \hexptyp{\Gamma}{\hinl{\tau_2}{e}}{\tsum{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\Delta}{\hinl{\tau_2}{e}}{\tsum{\tau_1}{\tau_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[TInR]{
-  \hexptyp{\Gamma}{e}{\tau_2}
+  \hexptyp{\Gamma}{\Delta}{e}{\tau_2}
 }{
-  \hexptyp{\Gamma}{\hinr{\tau_1}{e}}{\tsum{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\Delta}{\hinr{\tau_1}{e}}{\tsum{\tau_1}{\tau_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[TMatch]{
-  \hexptyp{\Gamma}{e_1}{\tau_1} \\
-  \hexptyp{\Gamma}{rs}{\trul{\tau_1}{\tau}}
+  \hexptyp{\Gamma}{\Delta}{e_1}{\tau_1} \\
+  \hexptyp{\Gamma}{\Delta}{rs}{\trul{\tau_1}{\tau}}
 }{
-  \hexptyp{\Gamma}{\hmatch{e_1}{rs}}{\tau}
+  \hexptyp{\Gamma}{\Delta}{\hmatch{e_1}{rs}}{\tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[TEHole]{ }{
+  \hexptyp{\Gamma}{\Delta, u::\tau}{\hehole{u}}{\tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[THole]{
+  \hexptyp{\Gamma}{\Delta, u::\tau}{e}{\tau'}
+}{
+  \hexptyp{\Gamma}{\Delta, u::\tau}{\hhole{e}{u}}{\tau}
 }
 \end{equation}
 \end{subequations}
 \end{figure}
 
 \begin{figure}[t]
-\fbox{$\hexptyp{\Gamma}{r}{\trul{\tau_1}{\tau_2}}$}~~\text{$r$ is of type $\trulnp{\tau_1}{\tau_2}$}
+\fbox{$\hexptyp{\Gamma}{\Delta}{r}{\trul{\tau_1}{\tau_2}}$}~~\text{$r$ is of type $\trulnp{\tau_1}{\tau_2}$}
 \begin{subequations}
 \begin{equation}
 \inferrule[TRule]{
-  \hpattyp{p}{\tau_1}{\Gamma'} \\
-  \hexptyp{\Gamma \uplus \Gamma'}{e}{\tau_2}
+  \hpattyp{p}{\tau_1}{\Gamma'}{\Sigma} \\
+  \hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau_2}
 }{
-  \hexptyp{\Gamma}{\hrulP{p}{e}}{\trul{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\Delta \uplus \Sigma}{\hrulP{p}{e}}{\trul{\tau_1}{\tau_2}}
 }
 \end{equation}
 \end{subequations}
 \end{figure}
 
 \begin{figure}[t]
-\fbox{$\hexptyp{\Gamma}{rs}{\trul{\tau_1}{\tau_2}}$}~~\text{$rs$ is of type $\trulnp{\tau_1}{\tau_2}$}
+\fbox{$\hexptyp{\Gamma}{\Delta}{rs}{\trul{\tau_1}{\tau_2}}$}~~\text{$rs$ is of type $\trulnp{\tau_1}{\tau_2}$}
 \begin{subequations}
 \begin{equation}
 \inferrule[TZeroRule]{ }{
-  \hexptyp{\Gamma}{\cdot}{\trul{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\Delta}{\cdot}{\trul{\tau_1}{\tau_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[TRules]{
-  \hexptyp{\Gamma}{r}{\trul{\tau_1}{\tau_2}} \\
-  \hexptyp{\Gamma}{rs}{\trul{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\Delta}{r}{\trul{\tau_1}{\tau_2}} \\
+  \hexptyp{\Gamma}{\Delta}{rs}{\trul{\tau_1}{\tau_2}}
 }{
-  \hexptyp{\Gamma}{\hrulesP{r}{rs}}{\trul{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\Delta}{\hrulesP{r}{rs}}{\trul{\tau_1}{\tau_2}}
 }
 \end{equation}
 \end{subequations}
@@ -205,9 +220,9 @@ p & ::= &
 \begin{equation}
 \inferrule[STExtend]{
   \hsubstyp{\theta}{\Gamma} \\
-  \hexptyp{\cdot}{e}{\tau}
+  \hexptyp{\cdot}{\Delta}{e}{\tau}
 }{
-  \hsubstyp{\theta , x / e}{\Gamma , e : \tau}
+  \hsubstyp{\theta , x / e}{\Gamma , x : \tau}
 }
 \end{equation}
 \end{subequations}
@@ -272,6 +287,46 @@ p & ::= &
 \begin{equation}
 \inferrule[MMHole]{ }{
   \hmaymatch{e}{\hhole{p}{w}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMExpEHolePair]{ }{
+  \hmaymatch{\hehole{u}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMExpEHoleTriv]{ }{
+  \hmaymatch{\hehole{u}}{\htriv}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMExpEHoleInL]{ }{
+  \hmaymatch{\hehole{u}}{\hinlp{p}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMExpEHoleInR]{ }{
+  \hmaymatch{\hehole{u}}{\hinrp{p}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMExpHolePair]{ }{
+  \hmaymatch{\hhole{e}{u}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMExpHoleTriv]{ }{
+  \hmaymatch{\hhole{e}{u}}{\htriv}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMExpHoleInL]{ }{
+  \hmaymatch{\hhole{e}{u}}{\hinlp{p}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMExpHoleInR]{ }{
+  \hmaymatch{\hhole{e}{u}}{\hinrp{p}}
 }
 \end{equation}
 \begin{equation}
@@ -402,6 +457,18 @@ p & ::= &
 \begin{figure}[t]
 \fbox{$\isIndet{e}$}~~\text{$e$ is indeterminate}
 \begin{subequations}
+\begin{equation}
+\inferrule[IEHole]{ }{
+  \isIndet{\hehole{u}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[IHole]{
+  \isFinal{e}
+}{
+  \isIndet{\hhole{e}{u}}
+}
+\end{equation}
 \begin{equation}
 \inferrule[IAp1]{
   \isIndet{e_1}
@@ -543,6 +610,13 @@ p & ::= &
 \fbox{$e \mapsto e'$}~~\text{$e$ takes an instruction transition to $e'$}
 \begin{subequations}
 \begin{equation}
+\inferrule[ITHole]{
+  \htrans{e}{e'}
+}{
+  \htrans{\hhole{e}{u}}{\hhole{e'}{u}}
+}
+\end{equation}
+\begin{equation}
 \inferrule[ITAp1]{
   \htrans{e_1}{e_1'}
 }{
@@ -631,42 +705,41 @@ p & ::= &
 
 \begin{thm}[Preservation]
   \label{thrm:preservation}
-  If $\hexptyp{\cdot}{e}{\tau}$ and $\htrans{e}{e'}$
-  then $\hexptyp{\cdot}{e'}{\tau}$
+  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\htrans{e}{e'}$
+  then $\hexptyp{\cdot}{\Delta}{e'}{\tau}$
 \end{thm}
 
 \begin{lem}[Substitution]
   \label{lemma:substitution}
-  If $\hexptyp{\Gamma, x : \tau}{e_0}{\tau_0}$ and $\hexptyp{\Gamma}{e}{\tau}$
-  then $\hexptyp{\Gamma}{[e/x]e_0}{\tau_0}$
+  If $\hexptyp{\Gamma, x : \tau}{\Delta}{e_0}{\tau_0}$ and $\hexptyp{\Gamma}{\Delta}{e}{\tau}$
+  then $\hexptyp{\Gamma}{\Delta}{[e/x]e_0}{\tau_0}$
 \end{lem}
 
 \begin{lem}[Simultaneous Substitution]
   \label{lemma:simult-substitution}
-  If $\hexptyp{\Gamma \uplus \Gamma'}{e}{\tau}$ and $\hsubstyp{\theta}{\Gamma'}$
-  then $\hexptyp{\Gamma}{[\theta]e}{\tau}$
+  If $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau}$ and $\hsubstyp{\theta}{\Gamma'}$
+  then $\hexptyp{\Gamma}{\Delta}{[\theta]e}{\tau}$
 \end{lem}
-Proof by induction on the derivation of $\hexptyp{\Gamma \uplus \Gamma'}{e}{\tau}$.
+Proof by induction on the derivation of $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau}$.
 
 \begin{lem}[Substitution Typing]
   \label{lemma:subs-typing}
-  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}$
+  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Sigma}$
   then $\hsubstyp{\theta}{\Gamma}$
 \end{lem}
 Proof by induction on the derivation of $\hpatmatch{e}{p}{\theta}$.
 
 To apply this lemma in ITSuccMatch case, first apply inversion lemma on premise of preservation theorem,
-\emph{i.e.}, $\hexptyp{\cdot}{\hpatmatch{e}{p}{\theta}}{\trul{\tau_1}{\tau_2}}$
 
 \begin{thm}[Progress]
   \label{thrm:progrs}
-  If $\hexptyp{\cdot}{e}{\tau}$
+  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$
   then $\isVal{e}$ or $\isErr{e}$ or $\isIndet{e}$ or $\htrans{e}{e'}$ for some $e'$
 \end{thm}
 
 \begin{lem}[Matching Progress]
   \label{lemma:match-progress}
-  If $\hexptyp{\cdot}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}$
+  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Sigma}$
   then $\hnotmatch{e}{p}$ or $\hmaymatch{e}{p}$ or $\hpatmatch{e}{p}{\theta}$ for some $\theta$
 \end{lem}
 Proof by induction on two premises.
@@ -678,7 +751,7 @@ Proof by induction on two premises.
 
 \begin{thm}[Determinism]
   \label{thrm:determinism}
-  If $\hexptyp{\cdot}{e}{\tau}$ then exactly one of the following holds
+  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then exactly one of the following holds
   \begin{enumerate}
     \item $\isVal{e}$
     \item $\isErr{e}$
@@ -689,7 +762,7 @@ Proof by induction on two premises.
 
 \begin{lem}[Matching Determinism]
   \label{lemma:match-determinism}
-  If $\hexptyp{\cdot}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}$ then exactly one of the following holds
+  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Sigma}$ then exactly one of the following holds
   \begin{enumerate}
     \item $\hpatmatch{e}{p}{\theta}$ for some $\theta$
     \item $\hmaymatch{e}{p}$
