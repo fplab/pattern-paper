@@ -45,9 +45,14 @@ p & ::= &
   \fbox{$\hexptyp{\Gamma}{\Delta}{e}{\tau}$}~~\text{$e$ is of type $\tau$}
 \begin{subequations}
 \begin{equation}
-  \inferrule[TVar]{ }{
-    \hexptyp{\Gamma, x : \tau}{\Delta}{x}{\tau}
-  }
+\inferrule[TVar]{ }{
+  \hexptyp{\Gamma, x : \tau}{\Delta}{x}{\tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[TNum]{ }{
+  \hexptyp{\Gamma}{\Delta}{\hnum{n}}{\tnum}
+}
 \end{equation}
 \begin{equation}
 \inferrule[TLam]{
@@ -195,7 +200,7 @@ p & ::= &
 \end{equation}
 \begin{equation}
 \inferrule[PTEHole]{ }{
-  \hpattyp{\hehole{w}}{\tau}{\cdot}{u :: \tau}
+  \hpattyp{\hehole{w}}{\tau}{\cdot}{w :: \tau}
 }
 \end{equation}
 \begin{equation}
@@ -290,43 +295,17 @@ p & ::= &
 }
 \end{equation}
 \begin{equation}
-\inferrule[MMExpEHolePair]{ }{
-  \hmaymatch{\hehole{u}}{\hpair{p_1}{p_2}}
+\inferrule[MMExpEHole]{
+  p \neq x, \_
+}{
+  \hmaymatch{\hehole{u}}{p}
 }
 \end{equation}
 \begin{equation}
-\inferrule[MMExpEHoleTriv]{ }{
-  \hmaymatch{\hehole{u}}{\htriv}
-}
-\end{equation}
-\begin{equation}
-\inferrule[MMExpEHoleInL]{ }{
-  \hmaymatch{\hehole{u}}{\hinlp{p}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[MMExpEHoleInR]{ }{
-  \hmaymatch{\hehole{u}}{\hinrp{p}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[MMExpHolePair]{ }{
-  \hmaymatch{\hhole{e}{u}}{\hpair{p_1}{p_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[MMExpHoleTriv]{ }{
-  \hmaymatch{\hhole{e}{u}}{\htriv}
-}
-\end{equation}
-\begin{equation}
-\inferrule[MMExpHoleInL]{ }{
-  \hmaymatch{\hhole{e}{u}}{\hinlp{p}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[MMExpHoleInR]{ }{
-  \hmaymatch{\hhole{e}{u}}{\hinrp{p}}
+\inferrule[MMExpHole]{
+  p \neq x, \_
+}{
+  \hmaymatch{\hhole{e}{u}}{p}
 }
 \end{equation}
 \begin{equation}
@@ -369,6 +348,7 @@ p & ::= &
 \end{equation}
 \end{subequations}
 \end{figure}
+
 \begin{figure}[t]
 \fbox{$\hnotmatch{e}{p}$}~~\text{$e$ doesn't match $p$}
 \begin{subequations}
