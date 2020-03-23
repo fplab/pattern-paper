@@ -749,3 +749,165 @@ Proof by induction on two premises.
     \item $\hnotmatch{e}{p}$
   \end{enumerate}
 \end{lem}
+
+\begin{figure}[t]
+\fbox{$\ctyp{\xi}{\tau}$}~~\text{Constraint $\xi$ constrains values of type $\tau$}
+\begin{subequations}
+\begin{equation}
+\inferrule[CTruth]{ }{
+  \ctyp{\ctruth}{\tau}
+}
+\end{equation}
+\begin{equation}
+  \inferrule[CTFalsity]{ }{
+  \ctyp{\cfalsity}{\tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTUnit]{ }{
+  \ctyp{\cunit}{\tunit}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTAnd]{
+  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
+}{
+  \ctyp{\cand{\xi_1}{\xi_2}}{\tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTOr]{
+  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
+}{
+  \ctyp{\cor{\xi_1}{\xi_2}}{\tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTInl]{
+  \ctyp{\xi_1}{\tau_1}
+}{
+  \ctyp{\cinl{\xi_1}}{\tsum{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTInr]{
+  \ctyp{\xi_2}{\tau_2}
+}{
+  \ctyp{\cinr{\xi_2}}{\tsum{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTPair]{
+  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
+}{
+  \ctyp{\cpair{\xi_1}{\xi_2}}{\tau}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{figure}
+\fbox{$\cdual{\xi_1} = \xi_2$}~~\text{The dual of a match constraint $\xi_1$ is $\xi_2$}
+\begin{subequations}
+\begin{align}
+  \cdual{\ctruth} &= \cfalsity \\
+  \cdual{\cunit} &= \cfalsity \\
+  \cdual{\cand{\xi_1}{\xi_2}} &= \cor{\cdual{\xi_1}}{\cdual{\xi_2}} \\
+  \cdual{\cor{\xi_1}{\xi_2}} &= \cand{\cdual{\xi_1}}{\cdual{\xi_2}} \\
+  \cdual{\cinl{\xi_1}} &= \cor{ \cinl{\cdual{\xi_1}} }{ \cinr{\ctruth} } \\
+  \cdual{\cinr{\xi_2}} &= \cor{ \cinr{\cdual{\xi_2}} }{ \cinl{\ctruth} } \\
+  \cdual{\cpair{\xi_1}{\xi_2}} &=
+  \cor{ \cor{ 
+    \cpair{\xi_1}{\cdual{\xi_2}}
+  }{
+    \cpair{\cdual{\xi_1}}{\xi_2}
+  }}{
+    \cpair{\cdual{\xi_1}}{\cdual{\xi_2}}
+  }
+\end{align}
+\end{subequations}
+\end{figure}
+
+\begin{figure}[t]
+\fbox{$\csatisfy{e}{\xi}$}~~\text{Value $e$ satisfies constraint $\xi$}
+\begin{subequations}
+\begin{equation}
+\inferrule[CSTruth]{ }{
+  \csatisfy{e}{\ctruth}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CSUnit]{ }{
+  \csatisfy{\htriv}{\cunit}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CSAnd]{
+  \csatisfy{e}{\xi_1} \\
+  \csatisfy{e}{\xi_2}
+}{
+  \csatisfy{e}{\cand{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CSOr1]{
+  \csatisfy{e}{\xi_1}
+}{
+  \csatisfy{e}{\cor{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CSOr2]{
+  \csatisfy{e}{\xi_2}
+}{
+  \csatisfy{e}{\cor{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CSInl]{
+  \csatisfy{e_1}{\xi_1}
+}{
+  \csatisfy{
+    \hinl{\tau_2}{e_1}
+  }{
+    \cinl{\xi_1}
+  }
+}
+\end{equation}
+\begin{equation}
+\inferrule[CSInr]{
+  \csatisfy{e_2}{\xi_2}
+}{
+  \csatisfy{
+    \hinr{\tau_1}{e_2}
+  }{
+    \cinr{\xi_2}
+  }
+}
+\end{equation}
+\begin{equation}
+\inferrule[CSPair]{
+  \csatisfy{e_1}{\xi_1} \\
+  \csatisfy{e_2}{\xi_2}
+}{
+\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{lem}[Constraint Duality]
+  \label{lemma:const-duality}
+  If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$
+  then $\csatisfy{e}{\cdual{\xi}}$ iff $\cnotsatisfy{e}{\xi}$
+\end{lem}
+
+\begin{defn}[Constraint Entailment]
+  \label{lemma:const-entailment}
+  $\csatisfy{\xi_1}{\xi_2}$ iff for all $e$, $\csatisfy{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$
+\end{defn}
+
+\begin{corol}[Constraint Material Entailment]
+  \label{lemma:const-material-entailment}
+  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{~}{\cor{\cdual{\xi_1}}{\xi_2}}$
+\end{corol}
