@@ -764,6 +764,11 @@ Proof by induction on two premises.
 }
 \end{equation}
 \begin{equation}
+\inferrule[CTNum]{ }{
+  \ctyp{\cnum{n}}{\tnum}
+}
+\end{equation}
+\begin{equation}
 \inferrule[CTUnit]{ }{
   \ctyp{\cunit}{\tunit}
 }
@@ -811,6 +816,7 @@ Proof by induction on two premises.
 \begin{subequations}
 \begin{align}
   \cdual{\ctruth} &= \cfalsity \\
+  \cdual{\cnum{n}} &= \bigvee_{i} \cnum{n_i} \quad \text{where $n_i \neq n$}\\
   \cdual{\cunit} &= \cfalsity \\
   \cdual{\cand{\xi_1}{\xi_2}} &= \cor{\cdual{\xi_1}}{\cdual{\xi_2}} \\
   \cdual{\cor{\xi_1}{\xi_2}} &= \cand{\cdual{\xi_1}}{\cdual{\xi_2}} \\
@@ -834,6 +840,11 @@ Proof by induction on two premises.
 \begin{equation}
 \inferrule[CSTruth]{ }{
   \csatisfy{e}{\ctruth}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CSNum]{ }{
+  \csatisfy{\hnum{n}}{\cnum{n}}
 }
 \end{equation}
 \begin{equation}
@@ -904,10 +915,119 @@ Proof by induction on two premises.
 
 \begin{defn}[Constraint Entailment]
   \label{lemma:const-entailment}
-  $\csatisfy{\xi_1}{\xi_2}$ iff for all $e$, $\csatisfy{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$
+  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ for all $e$
 \end{defn}
 
 \begin{corol}[Constraint Material Entailment]
   \label{lemma:const-material-entailment}
-  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{~}{\cor{\cdual{\xi_1}}{\xi_2}}$
+  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{\ctruth}{\cor{\cdual{\xi_1}}{\xi_2}}$
 \end{corol}
+
+\begin{figure}[t]
+\fbox{$\cpattyp{p}{\tau}{\xi}{\Gamma}$}~~\text{$p$ matches expression of type $\tau$, emits match constraint $\xi$ and generates context $\Gamma$}
+\begin{subequations}
+\begin{equation}
+\inferrule[CTPVar]{ }{
+  \cpattyp{x}{\tau}{\ctruth}{x : \tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTPNum]{ }{
+  \cpattyp{\hnum{n}}{\tnum}{\cnum{n}}{\cdot}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTPWild]{ }{
+  \cpattyp{\_}{\tau}{\ctruth}{\cdot}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTPTriv]{ }{
+  \cpattyp{\htriv}{\tunit}{\cunit}{\cdot}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTPInL]{
+  \cpattyp{p}{\tau_1}{\xi}{\Gamma}
+}{
+  \cpattyp{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\cinl{\xi}}{\Gamma}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTPInR]{
+  \cpattyp{p}{\tau_2}{\xi}{\Gamma}
+}{
+  \cpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\cinr{\xi}}{\Gamma}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTPPair]{
+  \cpattyp{p_1}{\tau_1}{\xi_1}{\Gamma_1} \\
+  \cpattyp{p_2}{\tau_2}{\xi_2}{\Gamma_2}
+}{
+  \cpattyp{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}
+  {\cpair{\xi_1}{\xi_2}}{\Gamma_1 \uplus \Gamma_2}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{figure}[t]
+\fbox{$\crultyp{\Gamma}{r}{\tau}{\xi}{\tau'}$}~~\text{$r$ transforms values of type $\tau$, constrained by $\xi$, to type $\tau'$}
+\begin{equation}
+\inferrule[CTRule]{
+  \cpattyp{p}{\tau}{\xi}{\Gamma'} \\
+  \hexptyp{\Gamma \uplus \Gamma'}{\cdot}{e}{\tau'}
+}{
+  \crultyp{\Gamma}{\hrul{p}{e}}{\tau}{\xi}{\tau'}
+}
+\end{equation}
+\end{figure}
+
+\begin{figure}[t]
+\fbox{$\crultyp{\Gamma}{rs}{\tau}{\xi}{\tau'}$}~~\text{all rules in $rs$ transform values of type $\tau$, constrained by $\xi$, to type $\tau'$}
+\begin{subequations}
+\begin{equation}
+\inferrule[CTZeroRule]{ }{
+  \crultyp{\Gamma}{\cdot}{\tau}{\cfalsity}{\tau'}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTRules]{
+  \crultyp{\Gamma}{r}{\tau}{\xi}{\tau'} \\
+  \crultyp{\Gamma}{rs}{\tau}{\xi'}{\tau'}
+}{
+  \crultyp{\Gamma}{\hrules{r}{rs}}{\tau}{\cor{\xi}{\xi'}}{\tau'}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{figure}[t]
+\fbox{$\hexptyp{\Gamma}{\Delta}{e}{\tau}$}~~\text{$e$ is of type $\tau$}
+\begin{subequations}
+\begin{equation}
+\inferrule[CTMatch]{
+  \hexptyp{\Gamma}{\cdot}{e}{\tau} \\
+  \crultyp{\Gamma}{rs}{\tau}{\xi}{\tau'} \\
+  \csatisfy{\ctruth}{\xi}
+}{
+  \hexptyp{\Gamma}{\cdot}{\hmatch{e}{rs}}{\tau'}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{lem}[Constraint Matching Coherence]
+  \label{lemma:const-matching-coherence}
+  Suppose that $\cpattyp{p}{\tau}{\xi}{\Gamma}$. For all $\hexptyp{\cdot}{\cdot}{e}{\tau}$ such that $\isVal{e}$ we have
+  \begin{enumerate}
+    \item $\csatisfy{e}{\xi}$ iff $\hpatmatch{e}{p}{\theta}$
+    \item $\csatisfy{e}{\cdual{\xi}}$ iff $\hnotmatch{e}{p}$
+  \end{enumerate}
+\end{lem}
+
+\begin{thm}[Exhaustive progress]
+ \label{thrm:exhau-progress}
+ If $\hexptyp{\cdot}{\cdot}{e}{\tau}$ then either $\isVal{e}$ or $\htrans{e}{e'}$ for some $e'$.
+\end{them}

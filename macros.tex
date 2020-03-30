@@ -18,8 +18,8 @@
 \newcommand{\trulnp}[2]{#1 \Rightarrow #2}
 \newcommand{\tnum}{\mathtt{num}}
 \newcommand{\tehole}{\llparenthesiscolor\rrparenthesiscolor}
-\newcommand{\tsum}[2]{\inparens{{#1} + {#2}}}
-\newcommand{\tprod}[2]{\inparens{{#1} \times {#2}}}
+\newcommand{\tsum}[2]{\inparens{#1 + #2}}
+\newcommand{\tprod}[2]{\inparens{#1 \times #2}}
 \newcommand{\tunit}{\mathtt{1}}
 \newcommand{\tvoid}{\mathtt{0}}
 
@@ -33,7 +33,7 @@
 \newcommand{\hapP}[2]{(#1)~(#2)} % Extra paren around function term
 \newcommand{\hnum}[1]{\underline{#1}}
 \newcommand{\hadd}[2]{\inparens{#1 + #2}}
-\newcommand{\hpair}[2]{\inparens{#1 , #2}}
+\newcommand{\hpair}[2]{(#1 , #2)}
 \newcommand{\htriv}{()}
 \newcommand{\hehole}[1]{\llparenthesiscolor\rrparenthesiscolor^{#1}}
 \newcommand{\hhole}[2]{\llparenthesiscolor#1\rrparenthesiscolor^{#2}}
@@ -89,14 +89,18 @@
 \newcommand{\cdual}[1]{\overline{#1}}
 \newcommand{\ctruth}{\top}
 \newcommand{\cfalsity}{\bot}
-\newcommand{\cunit}{\langle \rangle}
+\newcommand{\cnum}[1]{\underline{#1}}
+\newcommand{\cunit}{()}
 \newcommand{\cor}[2]{#1 \vee #2}
 \newcommand{\cand}[2]{#1 \wedge #2}
 \newcommand{\cinl}[1]{\mathtt{inl}(#1)}
 \newcommand{\cinr}[1]{\mathtt{inr}(#1)}
-\newcommand{\cpair}[2]{\langle #1 , #2 \rangle}
+\newcommand{\cpair}[2]{(#1 , #2)}
 \newcommand{\csatisfy}[2]{#1 \models #2}
 \newcommand{\cnotsatisfy}[2]{#1 \not\models #2}
+
+\newcommand{\cpattyp}[4]{#1 : #2 [#3] \dashV #4}
+\newcommand{\crultyp}[5]{#1 \vdash #2 : #3 [#4] \Rightarrow #5}
 
 % Direction
 \newcommand{\dParent}{\mathtt{parent}}
