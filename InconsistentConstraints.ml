@@ -128,7 +128,28 @@ let rec is_inconsistent (xis : Constraint.t list) : bool =
       | Some (ns, []) -> is_inconsistent_nums ns
       | Some (ns, other) -> is_inconsistent (other @ ns)
     )
-    | Pair (xi_1, xi_2) -> raise UnImplemented
+    | Pair (xi_1, xi_2) -> (
+      match
+        List.partition
+        (function Constraint.Pair _ -> true | _ -> false)
+        xis
+      with
+      | (pairs, []) ->
+        let (xis_l, xis_r) =
+          List.fold_left
+          (fun (xis_l, xis_r) pair ->
+            let (xi_l, xi_r) =
+              match pair with
+              | Constraint.Pair (xi_l, xi_r) -> (xi_l, xi_r)
+              | _ -> assert false
+            in (xi_l::xis_l, xi_r::xis_r)
+          )
+          ([], [])
+          pairs
+        in (is_inconsistent xis_l) || (is_inconsistent xis_r)
+      | (pairs, other) ->
+        is_inconsistent (other @ pairs)
+    )
   )
 
 let is_redundant (xi' : Constraint.t) (xi : Constraint.t) : bool =
@@ -144,9 +165,7 @@ let is_inconsistent_tests : (Constraint.t list * bool) list = [
   ( [Or (Falsity, Truth)], false ) ;
   ( [Num 1; NotNum 2; NotNum 3], false ) ;
   ( [Or (Num 1, Num 3); And (NotNum 1, NotNum 3)], true ) ;
-  (*
   ( [Pair (Inr Falsity, Truth)], true) ;
-  *)
 ]
 
 let run_tests =
