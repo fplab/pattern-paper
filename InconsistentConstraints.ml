@@ -2,14 +2,35 @@ exception UnImplemented
 module Constraint = struct
   type t =
     | Truth | Falsity
+    | Num of int
+    | NotNum of int
+    | Unit
     | And of t * t | Or of t * t
     | Inl of t | Inr of t
     | Pair of t * t
-    | Num of int
-    | NotNum of int
+
+let rec dual =
+  function
+  | Truth -> Falsity
+  | Falsity -> Truth
+  | Num n -> NotNum n
+  | NotNum n -> Num n
+  | Unit -> Falsity
+  | And (xi_1, xi_2) -> Or (dual xi_1, dual xi_2)
+  | Or (xi_1, xi_2) -> And (dual xi_1, dual xi_2)
+  | Inl xi -> Or (Inl (dual xi), Inr Truth)
+  | Inr xi -> Or (Inr (dual xi), Inl Truth)
+  | Pair (xi_1, xi_2) ->
+      Or (
+        Pair (xi_1, dual xi_2),
+        Or (
+          Pair (dual xi_1, xi_2),
+          Pair (dual xi_1, dual xi_2)
+        )
+      )
 end
 
-module IntSet = Set.Make(struct type t = int let compare = compare end)
+module NumSet = Set.Make(struct type t = int let compare = compare end)
 
 let partition2 (pred1 : 'a -> bool) (pred2 : 'a -> bool) (cs : 'a list) : ('a list * 'a list) option =
   let f (acc : ('a list * 'a list) option) (c : 'a) =
@@ -25,43 +46,29 @@ let partition2 (pred1 : 'a -> bool) (pred2 : 'a -> bool) (cs : 'a list) : ('a li
   List.fold_left f (Some ([], [])) cs
 
 let is_inconsistent_nums (cs : Constraint.t list) : bool =
-  let (nums, not_nums) =
+  let (num_set, not_num_list) =
     List.fold_left 
-      (fun (ns, not_ns) (c : Constraint.t) ->
+      (fun (num_set, not_num_list) (c : Constraint.t) ->
         match c with
-        | Num n -> (n::ns, not_ns)
-        | NotNum n -> (ns, n::not_ns)
+        | Num n -> (NumSet.add n num_set, not_num_list)
+        | NotNum n -> (num_set, n::not_num_list)
         | _ -> assert false
       )
-      ([], [])
+      (NumSet.empty, [])
       cs
   in
-  let (incon, num_set) =
-    List.fold_left
-      (fun (incon, num_set) n ->
-        if incon then
-          (incon, num_set)
-        else
-          if IntSet.mem n num_set then
-            (true, num_set)
-          else
-            (false, IntSet.add n num_set)
-      )
-      (false, IntSet.empty)
-      nums
-  in
-  if incon then
-    incon
+  if NumSet.cardinal num_set > 1 then
+    true
   else
     List.fold_left
       (fun incon n ->
         if incon then
           incon
         else
-          IntSet.mem n num_set
+          NumSet.mem n num_set
       )
       false
-      not_nums
+      not_num_list
 
 let rec is_inconsistent (cs : Constraint.t list) : bool =
   match cs with
@@ -122,6 +129,12 @@ let rec is_inconsistent (cs : Constraint.t list) : bool =
     )
     | Pair (c1, c2) -> raise UnImplemented
   )
+
+let is_redundant (xi' : Constraint.t) (xi : Constraint.t) : bool =
+  is_inconsistent [Or (Constraint.dual xi', xi)]
+
+let is_exhaustive (xi : Constraint.t) : bool =
+  is_inconsistent [Constraint.dual xi]
 
 let is_inconsistent_tests : (Constraint.t list * bool) list = [
   ( [Truth; Inl Truth; Inr Truth], true ) ;
