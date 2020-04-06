@@ -31,8 +31,8 @@ let rec is_inconsistent (cs : Constraint.t list) : bool =
     | Inl _ -> (
       match
         partition2
-        (function Constraint.Inl c -> true | _ -> false)
-        (function Constraint.Inr c -> true | _ -> false)
+        (function Constraint.Inl _ -> true | _ -> false)
+        (function Constraint.Inr _ -> true | _ -> false)
         cs
       with
       | None -> false
@@ -41,11 +41,11 @@ let rec is_inconsistent (cs : Constraint.t list) : bool =
       )
       | Some (inls, other) -> is_inconsistent (other @ inls)
     )
-    | Inr c' -> (
+    | Inr _ -> (
       match
         partition2
-        (function Constraint.Inr c -> true | _ -> false)
-        (function Constraint.Inl c -> true | _ -> false)
+        (function Constraint.Inr _ -> true | _ -> false)
+        (function Constraint.Inl _ -> true | _ -> false)
         cs
       with
       | None -> false
