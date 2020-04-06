@@ -90,6 +90,7 @@
 \newcommand{\ctruth}{\top}
 \newcommand{\cfalsity}{\bot}
 \newcommand{\cnum}[1]{\underline{#1}}
+\newcommand{\cnotnum}[1]{\underline{\cancel{#1}}}
 \newcommand{\cunit}{()}
 \newcommand{\cor}[2]{#1 \vee #2}
 \newcommand{\cand}[2]{#1 \wedge #2}
@@ -98,9 +99,11 @@
 \newcommand{\cpair}[2]{(#1 , #2)}
 \newcommand{\csatisfy}[2]{#1 \models #2}
 \newcommand{\cnotsatisfy}[2]{#1 \not\models #2}
+\newcommand{\cincon}[1]{#1 ~\mathtt{incon}}
 
 \newcommand{\cpattyp}[4]{#1 : #2 [#3] \dashV #4}
 \newcommand{\crultyp}[5]{#1 \vdash #2 : #3 [#4] \Rightarrow #5}
+\newcommand{\crulstyp}[6]{#1 \vdash [#2] #3 : #4 [#5] \Rightarrow #6}
 
 % Direction
 \newcommand{\dParent}{\mathtt{parent}}

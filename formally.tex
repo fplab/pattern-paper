@@ -751,6 +751,22 @@ Proof by induction on two premises.
 \end{lem}
 
 \begin{figure}[t]
+$\arraycolsep=4pt\begin{array}{lll}
+\xi & ::= &
+  \ctruth ~\vert~
+  \cfalsity ~\vert~
+  \cunit ~\vert~
+  \cnum{n} ~\vert~
+  \cnotnum{n} ~\vert~
+  \cand{\xi_1}{\xi_2} ~\vert~
+  \cor{\xi_1}{\xi_2} ~\vert~
+  \cinl{\xi} ~\vert~
+  \cinr{\xi} ~\vert~
+  \cpair{\xi_1}{\xi_2}
+\end{array}$
+\end{figure}
+
+\begin{figure}[t]
 \fbox{$\ctyp{\xi}{\tau}$}~~\text{Constraint $\xi$ constrains values of type $\tau$}
 \begin{subequations}
 \begin{equation}
@@ -766,6 +782,11 @@ Proof by induction on two premises.
 \begin{equation}
 \inferrule[CTNum]{ }{
   \ctyp{\cnum{n}}{\tnum}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTNotNum]{ }{
+  \ctyp{\cnotnum{n}}{\tnum}
 }
 \end{equation}
 \begin{equation}
@@ -816,7 +837,8 @@ Proof by induction on two premises.
 \begin{subequations}
 \begin{align}
   \cdual{\ctruth} &= \cfalsity \\
-  \cdual{\cnum{n}} &= \bigvee_{i} \cnum{n_i} \quad \text{where $n_i \neq n$}\\
+  \cdual{\cnum{n}} &= \cnotnum{n} \\
+  \cdual{\cnotnum{n}} &= \cnum{n} \\
   \cdual{\cunit} &= \cfalsity \\
   \cdual{\cand{\xi_1}{\xi_2}} &= \cor{\cdual{\xi_1}}{\cdual{\xi_2}} \\
   \cdual{\cor{\xi_1}{\xi_2}} &= \cand{\cdual{\xi_1}}{\cdual{\xi_2}} \\
@@ -845,6 +867,13 @@ Proof by induction on two premises.
 \begin{equation}
 \inferrule[CSNum]{ }{
   \csatisfy{\hnum{n}}{\cnum{n}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CSNotNum]{
+  n_1 \neq n_2
+}{
+  \csatisfy{\hnum{n_1}}{\cnotnum{n_2}}
 }
 \end{equation}
 \begin{equation}
@@ -989,15 +1018,18 @@ Proof by induction on two premises.
 \begin{subequations}
 \begin{equation}
 \inferrule[CTZeroRule]{ }{
-  \crultyp{\Gamma}{\cdot}{\tau}{\cfalsity}{\tau'}
+  \crulstyp{\Gamma}{\xi}{\cdot}{\tau}{\cfalsity}{\tau'}
 }
 \end{equation}
 \begin{equation}
 \inferrule[CTRules]{
   \crultyp{\Gamma}{r}{\tau}{\xi}{\tau'} \\
-  \crultyp{\Gamma}{rs}{\tau}{\xi'}{\tau'}
+  \crulstyp{\Gamma}{\cor{\xi}{\xi'}}{rs}
+  {\tau}{\xi''}{\tau'} \\
+  \cnotsatisfy{\xi'}{\xi}
 }{
-  \crultyp{\Gamma}{\hrules{r}{rs}}{\tau}{\cor{\xi}{\xi'}}{\tau'}
+  \crulstyp{\Gamma}{\xi}{\hrules{r}{rs}}
+  {\tau}{\cor{\xi'}{\xi''}}{\tau'}
 }
 \end{equation}
 \end{subequations}
@@ -1009,7 +1041,7 @@ Proof by induction on two premises.
 \begin{equation}
 \inferrule[CTMatch]{
   \hexptyp{\Gamma}{\cdot}{e}{\tau} \\
-  \crultyp{\Gamma}{rs}{\tau}{\xi}{\tau'} \\
+  \crulstyp{\Gamma}{\cfalsity}{rs}{\tau}{\xi}{\tau'} \\
   \csatisfy{\ctruth}{\xi}
 }{
   \hexptyp{\Gamma}{\cdot}{\hmatch{e}{rs}}{\tau'}
@@ -1031,3 +1063,90 @@ Proof by induction on two premises.
  \label{thrm:exhau-progress}
  If $\hexptyp{\cdot}{\cdot}{e}{\tau}$ then either $\isVal{e}$ or $\htrans{e}{e'}$ for some $e'$.
 \end{thm}
+
+\begin{figure}[t]
+  \fbox{$\cincon{\Xi}$}~~\text{A finite set $\Xi$ of constraints is inconsistent}
+\begin{subequations}
+\begin{equation}
+\inferrule[CINCTruth]{
+  \cincon{\Xi}
+}{
+  \cincon{\Xi, \ctruth}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCFalsity]{ }{
+  \cincon{\Xi, \cfalsity}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCNum]{
+  n_1 \neq n_2
+}{
+  \cincon{\Xi, \cnum{n_1}, \cnum{n_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCNotNum]{ }{
+  \cincon{\Xi, \cnum{n}, \cnotnum{n}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCAnd]{
+  \cincon{\Xi, \xi_1, \xi_2}
+}{
+  \cincon{\Xi, \cand{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCOr]{
+  \cincon{\Xi, \xi_1} \\
+  \cincon{\Xi, \xi_2}
+}{
+  \cincon{\Xi, \cor{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCInj]{ }{
+  \cincon{\Xi, \cinl{\xi_1}, \cinr{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCInl]{
+  \cincon{\Xi}
+}{
+  \cincon{\cinl{\Xi}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCInr]{
+  \cincon{\Xi}
+}{
+  \cincon{\cinr{\Xi}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCPair1]{
+  \cincon{\Xi_1}
+}{
+  \cincon{\cpair{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCPair2]{
+  \cincon{\Xi_2}
+}{
+  \cincon{\cpair{\xi_1}{\xi_2}}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{lem}
+  \label{lemma:inconsistency-decidability}
+  It is decidable whether $\cincon{\Xi}$
+\end{lem}
+\begin{lem}
+  \label{lemma:inconsistent-constraint}
+  $\cincon{\Xi}$ iff $\cnotsatisfy{\ctruth}{\Xi}$
+\end{lem}
