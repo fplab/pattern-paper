@@ -158,6 +158,27 @@ let is_redundant (xi' : Constraint.t) (xi : Constraint.t) : bool =
 let is_exhaustive (xi : Constraint.t) : bool =
   is_inconsistent [Constraint.dual xi]
 
+let rec rules_is_typechecked
+  (xi_pre : Constraint.t) (rules : (unit -> Constraint.t) list)
+  : Constraint.t option =
+    match rules with
+    | [] -> Some Falsity
+    | r::rs ->
+        let xi_r = r () in
+        if is_redundant xi_r xi_pre then
+          None
+        else 
+          (match rules_is_typechecked (Or (xi_pre, xi_r)) rs with
+          | None -> None
+          | Some xi_post -> Some (Or (xi_r, xi_post))
+          )
+
+let match_is_typechecked (xi_list : Constraint.t list) : bool =
+  let rules = List.map (fun xi -> fun () -> xi) xi_list in
+  match rules_is_typechecked Falsity rules with
+  | None -> false
+  | Some xi -> is_exhaustive xi
+
 let is_inconsistent_tests : (Constraint.t list * bool) list = [
   ( [Truth; Inl Truth; Inr Truth], true ) ;
   ( [Truth; Falsity], true ) ;
