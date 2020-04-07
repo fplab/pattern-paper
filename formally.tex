@@ -837,6 +837,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{subequations}
 \begin{align}
   \cdual{\ctruth} &= \cfalsity \\
+  \cdual{\cfalsity} &= \ctruth \\
   \cdual{\cnum{n}} &= \cnotnum{n} \\
   \cdual{\cnotnum{n}} &= \cnum{n} \\
   \cdual{\cunit} &= \cfalsity \\
@@ -1014,7 +1015,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{figure}
 
 \begin{figure}[t]
-\fbox{$\crultyp{\Gamma}{rs}{\tau}{\xi}{\tau'}$}~~\text{all rules in $rs$ transform values of type $\tau$, constrained by $\xi$, to type $\tau'$}
+\fbox{$\crulstyp{\Gamma}{\xi}{rs}{\tau}{\xi'}{\tau'}$}~~\text{all rules in $rs$ transform values of type $\tau$, constrained by $\xi$, to type $\tau'$}
 \begin{subequations}
 \begin{equation}
 \inferrule[CTZeroRule]{ }{
@@ -1023,7 +1024,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{equation}
 \begin{equation}
 \inferrule[CTRules]{
-  \crultyp{\Gamma}{r}{\tau}{\xi}{\tau'} \\
+  \crultyp{\Gamma}{r}{\tau}{\xi'}{\tau'} \\
   \crulstyp{\Gamma}{\cor{\xi}{\xi'}}{rs}
   {\tau}{\xi''}{\tau'} \\
   \cnotsatisfy{\xi'}{\xi}
@@ -1080,6 +1081,13 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
+\inferrule[CINCUnit]{
+  \cincon{\Xi}
+}{
+  \cincon{\Xi, \cunit}
+}
+\end{equation}
+\begin{equation}
 \inferrule[CINCNum]{
   n_1 \neq n_2
 }{
@@ -1129,24 +1137,32 @@ $\arraycolsep=4pt\begin{array}{lll}
 \inferrule[CINCPair1]{
   \cincon{\Xi_1}
 }{
-  \cincon{\cpair{\xi_1}{\xi_2}}
+  \cincon{\cpair{\Xi_1}{\Xi_2}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[CINCPair2]{
   \cincon{\Xi_2}
 }{
-  \cincon{\cpair{\xi_1}{\xi_2}}
+  \cincon{\cpair{\Xi_1}{\Xi_2}}
 }
 \end{equation}
 \end{subequations}
 \end{figure}
 
-\begin{lem}
+\begin{lem}[Inconsistency Decidability]
   \label{lemma:inconsistency-decidability}
   It is decidable whether $\cincon{\Xi}$
 \end{lem}
-\begin{lem}
+\begin{lem}[Entailment of inconsistent constraint]
   \label{lemma:inconsistent-constraint}
   $\cincon{\Xi}$ iff $\cnotsatisfy{\ctruth}{\Xi}$
+\end{lem}
+\begin{lem}[Redundancy Decidability]
+  \label{lemma:redundancy-decidability}
+  It is decidable whether $\csatisfy{\xi_1}{\xi_2}$, i.e., $\xi_1$ is redundant with respect to $\xi_2$
+\end{lem}
+\begin{lem}[Exhaustiveness Decidability]
+  \label{lemma:exhaustiveness-decidability}
+  It is decidable whether $\csatisfy{\ctruth}{\xi}$, i.e., $\xi$ is exhaustive
 \end{lem}
