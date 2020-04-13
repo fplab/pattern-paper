@@ -153,7 +153,7 @@ let rec is_inconsistent (xis : Constraint.t list) : bool =
     )
 
 let is_redundant (xi' : Constraint.t) (xi : Constraint.t) : bool =
-  is_inconsistent [Or (Constraint.dual xi', xi)]
+  is_inconsistent [And (xi', Constraint.dual xi)]
 
 let is_exhaustive (xi : Constraint.t) : bool =
   is_inconsistent [Constraint.dual xi]
