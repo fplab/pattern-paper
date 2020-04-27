@@ -12,7 +12,7 @@ bib:
 	pdflatex $(MAIN)
 
 prog:
-	ocamlopt -o $(PROG) $(PROG).ml
+	ocamlopt -g -o $(PROG) $(PROG).ml
 
 clean: 
 	rm -f *.aux *.log *.out $(MAIN).bbl main.blg main.pdf

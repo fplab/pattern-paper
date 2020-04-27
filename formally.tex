@@ -124,10 +124,10 @@ p & ::= &
 \begin{subequations}
 \begin{equation}
 \inferrule[TRule]{
-  \hpattyp{p}{\tau_1}{\Gamma'}{\Sigma} \\
+  \hpattyp{p}{\tau_1}{\Gamma'}{\Delta} \\
   \hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau_2}
 }{
-  \hexptyp{\Gamma}{\Delta \uplus \Sigma}{\hrulP{p}{e}}{\trul{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\Delta \uplus \Delta}{\hrulP{p}{e}}{\trul{\tau_1}{\tau_2}}
 }
 \end{equation}
 \end{subequations}
@@ -153,7 +153,7 @@ p & ::= &
 \end{figure}
 
 \begin{figure}[t]
-\fbox{$\hpattyp{p}{\tau}{\Gamma}{\Sigma}$}~~\text{$p$ matches expression of type $\tau$ and generates context $\Gamma$ and hole context $\Sigma$}
+\fbox{$\hpattyp{p}{\tau}{\Gamma}{\Delta}$}~~\text{$p$ matches expression of type $\tau$ and generates context $\Gamma$ and hole context $\Delta$}
 \begin{subequations}
 \begin{equation}
 \inferrule[PTVar]{ }{
@@ -172,11 +172,11 @@ p & ::= &
 \end{equation}
 \begin{equation}
 \inferrule[PTPair]{
-  \hpattyp{p_1}{\tau_1}{\Gamma_1}{\Sigma_1} \\
-  \hpattyp{p_2}{\tau_2}{\Gamma_2}{\Sigma_2}
+  \hpattyp{p_1}{\tau_1}{\Gamma_1}{\Delta_1} \\
+  \hpattyp{p_2}{\tau_2}{\Gamma_2}{\Delta_2}
 }{
   \hpattyp{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}
-    {\Gamma_1 \uplus \Gamma_2}{\Sigma_1 \uplus \Sigma_2}
+    {\Gamma_1 \uplus \Gamma_2}{\Delta_1 \uplus \Delta_2}
 }
 \end{equation}
 \begin{equation}
@@ -186,16 +186,16 @@ p & ::= &
 \end{equation}
 \begin{equation}
 \inferrule[PTInL]{
-  \hpattyp{p}{\tau_1}{\Gamma}{\Sigma}
+  \hpattyp{p}{\tau_1}{\Gamma}{\Delta}
 }{
-  \hpattyp{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}{\Sigma}
+  \hpattyp{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}{\Delta}
 }
 \end{equation}
 \begin{equation}
 \inferrule[PTInR]{
-  \hpattyp{p}{\tau_2}{\Gamma}{\Sigma}
+  \hpattyp{p}{\tau_2}{\Gamma}{\Delta}
 }{
-  \hpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}{\Sigma}
+  \hpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}{\Delta}
 }
 \end{equation}
 \begin{equation}
@@ -205,10 +205,10 @@ p & ::= &
 \end{equation}
 \begin{equation}
 \inferrule[PTHole]{
-  \hpattyp{p}{\tau'}{\Gamma}{\Sigma}
+  \hpattyp{p}{\tau'}{\Gamma}{\Delta}
 }{
   \hpattyp{\hhole{p}{w}}{\tau}
-  {\Gamma}{\Sigma , w :: \tau}
+  {\Gamma}{\Delta , w :: \tau}
 }
 \end{equation}
 \end{subequations}
@@ -704,7 +704,7 @@ Proof by induction on the derivation of $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}
 
 \begin{lem}[Substitution Typing]
   \label{lemma:subs-typing}
-  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Sigma}$
+  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$
   then $\hsubstyp{\theta}{\Gamma}$
 \end{lem}
 Proof by induction on the derivation of $\hpatmatch{e}{p}{\theta}$.
@@ -719,7 +719,7 @@ To apply this lemma in ITSuccMatch case, first apply inversion lemma on premise 
 
 \begin{lem}[Matching Progress]
   \label{lemma:match-progress}
-  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Sigma}$
+  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$
   then $\hnotmatch{e}{p}$ or $\hmaymatch{e}{p}$ or $\hpatmatch{e}{p}{\theta}$ for some $\theta$
 \end{lem}
 Proof by induction on two premises.
@@ -742,7 +742,7 @@ Proof by induction on two premises.
 
 \begin{lem}[Matching Determinism]
   \label{lemma:match-determinism}
-  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Sigma}$ then exactly one of the following holds
+  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$ then exactly one of the following holds
   \begin{enumerate}
     \item $\hpatmatch{e}{p}{\theta}$ for some $\theta$
     \item $\hmaymatch{e}{p}$
@@ -755,6 +755,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \xi & ::= &
   \ctruth ~\vert~
   \cfalsity ~\vert~
+  \cunknown ~\vert~
   \cunit ~\vert~
   \cnum{n} ~\vert~
   \cnotnum{n} ~\vert~
@@ -777,6 +778,11 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{equation}
   \inferrule[CTFalsity]{ }{
   \ctyp{\cfalsity}{\tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTUnknown]{ }{
+  \ctyp{\cunknown}{\tau}
 }
 \end{equation}
 \begin{equation}
@@ -838,6 +844,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{align}
   \cdual{\ctruth} &= \cfalsity \\
   \cdual{\cfalsity} &= \ctruth \\
+  \cdual{\cunknown} &= \cunknown \\
   \cdual{\cnum{n}} &= \cnotnum{n} \\
   \cdual{\cnotnum{n}} &= \cnum{n} \\
   \cdual{\cunit} &= \cfalsity \\
@@ -937,6 +944,102 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{subequations}
 \end{figure}
 
+\begin{figure}[t]
+\fbox{$\cmaysatisfy{e}{\xi}$}~~\text{Value $e$ possibly satisfies constraint $\xi$}
+\begin{subequations}
+\begin{equation}
+\inferrule[CPSUnknown]{ }{
+  \cmaysatisfy{e}{\cunknown}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CPSAnd1]{
+  \cmaysatisfy{e}{\xi_1} \\
+  \csatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CPSAnd2]{
+  \csatisfy{e}{\xi_1} \\
+  \cmaysatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CPSAnd3]{
+  \cmaysatisfy{e}{\xi_1} \\
+  \cmaysatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CPSOr1]{
+  \cmaysatisfy{e}{\xi_1} \\
+  \cnotsatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CPSOr2]{
+  \cnotsatisfy{e}{\xi_1} \\
+  \cmaysatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CPSInl]{
+  \cmaysatisfy{e_1}{\xi_1}
+}{
+  \cmaysatisfy{
+    \hinl{\tau_2}{e_1}
+  }{
+    \cinl{\xi_1}
+  }
+}
+\end{equation}
+\begin{equation}
+\inferrule[CPSInr]{
+  \cmaysatisfy{e_2}{\xi_2}
+}{
+  \cmaysatisfy{
+    \hinr{\tau_1}{e_2}
+  }{
+    \cinr{\xi_2}
+  }
+}
+\end{equation}
+\begin{equation}
+\inferrule[CSPair1]{
+  \cmaysatisfy{e_1}{\xi_1} \\
+  \csatisfy{e_2}{\xi_2}
+}{
+  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CSPair2]{
+  \csatisfy{e_1}{\xi_1} \\
+  \cmaysatisfy{e_2}{\xi_2}
+}{
+  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CSPair3]{
+  \cmaysatisfy{e_1}{\xi_1} \\
+  \cmaysatisfy{e_2}{\xi_2}
+}{
+  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
 \begin{lem}[Constraint Duality]
   \label{lemma:const-duality}
   If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$
@@ -945,7 +1048,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 
 \begin{defn}[Constraint Entailment]
   \label{lemma:const-entailment}
-  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ for all $e$
+  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{e}{\xi_1}$ or $\cmaysatisfy{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ for all $e$
 \end{defn}
 
 \begin{corol}[Constraint Material Entailment]
@@ -954,82 +1057,95 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{corol}
 
 \begin{figure}[t]
-\fbox{$\cpattyp{p}{\tau}{\xi}{\Gamma}$}~~\text{$p$ matches expression of type $\tau$, emits match constraint $\xi$ and generates context $\Gamma$}
+  \fbox{$\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$}~~\text{$p$ matches expression of type $\tau$, emits match constraint $\xi$ and generates context $\Gamma$}
 \begin{subequations}
 \begin{equation}
 \inferrule[CTPVar]{ }{
-  \cpattyp{x}{\tau}{\ctruth}{x : \tau}
+  \chpattyp{x}{\tau}{\ctruth}{\cdot}{x : \tau}
 }
 \end{equation}
 \begin{equation}
 \inferrule[CTPNum]{ }{
-  \cpattyp{\hnum{n}}{\tnum}{\cnum{n}}{\cdot}
+  \chpattyp{\hnum{n}}{\tnum}{\cnum{n}}{\cdot}{\cdot}
 }
 \end{equation}
 \begin{equation}
 \inferrule[CTPWild]{ }{
-  \cpattyp{\_}{\tau}{\ctruth}{\cdot}
+  \chpattyp{\_}{\tau}{\ctruth}{\cdot}{\cdot}
 }
 \end{equation}
 \begin{equation}
 \inferrule[CTPTriv]{ }{
-  \cpattyp{\htriv}{\tunit}{\cunit}{\cdot}
+  \chpattyp{\htriv}{\tunit}{\cunit}{\cdot}{\cdot}
 }
 \end{equation}
 \begin{equation}
 \inferrule[CTPInL]{
-  \cpattyp{p}{\tau_1}{\xi}{\Gamma}
+  \chpattyp{p}{\tau_1}{\xi}{\Gamma}{\Delta}
 }{
-  \cpattyp{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\cinl{\xi}}{\Gamma}
+  \chpattyp{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\cinl{\xi}}{\Gamma}{\Delta}
 }
 \end{equation}
 \begin{equation}
 \inferrule[CTPInR]{
-  \cpattyp{p}{\tau_2}{\xi}{\Gamma}
+  \chpattyp{p}{\tau_2}{\xi}{\Gamma}{\Delta}
 }{
-  \cpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\cinr{\xi}}{\Gamma}
+  \chpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\cinr{\xi}}{\Gamma}{\Delta}
 }
 \end{equation}
 \begin{equation}
 \inferrule[CTPPair]{
-  \cpattyp{p_1}{\tau_1}{\xi_1}{\Gamma_1} \\
-  \cpattyp{p_2}{\tau_2}{\xi_2}{\Gamma_2}
+  \chpattyp{p_1}{\tau_1}{\xi_1}{\Gamma_1}{\Delta_1} \\
+  \chpattyp{p_2}{\tau_2}{\xi_2}{\Gamma_2}{\Delta_2}
 }{
-  \cpattyp{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}
-  {\cpair{\xi_1}{\xi_2}}{\Gamma_1 \uplus \Gamma_2}
+  \chpattyp{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}
+  {\cpair{\xi_1}{\xi_2}}{\Gamma_1 \uplus \Gamma_2}{\Delta_1 \uplus \Delta_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTPEHole]{ }{
+  \chpattyp{\hehole{w}}{\tau}{\cunknown}{\cdot}{w :: \tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CPTHole]{
+  \chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}
+}{
+  \chpattyp{\hhole{p}{w}}{\tau'}{\cunknown}
+  {\Gamma}{\Delta , w :: \tau'}
 }
 \end{equation}
 \end{subequations}
 \end{figure}
 
 \begin{figure}[t]
-\fbox{$\crultyp{\Gamma}{r}{\tau}{\xi}{\tau'}$}~~\text{$r$ transforms values of type $\tau$, constrained by $\xi$, to type $\tau'$}
+  \fbox{$\chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi}{\tau'}$}~~\text{$r$ transforms values of type $\tau$, constrained by $\xi$, to type $\tau'$}
 \begin{equation}
 \inferrule[CTRule]{
-  \cpattyp{p}{\tau}{\xi}{\Gamma'} \\
-  \hexptyp{\Gamma \uplus \Gamma'}{\cdot}{e}{\tau'}
+  \chpattyp{p}{\tau}{\xi}{\Gamma'}{\Delta'} \\
+  \hexptyp{\Gamma \uplus \Gamma'}{\Delta \uplus \Delta'}{e}{\tau'}
 }{
-  \crultyp{\Gamma}{\hrul{p}{e}}{\tau}{\xi}{\tau'}
+  \chrultyp{\Gamma}{\Delta}{\hrul{p}{e}}{\tau}{\xi}{\tau'}
 }
 \end{equation}
 \end{figure}
 
 \begin{figure}[t]
-\fbox{$\crulstyp{\Gamma}{\xi}{rs}{\tau}{\xi'}{\tau'}$}~~\text{all rules in $rs$ transform values of type $\tau$, constrained by $\xi$, to type $\tau'$}
+  \fbox{$\chrulstyp{\Gamma}{\Delta}{\xi}{rs}{\tau}{\xi'}{\tau'}$}~~\text{all rules in $rs$ transform values of type $\tau$, constrained by $\xi$, to type $\tau'$}
 \begin{subequations}
 \begin{equation}
 \inferrule[CTZeroRule]{ }{
-  \crulstyp{\Gamma}{\xi}{\cdot}{\tau}{\cfalsity}{\tau'}
+  \chrulstyp{\Gamma}{\Delta}{\xi}{\cdot}{\tau}{\cfalsity}{\tau'}
 }
 \end{equation}
 \begin{equation}
 \inferrule[CTRules]{
-  \crultyp{\Gamma}{r}{\tau}{\xi'}{\tau'} \\
-  \crulstyp{\Gamma}{\cor{\xi}{\xi'}}{rs}
+  \chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi'}{\tau'} \\
+  \chrulstyp{\Gamma}{\Delta}{\cor{\xi}{\xi'}}{rs}
   {\tau}{\xi''}{\tau'} \\
   \cnotsatisfy{\xi'}{\xi}
 }{
-  \crulstyp{\Gamma}{\xi}{\hrules{r}{rs}}
+  \chrulstyp{\Gamma}{\Delta}{\xi}{\hrules{r}{rs}}
   {\tau}{\cor{\xi'}{\xi''}}{\tau'}
 }
 \end{equation}
@@ -1041,11 +1157,11 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{subequations}
 \begin{equation}
 \inferrule[CTMatch]{
-  \hexptyp{\Gamma}{\cdot}{e}{\tau} \\
-  \crulstyp{\Gamma}{\cfalsity}{rs}{\tau}{\xi}{\tau'} \\
+  \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
+  \chrulstyp{\Gamma}{\Delta}{\cfalsity}{rs}{\tau}{\xi}{\tau'} \\
   \csatisfy{\ctruth}{\xi}
 }{
-  \hexptyp{\Gamma}{\cdot}{\hmatch{e}{rs}}{\tau'}
+  \hexptyp{\Gamma}{\Delta}{\hmatch{e}{rs}}{\tau'}
 }
 \end{equation}
 \end{subequations}
@@ -1057,6 +1173,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   \begin{enumerate}
     \item $\csatisfy{e}{\xi}$ iff $\hpatmatch{e}{p}{\theta}$
     \item $\csatisfy{e}{\cdual{\xi}}$ iff $\hnotmatch{e}{p}$
+    \item $\cmaysatisfy{e}{\xi}$ iff $\hmaymatch{e}{p}$
   \end{enumerate}
 \end{lem}
 

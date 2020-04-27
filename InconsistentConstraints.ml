@@ -1,7 +1,7 @@
 exception UnImplemented
 module Constraint = struct
   type t =
-    | Truth | Falsity
+    | Truth | Falsity | Unknown
     | Num of int
     | NotNum of int
     | Unit
@@ -13,6 +13,7 @@ module Constraint = struct
     function
     | Truth -> Falsity
     | Falsity -> Truth
+    | Unknown -> Unknown
     | Num n -> NotNum n
     | NotNum n -> Num n
     | Unit -> Falsity
@@ -70,16 +71,17 @@ let is_inconsistent_nums (xis : Constraint.t list) : bool =
       false
       not_num_list
 
-let rec is_inconsistent (xis : Constraint.t list) : bool =
+let rec is_inconsistent ?(may = false) (xis : Constraint.t list) : bool =
   match xis with
   | [] -> false
   | xi::xis' -> (
       match xi with
-      | Truth -> is_inconsistent xis'
+      | Truth -> is_inconsistent ~may xis'
       | Falsity -> true
-      | And (xi_1, xi_2) -> is_inconsistent (xi_1::xi_2::xis')
-      | Or (xi_1, xi_2) -> is_inconsistent (xi_1::xis') && is_inconsistent (xi_2::xis')
-      | Unit -> is_inconsistent xis'
+      | Unknown -> if may then true else (is_inconsistent ~may xis')
+      | And (xi_1, xi_2) -> is_inconsistent ~may (xi_1::xi_2::xis')
+      | Or (xi_1, xi_2) -> is_inconsistent ~may (xi_1::xis') && is_inconsistent ~may (xi_2::xis')
+      | Unit -> is_inconsistent ~may xis'
       | Inl _ -> (
           match
             partition2
@@ -88,10 +90,10 @@ let rec is_inconsistent (xis : Constraint.t list) : bool =
               xis
           with
           | None -> true
-          | Some (inls, []) -> is_inconsistent (
+          | Some (inls, []) -> is_inconsistent ~may (
               List.map (function Constraint.Inl xi -> xi | _ -> assert false) inls
             )
-          | Some (inls, other) -> is_inconsistent (other @ inls)
+          | Some (inls, other) -> is_inconsistent ~may (other @ inls)
         )
       | Inr _ -> (
           match
@@ -101,10 +103,10 @@ let rec is_inconsistent (xis : Constraint.t list) : bool =
               xis
           with
           | None -> true
-          | Some (inrs, []) -> is_inconsistent (
+          | Some (inrs, []) -> is_inconsistent ~may (
               List.map (function Constraint.Inr xi -> xi | _ -> assert false) inrs
             )
-          | Some (inrs, other) -> is_inconsistent (other @ inrs)
+          | Some (inrs, other) -> is_inconsistent ~may (other @ inrs)
         )
       | Num n -> (
           match
@@ -115,7 +117,7 @@ let rec is_inconsistent (xis : Constraint.t list) : bool =
           with
           | None -> true
           | Some (ns, []) -> is_inconsistent_nums ns
-          | Some (ns, other) -> is_inconsistent (other @ ns)
+          | Some (ns, other) -> is_inconsistent ~may (other @ ns)
         )
       | NotNum n -> (
           match
@@ -126,7 +128,7 @@ let rec is_inconsistent (xis : Constraint.t list) : bool =
           with
           | None -> true
           | Some (ns, []) -> is_inconsistent_nums ns
-          | Some (ns, other) -> is_inconsistent (other @ ns)
+          | Some (ns, other) -> is_inconsistent ~may (other @ ns)
         )
       | Pair (xi_1, xi_2) -> (
           match
@@ -146,17 +148,17 @@ let rec is_inconsistent (xis : Constraint.t list) : bool =
                 )
                 ([], [])
                 pairs
-            in (is_inconsistent xis_l) || (is_inconsistent xis_r)
+            in (is_inconsistent ~may xis_l) || (is_inconsistent ~may xis_r)
           | (pairs, other) ->
-            is_inconsistent (other @ pairs)
+            is_inconsistent ~may (other @ pairs)
         )
     )
 
-let is_redundant (xi' : Constraint.t) (xi : Constraint.t) : bool =
-  is_inconsistent [And (xi', Constraint.dual xi)]
+let is_redundant (xi_cur : Constraint.t) (xi_pre : Constraint.t) : bool =
+  is_inconsistent [And (xi_cur, Constraint.dual xi_pre)]
 
 let is_exhaustive (xi : Constraint.t) : bool =
-  is_inconsistent [Constraint.dual xi]
+  is_inconsistent ~may:true [Constraint.dual xi]
 
 let rec rules_is_typechecked
     (xi_pre : Constraint.t) (rules : (unit -> Constraint.t) list)
@@ -189,9 +191,21 @@ let is_inconsistent_tests : (Constraint.t list * bool) list = [
   ( [Pair (Inr Falsity, Truth)], true) ;
 ]
 
-let run_tests =
-  List.map
-    (function (xis, result) -> if is_inconsistent xis = result then () else assert false)
-    is_inconsistent_tests
+let match_tests : (Constraint.t list * bool) list = [
+  ( [Inl Truth; Inr Truth], true ) ;
+  ( [Inl Truth; Inr Truth; Inl Unknown], false ) ;
+  ( [Inl Truth], false) ;
+  ( [Inl Unknown; Inr Unknown; Unknown], true ) ;
+  ( [Num 1; Unknown], true) ;
+  ( [Inl Truth; Inr Truth; Unknown], false );
+]
 ;;
-run_tests
+
+List.map
+  (function (xis, result) -> if is_inconsistent xis = result then () else assert false)
+  is_inconsistent_tests
+;;
+List.map
+  (function (xis, result) -> if match_is_typechecked xis = result then () else assert (false))
+  match_tests
+;;
