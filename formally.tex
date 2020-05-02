@@ -5,9 +5,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   \tnum ~\vert~
   \tarr{\tau_1}{\tau_2} ~\vert~
   \tprod{\tau_1}{\tau_2} ~\vert~
-  \tsum{\tau_1}{\tau_2} ~\vert~
-  \tunit ~\vert~
-  \tvoid \\
+  \tsum{\tau_1}{\tau_2} \\
 e & ::= &
   x ~\vert~
   \hnum{n} \\
@@ -15,8 +13,7 @@ e & ::= &
   \hlam{x}{\tau}{e} ~\vert~
   \hap{e_1}{e_2} \\
   & ~\vert~ &
-  \hpair{e_1}{e_2} ~\vert~
-  \htriv \\
+  \hpair{e_1}{e_2} \\
   & ~\vert~ &
   \hinl{\tau}{e} ~\vert~
   \hinr{\tau}{e} ~\vert~
@@ -33,7 +30,6 @@ p & ::= &
   \hnum{n} ~\vert~
   \_ ~\vert~
   \hpair{p_1}{p_2} ~\vert~
-  \htriv ~\vert~
   \hinlp{p} ~\vert~
   \hinrp{p} ~\vert~
   \hehole{w} ~\vert~
@@ -75,11 +71,6 @@ p & ::= &
   \hexptyp{\Gamma}{\Delta}{e_2}{\tau_2}
 }{
   \hexptyp{\Gamma}{\Delta}{\hpair{e_1}{e_2}}{\tprod{\tau_1}{\tau_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[TTriv]{ }{
-  \hexptyp{\Gamma}{\Delta}{\htriv}{\tunit}
 }
 \end{equation}
 \begin{equation}
@@ -180,11 +171,6 @@ p & ::= &
 }
 \end{equation}
 \begin{equation}
-\inferrule[PTTriv]{ }{
-  \hpattyp{\htriv}{\tunit}{\cdot}{\cdot}
-}
-\end{equation}
-\begin{equation}
 \inferrule[PTInL]{
   \hpattyp{p}{\tau_1}{\Gamma}{\Delta}
 }{
@@ -249,11 +235,6 @@ p & ::= &
 \begin{equation}
 \inferrule[PMWild]{ }{
   \hpatmatch{e}{\_}{\cdot}
-}
-\end{equation}
-\begin{equation}
-\inferrule[PMTriv]{ }{
-  \hpatmatch{\htriv}{\htriv}{\cdot}
 }
 \end{equation}
 \begin{equation}
@@ -399,11 +380,6 @@ p & ::= &
 \begin{equation}
 \inferrule[VNum]{ }{
   \isVal{\hnum{n}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[VTriv]{ }{
-  \isVal{\htriv}
 }
 \end{equation}
 \begin{equation}
@@ -756,7 +732,6 @@ $\arraycolsep=4pt\begin{array}{lll}
   \ctruth ~\vert~
   \cfalsity ~\vert~
   \cunknown ~\vert~
-  \cunit ~\vert~
   \cnum{n} ~\vert~
   \cnotnum{n} ~\vert~
   \cand{\xi_1}{\xi_2} ~\vert~
@@ -776,7 +751,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
-  \inferrule[CTFalsity]{ }{
+\inferrule[CTFalsity]{ }{
   \ctyp{\cfalsity}{\tau}
 }
 \end{equation}
@@ -793,11 +768,6 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{equation}
 \inferrule[CTNotNum]{ }{
   \ctyp{\cnotnum{n}}{\tnum}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTUnit]{ }{
-  \ctyp{\cunit}{\tunit}
 }
 \end{equation}
 \begin{equation}
@@ -847,7 +817,6 @@ $\arraycolsep=4pt\begin{array}{lll}
   \cdual{\cunknown} &= \cunknown \\
   \cdual{\cnum{n}} &= \cnotnum{n} \\
   \cdual{\cnotnum{n}} &= \cnum{n} \\
-  \cdual{\cunit} &= \cfalsity \\
   \cdual{\cand{\xi_1}{\xi_2}} &= \cor{\cdual{\xi_1}}{\cdual{\xi_2}} \\
   \cdual{\cor{\xi_1}{\xi_2}} &= \cand{\cdual{\xi_1}}{\cdual{\xi_2}} \\
   \cdual{\cinl{\xi_1}} &= \cor{ \cinl{\cdual{\xi_1}} }{ \cinr{\ctruth} } \\
@@ -882,11 +851,6 @@ $\arraycolsep=4pt\begin{array}{lll}
   n_1 \neq n_2
 }{
   \csatisfy{\hnum{n_1}}{\cnotnum{n_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CSUnit]{ }{
-  \csatisfy{\htriv}{\cunit}
 }
 \end{equation}
 \begin{equation}
@@ -1075,11 +1039,6 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CTPTriv]{ }{
-  \chpattyp{\htriv}{\tunit}{\cunit}{\cdot}{\cdot}
-}
-\end{equation}
-\begin{equation}
 \inferrule[CTPInL]{
   \chpattyp{p}{\tau_1}{\xi}{\Gamma}{\Delta}
 }{
@@ -1195,13 +1154,6 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{equation}
 \inferrule[CINCFalsity]{ }{
   \cincon{\Xi, \cfalsity}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CINCUnit]{
-  \cincon{\Xi}
-}{
-  \cincon{\Xi, \cunit}
 }
 \end{equation}
 \begin{equation}
