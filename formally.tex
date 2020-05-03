@@ -1,5 +1,5 @@
 % !TEX root = ./patterns-paper.tex
-\begin{figure}[t]
+\begin{figure}[p]
 $\arraycolsep=4pt\begin{array}{lll}
 \tau & ::= &
   \tnum ~\vert~
@@ -37,7 +37,7 @@ p & ::= &
 \end{array}$
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
   \fbox{$\hexptyp{\Gamma}{\Delta}{e}{\tau}$}~~\text{$e$ is of type $\tau$}
 \begin{subequations}
 \begin{equation}
@@ -110,7 +110,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$\hexptyp{\Gamma}{\Delta}{r}{\trul{\tau_1}{\tau_2}}$}~~\text{$r$ is of type $\trulnp{\tau_1}{\tau_2}$}
 \begin{subequations}
 \begin{equation}
@@ -124,7 +124,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$\hexptyp{\Gamma}{\Delta}{rs}{\trul{\tau_1}{\tau_2}}$}~~\text{$rs$ is of type $\trulnp{\tau_1}{\tau_2}$}
 \begin{subequations}
 \begin{equation}
@@ -143,7 +143,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$\hpattyp{p}{\tau}{\Gamma}{\Delta}$}~~\text{$p$ matches expression of type $\tau$ and generates context $\Gamma$ and hole context $\Delta$}
 \begin{subequations}
 \begin{equation}
@@ -200,7 +200,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$\hsubstyp{\theta}{\Gamma}$}~~\text{Substitution $\theta$ is of type $\Gamma$}
 \begin{subequations}
 \begin{equation}
@@ -219,7 +219,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$\hpatmatch{e}{p}{\theta}$}~~\text{Pattern matching $e$ on $p$ emits $\theta$}
 \begin{subequations}
 \begin{equation}
@@ -262,7 +262,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$\hmaymatch{e}{p}$}~~\text{$e$ may match $p$}
 \begin{subequations}
 \begin{equation}
@@ -330,7 +330,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$\hnotmatch{e}{p}$}~~\text{$e$ doesn't match $p$}
 \begin{subequations}
 \begin{equation}
@@ -374,7 +374,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$\isVal{e}$}~~\text{$e$ is a value}
 \begin{subequations}
 \begin{equation}
@@ -410,7 +410,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$\isIndet{e}$}~~\text{$e$ is indeterminate}
 \begin{subequations}
 \begin{equation}
@@ -479,7 +479,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$\isErr{e}$}~~\text{$e$ results in a checked error}
 \begin{subequations}
 \begin{equation}
@@ -562,7 +562,7 @@ p & ::= &
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$e \mapsto e'$}~~\text{$e$ takes an instruction transition to $e'$}
 \begin{subequations}
 \begin{equation}
@@ -726,7 +726,7 @@ Proof by induction on two premises.
   \end{enumerate}
 \end{lem}
 
-\begin{figure}[t]
+\begin{figure}[p]
 $\arraycolsep=4pt\begin{array}{lll}
 \xi & ::= &
   \ctruth ~\vert~
@@ -742,7 +742,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{array}$
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$\ctyp{\xi}{\tau}$}~~\text{Constraint $\xi$ constrains values of type $\tau$}
 \begin{subequations}
 \begin{equation}
@@ -833,7 +833,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$\csatisfy{e}{\xi}$}~~\text{Value $e$ satisfies constraint $\xi$}
 \begin{subequations}
 \begin{equation}
@@ -908,7 +908,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$\cmaysatisfy{e}{\xi}$}~~\text{Value $e$ possibly satisfies constraint $\xi$}
 \begin{subequations}
 \begin{equation}
@@ -1020,7 +1020,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{\ctruth}{\cor{\cdual{\xi_1}}{\xi_2}}$
 \end{corol}
 
-\begin{figure}[t]
+\begin{figure}[p]
   \fbox{$\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$}~~\text{$p$ matches expression of type $\tau$, emits match constraint $\xi$ and generates context $\Gamma$}
 \begin{subequations}
 \begin{equation}
@@ -1077,7 +1077,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
   \fbox{$\chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi}{\tau'}$}~~\text{$r$ transforms values of type $\tau$, constrained by $\xi$, to type $\tau'$}
 \begin{equation}
 \inferrule[CTRule]{
@@ -1089,7 +1089,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{equation}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
   \fbox{$\chrulstyp{\Gamma}{\Delta}{\xi}{rs}{\tau}{\xi'}{\tau'}$}~~\text{all rules in $rs$ transform values of type $\tau$, constrained by $\xi$, to type $\tau'$}
 \begin{subequations}
 \begin{equation}
@@ -1111,7 +1111,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{subequations}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[p]
 \fbox{$\hexptyp{\Gamma}{\Delta}{e}{\tau}$}~~\text{$e$ is of type $\tau$}
 \begin{subequations}
 \begin{equation}
@@ -1141,7 +1141,7 @@ $\arraycolsep=4pt\begin{array}{lll}
  If $\hexptyp{\cdot}{\cdot}{e}{\tau}$ then either $\isVal{e}$ or $\htrans{e}{e'}$ for some $e'$.
 \end{thm}
 
-\begin{figure}[t]
+\begin{figure}[p]
   \fbox{$\cincon{\Xi}$}~~\text{A finite set $\Xi$ of constraints is inconsistent}
 \begin{subequations}
 \begin{equation}
