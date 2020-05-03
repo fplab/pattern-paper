@@ -1004,21 +1004,53 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{equation}
 \end{subequations}
 \end{figure}
-\begin{lem}[Constraint Duality]
-  \label{lemma:const-duality}
-  If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$
-  then $\csatisfy{e}{\cdual{\xi}}$ iff $\cnotsatisfy{e}{\xi}$
+
+\begin{thm}[Exclusiveness of Constraint Satisfaction]
+  \label{thrm:exclusive-constraint-satisfaction}
+  If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$ then exactly one of the following holds
+  \begin{enumerate}
+    \item $\csatisfy{e}{\xi}$
+    \item $\cmaysatisfy{e}{\xi}$
+    \item $\csatisfy{e}{\cdual{\xi}}$
+  \end{enumerate}
+\end{thm}
+
+\begin{lem}[Negation of Satisfaction]
+  \label{lem:neg-satisfaction}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$. We have $\cnotsatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
+\end{lem}
+\begin{lem}[Negation of Possible Satisfaction]
+  \label{lem:neg-possible-satisfaction}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$. We have $\cnotmaysatisfy{e}{\xi}$ iff $\csatisfy{e}{\xi}$ or $\cnotsatisfy{e}{\cdual{\xi}}$
+\end{lem}
+\begin{lem}[Negation of Dual Satisfaction]
+  \label{lem:neg-dual-satisfaction}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$. We have $\cnotsatisfy{e}{\cdual{\xi}}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\xi}$
+\end{lem}
+\begin{lem}[Coverage of Constraint Satisfaction]
+  \label{lem:coverage-constraint-satisfaction}
+  If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$ then either $\csatisfy{e}{\xi}$ or $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
 \end{lem}
 
-\begin{defn}[Constraint Entailment]
-  \label{lemma:const-entailment}
+\begin{corol}[Possible Satisfaction of Dual Constraint]
+  \label{corol:possible-satisfaction-dual}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$. We have $\cmaysatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\cdual{\xi}}$
+\end{corol}
+
+\begin{defn}[Entailment of Constraints]
+  \label{defn:const-entailment}
   $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{e}{\xi_1}$ or $\cmaysatisfy{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ for all $e$
 \end{defn}
-
-\begin{corol}[Constraint Material Entailment]
+\begin{corol}[Material Entailment of Constraints]
   \label{lemma:const-material-entailment}
   $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{\ctruth}{\cor{\cdual{\xi_1}}{\xi_2}}$
 \end{corol}
+
+\begin{defn}[Possible Entailment of Constraints]
+  \label{defn:const-possible-entailment}
+  $\cmaysatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{e}{\xi_1}$ or $\cmaysatisfy{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ or $\cmaysatisfy{e}{\xi_2}$
+  
+\end{defn}
 
 \begin{figure}[p]
   \fbox{$\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$}~~\text{$p$ matches expression of type $\tau$, emits match constraint $\xi$ and generates context $\Gamma$}
@@ -1118,7 +1150,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \inferrule[CTMatch]{
   \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
   \chrulstyp{\Gamma}{\Delta}{\cfalsity}{rs}{\tau}{\xi}{\tau'} \\
-  \csatisfy{\ctruth}{\xi}
+  \cmaysatisfy{\ctruth}{\xi}
 }{
   \hexptyp{\Gamma}{\Delta}{\hmatch{e}{rs}}{\tau'}
 }
@@ -1126,7 +1158,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{subequations}
 \end{figure}
 
-\begin{lem}[Constraint Matching Coherence]
+\begin{lem}[Matching Coherence of Constraint]
   \label{lemma:const-matching-coherence}
   Suppose that $\cpattyp{p}{\tau}{\xi}{\Gamma}$. For all $\hexptyp{\cdot}{\cdot}{e}{\tau}$ such that $\isVal{e}$ we have
   \begin{enumerate}
@@ -1136,9 +1168,9 @@ $\arraycolsep=4pt\begin{array}{lll}
   \end{enumerate}
 \end{lem}
 
-\begin{thm}[Exhaustive progress]
+\begin{thm}[Exhaustive Progress]
  \label{thrm:exhau-progress}
- If $\hexptyp{\cdot}{\cdot}{e}{\tau}$ then either $\isVal{e}$ or $\htrans{e}{e'}$ for some $e'$.
+ If $\hexptyp{\cdot}{\cdot}{e}{\tau}$ then either $\isFinal{e}$ or $\htrans{e}{e'}$ for some $e'$.
 \end{thm}
 
 \begin{figure}[p]
@@ -1154,6 +1186,13 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{equation}
 \inferrule[CINCFalsity]{ }{
   \cincon{\Xi, \cfalsity}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCUnknown]{
+  \cincon{\Xi}
+}{
+  \cincon{\Xi, \cunknown}
 }
 \end{equation}
 \begin{equation}
@@ -1219,13 +1258,103 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{subequations}
 \end{figure}
 
+\begin{figure}[t]
+  \fbox{$\cmayincon{\Xi}$}~~\text{A finite set $\Xi$ of constraints is either inconsistent or may be inconsistent}
+\begin{subequations}
+\begin{equation}
+\inferrule[CNNINCTruth]{
+  \cincon{\Xi}
+}{
+  \cincon{\Xi, \ctruth}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CNNINCFalsity]{ }{
+  \cincon{\Xi, \cfalsity}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CNNINCUnknown]{ }{
+  \cincon{\Xi, \cunknown}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CNNINCNum]{
+  n_1 \neq n_2
+}{
+  \cincon{\Xi, \cnum{n_1}, \cnum{n_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CNNINCNotNum]{ }{
+  \cincon{\Xi, \cnum{n}, \cnotnum{n}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CNNINCAnd]{
+  \cincon{\Xi, \xi_1, \xi_2}
+}{
+  \cincon{\Xi, \cand{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CNNINCOr]{
+  \cincon{\Xi, \xi_1} \\
+  \cincon{\Xi, \xi_2}
+}{
+  \cincon{\Xi, \cor{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CNNINCInj]{ }{
+  \cincon{\Xi, \cinl{\xi_1}, \cinr{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CNNINCInl]{
+  \cincon{\Xi}
+}{
+  \cincon{\cinl{\Xi}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CNNINCInr]{
+  \cincon{\Xi}
+}{
+  \cincon{\cinr{\Xi}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CNNINCPair1]{
+  \cincon{\Xi_1}
+}{
+  \cincon{\cpair{\Xi_1}{\Xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCPair2]{
+  \cincon{\Xi_2}
+}{
+  \cincon{\cpair{\Xi_1}{\Xi_2}}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
 \begin{lem}[Inconsistency Decidability]
   \label{lemma:inconsistency-decidability}
   It is decidable whether $\cincon{\Xi}$
 \end{lem}
-\begin{lem}[Entailment of inconsistent constraint]
-  \label{lemma:inconsistent-constraint}
-  $\cincon{\xi}$ iff $\csatisfy{\ctruth}{\cdual{\xi}}$
+\begin{lem}[Not Not Inconsistency Decidability]
+  \label{lemma:inconsistency-decidability}
+  It is decidable whether $\cmayincon{\Xi}$
+\end{lem}
+\begin{lem}[Inconsistency and Entailment of Constraint]
+  \label{lemma:inconsistent-and-entailment}
+  $\cincon{\cdual{\xi}}$ iff $\csatisfy{\ctruth}{\xi}$
+\end{lem}
+\begin{lem}[Not Not Inconsistency and Possible Entailment of Constraint]
+  \label{lemma:not-not-inconsistent-and-possible-entailment}
+  $\cmayincon{\cdual{\xi}}$ iff $\cmaysatisfy{\ctruth}{\xi}$
 \end{lem}
 \begin{lem}[Redundancy Decidability]
   \label{lemma:redundancy-decidability}
@@ -1234,4 +1363,8 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{lem}[Exhaustiveness Decidability]
   \label{lemma:exhaustiveness-decidability}
   It is decidable whether $\csatisfy{\ctruth}{\xi}$, i.e., $\xi$ is exhaustive
+\end{lem}
+\begin{lem}[Not Not Exhaustiveness Decidability]
+  \label{lemma:not-not-exhaustiveness-decidability}
+  It is decidable whether $\cmaysatisfy{\ctruth}{\xi}$, i.e., $\xi$ is exhaustive or $\xi$ is possibly exhaustive
 \end{lem}
