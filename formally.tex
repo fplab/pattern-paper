@@ -115,10 +115,10 @@ p & ::= &
 \begin{subequations}
 \begin{equation}
 \inferrule[TRule]{
-  \hpattyp{p}{\tau_1}{\Gamma'}{\Delta} \\
-  \hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau_2}
+  \hpattyp{p}{\tau_1}{\Gamma'}{\Delta'} \\
+  \hexptyp{\Gamma \uplus \Gamma'}{\Delta \uplus \Delta'}{e}{\tau_2}
 }{
-  \hexptyp{\Gamma}{\Delta \uplus \Delta}{\hrulP{p}{e}}{\trul{\tau_1}{\tau_2}}
+  \hexptyp{\Gamma}{\Delta}{\hrulP{p}{e}}{\trul{\tau_1}{\tau_2}}
 }
 \end{equation}
 \end{subequations}
@@ -1039,7 +1039,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 
 \begin{defn}[Entailment of Constraints]
   \label{defn:const-entailment}
-  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{e}{\xi_1}$ or $\cmaysatisfy{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ for all $e$
+  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{e}{\xi_1}$ or $\cmaysatisfy{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ for all $e$ such that $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$
 \end{defn}
 \begin{corol}[Material Entailment of Constraints]
   \label{lemma:const-material-entailment}
@@ -1345,7 +1345,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   It is decidable whether $\cincon{\Xi}$
 \end{lem}
 \begin{lem}[Not Not Inconsistency Decidability]
-  \label{lemma:inconsistency-decidability}
+  \label{lemma:not-not-inconsistency-decidability}
   It is decidable whether $\cmayincon{\Xi}$
 \end{lem}
 \begin{lem}[Inconsistency and Entailment of Constraint]
