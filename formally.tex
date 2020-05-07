@@ -917,6 +917,20 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
+\inferrule[CPSExpEHole]{
+  \xi \neq \ctruth
+}{
+  \cmaysatisfy{\hehole{u}}{\xi}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CPSExpHole]{
+  \xi \neq \ctruth
+}{
+\cmaysatisfy{\hhole{e}{u}}{\xi}
+}
+\end{equation}
+\begin{equation}
 \inferrule[CPSAnd1]{
   \cmaysatisfy{e}{\xi_1} \\
   \csatisfy{e}{\xi_2}
