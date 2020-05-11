@@ -1372,3 +1372,30 @@ $\arraycolsep=4pt\begin{array}{lll}
   \label{lemma:not-not-exhaustiveness-decidability}
   It is decidable whether $\csatisfyormay{\ctruth}{\xi}$, i.e., $\xi$ is exhaustive or $\xi$ is possibly exhaustive
 \end{lem}
+\begin{lem}[Exhaustive Matching Progress when e is a value]
+  \label{lemma:val-match-progress}
+  If $\isVal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\czrulstyp{\cdot}{\Delta}{\xi}{\zrules}{\xi'}{\tau}{\tau'}$ and $\csatisfy{\ctruth}{\cor{\xi}{\xi'}}$
+  then either
+  \begin{enumerate}
+    \item $\csatisfy{e}{\xi}$
+    \item $\cnotsatisfy{e}{\xi}$ and $\htrans{\hmatch{e}{\zrules}}{e'}$ for some $e'$
+  \end{enumerate}
+\end{lem}
+\begin{lem}[Exhaustive Matching Progress when e is final]
+  \label{lemma:indet-match-progress}
+  If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\czrulstyp{\cdot}{\Delta}{\xi}{\zrules}{\xi'}{\tau}{\tau'}$ and $\csatisfy{\ctruth}{\cor{\xi}{\xi'}}$
+  then either
+  \begin{enumerate}
+    \item $\csatisfy{e}{\xi}$
+    \item $\cnotsatisfy{e}{\xi}$ and either $\isIndet{\hmatch{e}{\zrules}}$ or $\htrans{\hmatch{e}{\zrules}}{e'}$ for some $e'$
+  \end{enumerate}
+\end{lem}
+\begin{lem}[Undetermined Exhaustive Matching Progress when e is final]
+  \label{lemma:indet-match-progress}
+  If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\czrulstyp{\cdot}{\Delta}{\xi}{\zrules}{\xi'}{\tau}{\tau'}$ and $\csatisfyormay{\ctruth}{\cor{\xi}{\xi'}}$
+  then either
+  \begin{enumerate}
+    \item $\csatisfy{e}{\xi}$
+    \item $\cnotsatisfy{e}{\xi}$ and either $\isIndet{\hmatch{e}{\zrules}}$ or $\htrans{\hmatch{e}{\zrules}}{e'}$ for some $e'$
+  \end{enumerate}
+\end{lem}
