@@ -84,6 +84,11 @@
 % ZExp
 \newcommand{\zexp}{\hat{e}}
 
+% rules with pointer
+\newcommand{\zruls}[3]{#1 \mid #2 \mid #3}
+\newcommand{\zrules}{\hat{rs}}
+\newcommand{\rmpointer}[1]{\inparens{#1}^\diamond}
+
 % Constraint
 \newcommand{\ctyp}[2]{#1 : #2}
 \newcommand{\cdual}[1]{\overline{#1}}
@@ -112,6 +117,7 @@
 \newcommand{\chrultyp}[6]{#1 \mathbin{;} #2 \vdash #3 : #4 [#5] \Rightarrow #6}
 \newcommand{\crulstyp}[6]{#1 \vdash [#2] #3 : #4 [#5] \Rightarrow #6}
 \newcommand{\chrulstyp}[7]{#1 \mathbin{;} #2 \vdash [#3] #4 : #5 [#6] \Rightarrow #7}
+\newcommand{\czrulstyp}[7]{#1 \mathbin{;} #2 \vdash [#3] #4 [#5] : #6 \Rightarrow #7}
 
 % Direction
 \newcommand{\dParent}{\mathtt{parent}}
