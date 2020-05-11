@@ -993,7 +993,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CSPair1]{
+\inferrule[CPSPair1]{
   \cmaysatisfy{e_1}{\xi_1} \\
   \csatisfy{e_2}{\xi_2}
 }{
@@ -1001,7 +1001,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CSPair2]{
+\inferrule[CPSPair2]{
   \csatisfy{e_1}{\xi_1} \\
   \cmaysatisfy{e_2}{\xi_2}
 }{
@@ -1009,11 +1009,31 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CSPair3]{
+\inferrule[CPSPair3]{
   \cmaysatisfy{e_1}{\xi_1} \\
   \cmaysatisfy{e_2}{\xi_2}
 }{
   \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
+}
+\end{equation}
+\end{subequations}
+\end{figure}
+
+\begin{figure}[p]
+\fbox{$\csatisfyormay{e}{\xi}$}
+\begin{subequations}
+\begin{equation}
+\inferrule[CUSPossibly]{
+  \cmaysatisfy{e}{\xi}
+}{
+  \csatisfyormay{e}{\xi}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CUSMust]{
+  \csatisfy{e}{\xi}
+}{
+  \csatisfyormay{e}{\xi}
 }
 \end{equation}
 \end{subequations}
@@ -1056,13 +1076,13 @@ $\arraycolsep=4pt\begin{array}{lll}
   $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{e}{\xi_1}$ or $\cmaysatisfy{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ for all $e$ such that $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$
 \end{defn}
 \begin{corol}[Material Entailment of Constraints]
-  \label{lemma:const-material-entailment}
+  \label{lemma:material-entailment}
   $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{\ctruth}{\cor{\cdual{\xi_1}}{\xi_2}}$
 \end{corol}
 
-\begin{defn}[Possible Entailment of Constraints]
-  \label{defn:const-possible-entailment}
-  $\cmaysatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{e}{\xi_1}$ or $\cmaysatisfy{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ or $\cmaysatisfy{e}{\xi_2}$
+\begin{defn}[Undeterministic Material Entailment of Constraints]
+  \label{defn:undeter-material-entailment}
+  $\csatisfyormay{\xi_1}{\xi_2}$ iff $\csatisfy{e}{\xi_1}$ or $\cmaysatisfy{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ or $\cmaysatisfy{e}{\xi_2}$
   
 \end{defn}
 
@@ -1164,7 +1184,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \inferrule[CTMatch]{
   \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
   \chrulstyp{\Gamma}{\Delta}{\cfalsity}{rs}{\tau}{\xi}{\tau'} \\
-  \cmaysatisfy{\ctruth}{\xi}
+  \csatisfyormay{\ctruth}{\xi}
 }{
   \hexptyp{\Gamma}{\Delta}{\hmatch{e}{rs}}{\tau'}
 }
@@ -1174,7 +1194,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 
 \begin{lem}[Matching Coherence of Constraint]
   \label{lemma:const-matching-coherence}
-  Suppose that $\cpattyp{p}{\tau}{\xi}{\Gamma}$. For all $\hexptyp{\cdot}{\cdot}{e}{\tau}$ such that $\isVal{e}$ we have
+  Suppose that $\cpattyp{p}{\tau}{\xi}{\Gamma}$. For all $\hexptyp{\cdot}{\cdot}{e}{\tau}$ such that $\isFinal{e}$ we have
   \begin{enumerate}
     \item $\csatisfy{e}{\xi}$ iff $\hpatmatch{e}{p}{\theta}$
     \item $\csatisfy{e}{\cdual{\xi}}$ iff $\hnotmatch{e}{p}$
@@ -1368,7 +1388,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{lem}
 \begin{lem}[Not Not Inconsistency and Possible Entailment of Constraint]
   \label{lemma:not-not-inconsistent-and-possible-entailment}
-  $\cmayincon{\cdual{\xi}}$ iff $\cmaysatisfy{\ctruth}{\xi}$
+  $\cmayincon{\cdual{\xi}}$ iff $\csatisfyormay{\ctruth}{\xi}$
 \end{lem}
 \begin{lem}[Redundancy Decidability]
   \label{lemma:redundancy-decidability}
@@ -1380,5 +1400,5 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{lem}
 \begin{lem}[Not Not Exhaustiveness Decidability]
   \label{lemma:not-not-exhaustiveness-decidability}
-  It is decidable whether $\cmaysatisfy{\ctruth}{\xi}$, i.e., $\xi$ is exhaustive or $\xi$ is possibly exhaustive
+  It is decidable whether $\csatisfyormay{\ctruth}{\xi}$, i.e., $\xi$ is exhaustive or $\xi$ is possibly exhaustive
 \end{lem}
