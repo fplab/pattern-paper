@@ -585,21 +585,16 @@ p & ::= &
 \begin{equation}
 \inferrule[ITFailMatch]{
   \isFinal{e} \\
-  \hnotmatch{e}{p_0} \\
+  \hnotmatch{e}{p_0}
+}{
   \htrans{
+    \hmatch{e}{\zruls{rs}{\hrul{p_0}{e_0}}{\hrulesP{r}{rs'}}}
+  }{
     \hmatch{e}{
       \zruls{
         \rmpointer{\zruls{rs}{\hrul{p_0}{e_0}}{\cdot}}
-      }{r'}{rs'}
+      }{r}{rs'}
     }
-  }{
-    e'
-  }
-}{
-  \htrans{
-    \hmatch{e}{\zruls{rs}{\hrul{p_0}{e_0}}{\hrulesP{r'}{rs'}}}
-  }{
-    e'
   }
 }
 \end{equation}
@@ -866,16 +861,16 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{equation}
 \begin{equation}
 \inferrule[CPSExpEHole]{
-  \xi \neq \ctruth
+  \cnotsatisfy{\hehole{u}}{\xi}
 }{
   \cmaysatisfy{\hehole{u}}{\xi}
 }
 \end{equation}
 \begin{equation}
 \inferrule[CPSExpHole]{
-  \xi \neq \ctruth
+  \cnotsatisfy{\hhole{e}{u}}{\xi}
 }{
-\cmaysatisfy{\hhole{e}{u}}{\xi}
+  \cmaysatisfy{\hhole{e}{u}}{\xi}
 }
 \end{equation}
 \begin{equation}
@@ -1110,7 +1105,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{figure}
 
 \begin{figure}[p]
-  \fbox{$\rmpointer{\hat{rs}} = rs$}~~\text{erase pointer from $\hat{rs}$}
+  \fbox{$\rmpointer{\zrules} = rs$}~~\text{erase pointer from $\zrules$}
 \begin{subequations}
 \begin{align}
   \rmpointer{\zruls{\cdot}{r}{rs}} &= \hrules{r}{rs} \\
@@ -1120,28 +1115,22 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{figure}
 
 \begin{figure}[p]
-  \fbox{$\czrulstyp{\Gamma}{\Delta}{\xi}{\zruls{rs}{r}{rs'}}{\xi'}{\tau}{\tau'}$}~~\text{}
+  \fbox{$\chrulstyp{\Gamma}{\Delta}{\xi}{rs}{\tau}{\xi'}{\tau'}$}~~\text{all rules in $rs$ transform values of type $\tau$, constrained by $\xi$, to type $\tau'$}
 \begin{subequations}
 \begin{equation}
-\inferrule[CTOneRule]{
-  \chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi_r}{\tau'} \\
-  \cnotsatisfy{\xi_r}{\xi_{rs}}
-}{
-  \czrulstyp{\Gamma}{\Delta}{\xi_{rs}}{\zruls{rs}{r}{\cdot}}{\xi_r}{\tau}{\tau'}
+\inferrule[CTZeroRule]{ }{
+  \chrulstyp{\Gamma}{\Delta}{\xi}{\cdot}{\tau}{\cfalsity}{\tau'}
 }
 \end{equation}
 \begin{equation}
 \inferrule[CTRules]{
-  \chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi}{\tau'} \\
-  \czrulstyp{\Gamma}{\Delta}{\cor{\xi'}{\xi}}{
-    \zruls{\rmpointer{\zruls{rs}{r}{\cdot}}}
-  {r'}{rs'}
-}
-  {\xi''}{\tau}{\tau'} \\
-  \cnotsatisfy{\xi}{\xi'}
+  \chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi'}{\tau'} \\
+  \chrulstyp{\Gamma}{\Delta}{\cor{\xi}{\xi'}}{rs}
+  {\tau}{\xi''}{\tau'} \\
+  \cnotsatisfy{\xi'}{\xi}
 }{
-  \czrulstyp{\Gamma}{\Delta}{\xi'}{\zruls{rs}{r}{\hrulesP{r'}{rs'}}}
-  {\cor{\xi}{\xi''}}{\tau}{\tau'}
+  \chrulstyp{\Gamma}{\Delta}{\xi}{\hrules{r}{rs}}
+  {\tau}{\cor{\xi'}{\xi''}}{\tau'}
 }
 \end{equation}
 \end{subequations}
@@ -1153,7 +1142,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{equation}
 \inferrule[CTMatch]{
   \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
-  \czrulstyp{\Gamma}{\Delta}{\cfalsity}{\hat{rs}}{\xi}{\tau}{\tau'} \\
+  \chrulstyp{\Gamma}{\Delta}{\cfalsity}{\rmpointer{\zrules}}{\tau}{\xi}{\tau'} \\
   \csatisfyormay{\ctruth}{\xi}
 }{
   \hexptyp{\Gamma}{\Delta}{\hmatch{e}{\hat{rs}}}{\tau'}
@@ -1374,7 +1363,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{lem}
 \begin{lem}[Exhaustive Matching Progress when e is a value]
   \label{lemma:val-match-progress}
-  If $\isVal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\czrulstyp{\cdot}{\Delta}{\xi}{\zrules}{\xi'}{\tau}{\tau'}$ and $\csatisfy{\ctruth}{\cor{\xi}{\xi'}}$
+  If $\isVal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\czrulstyp{\cdot}{\Delta}{\cfalsity}{\rmpointer{\zrules}}{\xi'}{\tau}{\tau'}$ and $\csatisfy{\ctruth}{\cor{\xi}{\xi'}}$
   then either
   \begin{enumerate}
     \item $\csatisfy{e}{\xi}$
