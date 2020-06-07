@@ -1,0 +1,337 @@
+% !TEX root = ./pattern-paper.tex
+\section{preservation and progress}
+
+\begin{lem}[Finality]
+  \label{lem:finality}
+  If $\isFinal{e}$ and $\htrans{e}{e'}$ for some $e'$ then there is a contradiction.
+\end{lem}
+\begin{proof}By rule induction over Rules (\ref{rules:Final}) and Rules (\ref{rules:ITExp}), \textit{i.e.}, over Rules (\ref{rules:Value}) and Rules (\ref{rules:ITExp}) and over Rules (\ref{rules:Indet}) and Rules (\ref{rules:ITExp}) respectively. The proof can be done by straightforward observation of syntactic contradictions.
+\end{proof}
+
+\begin{lem}
+  \label{lem:relax-nn-satisfy}
+  $\csatisfyormay{e}{\xi}$ iff $\csatisfyormay{e}{\cor{\cfalsity}{\xi}}$
+\end{lem}
+\begin{proof}
+  \todolater{onenote}
+\end{proof}
+
+\begin{corol}
+  \label{corol:relax-nn-entail}
+  $\csatisfyormay{\ctruth}{\xi}$ iff $\csatisfyormay{\ctruth}{\cor{\cfalsity}{\xi}}$
+\end{corol}
+
+\begin{lem}
+  \label{lem:relax-not-redundant}
+  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{\xi_1}{\cor{\cfalsity}{\xi_2}}$
+\end{lem}
+
+\begin{lem}
+  \label{lem:rule-append}
+  If $\chrulstyp{\cdot}{\Delta}{\xi_{pre}}{rs}{\tau_1}{\xi_{rs}}{\tau}$ and $\chrultyp{\cdot}{\Delta}{r}{\tau_1}{\xi_r}{\tau}$ and $\cnotsatisfy{\xi_r}{\cor{\xi_{pre}}{\xi_{rs}}}$ then $\chrulstyp{\cdot}{\Delta}{\xi_{pre}}{\rmpointer{\zruls{rs}{r}{\cdot}}}{\tau_1}{\cor{\xi_{rs}}{\xi_r}}{\tau}$
+\end{lem}
+\begin{proof}
+  \todolater{onenote}
+\end{proof}
+
+\begin{defn}[Not Not Material Entailment of Constraints]
+  \label{defn:nn-material-entailment}
+  $\csatisfyormay{\xi_1}{\xi_2}$ iff $\csatisfyormay{e}{\xi_1}$ implies $\csatisfyormay{e}{\xi_2}$ for all $\isFinal{e}$
+\end{defn}
+\begin{proof}
+  \todolater{onenote}
+\end{proof}
+
+\begin{corol}
+  \label{corol:nn-material-entailment-exhaust}
+  If $\isFinal{e}$ and $\csatisfyormay{\ctruth}{\xi}$ then $\csatisfyormay{e}{\xi}$
+\end{corol}
+\begin{proof}
+  \begin{pfsteps*}
+  \item $\isFinal{e}$ \BY{assumption} \pflabel{final}
+  \item $\csatisfyormay{\ctruth}{\xi}$ \BY{assumption} \pflabel{exhaust}
+  \item $\csatisfy{e_1}{\ctruth}$ \BY{Rule (\ref{rule:CSTruth})} \pflabel{satisfyT}
+  \item $\csatisfyormay{e_1}{\ctruth}$ \BY{Rule (\ref{rule:CMSMust}) on \pfref{satisfyT}} \pflabel{nnsatisfyT}
+  \item $\csatisfyormay{e_1}{\xi_r}$ \BY{Definition \ref{defn:nn-material-entailment} of \pfref{exhaust} on \pfref{final} and \pfref{nnsatisfyT}}
+  \end{pfsteps*}
+  \resetpfcounter
+\end{proof}
+
+\begin{lem}
+  \label{lem:or-nn-satisfy}
+  If $\cnotsatisfyormay{e}{\xi_1}$ and $\cnotsatisfyormay{e}{\xi_2}$ then $\cnotsatisfyormay{e}{\cor{\xi_1}{\xi_2}}$
+\end{lem}
+\begin{proof}
+Proof by its contraposition.
+\end{proof}
+
+\begin{lem}
+  \label{lem:satisfy-substraction}
+  If $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$ and $\cnotsatisfyormay{e}{\xi_1}$ then $\csatisfyormay{e}{\xi_1}$
+\end{lem}
+
+\begin{thm}[Preservation]
+  \label{thrm:preservation}
+  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\htrans{e}{e'}$
+  then $\hexptyp{\cdot}{\Delta}{e'}{\tau}$
+\end{thm}
+
+\begin{proof}
+\begin{pfsteps*}
+\item $\hexptyp{\cdot}{\Delta}{e}{\tau}$ \BY{assumption} \pflabel{expType}
+\item $\htrans{e}{e'}$ \BY{assumption} \pflabel{expTrans}
+\end{pfsteps*}
+By rule induction over Rules (\ref{rules:CTExp}) on \pfref{expType}.
+For simplicity, we only consider two cases here.
+\begin{byCases}
+\item[\text{(\ref{rule:CTMatchZPre})}]
+  \begin{pfsteps*}
+  \item $e = \hmatch{e_1}{\zruls{\cdot}{\hrulP{p_r}{e_r}}{rs}}$ \BY{assumption}
+  \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{scrutType}
+  \item $\chrulstyp{\cdot}{\Delta}{\cfalsity}{\hrulesP{\hrul{p_r}{e_r}}{rs}}{\tau_1}{\xi}{\tau}$ \BY{assumption} \pflabel{rulesType}
+  \item $\csatisfyormay{\ctruth}{\xi}$ \BY{assumption} \pflabel{exhaust}
+  \item $\xi = \cor{\xi_r}{\xi_{rs}}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{rulesType}}
+  \item $\chrultyp{\cdot}{\Delta}{\hrulP{p_r}{e_r}}{\tau_1}{\xi_r}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{rulesType}} \pflabel{ruleType}
+  \item $\chrulstyp{\cdot}{\Delta}{\cor{\cfalsity}{\xi_r}}{rs}{\tau_1}{\xi_{rs}}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{rulesType}} \pflabel{postrulesType}
+  \item $\cnotsatisfy{\xi_r}{\cfalsity}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{rulesType}} \pflabel{notredundant}
+  \item $\chpattyp{p_r}{\tau_1}{\xi_r}{\Gamma_r}{\Delta_r}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{ruleType}} \pflabel{patType}
+  \item $\hexptyp{\cdot \uplus \Gamma_r}{\Delta \uplus \Delta_r}{e_r}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{ruleType}} \pflabel{expinruleType}
+  \end{pfsteps*}
+  By rule induction over Rules (\ref{rules:ITExp}) on \pfref{expTrans}.
+  \begin{byCases}
+  \item[\text{(\ref{rule:ITExpMatch})}]
+    \begin{pfsteps*}
+    \item $e' = \hmatch{e_1'}{\zruls{\cdot}{\hrulP{p_r}{e_r}}{rs}}$ \BY{assumption}
+    \item $\htrans{e_1}{e_1'}$ \BY{assumption} \pflabel{scrutTrans}
+    \item $\hexptyp{\cdot}{\Delta}{e_1'}{\tau_1}$ \BY{IH over \pfref{scrutType} and \pfref{scrutTrans}} \pflabel{newscrutType}
+    \item $\hexptyp{\cdot}{\Delta}{\hmatch{e_1'}{\zruls{\cdot}{\hrulP{p_r}{e_r}}{rs}}}{\tau}$ \BY{Rule (\ref{rule:CTMatchZPre}) on \pfref{newscrutType} and \pfref{rulesType} and \pfref{exhaust}}
+    \end{pfsteps*}
+  \item[\text{(\ref{rule:ITSuccMatch})}]
+    \begin{pfsteps*}
+    \item $e' = [\theta](e_r)$ \BY{assumption}
+    \item $\hpatmatch{e_1}{p_r}{\theta}$ \BY{assumption} \pflabel{patMatch}
+    \item $\hsubstyp{\theta}{\Gamma_r}$ \BY{Lemma \ref{lem:subs-typing} on \pfref{scrutType} and \pfref{patType} and \pfref{patMatch}} \pflabel{substType}
+    \item $\hexptyp{\cdot}{\Delta \uplus \Delta_r}{[\theta](e_r)}{\tau}$ \BY{Lemma \ref{lem:simult-substitution} on \pfref{expinruleType} and \pfref{substType}}
+    \end{pfsteps*}
+  \item[\text{(\ref{rule:ITFailMatch})}]
+    \begin{pfsteps*}
+    \item $rs = \hrules{r'}{rs'}$ \BY{assumption}
+    \item $e' = \hmatch{e_1}{\zruls{\hrulesP{\hrul{p_r}{e_r}}{\cdot}}{r'}{rs'}}$ \BY{assumption}
+    \item $\isFinal{e_1}$ \BY{assumption} \pflabel{scrutFinal}
+    \item $\hnotmatch{e_1}{p_r}$ \BY{assumption} \pflabel{patnotmatch}
+    \item $\chrulstyp{\cdot}{\Delta}{\cor{\cfalsity}{\xi_r}}{\cdot}{\tau_1}{\cfalsity}{\tau}$ \BY{Rule \ref{rule:CTZeroRule}} \pflabel{zeroruleType}
+    \item $\chrulstyp{\cdot}{\Delta}{\cfalsity}{\hrulesP{\hrul{p_r}{e_r}}{\cdot}}{\tau_1}{\cor{\xi_r}{\cfalsity}}{\tau}$ \BY{Rule \ref{rule:CTRules} on \pfref{ruleType} and \pfref{zeroruleType} and \pfref{notredundant}} \pflabel{pre+rType}
+  \item $\csatisfy{e_1}{\cdual{\xi_r}}$ \BY{Lemma (\ref{lem:const-matching-coherence}) on \pfref{scrutType} and \pfref{scrutFinal} and \pfref{patType} and \pfref{patnotmatch}} \pflabel{matchdual}
+    \item $\cnotsatisfyormay{e_1}{\xi_r}$ \BY{Lemma (\ref{lem:neg-dual-satisfy}) on } \pflabel{notrConst}
+  \item $\cnotsatisfyormay{e_1}{\cor{\xi_r}{\cfalsity}}$ \BY{Lemma (\ref{lem:relax-nn-satisfy}) on \pfref{notrConst}} \pflabel{notpre+rConst}
+    \item $\cnotsatisfyormay{\ctruth}{\cor{\cfalsity}{\cor{\xi_r}{\xi_{rs}}}}$ \BY{Lemma (\ref{corol:relax-nn-entail}) on \pfref{exhaust}} \pflabel{newexhaust}
+    \item $\hexptyp{\cdot}{\Delta}{\hmatch{e_1}{\zruls{\hrulesP{\hrul{p_r}{e_r}}{\cdot}}{r'}{rs'}}}{\tau}$ \BY{Rule (\ref{rule:CTMatchNZPre}) on \pfref{scrutType} and \pfref{scrutFinal} and \pfref{pre+rType} and \pfref{postrulesType} and \pfref{notpre+rConst} and \pfref{newexhaust}}
+    \end{pfsteps*}
+  \end{byCases}
+
+\resetpfcounter
+\item[\text{(\ref{rule:CTMatchNZPre})}]
+  \begin{pfsteps*}
+  \item $\hexptyp{\cdot}{\Delta}{e}{\tau}$ \BY{assumption} \pflabel{expType}
+  \item $\htrans{e}{e'}$ \BY{assumption} \pflabel{expTrans}
+  \item $e = \hmatch{e_1}{\zruls{rs_{pre}}{\hrulP{p_r}{e_r}}{rs_{post}}}$ \BY{assumption}
+  \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{scrutType}
+  \item $\isFinal{e_1}$ \BY{assumption} \pflabel{scrutFinal}
+  \item $\chrulstyp{\cdot}{\Delta}{\cfalsity}{rs_{pre}}{\tau_1}{\xi_{pre}}{\tau}$ \BY{assumption} \pflabel{prerulesType}
+  \item $\chrulstyp{\cdot}{\Delta}{\xi_{pre}}{\hrulesP{\hrul{p_r}{e_r}}{rs_{post}}}{\tau_1}{\xi_{rest}}{\tau}$ \BY{assumption} \pflabel{restrulesType}
+  \item $\cnotsatisfyormay{e_1}{\xi_{pre}}$ \BY{assumption} \pflabel{notsatisfypre}
+  \item $\csatisfyormay{\ctruth}{\cor{\xi_{pre}}{\xi_{rest}}}$ \BY{assumption} \pflabel{exhaust}
+  \item $\xi_{rest} = \cor{\xi_r}{\xi_{post}}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{restrulesType}}
+  \item $\chrultyp{\cdot}{\Delta}{\hrulP{p_r}{e_r}}{\tau_1}{\xi_r}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{restrulesType}} \pflabel{ruleType}
+  \item $\chrulstyp{\cdot}{\Delta}{\cor{\xi_{pre}}{\xi_r}}{rs_{post}}{\tau_1}{\xi_{post}}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{restrulesType}} \pflabel{postrulesType}
+  \item $\cnotsatisfy{\xi_r}{\xi_{pre}}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{restrulesType}} \pflabel{notredundant}
+  \item $\chpattyp{p_r}{\tau_1}{\xi_r}{\Gamma_r}{\Delta_r}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{ruleType}} \pflabel{patType}
+  \item $\hexptyp{\cdot \uplus \Gamma_r}{\Delta \uplus \Delta_r}{e_r}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{ruleType}} \pflabel{expinruleType}
+  \end{pfsteps*}
+  By rule induction over Rules (\ref{rules:ITExp}) on \pfref{expTrans}.
+  \begin{byCases}
+  \item[\text{(\ref{rule:ITExpMatch})}]
+    \begin{pfsteps*}
+    \item $e' = \hmatch{e_1}{\zruls{rs_{pre}}{\hrulP{p_r}{e_r}}{rs_{post}}}$ \BY{assumption}
+    \item $\htrans{e_1}{e_1'}$ \BY{assumption} \pflabel{scrutTrans}
+    \item contradiction \BY{Lemma \ref{lem:finality} on \pfref{scrutFinal} and \pfref{scrutTrans}}
+    \end{pfsteps*}
+  
+  \item[\text{(\ref{rule:ITSuccMatch})}]
+    \begin{pfsteps*}
+    \item $e' = [\theta](e_r)$ \BY{assumption}
+    \item $\hpatmatch{e_1}{p_r}{\theta}$ \BY{assumption} \pflabel{patMatch}
+    \item $\hsubstyp{\theta}{\Gamma_r}$ \BY{Lemma \ref{lem:subs-typing} on \pfref{scrutType} and \pfref{patType} and \pfref{patMatch}} \pflabel{substType}
+    \item $\hexptyp{\cdot}{\Delta \uplus \Delta_r}{[\theta](e_r)}{\tau}$ \BY{Lemma \ref{lem:simult-substitution} on \pfref{expinruleType} and \pfref{substType}}
+    \end{pfsteps*}
+  
+  \item[\text{(\ref{rule:ITFailMatch})}]
+    \begin{pfsteps*}
+    \item $rs_{post} = \hrules{r'}{rs'}$ \BY{assumption}
+    \item $\hnotmatch{e_1}{p_r}$ \BY{assumption} \pflabel{patnotmatch}
+    \item $\cnotsatisfy{\xi_r}{\cor{\cfalsity}{\xi_{pre}}}$ \BY{Lemma \ref{lem:relax-not-redundant} on \pfref{notredundant}} \pflabel{bot+prenotredundant}
+    \item $\chrulstyp{\cdot}{\Delta}{\cfalsity}{\rmpointer{\zruls{rs_{pre}}{\hrul{p_r}{e_r}}{\cdot}}}{\tau_1}{\cor{\xi_{pre}}{\xi_r}}{\tau}$ \BY{Lemma \ref{lem:rule-append} on \pfref{prerulesType} and \pfref{ruleType} and \pfref{bot+prenotredundant}} \pflabel{pre+rrulesType}
+    \item $\csatisfy{e}{\cdual{\xi_r}}$ \BY{Lemma \ref{lem:const-matching-coherence} on \pfref{scrutType} and \pfref{scrutFinal} and \pfref{patType} and \pfref{patnotmatch}} \pflabel{constnotmatch}
+    \item $\cnotsatisfyormay{e}{\xi_r}$ \BY{Lemma \ref{lem:neg-dual-satisfy} on \pfref{constnotmatch}} \pflabel{notsatisfyr}
+    \item $\cnotsatisfyormay{e}{\cor{\xi_{pre}}{\xi_r}}$ \BY{Lemma \ref{lem:or-nn-satisfy} on \pfref{notsatisfypre} and \pfref{notsatisfyr}} \pflabel{notsatisfypre+r}
+    \item $\hexptyp{\cdot}{\Delta}{\hmatch{e_1}{\zruls{\rmpointer{\zruls{rs_{pre}}{\hrul{p_r}{e_r}}{\cdot}}}{r'}{rs'}}}{\tau}$ \BY{Rule (\ref{rule:CTMatchNZPre}) on \pfref{scrutType} and \pfref{scrutFinal} and \pfref{pre+rrulesType} and \pfref{postrulesType} and \pfref{notsatisfypre+r} and \pfref{exhaust}} 
+    \end{pfsteps*}
+  \end{byCases}
+\resetpfcounter
+\end{byCases}
+\end{proof}
+
+\begin{thm}[Progress]
+ \label{thrm:progress}
+ If $\hexptyp{\cdot}{\cdot}{e}{\tau}$ then either $\isFinal{e}$ or $\htrans{e}{e'}$ for some $e'$.
+\end{thm}
+
+\begin{proof}
+\begin{pfsteps*}
+\item $\hexptyp{\cdot}{\Delta}{e}{\tau}$ \BY{assumption} \pflabel{expType}
+\end{pfsteps*}
+By rule induction over Rules (\ref{rules:CTExp}) on \pfref{expType}. For simplicity, we only consider two cases here.
+\begin{byCases}
+\item[\text{(\ref{rule:CTMatchZPre})}]
+  \begin{pfsteps*}
+  \item $e = \hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{rs}}$ \BY{assumption}
+  \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{scrutType}
+  \item $\chrulstyp{\cdot}{\Delta}{\cfalsity}{\hrulesP{r}{rs}}{\tau_1}{\xi}{\tau}$ \BY{assumption} \pflabel{rulesType}
+  \item $\csatisfyormay{\ctruth}{\xi}$ \BY{assumption} \pflabel{exhaust}
+  \item $\xi = \cor{\xi_r}{\xi_{rs}}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{rulesType}}
+  \item $\chrultyp{\cdot}{\Delta}{r}{\tau_1}{\xi_r}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{rulesType}} \pflabel{ruleType}
+  \item $\chrulstyp{\cdot}{\Delta}{\cor{\cfalsity}{\xi_r}}{rs}{\tau_1}{\xi_{rs}}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{rulesType}} \pflabel{postrulesType}
+  \item $\cnotsatisfy{\xi_r}{\cfalsity}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{rulesType}} \pflabel{notredundant}
+  \item $r = \hrul{p_r}{e_r}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{ruleType}}
+  \item $\chpattyp{p_r}{\tau_1}{\xi_r}{\Gamma_r}{\Delta_r}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{ruleType}} \pflabel{patType}
+  \end{pfsteps*}
+  By IH on \pfref{scrutType}.
+  \begin{byCases}
+  \item[\text{Scrutiny takes a step}]
+    \begin{pfsteps*}
+    \item $\htrans{e_1}{e_1'}$ \BY{assumption} \pflabel{scrutStep}
+    \item $\htrans{\hmatch{e_1}{\zruls{\cdot}{r}{rs}}}{\hmatch{e_1'}{\zruls{\cdot}{r}{rs}}}$ \BY{Rule (\ref{rule:ITExpMatch}) on \pfref{scrutStep}}
+    \end{pfsteps*}
+  \item[\text{Scrutiny is final}]
+    \begin{pfsteps*}
+    \item $\isFinal{e_1}$ \BY{assumption} \pflabel{scrutFinal}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:CTRules}) on \pfref{postrulesType}.
+    \begin{byCases}
+    \item[\text{(\ref{rule:CTZeroRule})}]
+      \begin{pfsteps*}
+      \item $rs = \cdot$ \BY{assumption}
+      \item $\xi_{rs} = \cfalsity$ \BY{assumption}
+      \item $\csatisfyormay{\ctruth}{\xi_r}$ \BY{Corollary \ref{corol:relax-nn-entail} on \pfref{exhaust}} \pflabel{exhaustr}
+      \item $\csatisfyormay{e_1}{\xi_r}$ \BY{Corollary \ref{corol:nn-material-entailment-exhaust} on \pfref{scrutFinal} and \pfref{exhaustr}} \pflabel{satormayr}
+      \end{pfsteps*}
+      By rule induction over Rules (\ref{rules:satormayConst}) on \pfref{satormayr}.
+      \begin{byCases}
+      \item[\text{(\ref{rule:CMSPossibly})}]
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{e_1}{\xi_r}$ \BY{assumption} \pflabel{maysatr}
+        \item $\hmaymatch{e_1}{p_r}$ \BY{Lemma \ref{lem:const-matching-coherence} on \pfref{scrutType} and \pfref{scrutFinal} and \pfref{patType} and \pfref{maysatr}} \pflabel{maymatchr}
+        \item $\isIndet{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{\cdot}}}$ \BY{Rule (\ref{rule:IMayMatch}) on \pfref{scrutFinal} and \pfref{maymatchr}} \pflabel{matchIndet}
+        \item $\isFinal{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{\cdot}}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{matchIndet}}
+        \end{pfsteps*}
+      \item[\text{(\ref{rule:CMSMust})}]
+        \begin{pfsteps*}
+        \item $\csatisfy{e_1}{\xi_r}$ \BY{assumption} \pflabel{satisfyr}
+        \item $\hpatmatch{e_1}{p_r}{\theta}$ \BY{Lemma \ref{lem:const-matching-coherence} on \pfref{scrutType} and \pfref{scrutFinal} and \pfref{patType} and \pfref{satisfyr}} \pflabel{matchr}
+        \item $\htrans{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{\cdot}}}{[\theta](e_r)}$ \BY{Rule (\ref{rule:ITSuccMatch}) on \pfref{scrutFinal} and \pfref{matchr}}
+        \end{pfsteps*}
+      \end{byCases}
+    \item[\text{(\ref{rule:CTRules})}]
+      \begin{pfsteps*}
+      \item $rs = \hrules{r'}{rs'}$ \BY{assumption}
+      \end{pfsteps*}
+      By Lemma \ref{lem:match-determinism} on \pfref{scrutType} and \pfref{scrutFinal} and \pfref{patType}.
+      \begin{byCases}
+      \item[\text{Scrutiny matches pattern}]
+        \begin{pfsteps*}
+        \item $\hpatmatch{e_1}{p_r}{\theta}$ \BY{assumption} \pflabel{succmatch}
+        \item $\htrans{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{rs}}}{[\theta](e_r)}$ \BY{Rule (\ref{rule:ITSuccMatch}) on \pfref{scrutFinal} and \pfref{succmatch}}
+        \end{pfsteps*}
+      \item[\text{Scrutiny may matches pattern}]
+        \begin{pfsteps*}
+        \item $\hmaymatch{e_1}{p_r}$ \BY{assumption} \pflabel{maymatch}
+        \item $\isIndet{\hmatch{e_1}{\zruls{\cdot}{r}{rs}}}$ \BY{Rule (\ref{rule:IMayMatch}) on \pfref{scrutFinal} and \pfref{maymatch}} \pflabel{indetmatch}
+        \item $\isFinal{\hmatch{e_1}{\zruls{\cdot}{r}{rs}}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{indetmatch}}
+        \end{pfsteps*}
+      \item[\text{Scrutiny doesn't matche pattern}]
+        \begin{pfsteps*}
+        \item $\hnotmatch{e_1}{p_r}$ \BY{assumption} \pflabel{notmatch}
+        \item $\htrans{\hmatch{e_1}{\zruls{\cdot}{r}{\hrulesP{r'}{rs'}}}}{\hmatch{e_1}{\zruls{\hrulesP{r}{\cdot}}{r'}{rs'}}}$ \BY{Rule (\ref{rule:ITFailMatch}) on \pfref{scrutFinal} and \pfref{notmatch}}
+        \end{pfsteps*}
+      \end{byCases}
+    \end{byCases}
+  \end{byCases}
+    
+\resetpfcounter
+\item[\text{(\ref{rule:CTMatchNZPre})}]
+  \begin{pfsteps*}
+  \item $\hexptyp{\cdot}{\Delta}{e}{\tau}$ \BY{assumption} \pflabel{expType}
+  \item $e = \hmatch{e_1}{\zruls{rs_{pre}}{r}{rs_{post}}}$ \BY{assumption}
+  \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{scrutType}
+  \item $\isFinal{e_1}$ \BY{assumption} \pflabel{scrutFinal}
+  \item $\chrulstyp{\cdot}{\Delta}{\xi_{pre}}{\hrulesP{r}{rs_{post}}}{\tau_1}{\xi_{rest}}{\tau}$ \BY{assumption} \pflabel{restrulesType}
+  \item $\cnotsatisfyormay{e_1}{\xi_{pre}}$ \BY{assumption} \pflabel{notsatisfypre}
+  \item $\csatisfyormay{\ctruth}{\cor{\xi_{pre}}{\xi_{rest}}}$ \BY{assumption} \pflabel{exhaust}
+  \item $\xi_{rest} = \cor{\xi_r}{\xi_{post}}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{restrulesType}}
+  \item $\chrultyp{\cdot}{\Delta}{r}{\tau_1}{\xi_r}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{restrulesType}} \pflabel{ruleType}
+  \item $\chrulstyp{\cdot}{\Delta}{\cor{\xi_{pre}}{\xi_r}}{rs_{post}}{\tau_1}{\xi_{post}}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{restrulesType}} \pflabel{postrulesType}
+  \item $r = \hrul{p_r}{e_r}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{ruleType}}
+  \item $\chpattyp{p_r}{\tau_1}{\xi_r}{\Gamma_r}{\Delta_r}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{ruleType}} \pflabel{patType}
+  \end{pfsteps*}
+  By rule induction over Rules (\ref{rules:CTRules}) on \pfref{postrulesType}.
+  \begin{byCases}
+  \item[\text{(\ref{rule:CTZeroRule})}]
+    \begin{pfsteps*}
+    \item $rs_{post} = \cdot$ \BY{assumption}
+    \item $\xi_{post} = \cfalsity$ \BY{assumption}
+    \item $\csatisfyormay{e_1}{\cor{\xi_{pre}}{\cor{\xi_r}{\cfalsity}}}$ \BY{Corollary \ref{corol:nn-material-entailment-exhaust} on \pfref{scrutFinal} and \pfref{exhaust}} \pflabel{satisfypre+r+bot}
+    \item $\csatisfyormay{e_1}{\cor{\xi_{pre}}{\xi_r}}$ \BY{Lemma \ref{lem:relax-nn-satisfy} on \pfref{satisfypre+r+bot}} \pflabel{satisfypre+r}
+    \item $\csatisfyormay{e_1}{\xi_r}$ \BY{Lemma \ref{lem:satisfy-substraction} on \pfref{satisfypre+r} and \pfref{notsatisfypre}} \pflabel{satormayr}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:satormayConst}) on \pfref{satormayr}.
+    \begin{byCases}
+    \item[\text{(\ref{rule:CMSPossibly})}]
+      \begin{pfsteps*}
+      \item $\cmaysatisfy{e_1}{\xi_r}$ \BY{assumption} \pflabel{maysatr}
+      \item $\hmaymatch{e_1}{p_r}$ \BY{Lemma \ref{lem:const-matching-coherence} on \pfref{scrutType} and \pfref{scrutFinal} and \pfref{patType} and \pfref{maysatr}} \pflabel{maymatchr}
+      \item $\isIndet{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{\cdot}}}$ \BY{Rule (\ref{rule:IMayMatch}) on \pfref{scrutFinal} and \pfref{maymatchr}} \pflabel{matchIndet}
+      \item $\isFinal{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{\cdot}}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{matchIndet}}
+      \end{pfsteps*}
+    \item[\text{(\ref{rule:CMSMust})}]
+      \begin{pfsteps*}
+      \item $\csatisfy{e_1}{\xi_r}$ \BY{assumption} \pflabel{satisfyr}
+      \item $\hpatmatch{e_1}{p_r}{\theta}$ \BY{Lemma \ref{lem:const-matching-coherence} on \pfref{scrutType} and \pfref{scrutFinal} and \pfref{patType} and \pfref{satisfyr}} \pflabel{matchr}
+      \item $\htrans{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{\cdot}}}{[\theta](e_r)}$ \BY{Rule (\ref{rule:ITSuccMatch}) on \pfref{scrutFinal} and \pfref{matchr}}
+      \end{pfsteps*}
+    \end{byCases}
+  \item[\text{(\ref{rule:CTRules})}]
+    \begin{pfsteps*}
+    \item $rs = \hrules{r'}{rs'}$ \BY{assumption}
+    \end{pfsteps*}
+    By Lemma \ref{lem:match-determinism} on \pfref{scrutType} and \pfref{scrutFinal} and \pfref{patType}.
+    \begin{byCases}
+    \item[\text{Scrutiny matches pattern}]
+      \begin{pfsteps*}
+      \item $\hpatmatch{e_1}{p_r}{\theta}$ \BY{assumption} \pflabel{succmatch}
+      \item $\htrans{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{rs}}}{[\theta](e_r)}$ \BY{Rule (\ref{rule:ITSuccMatch}) on \pfref{scrutFinal} and \pfref{succmatch}}
+      \end{pfsteps*}
+    \item[\text{Scrutiny may matches pattern}]
+      \begin{pfsteps*}
+      \item $\hmaymatch{e_1}{p_r}$ \BY{assumption} \pflabel{maymatch}
+      \item $\isIndet{\hmatch{e_1}{\zruls{\cdot}{r}{rs}}}$ \BY{Rule (\ref{rule:IMayMatch}) on \pfref{scrutFinal} and \pfref{maymatch}} \pflabel{indetmatch}
+      \item $\isFinal{\hmatch{e_1}{\zruls{\cdot}{r}{rs}}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{indetmatch}}
+      \end{pfsteps*}
+    \item[\text{Scrutiny doesn't matche pattern}]
+      \begin{pfsteps*}
+      \item $\hnotmatch{e_1}{p_r}$ \BY{assumption} \pflabel{notmatch}
+      \item $\htrans{\hmatch{e_1}{\zruls{\cdot}{r}{\hrulesP{r'}{rs'}}}}{\hmatch{e_1}{\zruls{\hrulesP{r}{\cdot}}{r'}{rs'}}}$ \BY{Rule (\ref{rule:ITFailMatch}) on \pfref{scrutFinal} and \pfref{notmatch}}
+      \end{pfsteps*}
+      \end{byCases}
+  \end{byCases}
+\end{byCases}
+\end{proof}

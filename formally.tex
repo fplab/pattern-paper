@@ -1,5 +1,5 @@
-% !TEX root = ./patterns-paper.tex
-\begin{figure}[p]
+% !TEX root = ./pattern-paper.tex
+\section{Statics and Dynamics}
 $\arraycolsep=4pt\begin{array}{lll}
 \tau & ::= &
   \tnum ~\vert~
@@ -35,10 +35,8 @@ p & ::= &
   \hehole{w} ~\vert~
   \hhole{p}{w}
 \end{array}$
-\end{figure}
 
-\begin{figure}[p]
-  \fbox{$\hexptyp{\Gamma}{\Delta}{e}{\tau}$}~~\text{$e$ is of type $\tau$}
+\fbox{$\hexptyp{\Gamma}{\Delta}{e}{\tau}$}~~\text{$e$ is of type $\tau$}
 \begin{subequations}
 \begin{equation}
 \inferrule[TVar]{ }{
@@ -108,9 +106,7 @@ p & ::= &
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$\hexptyp{\Gamma}{\Delta}{r}{\trul{\tau_1}{\tau_2}}$}~~\text{$r$ is of type $\trulnp{\tau_1}{\tau_2}$}
 \begin{subequations}
 \begin{equation}
@@ -122,9 +118,7 @@ p & ::= &
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$\hexptyp{\Gamma}{\Delta}{rs}{\trul{\tau_1}{\tau_2}}$}~~\text{$rs$ is of type $\trulnp{\tau_1}{\tau_2}$}
 \begin{subequations}
 \begin{equation}
@@ -141,9 +135,7 @@ p & ::= &
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$\hpattyp{p}{\tau}{\Gamma}{\Delta}$}~~\text{$p$ matches expression of type $\tau$ and generates context $\Gamma$ and hole context $\Delta$}
 \begin{subequations}
 \begin{equation}
@@ -198,9 +190,7 @@ p & ::= &
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$\hsubstyp{\theta}{\Gamma}$}~~\text{Substitution $\theta$ is of type $\Gamma$}
 \begin{subequations}
 \begin{equation}
@@ -217,9 +207,7 @@ p & ::= &
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$\hpatmatch{e}{p}{\theta}$}~~\text{Pattern matching $e$ on $p$ emits $\theta$}
 \begin{subequations}
 \begin{equation}
@@ -260,9 +248,7 @@ p & ::= &
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$\hmaymatch{e}{p}$}~~\text{$e$ may match $p$}
 \begin{subequations}
 \begin{equation}
@@ -328,9 +314,7 @@ p & ::= &
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$\hnotmatch{e}{p}$}~~\text{$e$ doesn't match $p$}
 \begin{subequations}
 \begin{equation}
@@ -372,11 +356,9 @@ p & ::= &
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$\isVal{e}$}~~\text{$e$ is a value}
-\begin{subequations}
+\begin{subequations}\label{rules:Value}
 \begin{equation}
 \inferrule[VNum]{ }{
   \isVal{\hnum{n}}
@@ -408,11 +390,9 @@ p & ::= &
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$\isIndet{e}$}~~\text{$e$ is indeterminate}
-\begin{subequations}
+\begin{subequations}\label{rules:Indet}
 \begin{equation}
 \inferrule[IEHole]{ }{
   \isIndet{\hehole{u}}
@@ -468,7 +448,7 @@ p & ::= &
   \isIndet{\hinr{\tau}{e}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:IMayMatch}
 \inferrule[IMayMatch]{
   \isFinal{e} \\
   \hmaymatch{e}{p_0}
@@ -479,11 +459,9 @@ p & ::= &
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}
 \fbox{$\isFinal{e}$}~~\text{$e$ is final}
-\begin{subequations}
+\begin{subequations}\label{rules:Final}
 \begin{equation}
 \inferrule[FVal]{
   \isVal{e}
@@ -491,7 +469,7 @@ p & ::= &
   \isFinal{e}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:FIndet}
 \inferrule[FIndet]{
   \isIndet{e}
 }{
@@ -499,11 +477,9 @@ p & ::= &
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$e \mapsto e'$}~~\text{$e$ takes an instruction transition to $e'$}
-\begin{subequations}
+\begin{subequations}\label{rules:ITExp}
 \begin{equation}
 \inferrule[ITHole]{
   \htrans{e}{e'}
@@ -563,14 +539,14 @@ p & ::= &
   \htrans{\hinr{\tau}{e}}{\hinr{\tau}{e'}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:ITExpMatch}
 \inferrule[ITExpMatch]{
   \htrans{e}{e'}
 }{
   \htrans{\hmatch{e}{\zrules}}{\hmatch{e'}{\zrules}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:ITSuccMatch}
 \inferrule[ITSuccMatch]{
   \isFinal{e} \\
   \hpatmatch{e}{p_0}{\theta}
@@ -582,7 +558,7 @@ p & ::= &
   }
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:ITFailMatch}
 \inferrule[ITFailMatch]{
   \isFinal{e} \\
   \hnotmatch{e}{p_0}
@@ -599,31 +575,23 @@ p & ::= &
 }
 \end{equation}
 \end{subequations}
-\end{figure}
-
-
-\begin{thm}[Preservation]
-  \label{thrm:preservation}
-  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\htrans{e}{e'}$
-  then $\hexptyp{\cdot}{\Delta}{e'}{\tau}$
-\end{thm}
 
 \begin{lem}[Substitution]
-  \label{lemma:substitution}
+  \label{lem:substitution}
   If $\hexptyp{\Gamma, x : \tau}{\Delta}{e_0}{\tau_0}$ and $\hexptyp{\Gamma}{\Delta}{e}{\tau}$
   then $\hexptyp{\Gamma}{\Delta}{[e/x]e_0}{\tau_0}$
 \end{lem}
 
 \begin{lem}[Simultaneous Substitution]
-  \label{lemma:simult-substitution}
+  \label{lem:simult-substitution}
   If $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau}$ and $\hsubstyp{\theta}{\Gamma'}$
   then $\hexptyp{\Gamma}{\Delta}{[\theta]e}{\tau}$
 \end{lem}
 Proof by induction on the derivation of $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau}$.
 
 \begin{lem}[Substitution Typing]
-  \label{lemma:subs-typing}
-  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$
+  \label{lem:subs-typing}
+  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta'}$
   then $\hsubstyp{\theta}{\Gamma}$
 \end{lem}
 Proof by induction on the derivation of $\hpatmatch{e}{p}{\theta}$.
@@ -637,7 +605,7 @@ To apply this lemma in ITSuccMatch case, first apply inversion lemma on premise 
 \end{thm}
 
 \begin{lem}[Matching Progress]
-  \label{lemma:match-progress}
+  \label{lem:match-progress}
   If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$
   then $\hnotmatch{e}{p}$ or $\hmaymatch{e}{p}$ or $\hpatmatch{e}{p}{\theta}$ for some $\theta$
 \end{lem}
@@ -660,7 +628,7 @@ Proof by induction on two premises.
 \end{thm}
 
 \begin{lem}[Matching Determinism]
-  \label{lemma:match-determinism}
+  \label{lem:match-determinism}
   If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$ then exactly one of the following holds
   \begin{enumerate}
     \item $\hpatmatch{e}{p}{\theta}$ for some $\theta$
@@ -669,7 +637,6 @@ Proof by induction on two premises.
   \end{enumerate}
 \end{lem}
 
-\begin{figure}[p]
 $\arraycolsep=4pt\begin{array}{lll}
 \xi & ::= &
   \ctruth ~\vert~
@@ -683,9 +650,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   \cinr{\xi} ~\vert~
   \cpair{\xi_1}{\xi_2}
 \end{array}$
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$\ctyp{\xi}{\tau}$}~~\text{Constraint $\xi$ constrains values of type $\tau$}
 \begin{subequations}
 \begin{equation}
@@ -749,9 +714,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}
 \fbox{$\cdual{\xi_1} = \xi_2$}~~\text{The dual of a match constraint $\xi_1$ is $\xi_2$}
 \begin{subequations}
 \begin{align}
@@ -774,12 +737,10 @@ $\arraycolsep=4pt\begin{array}{lll}
   }
 \end{align}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$\csatisfy{e}{\xi}$}~~\text{Value $e$ satisfies constraint $\xi$}
 \begin{subequations}
-\begin{equation}
+\begin{equation}\label{rule:CSTruth}
 \inferrule[CSTruth]{ }{
   \csatisfy{e}{\ctruth}
 }
@@ -849,9 +810,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$\cmaysatisfy{e}{\xi}$}~~\text{Value $e$ possibly satisfies constraint $\xi$}
 \begin{subequations}
 \begin{equation}
@@ -960,27 +919,24 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$\csatisfyormay{e}{\xi}$}
-\begin{subequations}
-\begin{equation}
-\inferrule[CUSPossibly]{
+\begin{subequations}\label{rules:satormayConst}
+\begin{equation}\label{rule:CMSPossibly}
+\inferrule[CMSPossibly]{
   \cmaysatisfy{e}{\xi}
 }{
   \csatisfyormay{e}{\xi}
 }
 \end{equation}
-\begin{equation}
-\inferrule[CUSMust]{
+\begin{equation}\label{rule:CMSMust}
+\inferrule[CMSMust]{
   \csatisfy{e}{\xi}
 }{
   \csatisfyormay{e}{\xi}
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
 \begin{thm}[Exclusiveness of Constraint Satisfaction]
   \label{thrm:exclusive-constraint-satisfaction}
@@ -993,44 +949,37 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{thm}
 
 \begin{lem}[Negation of Satisfaction]
-  \label{lem:neg-satisfaction}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$. We have $\cnotsatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
+  \label{lem:neg-satisfy}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. We have $\cnotsatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
 \end{lem}
 \begin{lem}[Negation of Possible Satisfaction]
-  \label{lem:neg-possible-satisfaction}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$. We have $\cnotmaysatisfy{e}{\xi}$ iff $\csatisfy{e}{\xi}$ or $\cnotsatisfy{e}{\cdual{\xi}}$
+  \label{lem:neg-possible-satisfy}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. We have $\cnotmaysatisfy{e}{\xi}$ iff $\csatisfy{e}{\xi}$ or $\cnotsatisfy{e}{\cdual{\xi}}$
 \end{lem}
 \begin{lem}[Negation of Dual Satisfaction]
-  \label{lem:neg-dual-satisfaction}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$. We have $\cnotsatisfy{e}{\cdual{\xi}}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\xi}$
+  \label{lem:neg-dual-satisfy}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. We have $\cnotsatisfy{e}{\cdual{\xi}}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\xi}$ \textit{i.e.} $\csatisfyormay{e}{\xi}$
 \end{lem}
 \begin{lem}[Coverage of Constraint Satisfaction]
-  \label{lem:coverage-constraint-satisfaction}
-  If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$ then either $\csatisfy{e}{\xi}$ or $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
+  \label{lem:coverage-constraint-satisfy}
+  If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$ then either $\csatisfy{e}{\xi}$ or $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
 \end{lem}
 
 \begin{corol}[Possible Satisfaction of Dual Constraint]
-  \label{corol:possible-satisfaction-dual}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$. We have $\cmaysatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\cdual{\xi}}$
+  \label{corol:possible-satisfy-dual}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. We have $\cmaysatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\cdual{\xi}}$
 \end{corol}
 
 \begin{defn}[Entailment of Constraints]
   \label{defn:const-entailment}
-  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{e}{\xi_1}$ or $\cmaysatisfy{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ for all $e$ such that $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$
+  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ for all $e$ such that $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$
 \end{defn}
 \begin{corol}[Material Entailment of Constraints]
-  \label{lemma:material-entailment}
+  \label{lem:material-entailment}
   $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{\ctruth}{\cor{\cdual{\xi_1}}{\xi_2}}$
 \end{corol}
 
-\begin{defn}[Undeterministic Material Entailment of Constraints]
-  \label{defn:undeter-material-entailment}
-  $\csatisfyormay{\xi_1}{\xi_2}$ iff $\csatisfy{e}{\xi_1}$ or $\cmaysatisfy{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ or $\cmaysatisfy{e}{\xi_2}$
-  
-\end{defn}
-
-\begin{figure}[p]
-  \fbox{$\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$}~~\text{$p$ matches expression of type $\tau$, emits match constraint $\xi$ and generates context $\Gamma$}
+\fbox{$\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$}~~\text{$p$ matches expression of type $\tau$, emits match constraint $\xi$ and generates context $\Gamma$}
 \begin{subequations}
 \begin{equation}
 \inferrule[CTPVar]{ }{
@@ -1084,11 +1033,9 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
-  \fbox{$\chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi}{\tau'}$}~~\text{$r$ transforms values of type $\tau$, constrained by $\xi$, to type $\tau'$}
-\begin{equation}
+\fbox{$\chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi}{\tau'}$}~~\text{$r$ transforms values of type $\tau$, constrained by $\xi$, to type $\tau'$}
+\begin{equation}\label{rule:CTRule}
 \inferrule[CTRule]{
   \chpattyp{p}{\tau}{\xi}{\Gamma'}{\Delta'} \\
   \hexptyp{\Gamma \uplus \Gamma'}{\Delta \uplus \Delta'}{e}{\tau'}
@@ -1096,33 +1043,27 @@ $\arraycolsep=4pt\begin{array}{lll}
   \chrultyp{\Gamma}{\Delta}{\hrul{p}{e}}{\tau}{\xi}{\tau'}
 }
 \end{equation}
-\end{figure}
 
-\begin{figure}[p]
 $\arraycolsep=4pt\begin{array}{lll}
   \hat{rs} & ::= & \inparens{\zruls{rs}{r}{rs}}
 \end{array}$
-\end{figure}
 
-\begin{figure}[p]
-  \fbox{$\rmpointer{\zrules} = rs$}~~\text{erase pointer from $\zrules$}
+\fbox{$\rmpointer{\zrules} = rs$}~~\text{erase pointer from $\zrules$}
 \begin{subequations}
 \begin{align}
   \rmpointer{\zruls{\cdot}{r}{rs}} &= \hrules{r}{rs} \\
   \rmpointer{\zruls{\hrulesP{r'}{rs'}}{r}{rs}} &= \hrules{r'}{\rmpointer{\zruls{rs'}{r}{rs}}}
 \end{align}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
-  \fbox{$\chrulstyp{\Gamma}{\Delta}{\xi}{rs}{\tau}{\xi'}{\tau'}$}~~\text{all rules in $rs$ transform values of type $\tau$, constrained by $\xi$, to type $\tau'$}
-\begin{subequations}
-\begin{equation}
+\fbox{$\chrulstyp{\Gamma}{\Delta}{\xi}{rs}{\tau}{\xi'}{\tau'}$}~~\text{all rules in $rs$ transform values of type $\tau$, constrained by $\xi$, to type $\tau'$}
+\begin{subequations}\label{rules:CTRules}
+\begin{equation}\label{rule:CTZeroRule}
 \inferrule[CTZeroRule]{ }{
   \chrulstyp{\Gamma}{\Delta}{\xi}{\cdot}{\tau}{\cfalsity}{\tau'}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:CTRules}
 \inferrule[CTRules]{
   \chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi'}{\tau'} \\
   \chrulstyp{\Gamma}{\Delta}{\cor{\xi}{\xi'}}{rs}
@@ -1134,26 +1075,35 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[p]
 \fbox{$\hexptyp{\Gamma}{\Delta}{e}{\tau}$}~~\text{$e$ is of type $\tau$}
-\begin{subequations}
-\begin{equation}
-\inferrule[CTMatch]{
+\begin{subequations}\label{rules:CTExp}
+\begin{equation}\label{rule:CTMatchZPre}
+\inferrule[CTMatchZPre]{
   \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
-  \chrulstyp{\Gamma}{\Delta}{\cfalsity}{\rmpointer{\zrules}}{\tau}{\xi}{\tau'} \\
+  \chrulstyp{\Gamma}{\Delta}{\cfalsity}{\hrules{r}{rs}}{\tau}{\xi}{\tau'} \\
   \csatisfyormay{\ctruth}{\xi}
+}{
+\hexptyp{\Gamma}{\Delta}{\hmatch{e}{\zruls{\cdot}{r}{rs}}}{\tau'}
+}
+\end{equation}
+\begin{equation}\label{rule:CTMatchNZPre}
+\inferrule[CTMatchNZPre]{
+  \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
+  \isFinal{e} \\
+  \chrulstyp{\Gamma}{\Delta}{\cfalsity}{rs_{pre}}{\tau}{\xi_{pre}}{\tau'} \\
+  \chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrules{r}{rs_{post}}}{\tau}{\xi_{rest}}{\tau'} \\
+  \cnotsatisfyormay{e}{\xi_{pre}} \\
+  \csatisfyormay{\ctruth}{\cor{\xi_{pre}}{\xi_{post}}}
 }{
   \hexptyp{\Gamma}{\Delta}{\hmatch{e}{\hat{rs}}}{\tau'}
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
 \begin{lem}[Matching Coherence of Constraint]
-  \label{lemma:const-matching-coherence}
-  Suppose that $\cpattyp{p}{\tau}{\xi}{\Gamma}$. For all $\hexptyp{\cdot}{\cdot}{e}{\tau}$ such that $\isFinal{e}$ we have
+  \label{lem:const-matching-coherence}
+  If $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$ and $\cpattyp{p}{\tau}{\xi}{\Gamma}$ then
   \begin{enumerate}
     \item $\csatisfy{e}{\xi}$ iff $\hpatmatch{e}{p}{\theta}$
     \item $\csatisfy{e}{\cdual{\xi}}$ iff $\hnotmatch{e}{p}$
@@ -1161,13 +1111,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   \end{enumerate}
 \end{lem}
 
-\begin{thm}[Exhaustive Progress]
- \label{thrm:exhau-progress}
- If $\hexptyp{\cdot}{\cdot}{e}{\tau}$ then either $\isFinal{e}$ or $\htrans{e}{e'}$ for some $e'$.
-\end{thm}
-
-\begin{figure}[p]
-  \fbox{$\cincon{\Xi}$}~~\text{A finite set $\Xi$ of constraints is inconsistent}
+\fbox{$\cincon{\Xi}$}~~\text{A finite set $\Xi$ of constraints is inconsistent}
 \begin{subequations}
 \begin{equation}
 \inferrule[CINCTruth]{
@@ -1249,10 +1193,8 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \end{subequations}
-\end{figure}
 
-\begin{figure}[t]
-  \fbox{$\cmayincon{\Xi}$}~~\text{A finite set $\Xi$ of constraints is either inconsistent or may be inconsistent}
+\fbox{$\cmayincon{\Xi}$}~~\text{A finite set $\Xi$ of constraints is either inconsistent or may be inconsistent}
 \begin{subequations}
 \begin{equation}
 \inferrule[CNNINCTruth]{
@@ -1332,37 +1274,37 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \end{subequations}
-\end{figure}
+
 \begin{lem}[Inconsistency Decidability]
-  \label{lemma:inconsistency-decidability}
+  \label{lem:inconsistency-decidability}
   It is decidable whether $\cincon{\Xi}$
 \end{lem}
 \begin{lem}[Not Not Inconsistency Decidability]
-  \label{lemma:not-not-inconsistency-decidability}
+  \label{lem:not-not-inconsistency-decidability}
   It is decidable whether $\cmayincon{\Xi}$
 \end{lem}
 \begin{lem}[Inconsistency and Entailment of Constraint]
-  \label{lemma:inconsistent-and-entailment}
+  \label{lem:inconsistent-and-entailment}
   $\cincon{\cdual{\xi}}$ iff $\csatisfy{\ctruth}{\xi}$
 \end{lem}
 \begin{lem}[Not Not Inconsistency and Possible Entailment of Constraint]
-  \label{lemma:not-not-inconsistent-and-possible-entailment}
+  \label{lem:not-not-inconsistent-and-possible-entailment}
   $\cmayincon{\cdual{\xi}}$ iff $\csatisfyormay{\ctruth}{\xi}$
 \end{lem}
 \begin{lem}[Redundancy Decidability]
-  \label{lemma:redundancy-decidability}
+  \label{lem:redundancy-decidability}
   It is decidable whether $\csatisfy{\xi_1}{\xi_2}$, i.e., $\xi_1$ is redundant with respect to $\xi_2$
 \end{lem}
 \begin{lem}[Exhaustiveness Decidability]
-  \label{lemma:exhaustiveness-decidability}
+  \label{lem:exhaustiveness-decidability}
   It is decidable whether $\csatisfy{\ctruth}{\xi}$, i.e., $\xi$ is exhaustive
 \end{lem}
 \begin{lem}[Not Not Exhaustiveness Decidability]
-  \label{lemma:not-not-exhaustiveness-decidability}
+  \label{lem:not-not-exhaustiveness-decidability}
   It is decidable whether $\csatisfyormay{\ctruth}{\xi}$, i.e., $\xi$ is exhaustive or $\xi$ is possibly exhaustive
 \end{lem}
 \begin{lem}[Exhaustive Matching Progress when e is a value]
-  \label{lemma:val-match-progress}
+  \label{lem:val-match-progress}
   If $\isVal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\czrulstyp{\cdot}{\Delta}{\cfalsity}{\rmpointer{\zrules}}{\xi'}{\tau}{\tau'}$ and $\csatisfy{\ctruth}{\cor{\xi}{\xi'}}$
   then either
   \begin{enumerate}
@@ -1371,7 +1313,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   \end{enumerate}
 \end{lem}
 \begin{lem}[Exhaustive Matching Progress when e is final]
-  \label{lemma:indet-match-progress}
+  \label{lem:final-match-progress}
   If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\czrulstyp{\cdot}{\Delta}{\xi}{\zrules}{\xi'}{\tau}{\tau'}$ and $\csatisfy{\ctruth}{\cor{\xi}{\xi'}}$
   then either
   \begin{enumerate}
@@ -1380,7 +1322,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   \end{enumerate}
 \end{lem}
 \begin{lem}[Undetermined Exhaustive Matching Progress when e is final]
-  \label{lemma:indet-match-progress}
+  \label{lem:final-undet-match-progress}
   If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\czrulstyp{\cdot}{\Delta}{\xi}{\zrules}{\xi'}{\tau}{\tau'}$ and $\csatisfyormay{\ctruth}{\cor{\xi}{\xi'}}$
   then either
   \begin{enumerate}

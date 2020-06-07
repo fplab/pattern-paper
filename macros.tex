@@ -107,7 +107,8 @@
 \newcommand{\cnotsatisfy}[2]{#1 \not\models #2}
 \newcommand{\cmaysatisfy}[2]{#1 \models_{?} #2}
 \newcommand{\cnotmaysatisfy}[2]{#1 \not\models_{?} #2}
-\newcommand{\csatisfyormay}[2]{#1 \models_{?}^{+} #2}
+\newcommand{\csatisfyormay}[2]{#1 \models_{?}^{\dag} #2}
+\newcommand{\cnotsatisfyormay}[2]{#1 \not\models_{?}^{\dag} #2}
 \newcommand{\cincon}[1]{#1 ~\mathtt{incon}}
 \newcommand{\cmayincon}[1]{#1 ~\cancel{\mathtt{not~incon}}}
 
@@ -189,3 +190,5 @@
 %% rule names for appendix
 \newcommand{\rname}[1]{\textsc{#1}}
 \newcommand{\gap}{\vspace{7pt}}
+
+\newmdenv[backgroundcolor=light-gray,hidealllines=true,innerleftmargin=1pt,innerrightmargin=1pt,leftmargin=0pt,rightmargin=0pt,innertopmargin=1.5pt,innerbottommargin=    1.5pt]{grayparbox}

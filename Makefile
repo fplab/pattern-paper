@@ -1,4 +1,4 @@
-MAIN=patterns-paper
+MAIN=pattern-paper
 PROG=InconsistentConstraints
 
 all:

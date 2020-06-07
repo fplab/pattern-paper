@@ -1,0 +1,438 @@
+% !TEX root = ./pldi18-supplement.tex
+% !TEX root = omar-thesis.tex
+% \ificfp \else  
+\chapter{Static Evaluation}\label{chap:static-eval}
+In the previous chapters, we have assumed that the parse functions in TLM definitions are closed expanded expressions. This is unrealistic in practice -- writing a parser generally requires access to various libraries. Moreover, the parse function might itself be written more concisely using TLMs. In this chapter, we address these problems by introducing a \emph{static environment} shared between parse functions.
+
+\section{Static Values}
+Figure \ref{fig:static-module-example} shows an example of a module, \li{ParserCombos}\ificfp \else (see Sec. \ref{sec:parser-combinators})\fi. The \li{static} qualifier indicates that this module is bound for use within the parse functions of the subsequent TLM definitions.
+\begin{figure}[h]
+\begin{lstlisting}
+static module ParserCombos = 
+struct 
+  type parser('c, 't) = list('c) -> list('t * list('c))
+  val alt : parser('c, 't) -> parser('c, 't) -> parser('c, 't)
+  (* ... *)
+end
+
+syntax $a at T by 
+  static fn(b) => 
+  	(* ... *) ParserCombos.alt (* ... *)
+end
+
+syntax $b at T' by 
+  static fn(b) => 
+    (* ... *) ParserCombos.alt (* ... *)
+end
+
+val y = (* ParserCombos CANNOT be used here *)
+\end{lstlisting}
+\caption{Binding a static module for use within parse functions}
+\label{fig:static-module-example}
+\end{figure}
+\clearpage
+
+The values that arise during the the evaluation of parse functions do not need to persist from ``compile-time'' to ``run-time'', so we do not need a full staged computation system \cite{Taha99multi-stageprogramming:}. Instead, a sequence of static bindings operates like a lexically-scoped read-evaluate-print loop (REPL), in that each static expression is evaluated immediately and the evaluated values are tracked by a \emph{static environment}.
+
+
+\section{Applying TLMs Within TLM Definitions}\label{sec:tsms-for-tsms}
+TLMs and TLM abbreviations can also be qualified with the \li{static} keyword, which marks them for use within subsequent static expressions and patterns. Let us consider some examples of particular relevance to TLM providers.
+
+\subsection{Quasiquotation}
+TLMs must generate values of type \li{proto_expr} or \li{proto_pat}. Constructing values of these types explicitly can have high syntactic cost. To decrease this cost, we can define TLMs that provide support for \emph{quasiquotation syntax} (similar to that built in to languages like Lisp \cite{Bawd99a} and Scala \cite{shabalin2013quasiquotes}):
+\begin{lstlisting}[numbers=none]
+static syntax $proto_expr at proto_expr by static fn(b) => 
+  (* proto-expression quasiquotation parser here *)
+end
+
+static syntax $proto_typ at proto_typ by static fn(b) => 
+  (* proto-type quasiquotation parser here *)
+end
+\end{lstlisting}
+For example, the following expression:
+\begin{lstlisting}[numbers=none]
+val gx = $proto_expr `SQTg(x)EQT`
+\end{lstlisting}
+is more concise than its expansion:
+\begin{lstlisting}[numbers=none]
+val gx = App(Var 'SSTRgESTR', Var 'SSTRxESTR')
+\end{lstlisting}
+Anti-quotation, i.e. splicing in an expression of type \li{proto_expr} (or \li{proto_pat}), is performed by prefixing a variable or parenthesized expression with \li{%}:
+\begin{lstlisting}[numbers=none]
+val fgx = $proto_expr `SQTf(%EQTgxSQT)EQT`
+\end{lstlisting}
+The expansion of this term is:
+\begin{lstlisting}[numbers=none]
+val fgx = App(Var 'SSTRfESTR', gx)
+\end{lstlisting}
+
+% A similar approach can be taken for working with encodings of terms of other languages (e.g. when writing an interpretter or compiler in VerseML.)
+
+\subsection{Grammar-Based Parser Generators}
+\ificfp \else In Sec. \ref{sec:grammars}, we discussed a number of grammar-based parser generators. \fi Abstractly, a parser generator is a module matching the signature \li{PARSEGEN} defined in Figure \ref{fig:PARSEGEN}. Let us assume a module \li{P : PARSEGEN} and a grammar of spliced unexpanded expressions that have a given type annotation, \li{spliced_uexp : proto_typ -> P.grammar(proto_expr)}, in the discussion below.
+
+
+
+\begin{figure}
+\begin{lstlisting}
+signature PARSEGEN = sig 
+  type grammar('a)
+  (* ... operations on grammars ... *)
+  type parser('a) = string -> parse_result('a)
+  val generate : grammar('a) -> parser('a)
+end
+\end{lstlisting}
+\vspace{-8px}
+\caption[A signature for parser generators]{A signature for parser generators. \ificfp \else The type function \li{parse_result} was defined in Figure \ref{fig:candidate-exp-verseml}.\fi}
+\vspace{-8px}
+\label{fig:PARSEGEN}
+\end{figure}
+
+Rather than constructing a grammar using various operations (whose specifications are elided in \li{PARSEGEN}), we wish to use a syntax for grammars that follows standard conventions. We can do so by defining a static parametric TLM \li{#\dolla#grammar}:
+\begin{lstlisting}[numbers=none]
+static syntax $grammar (P : PARSEGEN) 'a at P.grammar('a) by 
+  static fn(b) => (* ... *)
+end
+\end{lstlisting}
+
+Using these definitions, we might define a TLM for regexes (implementing a subset of the POSIX regex syntax for simplicity) as shown in Figure \ref{fig:rx-grammar-based}.
+
+\begin{figure}[h!]
+\vspace{-5px}
+\begin{lstlisting}[deletekeywords={as}]
+static module RS : RX = (* ... *)
+static module RU = RXUtil(RS)
+syntax $rx(R : RX) at R.t by static 
+  P.generate ($grammar P proto_expr {|SHTML #\label{line:rx_parse_fn_start}#
+    start <- ""
+      EHTMLfn () => $proto_expr `SCSSR.EmptyECSS`SHTML
+    start <- "(" start ")"
+      EHTMLfn e => eSHTML
+    token str_tok #\label{line:str_tok_start}#
+      EHTMLRU.parse "SSTR[^(@$]+ESTR" (* cannot use $rx within its own def *)SHTML #\label{line:str_tok_end}#
+    start <- str_tok
+      EHTMLfn s => $proto_expr `SCSSR.Str %(ECSSstr_to_proto_strlit sSCSS)ECSS`SHTML
+    start <- start start
+      EHTMLfn e1 e2 => $proto_expr `SCSSR.Seq (%ECSSe1SCSS, %ECSSe2SCSS)ECSS`SHTML
+    start <- start "|" start 
+      EHTMLfn e1 e2 => $proto_expr `SCSSR.Or (%ECSSe1SCSS, %ECSSe2SCSS)ECSS`SHTML
+    start <- start "*"
+      EHTMLfn e => $proto_expr `SCSSR.Star %ECSSe`SHTML
+
+    using EHTMLspliced_uexp ($proto_typ `SCSSR.tECSS`) SHTMLas spliced_rx #\label{line:splicede_using}#
+    start <- "%{" spliced_rx "}" #\label{line:splicing-start}#
+      EHTMLfn e => eSHTML
+
+    using EHTMLspliced_uexp ($proto_typ `SCSSstringECSS`) SHTMLas spliced_str
+    start <- "${" spliced_str "}"
+      EHTMLfn e => $proto_expr `SCSSR.Str %(ECSSeSCSS)ECSS`SHTML #\label{line:splicing-end}#
+  EHTML|})
+end #\label{line:rx_parse_fn_end}#
+\end{lstlisting}
+\vspace{-12px}
+\caption{A grammar-based definition of \texttt{\$rx}}
+\vspace{-15px}
+\label{fig:rx-grammar-based}
+\end{figure}
+
+
+\section{Library Management}
+In the examples above, we explicitly qualified various definitions with the \li{static} keyword to make them available within static values. This captures the essential nature of the problem of static evaluation, but in practice, we would like to be able to use libraries within both static values and standard values as needed without duplicating code. This can be achieved by a library manager.
+
+For example, a language-external library manager \ificfp for VerseML \else \fi similar to SML/NJ's CM \cite{blume:smlnj-cm} could support a \li{static} qualifier on imported libraries, which would place the definitions exported by the imported library into the static phase of the library being defined. In particular, a library definition in such a compilation manager might look like this:
+\begin{lstlisting}[numbers=none,morekeywords={Library,is}]
+Library 
+  (* ... exported module, signature and TLM names ... *)
+is 
+  (* ... files defining those exports ... *)
+
+  (* imports: *)
+  static parsegen.cm 
+\end{lstlisting}
+
+A similar approach could be taken for languages the incorporate library management directly into the syntax of programs, e.g. Scala \cite{odersky2008programming}:
+\begin{lstlisting}[numbers=none]
+static import edu.cmu.comar.parsegen
+\end{lstlisting}
+
+\ificfp \else For the sake of generality and simplicity, we will leave the details of library and compilation management out of our formal developments (following the approach taken in the definition of Standard ML \cite{mthm97-for-dart}.) The problem of packaging macros into components has been studied for term-rewriting macros \cite{culpepper2005syntactic}. \fi
+
+An alternative design that allows for the explicit lowering of standard-phase bindings to the static phase has been proposed for OCaml \cite{Ocaml/macros}. \ificfp We are closely following this work in our implementation. \else \fi
+
+TLMs definitions can be exported from the top level of packages, but they cannot be exported from within ML-style modules because that would require that they also appear in signatures, and that, in turn, would complicate reasoning about signature equivalence, since TLM definitions contain arbitrary parse functions. 
+%It would also bring in confusion about whether the generated expansions can use private knowledge about type identity. 
+That said, it should be possible to export TLM \emph{abbreviations} from modules, since they refer to TLM definitions only through symbolic names. We have not yet formalized this intuition, but the work of \citet{culpepper2005syntactic,culpepper2007advanced} considered a closely related question: how should Typed Scheme's macros interact with its unit (i.e. package) system.
+
+
+% \fi
+
+\ificfp
+\section{\texorpdfstring{Formalizing Static Evaluation}{Formalizing Static Evaluation}}
+\else
+\section{\texorpdfstring{$\miniVersePH$}{miniVersePH}}
+\fi
+\ificfp
+
+We will now formalize the mechanisms just discussed by developing a reduced calculus, $\miniVersePH$. This calculus is defined identically to $\miniVerseParam$ with the exception of the syntax and semantics of unexpanded module expressions, $\uM$, so we assume all of the definitions that were given in Appendix \ref{appendix:miniVerseParam} without restating them. 
+
+% We will now formalize the mechanisms outlined in Sec. 6 of the paper by developing a reduced calculus, $\miniVersePH$. This calculus is defined identically to $\miniVerseParam$ with the exception of the syntax and semantics of unexpanded module expressions, $\uM$, so we assume all of the definitions that were given in Appendix \ref{appendix:miniVerseParam} without restating them. 
+
+\else 
+
+We will now formalize the mechanisms just discussed by developing a reduced calculus, $\miniVersePH$. This calculus is defined identically to $\miniVerseParam$ with the exception of the syntax and semantics of unexpanded module expressions, $\uM$, so we assume all of the definitions that were given in Appendix \ref{appendix:miniVerseParam} without restating them. 
+
+\fi
+
+\ificfp
+\subsection{Syntax of Unexpanded Modules}
+\else
+\subsection{Syntax of Unexpanded Modules}
+\fi
+The syntax of unexpanded modules is defined in Figure \ref{fig:syntax-uM-PH}. The parts of this figure that differ from \ificfp $\miniVerseParam$ \else Figure \ref{fig:P-unexpanded-modules-signatures} \fi are highlighted in yellow. Each binding form has a \emph{phase} annotation, $\varphi$, and parse functions are now unexpanded expressions, $\ue$, rather than expanded expressions, $e$. In the textual syntax, the phase annotation $\standardphase$ is assumed when no phase annotation has been given.
+
+\begin{figure}[t]
+\[\arraycolsep=3pt\begin{array}{lllllll}
+\textbf{Sort} & & 
+%& \textbf{Operational Form} 
+& \textbf{Stylized Form} & \textbf{Description}\\
+\LCC \color{Yellow} & \color{Yellow} & \color{Yellow} & \color{Yellow} & \color{Yellow}\\
+\mathsf{Phase} & \varphi & ::= & \standardphase & \text{standard phase}\\
+& & & \staticphase & \text{static phase}\\\ECC
+\mathsf{UMod} & \uM & ::= 
+%& \uX 
+& \uX & \text{module identifier}\\
+&&
+%& \austruct{\uc}{\ue} 
+& \struct{\uc}{\ue} & \text{structure}\\
+&&
+%& \auseal{\usigma}{\uM} 
+& \seal{\uM}{\usigma} & \text{seal}\\
+&&
+%& \aumlet{\usigma}{\uM}{\uX}{\uM} 
+& \mletH{\yellowbox{\varphi}}{\uX}{\uM}{\uM}{\usigma} & \text{definition}\\
+% \LCC &&
+%& \lightgray 
+% & \color{Yellow} & \color{Yellow}\\
+&&
+%& \aumdefpetsm{\urho}{e}{\tsmv}{\uM} 
+& \defpetsmH{\yellowbox{\varphi}}{\tsmv}{\urho}{\yellowbox{\ue}}{\uM} & \text{peTLM definition}\\
+%&&&                                    & \texttt{expressions}~\{e\}~\texttt{in}~\uM\\
+&&
+%& \aumletpetsm{\uepsilon}{\tsmv}{\uM} 
+& \uletpetsmH{\yellowbox{\varphi}}{\tsmv}{\uepsilon}{\uM} & \text{peTLM binding}\\
+% &&&                                  & \texttt{expressions}~\texttt{in}~\uM\\
+% &&& ... & ... & \text{peTLM designation}\\
+&&
+%& \audefpptsm{\urho}{e}{\tsmv}{\uM} 
+& \defpptsmH{\yellowbox{\varphi}}{\tsmv}{\urho}{\yellowbox{\ue}}{\uM} & \text{ppTLM definition}\\
+% &&&                                    & \texttt{patterns}~\{e\}~\texttt{in}~\uM\\
+&&
+%& \auletpptsm{\uepsilon}{\tsmv}{\uM} 
+& \uletpptsmH{\yellowbox{\varphi}}{\tsmv}{\uepsilon}{\uM} & \text{ppTLM binding}%\ECC%
+% &&& & \texttt{patterns}~\texttt{in}~\uM\\
+% &&& ... & ... & \text{ppTLM designation}\ECC
+\end{array}\]
+\caption{Syntax of unexpanded modules in $\miniVersePH$}
+\label{fig:syntax-uM-PH}
+\end{figure}
+
+\ificfp
+\subsection{Module Expansion}
+\else
+\subsection{Module Expansion}
+\fi
+The module expansion judgement in $\miniVersePH$ takes the following form:
+
+\vspace{10px}
+$\begin{array}{ll}
+\textbf{Judgement Form} & \textbf{Description}\\
+\mExpandsPHX{\uM}{M}{\sigma} & \text{$\uM$ has expansion $M$ matching $\sigma$}
+\end{array}$
+\vspace{10px}
+
+The difference here is that there is now a \emph{static environment}, $\Sigma$. Static environments take the form $\staticenv{\omega}{\uOmega}{\uPsi}{\uPhi}$, where $\omega$ is a substitution.
+
+The static environment passes opaquely through the subsumption rule and the rules governing module identifiers, structures and sealing:
+\begin{subequations}\label{rules:mExpandsPH}
+\begin{equation}\label{rule:mExpandsPH-subsumes}
+\inferrule{
+  \mExpandsPHX{\uM}{M}{\sigma}\\
+  \sigsub{\uOmega}{\sigma}{\sigma'}
+}{
+  \mExpandsPHX{\uM}{M}{\sigma'}
+}
+\end{equation}
+\begin{equation}\label{rule:mExpandsPH-var}
+\inferrule{ }{
+  \mExpandsPH{\uOmega, \uMhyp{\uX}{X}{\sigma}}{\uPsi}{\uPhi}{\uX}{X}{\sigma}{\Sigma}
+}
+\end{equation}
+\begin{equation}\label{rule:mExpandsPH-struct}
+\inferrule{
+  \cExpandsX{\uc}{c}{\kappa}\\
+  \expandsPX{\ue}{e}{[c/u]\tau}
+}{
+  \mExpandsPHX{\struct{\uc}{\ue}}{\astruct{c}{e}}{\asignature{\kappa}{u}{\tau}}
+}
+\end{equation}
+\begin{equation}\label{rule:mExpandsPH-seal}
+\inferrule{
+  \sigExpandsPX{\usigma}{\sigma}\\
+  \mExpandsPHX{\uM}{M}{\sigma}
+}{
+  \mExpandsPHX{\seal{\uM}{\usigma}}{\aseal{\sigma}{M}}{\sigma} 
+}
+\end{equation}
+
+Each binding form in the syntax of $\uM$ is qualified with a \emph{phase}, $\varphi$, which is either $\standardphase$ or $\staticphase$. The static environment passes opaquely through the standard phase module let binding construct:
+\begin{equation}\label{rule:mExpandsPH-mlet-standard}
+\inferrule{
+  \mExpandsPHX{\uM}{M}{\sigma}\\
+  \sigExpandsPX{\usigma'}{\sigma'}\\\\
+  \mExpandsPH{\uOmega, \uMhyp{\uX}{X}{\sigma}}{\uPsi}{\uPhi}{\uM'}{M'}{\sigma'}{\Sigma}
+}{
+  \mExpandsPHX{\mletH{\standardphase}{\uX}{\uM}{\uM'}{\usigma'}}{\amlet{\sigma'}{M}{X}{M'}}{\sigma'}
+}
+\end{equation}
+
+The rule for the $\staticphase$ phase module let binding construct, on the other hand, calls for the module expression being bound to be evaluated to a module value under the current environment. The substitution and corresponding unexpanded context is then extended with this module value:
+\begin{equation}\label{rule:mExpandsPH-mlet-static}
+\inferrule{
+  \Sigma = \staticenv{\omega}{\uOmega_S}{\uPsi_S}{\uPhi_S}\\\\
+  \mExpandsPH{\uOmega_S}{\uPsi_S}{\uPhi_S}{\uM}{M}{\sigma}{\Sigma}\\
+  \evalU{[\omega]M}{M'}\\\\
+  \sigExpandsP{\uOmega}{\usigma'}{\sigma'}\\
+  \mExpandsPH{\uOmega}{\uPsi}{\uPhi}{\uM'}{M'}{\sigma'}{
+  	\staticenv{\omega, M'/X}{\uOmega_S, \uMhyp{\uX}{X}{\sigma}}{\uPsi_S}{\uPhi_S}
+  }
+}{
+  \mExpandsPH{\uOmega}{\uPsi}{\uPhi}{\mletH{\staticphase}{\uX}{\uM}{\uM'}{\usigma'}}{M'}{\sigma'}{\Sigma}
+}
+\end{equation}
+
+The standard peTLM definition construct is governed by the following rule:
+\begin{equation}\label{rule:mExpandsPH-syntaxpe-standard}
+\inferrule{
+  \tsmtyExpands{\uOmega}{\urho}{\rho}\\
+  \Sigma = \staticenv{\omega}{\uOmega_S}{\uPsi_S}{\uPhi_S}\\\\
+  \expandsP{\uOmega_S}{\uPsi_S}{\uPhi_S}{\ueparse}{\eparse}{\aparr{\tBody}{\tParseResultPCEExp}}\\\\
+  \evalU{[\omega]\eparse}{\eparse'}\\
+  \mExpandsPH{\uOmega}{\uAS{\uA \uplus \mapitem{\tsmv}{\adefref{a}}}{\Psi, \petsmdefn{a}{\rho}{\eparse'}}}{\uPhi}{\uM}{M}{\sigma}{\Sigma}
+}{
+  \mExpandsPH{\uOmega}{\uAS{\uA}{\Psi}}{\uPhi}{\defpetsmH{\standardphase}{\tsmv}{\urho}{\ueparse}{\uM}}{M}{\sigma}{\Sigma}
+}
+\end{equation}
+The difference here is that the parse function is an unexpanded (rather than an expanded) expression. It is expanded under the static environment's unified context, $\uOmega_S$. Then the substitution, $\omega$, is applied to the resulting expanded parse function before it is added to the peTLM context.
+
+The static peTLM definition construct operates similarly, differing only in that the static environment's peTLM context is extended, rather than the standard peTLM context:
+\begin{equation}\label{rule:mExpandsPH-syntaxpe-static}
+\inferrule{
+  \tsmtyExpands{\uOmega}{\urho}{\rho}\\
+  \Sigma = \staticenv{\omega}{\uOmega_S}{\uPsi_S}{\uPhi_S}\\
+  \uPsi_S = \uAS{\uA_S}{\Psi_S}\\\\
+  \expandsP{\uOmega_S}{\uPsi_S}{\uPhi_S}{\ueparse}{\eparse}{\aparr{\tBody}{\tParseResultPCEExp}}\\\\
+  \evalU{[\omega]\eparse}{\eparse'}\\
+  \mExpandsPH{\uOmega}{\uPsi}{\uPhi}{\uM}{M}{\sigma}{\staticenv{\omega}{\uOmega_S}{\uAS{\uA_S \uplus \mapitem{\tsmv}{\adefref{a}}}{\Psi_S, \petsmdefn{a}{\rho}{\eparse'}}}{\uPhi_S}}
+}{
+  \mExpandsPH{\uOmega}{\uPsi}{\uPhi}{\defpetsmH{\staticphase}{\tsmv}{\urho}{\ueparse}{\uM}}{M}{\sigma}{\Sigma}
+}
+\end{equation}
+
+
+The static environment passes opaquely through the standard peTLM abbreviation construct:
+\begin{equation}\label{rule:mExpandsPH-letpetsm-standard}
+\inferrule{
+  \tsmexpExpandsExp{\uOmega}{\uAS{\uA}{\Psi}}{\uepsilon}{\epsilon}{\rho}\\
+  \mExpandsPH{\uOmega}{\uAS{\uA\uplus\mapitem{\tsmv}{\epsilon}}{\Psi}}{\uPhi}{\uM}{M}{\sigma}{\Sigma}
+}{
+  \mExpandsPH{\uOmega}{\uAS{\uA}{\Psi}}{\uPhi}{\uletpetsmH{\standardphase}{\tsmv}{\uepsilon}{\uM}}{M}{\sigma}{\Sigma}
+}
+\end{equation}
+
+The static peTLM abbreviation construct updates the static peTLM identifier expansion context, $\uA_S$:
+\begin{equation}\label{rule:mExpandsPH-letpetsm-static}
+\inferrule{
+  \tsmexpExpandsExp{\uOmega}{\uAS{\uA}{\Psi}}{\uepsilon}{\epsilon}{\rho}\\\\
+  \Sigma = \staticenv{\omega}{\uOmega_S}{\uPsi_S}{\uPhi_S}\\
+  \uPsi_S = \uAS{\uA_S}{\Psi_S}\\\\
+  \mExpandsPH{\uOmega}{\uPsi}{\uPhi}{\uM}{M}{\sigma}{\staticenv{\omega}{\Omega_S}{\uAS{\uA_S\uplus\mapitem{\tsmv}{\epsilon}}{\Psi_S}}{\uPhi_S}}
+}{
+  \mExpandsPH{\uOmega}{\uPsi}{\uPhi}{\uletpetsmH{\staticphase}{\tsmv}{\uepsilon}{\uM}}{M}{\sigma}{\Sigma}
+}
+\end{equation}
+
+The rules governing ppTLM definitions and abbreviations are analagous:
+\begin{equation}\label{rule:mExpandsPH-syntaxpp-standard}
+\inferrule{ 
+  \tsmtyExpands{\uOmega}{\urho}{\rho}\\
+    \Sigma = \staticenv{\omega}{\uOmega_S}{\uPsi_S}{\uPhi_S}\\\\
+  \expandsP{\uOmega_S}{\uPsi_S}{\uPhi_S}{\ueparse}{\eparse}{\aparr{\tBody}{\tParseResultCEPat }}\\\\
+  \evalU{[\omega]\eparse}{\eparse'}\\
+  \mExpandsPH{\uOmega}{\uPsi}{\uAS{\uA \uplus \mapitem{\tsmv}{\adefref{a}}}{\Phi, \pptsmdefn{a}{\rho}{\eparse'}}}{\uM}{M}{\sigma}{\Sigma}
+}{
+  \mExpandsPH{\uOmega}{\uPsi}{\uAS{\uA}{\Phi}}{\defpptsmH{\standardphase}{\tsmv}{\urho}{\ueparse}{\uM}}{M}{\sigma}{\Sigma}
+}
+\end{equation}
+\begin{equation}\label{rule:mExpandsPH-syntaxpp-static}
+\inferrule{ 
+  \tsmtyExpands{\uOmega}{\urho}{\rho}\\
+  \Sigma = \staticenv{\omega}{\uOmega_S}{\uPsi_S}{\uPhi_S}\\
+  \uPhi_S = \uAS{\uA_S}{\Phi_S}\\\\
+  \expandsP{\uOmega_S}{\uPsi_S}{\uPhi_S}{\ueparse}{\eparse}{\aparr{\tBody}{\tParseResultCEPat }}\\\\
+  \evalU{[\omega]\eparse}{\eparse'}\\
+  \mExpandsPH{\uOmega}{\uPsi}{\uPhi}{\uM}{M}{\sigma}{
+  	\staticenv{\omega}{\uOmega_S}{\uPsi_S}{\uAS{\uA_S \uplus \mapitem{\tsmv}{\adefref{a}}}{\Phi_S, \pptsmdefn{a}{\rho}{\eparse}}}
+  }
+}{
+  \mExpandsPH{\uOmega}{\uPsi}{\uPhi}{\defpptsmH{\staticphase}{\tsmv}{\urho}{\ueparse}{\uM}}{M}{\sigma}{\Sigma}
+}
+\end{equation}
+\begin{equation}\label{rule:mExpandsPH-letpptsm-standard}
+\inferrule{
+  \tsmexpExpandsPat{\uOmega}{\uAS{\uA}{\Phi}}{\uepsilon}{\epsilon}{\rho}\\
+  \mExpandsPH{\uOmega}{\uPsi}{\uAS{\uA\uplus\mapitem{\tsmv}{\epsilon}}{\Phi}}{\uM}{M}{\sigma}{\Sigma}
+}{
+  \mExpandsPH{\uOmega}{\uPsi}{\uAS{\uA}{\Phi}}{\uletpptsmH{\standardphase}{\tsmv}{\uepsilon}{\uM}}{M}{\sigma}{\Sigma}
+}
+\end{equation}
+\begin{equation}\label{rule:mExpandsPH-letpptsm-static}
+\inferrule{
+  \tsmexpExpandsPat{\uOmega}{\uAS{\uA}{\Phi}}{\uepsilon}{\epsilon}{\rho}\\\\
+  \Sigma = \staticenv{\omega}{\uOmega_S}{\uPsi_S}{\uPhi_S}\\
+  \uPhi_S = \uAS{\uA_S}{\Phi_S}\\\\
+    \mExpandsPH{\uOmega}{\uPsi}{\uPhi}{\uM}{M}{\sigma}{
+    	\staticenv{\omega}{\uOmega_S}{\uPsi_S}{\uAS{\uA_S\uplus\mapitem{\tsmv}{\epsilon}}{\Phi_S}}
+    }
+}{
+  \mExpandsPH{\uOmega}{\uPsi}{\uPhi}{\uletpptsmH{\staticphase}{\tsmv}{\uepsilon}{\uM}}{M}{\sigma}{\Sigma}
+}
+\end{equation}
+\end{subequations}
+
+\ificfp
+\subsection{Metatheory}
+\else
+\subsection{Metatheory}
+\fi
+The metatheorem having to do with unexpanded module expressions was the Module Expansion theorem, Theorem \ref{thm:module-expansion-P}. This theorem continues to hold in $\miniVersePH$.
+\begin{theorem}[Module Expansion]
+\label{thm:module-expansion-PH}
+If $\mExpandsPH{\uOmegaEx{\uD}{\uG}{\uMctx}{\Omega}}{\uPsi}{\uPhi}{\uM}{M}{\sigma}{\Sigma}$ then $\hassig{\Omega}{M}{\sigma}$.
+\end{theorem}
+\begin{proof} 
+By rule induction over Rules (\ref{rules:mExpandsPH}). In the following, let $\uOmega=\uOmegaEx{\uD}{\uG}{\uMctx}{\Omega}$.
+
+\begin{byCases}
+  \item[\text{(\ref{rule:mExpandsPH-subsumes})}] ~
+    \begin{pfsteps*}
+      \item $\mExpandsPX{\uM}{M}{\sigma'}$ \BY{assumption} \pflabel{mexpands}
+      \item $\sigsub{\uOmega}{\sigma'}{\sigma}$ \BY{assumption} \pflabel{sigsub}
+      \item $\hassig{\Omega}{M}{\sigma'}$ \BY{IH on \pfref{mexpands}} \pflabel{hassig}
+      \item $\hassig{\Omega}{M}{\sigma}$ \BY{Rule (\ref{rule:hassig-subsume}) on \pfref{hassig} and \pfref{sigsub}}
+    \end{pfsteps*}
+    \resetpfcounter
+  \item[\text{(\ref{rule:mExpandsPH-var}) \textbf{through} (\ref{rule:mExpandsPH-mlet-static})}] In each of these cases, we apply the IH over each module expansion premise, Theorem \ref{thm:typed-expression-expansion-P} over each expression expansion premise and Theorem \ref{thm:kind-and-constructor-expansion-P} over each construction expansion premise, then apply the corresponding signature matching rule in Rules (\ref{rules:hassig}) and weakening as needed.
+  \item[\text{(\ref{rule:mExpandsPH-syntaxpe-standard}) \textbf{through} (\ref{rule:mExpandsPH-letpptsm-static})}] In each of these cases, we apply the IH to the module expansion premise.
+\end{byCases}
+\end{proof}
+The rest of the metatheory is identical to that of $\miniVerseParam$.
