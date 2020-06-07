@@ -598,12 +598,6 @@ Proof by induction on the derivation of $\hpatmatch{e}{p}{\theta}$.
 
 To apply this lemma in ITSuccMatch case, first apply inversion lemma on premise of preservation theorem,
 
-\begin{thm}[Progress]
-  \label{thrm:progrs}
-  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$
-  then $\isVal{e}$ or $\isErr{e}$ or $\isIndet{e}$ or $\htrans{e}{e'}$ for some $e'$
-\end{thm}
-
 \begin{lem}[Matching Progress]
   \label{lem:match-progress}
   If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$
@@ -1096,7 +1090,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   \cnotsatisfyormay{e}{\xi_{pre}} \\
   \csatisfyormay{\ctruth}{\cor{\xi_{pre}}{\xi_{post}}}
 }{
-  \hexptyp{\Gamma}{\Delta}{\hmatch{e}{\hat{rs}}}{\tau'}
+\hexptyp{\Gamma}{\Delta}{\hmatch{e}{\zruls{rs_{pre}}{r}{rs_{post}}}}{\tau'}
 }
 \end{equation}
 \end{subequations}
