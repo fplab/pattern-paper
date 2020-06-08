@@ -733,7 +733,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{subequations}
 
 \fbox{$\csatisfy{e}{\xi}$}~~\text{Value $e$ satisfies constraint $\xi$}
-\begin{subequations}
+\begin{subequations}\label{rules:Satisfy}
 \begin{equation}\label{rule:CSTruth}
 \inferrule[CSTruth]{ }{
   \csatisfy{e}{\ctruth}
@@ -759,14 +759,14 @@ $\arraycolsep=4pt\begin{array}{lll}
   \csatisfy{e}{\cand{\xi_1}{\xi_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:CSOr1}
 \inferrule[CSOr1]{
   \csatisfy{e}{\xi_1}
 }{
   \csatisfy{e}{\cor{\xi_1}{\xi_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:CSOr2}
 \inferrule[CSOr2]{
   \csatisfy{e}{\xi_2}
 }{
@@ -806,7 +806,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{subequations}
 
 \fbox{$\cmaysatisfy{e}{\xi}$}~~\text{Value $e$ possibly satisfies constraint $\xi$}
-\begin{subequations}
+\begin{subequations}\label{rules:MaySatisfy}
 \begin{equation}
 \inferrule[CPSUnknown]{ }{
   \cmaysatisfy{e}{\cunknown}
@@ -850,7 +850,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:CPSOr1}
 \inferrule[CPSOr1]{
   \cmaysatisfy{e}{\xi_1} \\
   \cnotsatisfy{e}{\xi_2}
@@ -858,7 +858,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   \cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:CPSOr2}
 \inferrule[CPSOr2]{
   \cnotsatisfy{e}{\xi_1} \\
   \cmaysatisfy{e}{\xi_2}
@@ -915,7 +915,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{subequations}
 
 \fbox{$\csatisfyormay{e}{\xi}$}
-\begin{subequations}\label{rules:satormayConst}
+\begin{subequations}\label{rules:satormay}
 \begin{equation}\label{rule:CMSPossibly}
 \inferrule[CMSPossibly]{
   \cmaysatisfy{e}{\xi}
@@ -966,7 +966,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 
 \begin{defn}[Entailment of Constraints]
   \label{defn:const-entailment}
-  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ for all $e$ such that $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$
+  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ for all $e$ such that $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$ and $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$
 \end{defn}
 \begin{corol}[Material Entailment of Constraints]
   \label{lem:material-entailment}
