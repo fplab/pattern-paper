@@ -647,12 +647,12 @@ $\arraycolsep=4pt\begin{array}{lll}
 
 \fbox{$\ctyp{\xi}{\tau}$}~~\text{Constraint $\xi$ constrains values of type $\tau$}
 \begin{subequations}
-\begin{equation}
-\inferrule[CTruth]{ }{
+\begin{equation}\label{rule:CTTruth}
+\inferrule[CTTruth]{ }{
   \ctyp{\ctruth}{\tau}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:CTFalsity}
 \inferrule[CTFalsity]{ }{
   \ctyp{\cfalsity}{\tau}
 }
@@ -679,7 +679,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   \ctyp{\cand{\xi_1}{\xi_2}}{\tau}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:CTOr}
 \inferrule[CTOr]{
   \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
 }{
@@ -934,7 +934,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 
 \begin{thm}[Exclusiveness of Constraint Satisfaction]
   \label{thrm:exclusive-constraint-satisfaction}
-  If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isVal{e}$ then exactly one of the following holds
+  If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$ then exactly one of the following holds
   \begin{enumerate}
     \item $\csatisfy{e}{\xi}$
     \item $\cmaysatisfy{e}{\xi}$
@@ -944,33 +944,33 @@ $\arraycolsep=4pt\begin{array}{lll}
 
 \begin{lem}[Negation of Satisfaction]
   \label{lem:neg-satisfy}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. We have $\cnotsatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. Then $\cnotsatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
 \end{lem}
 \begin{lem}[Negation of Possible Satisfaction]
   \label{lem:neg-possible-satisfy}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. We have $\cnotmaysatisfy{e}{\xi}$ iff $\csatisfy{e}{\xi}$ or $\cnotsatisfy{e}{\cdual{\xi}}$
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. Then $\cnotmaysatisfy{e}{\xi}$ iff $\csatisfy{e}{\xi}$ or $\cnotsatisfy{e}{\cdual{\xi}}$
 \end{lem}
 \begin{lem}[Negation of Dual Satisfaction]
   \label{lem:neg-dual-satisfy}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. We have $\cnotsatisfy{e}{\cdual{\xi}}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\xi}$ \textit{i.e.} $\csatisfyormay{e}{\xi}$
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. Then $\cnotsatisfy{e}{\cdual{\xi}}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\xi}$ \textit{i.e.} $\csatisfyormay{e}{\xi}$
 \end{lem}
 \begin{lem}[Coverage of Constraint Satisfaction]
   \label{lem:coverage-constraint-satisfy}
-  If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$ then either $\csatisfy{e}{\xi}$ or $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
+  Suppose $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. Then either $\csatisfy{e}{\xi}$ or $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
 \end{lem}
 
 \begin{corol}[Possible Satisfaction of Dual Constraint]
   \label{corol:possible-satisfy-dual}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. We have $\cmaysatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\cdual{\xi}}$
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. Then $\cmaysatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\cdual{\xi}}$
 \end{corol}
 
 \begin{defn}[Entailment of Constraints]
   \label{defn:const-entailment}
-  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ for all $e$ such that $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$ and $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$
+  $\csatisfy{\xi_1}{\xi_2}$ iff $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$ and for all $e$ such that $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$
 \end{defn}
 \begin{corol}[Material Entailment of Constraints]
   \label{lem:material-entailment}
-  $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{\ctruth}{\cor{\cdual{\xi_1}}{\xi_2}}$
+  Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$. Then $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{\ctruth}{\cor{\cdual{\xi_1}}{\xi_2}}$
 \end{corol}
 
 \fbox{$\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$}~~\text{$p$ matches expression of type $\tau$, emits match constraint $\xi$ and generates context $\Gamma$}

@@ -12,7 +12,7 @@
 
 \begin{lem}
   \label{lem:no-e-satisfy-falsity}
-  Assume $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$ we have $\cnotsatisfy{e}{\cfalsity}$
+  $\cnotsatisfy{e}{\cfalsity}$
 \end{lem}
 \begin{proof}
   By rule induction over Rules (\ref{rules:Satisfy}), we notice that $\csatisfy{e}{\cfalsity}$ is in syntactic contradiction with all rules, hence not derivable.
@@ -20,7 +20,7 @@
 
 \begin{lem}
   \label{lem:no-e-may-satisfy-falsity}
-  Assume $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$ we have $\cnotmaysatisfy{e}{\cfalsity}$
+  $\cnotmaysatisfy{e}{\cfalsity}$
 \end{lem}
 \begin{proof}
   By rule induction over Rules (\ref{rules:MaySatisfy}), we notice that $\cmaysatisfy{e}{\cfalsity}$ is in syntactic contradiction with all rules, hence not derivable.
@@ -112,7 +112,7 @@
   $\csatisfyormay{\ctruth}{\xi}$ iff $\csatisfyormay{\ctruth}{\cor{\xi}{\cfalsity}}$
 \end{corol}
 \begin{proof}
-  By Definition \ref{defn:nn-material-entailment} and Lemma \ref{lem:relax-nn-satisfy}.
+  By Definition \ref{defn:nn-entailment} and Lemma \ref{lem:relax-nn-satisfy}.
 \end{proof}
 
 \begin{lem}
@@ -121,41 +121,72 @@
 \end{lem}
 \begin{proof}We prove sufficiency and necessity separately.
 
-  Let $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ and $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$.
 \begin{enumerate}
-\item Prove sufficiency by its contraposition:
+\item Sufficiency:
+  \begin{pfsteps*}
+  \item $\cnotsatisfy{\xi_1}{\xi_2}$ \BY{assumption} \pflabel{1notsatisfy2}
+  \end{pfsteps*}
+  Assume, for the sake of contradiction, that $\csatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$. 
   \begin{pfsteps*}
   \item $\csatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$ \BY{assumption} \pflabel{1=>2+bot}
-  \item If $\csatisfyormay{e}{\xi_1}$ then $\csatisfy{e}{\cor{\xi_2}{\cfalsity}}$ \BY{Definition \ref{defn:const-entailment} of \pfref{1=>2+bot}} \pflabel{satisfy2+bot}
+  \item $\ctyp{\xi_1}{\tau}$ \BY{Definition \ref{defn:const-entailment} over \pfref{1=>2+bot}} \pflabel{1CTyp}
+  \item $\ctyp{\cor{\xi_2}{\cfalsity}}{\tau}$ \BY{Definition \ref{defn:const-entailment} over \pfref{1=>2+bot}} \pflabel{2+botCTyp}
+  \item $\ctyp{\xi_2}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTOr}) on \pfref{2+botCTyp}} \pflabel{2CTyp}
+  \end{pfsteps*}
+  Let $\csatisfyormay{e}{\xi_1}$.
+  \begin{pfsteps*}
+  \item $\csatisfyormay{e}{\xi_1}$ \BY{assumption} \pflabel{satisfyormay1}
+  \item $\csatisfy{e}{\cor{\xi_2}{\cfalsity}}$ \BY{Definition \ref{defn:const-entailment} over \pfref{1=>2+bot} on \pfref{satisfyormay1}} \pflabel{satisfy2+bot}
   \end{pfsteps*}
 
-  If $\csatisfyormay{e}{\xi_1}$ then
-  by rule induction over Rules (\ref{rules:Satisfy}) on conclusion of \pfref{satisfy2+bot}.
+  By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfy2+bot}.
   \begin{byCases}
   \item[\text{(\ref{rule:CSOr1})}]
     \begin{pfsteps*}
-    \item $\csatisfy{e}{\xi_1}$ \BY{assumption}
+    \item $\csatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{satisfy2}
+    \item If $\csatisfyormay{e}{\xi_1}$ then $\csatisfy{e}{\xi_2}$ \BY{Inference from \pfref{satisfyormay1} to \pfref{satisfy2}} \pflabel{1=>2}
+    \item $\csatisfy{\xi_1}{\xi_2}$ \BY{Definition \ref{defn:const-entailment} on \pfref{1CTyp} and \pfref{2CTyp} and \pfref{1=>2}} \pflabel{1satisfy2}
     \end{pfsteps*}
+    \pfref{1notsatisfy2} and \pfref{1satisfy2} are contradictory to each other.
   \item[\text{(\ref{rule:CSOr2})}]
     \begin{pfsteps*}
     \item $\csatisfy{e}{\cfalsity}$ \BY{assumption} \pflabel{satisfybot}
     \item $\cnotsatisfy{e}{\cfalsity}$ \BY{Lemma \ref{lem:no-e-satisfy-falsity}} \pflabel{notsatisfybot}
     \end{pfsteps*}
-    \pfref{satisfybot} and \pfref{notsatisfybot} is contradictory to each other.
+    \pfref{satisfybot} and \pfref{notsatisfybot} are contradictory to each other.
   \end{byCases}
+
+  The conclusion holds as follow:
+  \begin{enumerate}
+    \item $\cnotsatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$ 
+  \end{enumerate}
   
+\resetpfcounter
+\item Necessity:
   \begin{pfsteps*}
-  \item $\csatisfy{\xi_1}{\xi_2}$ \BY{Definition \ref{defn:const-entailment}}
+  \item $\cnotsatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$ \BY{assumption} \pflabel{1notentail2+bot}
+  \end{pfsteps*}
+  Assume, for the sake of contradiction, that $\csatisfy{\xi_1}{\xi_2}$.
+  \begin{pfsteps*}
+  \item $\csatisfy{\xi_1}{\xi_2}$ \BY{assumption} \pflabel{1entail2}
+  \item $\ctyp{\xi_1}{\tau}$ \BY{Definition \ref{defn:const-entailment} over \pfref{1entail2}} \pflabel{1CTyp}
+  \item $\ctyp{\xi_2}{\tau}$ \BY{Definition \ref{defn:const-entailment} over \pfref{1entail2}} \pflabel{2CTyp}
+  \item $\ctyp{\cfalsity}{\tau}$ \BY{Rule (\ref{rule:CTFalsity})} \pflabel{botCTyp}
+  \item $\ctyp{\cor{\xi_2}{\cfalsity}}{\tau}$ \BY{Rule (\ref{rule:CTOr}) on \pfref{2CTyp} and \pfref{botCTyp}} \pflabel{2+botCTyp}
+  \end{pfsteps*}
+  Let $\csatisfyormay{e}{\xi_1}$.
+  \begin{pfsteps*}
+  \item $\csatisfyormay{e}{\xi_1}$ \BY{assumption} \pflabel{satisfyormay1}
+  \item $\csatisfy{e}{\xi_2}$ \BY{Definition \ref{defn:const-entailment} over \pfref{1entail2} on \pfref{satisfyormay1}} \pflabel{satisfy2}
+  \item $\csatisfy{e}{\cor{\xi_2}{\cfalsity}}$ \BY{Rule (\ref{rule:CSOr1}) on \pfref{satisfy2}} \pflabel{satisfy2+bot}
+  \item If $\csatisfyormay{e}{\xi_1}$ then $\csatisfy{e}{\cor{\xi_2}{\cfalsity}}$ \BY{Inference from \pfref{satisfyormay1} to \pfref{satisfy2+bot}} \pflabel{1=>2}
+  \item $\csatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$ \BY{Definition \ref{defn:const-entailment} on \pfref{1CTyp} and \pfref{2+botCTyp} and \pfref{1=>2}}
   \end{pfsteps*}
 
-\resetpfcounter
-\item Prove necessity by its contraposition:
-  \begin{pfsteps*}
-  \item $\csatisfy{\xi_1}{\xi_2}$ \BY{assumption} \pflabel{1=>2}
-  \item If $\csatisfyormay{e}{\xi_1}$ then $\csatisfy{e}{\xi_2}$ \BY{Definition \ref{defn:const-entailment} of \pfref{1=>2}} \pflabel{satisfy2}
-  \item If $\csatisfyormay{e}{\xi_1}$ then $\csatisfy{e}{\cor{\xi_2}{\cfalsity}}$ \BY{Rule (\ref{rule:CSOr1}) on the conclusion of \pfref{satisfy2}} \pflabel{defn1=>2+bot}
-  \item $\csatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$ \BY{Definition \ref{defn:const-entailment} over \pfref{defn1=>2+bot}}
-  \end{pfsteps*}
+  The conclusion holds as follow:
+  \begin{enumerate}
+    \item $\cnotsatisfy{\xi_1}{\xi_2}$ 
+  \end{enumerate}
 \end{enumerate}
 \end{proof}
 
@@ -197,22 +228,25 @@
   \end{byCases}
 \end{proof}
 
-\begin{defn}[Not Not Material Entailment of Constraints]
-  \label{defn:nn-material-entailment}
-  $\csatisfyormay{\xi_1}{\xi_2}$ iff $\csatisfyormay{e}{\xi_1}$ implies $\csatisfyormay{e}{\xi_2}$ for all $\isFinal{e}$
+\begin{defn}[Not Not Entailment of Constraints]
+  \label{defn:nn-entailment}
+  $\csatisfyormay{\xi_1}{\xi_2}$ iff $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$ and for all $e$ such that $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfyormay{e}{\xi_2}$ 
 \end{defn}
 
 \begin{corol}
-  \label{corol:nn-material-entailment-exhaust}
-  If $\isFinal{e}$ and $\csatisfyormay{\ctruth}{\xi}$ then $\csatisfyormay{e}{\xi}$
+  \label{corol:nn-exhaust}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$. Then $\csatisfyormay{\ctruth}{\xi}$ implies $\csatisfyormay{e}{\xi}$
 \end{corol}
 \begin{proof}
   \begin{pfsteps*}
-  \item $\isFinal{e}$ \BY{assumption} \pflabel{final}
-  \item $\csatisfyormay{\ctruth}{\xi}$ \BY{assumption} \pflabel{exhaust}
-  \item $\csatisfy{e_1}{\ctruth}$ \BY{Rule (\ref{rule:CSTruth})} \pflabel{satisfyT}
-  \item $\csatisfyormay{e_1}{\ctruth}$ \BY{Rule (\ref{rule:CMSMust}) on \pfref{satisfyT}} \pflabel{nnsatisfyT}
-  \item $\csatisfyormay{e_1}{\xi_r}$ \BY{Definition \ref{defn:nn-material-entailment} of \pfref{exhaust} on \pfref{final} and \pfref{nnsatisfyT}}
+  \item $\ctyp{\xi}{\tau}$ \BY{assumption} \pflabel{CTyp}
+  \item $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ \BY{assumption} \pflabel{eTyp}
+  \item $\isFinal{e}$ \BY{assumption} \pflabel{eFinal}
+  \item $\csatisfyormay{\ctruth}{\xi}$ \BY{assumption} \pflabel{entailormay}
+  \item $\csatisfy{e_1}{\ctruth}$ \BY{Rule (\ref{rule:CSTruth})} \pflabel{satisfytop}
+  \item $\csatisfyormay{e_1}{\ctruth}$ \BY{Rule (\ref{rule:CMSMust}) on \pfref{satisfytop}} \pflabel{satisfyormaytop}
+  \item $\ctyp{\ctruth}{\tau}$ \BY{Rule (\ref{rule:CTTruth})} \pflabel{topCTyp}
+  \item $\csatisfyormay{e_1}{\xi_r}$ \BY{Definition \ref{defn:nn-entailment} of \pfref{entailormay} on \pfref{topCTyp} and \pfref{CTyp} and \pfref{eTyp} and \pfref{eFinal} and \pfref{satisfyormaytop}}
   \end{pfsteps*}
   \resetpfcounter
 \end{proof}
@@ -222,9 +256,11 @@
   If $\cnotsatisfyormay{e}{\xi_1}$ and $\cnotsatisfyormay{e}{\xi_2}$ then $\cnotsatisfyormay{e}{\cor{\xi_1}{\xi_2}}$
 \end{lem}
 \begin{proof}
-Proof by its contraposition.
+  Assume, for the sake of contradiction, that $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$.
 \begin{pfsteps*}
 \item $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$ \BY{assumption} \pflabel{satormay1+2}
+\item $\cnotsatisfyormay{e}{\xi_1}$ \BY{assumption} \pflabel{notsatormay1}
+\item $\cnotsatisfyormay{e}{\xi_2}$ \BY{assumption} \pflabel{notsatormay2}
 \end{pfsteps*}
 By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1+2}.
 \begin{byCases}
@@ -234,16 +270,21 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1+2}.
   \end{pfsteps*}
   By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfy1+2} and only two of them apply.
   \begin{byCases}
+
   \item[\text{(\ref{rule:CSOr1})}]
     \begin{pfsteps*}
     \item $\csatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{satisfy1}
-    \item $\csatisfyormay{e}{\xi_1}$ \BY{Rule (\ref{rule:CMSMust}) on \pfref{satisfy1}}
+    \item $\csatisfyormay{e}{\xi_1}$ \BY{Rule (\ref{rule:CMSMust}) on \pfref{satisfy1}} \pflabel{satormay1}
     \end{pfsteps*}
+    \pfref{satormay1} and \pfref{notsatormay1} are contradictory with each other.
+
   \item[\text{(\ref{rule:CSOr2})}]
     \begin{pfsteps*}
     \item $\csatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{satisfy2}
-    \item $\csatisfyormay{e}{\xi_2}$ \BY{Rule (\ref{rule:CMSMust}) on \pfref{satisfy2}}
+    \item $\csatisfyormay{e}{\xi_2}$ \BY{Rule (\ref{rule:CMSMust}) on \pfref{satisfy2}} \pflabel{satormay2}
     \end{pfsteps*}
+    \pfref{satormay2} and \pfref{notsatormay2} are contradictory with each other.
+
   \end{byCases}
 
 \item[\text{(\ref{rule:CMSPossibly})}]
@@ -252,19 +293,28 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1+2}.
   \end{pfsteps*}
   By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysatisfy1+2} and only two of them apply.
   \begin{byCases}
+
   \item[\text{(\ref{rule:CPSOr1})}]
     \begin{pfsteps*}
     \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{maysatisfy1}
-    \item $\csatisfyormay{e}{\xi_1}$ \BY{Rule (\ref{rule:CMSPossibly}) on \pfref{maysatisfy1}}
+    \item $\csatisfyormay{e}{\xi_1}$ \BY{Rule (\ref{rule:CMSPossibly}) on \pfref{maysatisfy1}} \pflabel{satormay1'}
     \end{pfsteps*}
+    \pfref{satormay1'} and \pfref{notsatormay1} are contradictory with each other.
+
   \item[\text{(\ref{rule:CPSOr2})}]
     \begin{pfsteps*}
     \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{maysatisfy2}
-    \item $\csatisfyormay{e}{\xi_2}$ \BY{Rule (\ref{rule:CMSPossibly}) on \pfref{maysatisfy2}}
+    \item $\csatisfyormay{e}{\xi_2}$ \BY{Rule (\ref{rule:CMSPossibly}) on \pfref{maysatisfy2}} \pflabel{satormay2'}
     \end{pfsteps*}
+    \pfref{satormay2'} and \pfref{notsatormay2} are contradictory with each other.
+
   \end{byCases}
-  \resetpfcounter
 \end{byCases}
+The conclusion holds as follow:
+\begin{enumerate}
+  \item $\csatisfyormay{\xi_1}{\xi_2}$
+\end{enumerate}
+\resetpfcounter
 \end{proof}
 
 \begin{lem}
@@ -317,6 +367,16 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1+2}.
     \end{byCases}
   \end{byCases}
 \end{proof}
+
+\begin{lem}
+  \label{lem:rule-constraint-typ}
+  If $\chrultyp{\cdot}{\Delta}{r}{\tau_1}{\xi_r}{\tau}$ then $\ctyp{\xi_r}{\tau_1}$.
+\end{lem}
+
+\begin{lem}
+  \label{lem:rules-constraint-typ}
+  If $\chrulstyp{\cdot}{\Delta}{\xi_{pre}}{rs}{\tau_1}{\xi_{rs}}{\tau}$ then $\ctyp{\xi_{rs}}{\tau_1}$.
+\end{lem}
 
 \begin{thm}[Preservation]
   \label{thrm:preservation}
@@ -465,7 +525,7 @@ By rule induction over Rules (\ref{rules:CTExp}) on \pfref{expType}. For simplic
       \item $rs = \cdot$ \BY{assumption}
       \item $\xi_{rs} = \cfalsity$ \BY{assumption}
       \item $\csatisfyormay{\ctruth}{\xi_r}$ \BY{Corollary \ref{corol:relax-nn-entail} on \pfref{exhaust}} \pflabel{exhaustr}
-      \item $\csatisfyormay{e_1}{\xi_r}$ \BY{Corollary \ref{corol:nn-material-entailment-exhaust} on \pfref{scrutFinal} and \pfref{exhaustr}} \pflabel{satormayr}
+      \item $\csatisfyormay{e_1}{\xi_r}$ \BY{Corollary \ref{corol:nn-exhaust} on \pfref{scrutFinal} and \pfref{exhaustr}} \pflabel{satormayr}
       \end{pfsteps*}
       By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayr}.
       \begin{byCases}
@@ -531,7 +591,7 @@ By rule induction over Rules (\ref{rules:CTExp}) on \pfref{expType}. For simplic
     \begin{pfsteps*}
     \item $rs_{post} = \cdot$ \BY{assumption}
     \item $\xi_{post} = \cfalsity$ \BY{assumption}
-    \item $\csatisfyormay{e_1}{\cor{\xi_{pre}}{\cor{\xi_r}{\cfalsity}}}$ \BY{Corollary \ref{corol:nn-material-entailment-exhaust} on \pfref{scrutFinal} and \pfref{exhaust}} \pflabel{satisfypre+r+bot}
+    \item $\csatisfyormay{e_1}{\cor{\xi_{pre}}{\cor{\xi_r}{\cfalsity}}}$ \BY{Corollary \ref{corol:nn-exhaust} on \pfref{scrutFinal} and \pfref{exhaust}} \pflabel{satisfypre+r+bot}
     \item $\csatisfyormay{e_1}{\cor{\xi_{pre}}{\xi_r}}$ \BY{Lemma \ref{lem:relax-nn-satisfy} on \pfref{satisfypre+r+bot}} \pflabel{satisfypre+r}
     \item $\csatisfyormay{e_1}{\xi_r}$ \BY{Lemma \ref{lem:satisfy-substraction} on \pfref{satisfypre+r} and \pfref{notsatisfypre}} \pflabel{satormayr}
     \end{pfsteps*}
