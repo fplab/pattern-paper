@@ -1,0 +1,21 @@
+% !TEX root= extended-abstract.tex
+
+\begin{figure}[h]
+\judgbox{\hsubstyp{\theta}{\Gamma}}
+{Substitution $\theta$ is of type $\Gamma$}
+
+\begin{mathpar}
+\Infer{\STEmpty}{ }{
+  \hsubstyp{\emptyset}{\cdot}
+}
+
+\Infer{\STExtend}{
+  \hsubstyp{\theta}{\Gamma} \\
+  \hexptyp{\cdot}{\Delta}{e}{\tau}
+}{
+  \hsubstyp{\theta , x / e}{\Gamma , x : \tau}
+}
+\end{mathpar}
+\caption{Typing of substitutions}
+\label{fig:substyp}
+\end{figure}

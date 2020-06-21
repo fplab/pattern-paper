@@ -1,0 +1,144 @@
+% !TEX root= extended-abstract.tex
+
+\begin{figure}[h]
+\judgbox{\hpatmatch{e}{p}{\theta}}
+{$e$ matches $p$, emitting $\theta$}
+
+\begin{mathpar}
+\Infer{\MPVar}{ }{
+  \hpatmatch{e}{x}{x / e}
+}
+
+\Infer{\MPNum}{ }{
+  \hpatmatch{\hnum{n}}{\hnum{n}}{\cdot}
+}
+
+\Infer{\MPWild}{ }{
+  \hpatmatch{e}{\_}{\cdot}
+}
+
+\Infer{\MPPair}{
+  \hpatmatch{e_1}{p_1}{\theta_1} \\
+  \hpatmatch{e_2}{p_2}{\theta_2}
+}{
+  \hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+}
+
+\Infer{\MPInL}{
+  \hpatmatch{e}{p}{\theta}
+}{
+  \hpatmatch{\hinl{\tau}{e}}{\hinlp{p}}{\theta}
+}
+
+\Infer{\MPInR}{
+  \hpatmatch{e}{p}{\theta}
+}{
+  \hpatmatch{\hinr{\tau}{e}}{\hinrp{p}}{\theta}
+}
+\end{mathpar}
+\caption{Successful pattern matching}
+\label{fig:succmatch}
+\end{figure}
+
+\begin{figure}[h]
+\judgbox{\hmaymatch{e}{p}}
+{$e$ may match $p$}
+
+\begin{mathpar}
+\Infer{\MMEHole}{ }{
+  \hmaymatch{e}{\hehole{w}}
+}
+
+\Infer{\MMHole}{ }{
+  \hmaymatch{e}{\hhole{p}{w}}
+}
+
+\Infer{\EMMEHole}{
+  p \neq x, \_
+}{
+  \hmaymatch{\hehole{u}}{p}
+}
+
+\Infer{\EMMHole}{
+  p \neq x, \_
+}{
+  \hmaymatch{\hhole{e}{u}}{p}
+}
+
+\Infer{\MMPairL}{
+  \hmaymatch{e_1}{p_1} \\
+  \hpatmatch{e_2}{p_2}{\theta_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+
+\Infer{\MMPairR}{
+  \hpatmatch{e_1}{p_1}{\theta_1} \\
+  \hmaymatch{e_2}{p_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+
+\Infer{\MMPair}{
+  \hmaymatch{e_1}{p_1} \\
+  \hmaymatch{e_2}{p_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+
+\Infer{\MMInL}{
+  \hmaymatch{e}{p}
+}{
+  \hmaymatch{\hinl{\tau}{e}}{\hinlp{p}}
+}
+
+\Infer{\MMInR}{
+  \hmaymatch{e}{p}
+}{
+  \hmaymatch{\hinr{\tau}{e}}{\hinrp{p}}
+}
+\end{mathpar}
+\caption{Maybe pattern matching}
+\label{fig:maymatch}
+\end{figure}
+
+\begin{figure}[h]
+\judgbox{\hnotmatch{e}{p}}
+{$e$ doesn't match $p$}
+
+\begin{mathpar}
+\Infer{\NMPairL}{
+  \hnotmatch{e_1}{p_1}
+}{
+  \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+
+\Infer{\NMPairR}{
+  \hnotmatch{e_2}{p_2}
+}{
+  \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+
+\Infer{\NMConfL}{ }{
+  \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
+}
+
+\Infer{\NMConfR}{ }{
+  \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
+}
+
+\Infer{\NMInL}{
+  \hnotmatch{e}{p}
+}{
+  \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
+}
+
+\Infer{\NMInR}{
+  \hnotmatch{e}{p}
+}{
+  \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
+}
+\end{mathpar}
+\caption{Failed pattern matching}
+\label{fig:failmatch}
+\end{figure}

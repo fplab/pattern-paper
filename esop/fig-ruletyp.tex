@@ -1,0 +1,17 @@
+% !TEX root= extended-abstract.tex
+
+\begin{figure}[h]
+\judgbox{\chrultyp{\Gamma}{\Delta}{r}{\tau_1}{\xi}{\tau_2}}
+{$r$ is of type $\trulnp{\tau_1}{\tau_2}$ and is constrained by $\xi$}
+
+\begin{mathpar}
+\Infer{\TRule}{
+  \chpattyp{p}{\tau_1}{\xi}{\Gamma_p}{\Delta_p} \\
+  \hexptyp{\Gamma \uplus \Gamma_p}{\Delta \uplus \Delta_p}{e}{\tau_2}
+}{
+  \chrultyp{\Gamma}{\Delta}{\hrul{p}{e}}{\tau_1}{\xi}{\tau_2}
+}
+\end{mathpar}
+\caption{Typing of rule}
+\label{fig:ruletyp}
+\end{figure}

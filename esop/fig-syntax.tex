@@ -1,0 +1,48 @@
+% !TEX root = extended-abstract.tex
+
+\begin{figure}[h]
+$\arraycolsep=4pt\begin{array}{lll}
+\tau & ::= &
+  \tnum ~\vert~
+  \tarr{\tau}{\tau} ~\vert~
+  \tprod{\tau}{\tau} ~\vert~
+  \tsum{\tau}{\tau} \\
+e & ::= &
+  x ~\vert~
+  \hnum{n} ~\vert~
+  \hlam{x}{\tau}{e} ~\vert~
+  \hap{e}{e} ~\vert~
+  \hpair{e}{e} ~\vert~
+  \hinl{\tau}{e} ~\vert~
+  \hinr{\tau}{e} ~\vert~
+  \hmatch{e}{\zrules} ~\vert~
+  \hehole{u} ~\vert~
+  \hhole{e}{u} \\
+\zrules & ::= &
+  \zrulsP{rs}{r}{rs} \\
+rs & ::= &
+  \cdot ~\vert~ \hrulesP{r}{rs} \\
+r & ::= &
+  \hrul{p}{e} \\
+p & ::= &
+  x ~\vert~
+  \hnum{n} ~\vert~
+  \_ ~\vert~
+  \hpair{p}{p} ~\vert~
+  \hinlp{p} ~\vert~
+  \hinrp{p} ~\vert~
+  \hehole{w} ~\vert~
+  \hhole{p}{w}
+\end{array}$
+\caption{
+  Syntax of types, $\tau$, internal expression, $e$,
+  rules with pointer, $\zrules$,
+  rules, $rs$,
+  rule, $r$, and
+  pattern, $p$.
+  We write $x$ to range over variables,
+  $u$ over expression hole name,
+  $w$ over pattern hole name.
+}
+\label{fig:syntax}
+\end{figure}

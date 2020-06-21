@@ -1,0 +1,53 @@
+% !TEX root= extended-abstract.tex
+
+\begin{figure}[h]
+\judgbox{\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}}
+{$p$ matches expression of type $\tau$, with match constraint $\xi$}
+
+\begin{mathpar}
+\Infer{\PTVar}{ }{
+  \chpattyp{x}{\tau}{\ctruth}{\cdot}{x : \tau}
+}
+
+\Infer{\PTNum}{ }{
+  \chpattyp{\hnum{n}}{\tnum}{\cnum{n}}{\cdot}{\cdot}
+}
+
+\Infer{\PTWild}{ }{
+  \chpattyp{\_}{\tau}{\ctruth}{\cdot}{\cdot}
+}
+
+\Infer{\PTInL}{
+  \chpattyp{p}{\tau_1}{\xi}{\Gamma}{\Delta}
+}{
+  \chpattyp{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\cinl{\xi}}{\Gamma}{\Delta}
+}
+
+\Infer{\PTInR}{
+  \chpattyp{p}{\tau_2}{\xi}{\Gamma}{\Delta}
+}{
+  \chpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\cinr{\xi}}{\Gamma}{\Delta}
+}
+
+\Infer{\PTPair}{
+  \chpattyp{p_1}{\tau_1}{\xi_1}{\Gamma_1}{\Delta_1} \\
+  \chpattyp{p_2}{\tau_2}{\xi_2}{\Gamma_2}{\Delta_2}
+}{
+  \chpattyp{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}
+  {\cpair{\xi_1}{\xi_2}}{\Gamma_1 \uplus \Gamma_2}{\Delta_1 \uplus \Delta_2}
+}
+
+\Infer{\PTEHole}{ }{
+  \chpattyp{\hehole{w}}{\tau}{\cunknown}{\cdot}{w :: \tau}
+}
+
+\Infer{\PTHole}{
+  \chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}
+}{
+  \chpattyp{\hhole{p}{w}}{\tau'}{\cunknown}
+  {\Gamma}{\Delta , w :: \tau'}
+}
+\end{mathpar}
+\caption{Typing of patterns}
+\label{fig:pattyp}
+\end{figure}
