@@ -1059,13 +1059,13 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{equation}
 \begin{equation}\label{rule:CTRules}
 \inferrule[CTRules]{
-  \chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi'}{\tau'} \\
-  \chrulstyp{\Gamma}{\Delta}{\cor{\xi}{\xi'}}{rs}
-  {\tau}{\xi''}{\tau'} \\
-  \cnotsatisfy{\xi'}{\xi}
+  \chrultyp{\Gamma}{\Delta}{r}{\tau_1}{\xi_r}{\tau_2} \\
+  \chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r}}{rs}
+  {\tau_1}{\xi_{rs}}{\tau_2} \\
+  \cnotsatisfy{\xi_r}{\xi_{pre}}
 }{
-  \chrulstyp{\Gamma}{\Delta}{\xi}{\hrules{r}{rs}}
-  {\tau}{\cor{\xi'}{\xi''}}{\tau'}
+  \chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrules{r}{rs}}
+  {\tau_1}{\cor{\xi_r}{\xi_{rs}}}{\tau_2}
 }
 \end{equation}
 \end{subequations}
