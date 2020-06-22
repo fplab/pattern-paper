@@ -1,0 +1,62 @@
+%% Statics
+
+% typing of internal expressions
+\newrulecommand{TVar}{TVar}
+\newrulecommand{TNum}{TNum}
+\newrulecommand{TLam}{TLam}
+\newrulecommand{TAp}{TAp}
+\newrulecommand{TPair}{TPair}
+\newrulecommand{TInL}{TInL}
+\newrulecommand{TInR}{TInR}
+\newrulecommand{TMatchZPre}{TMatchZPre}
+\newrulecommand{TMatchNZPre}{TMatchNZPre}
+\newrulecommand{TEHole}{TEHole}
+\newrulecommand{THole}{THole}
+
+% typing of rule and rules
+\newrulecommand{TRule}{TRule}
+\newrulecommand{TZeroRule}{TZeroRule}
+\newrulecommand{TRules}{TRules}
+
+% typing of pattern
+\newrulecommand{PTVar}{PTVar}
+\newrulecommand{PTNum}{PTNum}
+\newrulecommand{PTWild}{PTWild}
+\newrulecommand{PTPair}{PTPair}
+\newrulecommand{PTInL}{PTInL}
+\newrulecommand{PTInR}{PTInR}
+\newrulecommand{PTEHole}{PTEHole}
+\newrulecommand{PTHole}{PTHole}
+
+%% Dynamics
+
+% typing of substitution
+\newrulecommand{STEmpty}{STEmpty}
+\newrulecommand{STExtend}{STExtend}
+
+% match
+\newrulecommand{MPVar}{MPVar}
+\newrulecommand{MPNum}{MPNum}
+\newrulecommand{MPWild}{MPWild}
+\newrulecommand{MPPair}{MPPair}
+\newrulecommand{MPInL}{MPInL}
+\newrulecommand{MPInR}{MPInR}
+
+% may match
+\newrulecommand{MMEHole}{MMEHole}
+\newrulecommand{MMHole}{MMHole}
+\newrulecommand{EMMEHole}{EMMEHole}
+\newrulecommand{EMMHole}{EMMHole}
+\newrulecommand{MMPairL}{MMPairL}
+\newrulecommand{MMPairR}{MMPairR}
+\newrulecommand{MMPair}{MMPair}
+\newrulecommand{MMInL}{MMInL}
+\newrulecommand{MMInR}{MMInR}
+
+% not match
+\newrulecommand{NMPairL}{NMPairL}
+\newrulecommand{NMPairR}{NMPairR}
+\newrulecommand{NMConfL}{NMConfL}
+\newrulecommand{NMConfR}{NMConfR}
+\newrulecommand{NMInL}{NMInL}
+\newrulecommand{NMInR}{NMInR}

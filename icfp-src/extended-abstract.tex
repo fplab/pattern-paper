@@ -1,5 +1,37 @@
 \documentclass[acmsmall,screen,review,nonacm]{acmart}
 
+\usepackage{amsmath,amssymb, amsthm}
+
+\usepackage{stmaryrd} % llparenthesis
+\usepackage{anyfontsize} % workaround for font size difference warning
+
+%% Joshua Dunfield macros
+\def\OPTIONConf{1}
+\usepackage{jdunfield}
+\usepackage{rulelinks} % hyperlink of rule name
+
+\citestyle{acmauthoryear}
+
+\newtheoremstyle{slplain}% name
+  {.15\baselineskip\@plus.1\baselineskip\@minus.1\baselineskip}% Space above
+  {.15\baselineskip\@plus.1\baselineskip\@minus.1\baselineskip}% Space below
+  {\slshape}% Body font
+  {\parindent}%Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries}%  Thm head font
+  {.}%       Punctuation after thm head
+  { }%      Space after thm head: " " = normal interword space;
+       %       \newline = linebreak
+  {}%       Thm head spec
+\theoremstyle{slplain}
+\newtheorem{thm}{Theorem}  % Numbered with the equation counter
+\numberwithin{thm}{section}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{corol}[thm]{Corollary}
+\input{macros}
+\input{rulecommands}
+
 \begin{document}
   
 \title{Pattern Matching with Holes}
@@ -10,8 +42,98 @@
   \institution{University of Michigan}
 }
 
-\input{abstract}
 \maketitle
 
+\section{Introduction}
+\emph{Pattern matching} is a cornerstone of functional programming. An expression of product and sum types often rely on pattern matching to be eliminated.
+The expression that corresponds to the concept of pattern matching is called \emph{match} expression. The first argument to match expression is called \emph{scrutinee}, and the second argument consists of a finite sequence of \emph{rule}. Each rule consists of a \emph{pattern} that may introduce variables and an expression that may involve those variables. The meaning of match expression is given by considering each rule in order until the first rule whose pattern matches the scrutinee is found. With the context extended during pattern matching, the expression of the matched rule is computed \cite{Harper2012}.
 
+Pattern matching is widely used in the ML family. However, the way how match expression is structured determine that it requires programmer to deal with many components at the same time, which is impossible. Even worse, throughout the process of entering a match expression, there are substantial lengths of time when the expression is not well-typed by nature.
+
+There have been works that address the problem of such ``gap'' caused by incomplete program. By modeling incomplete programs as typed expression with \emph{holes}, \citet{DBLP:conf/popl/OmarVHAH17} describes a static semantics for incomplete functional programs. Based on that, \citet{DBLP:journals/pacmpl/OmarVCH19} develops a dynamic semantics to evaluate such incomplete programs without exceptions. However, the pattern matching described in the appendix of \citet{DBLP:journals/pacmpl/OmarVCH19} only work with sum types. In other words, it doesn't allow nested patterns, which is the more interesting case and is how pattern matching looks like in modern functional programming languages.
+
+This abstract focuses on the formalism of full-fledged pattern matching with holes such that programming environment or programmer could understand incomplete match expression.
+
+The main contribution of the work is about reasoning the behavior that are specific to pattern matching instead of simply introducing holes into the semantics of pattern matching. In particular, the static semantics is defined in a way to enforce \emph{exhaustivenss} and \emph{redundancy} of rules. In a match expression, there is at least one of the rules that the scrutinee matches or may match. Hence, any well-typed match expression is guaranteed to have no exception. Besides, no rule is definitely redundant with respect to preceding rules, \textit{i.e.}, no rule could be safely eliminated without affecting the execution of pattern matching.
+
+\section{Static Semantics}
+\label{sec:statics}
+
+\input{fig-exptyp}
+
+\Figref{fig:exptyp} only includes typing of match expression due to page limits. The match expression $\hmatch{e}{\zrules}$ takes two arguments, the expression to match, $e$, called scrutinee, and a series of rules with pointer, $\zrules$. When a match expression hasn't been evaluated, the pointer is on the first rule, which is the case of Rule \TMatchZPre. As we consider those rules in order, if the scrutinee doesn't match the pointed rule, the pointer would move to the next rule. Rule \TMatchNZPre gives the typing judgement for match expressions whose rule pointer has been moved from the first rule.
+
+Since our focus is more on the side of pattern matching, we doesn't inherit the bidirectional static semantics from \citet{DBLP:conf/popl/OmarVHAH17}. Instead, the static semantics aims to predict the behavior of match expression in runtime. For example, the last premise of Rule \TMatchZPre is used to check the exhaustivenss, which ensures that the match expression satisfy \Thmref{thm:progress}
+
+\input{fig-rulestyp}
+
+\Figref{fig:rulestyp} defines the typing judgement for rules. When rules is constructed inductively in Rule \TRules, the constraints on previous rules is accumulated and the redundancy of each rule is checked in order by comparing the constraint on the current rule, $\xi_r$, with the constraint on previous rules, $\xi_{pre}$. Meanwhile, the constraint on rules $\hrules{r}{rs}$, $\cor{\xi_r}{\xi_{rs}}$ is accumulated as well.
+
+The constraint on a single rule is derived from its pattern. For example, a variable pattern corresponds to \emph{Truth} constraint, $\ctruth$, while a pattern hole, $\hehole{w}$ or $\hhole{p}{w}$, corresponds to \emph{Unknown} constraint, $?$.
+Therefore, the typing judgement of a pattern is of the form $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$.
+
+Basically, constraint predict the set of expressions that match the corresponding rule, or rules if the constraint is a accumulated one.
+
+\section{Dynamic Semantics}
+\label{sec:dynamics}
+
+The stepping judgement of match expressions are composed of four rules. The first rule states that if the scrutinee can take a step, the match expression can take a step. The other three rules are closely related to pattern matching and describe three possible matching result:
+\begin{enumerate}
+  \item The scrutinee matches the pattern of the current rule, next step is to evaluate the corresponding expression under the rule.
+  \item The scrutinee may match the pattern of the current rule, we say that the match expression is \emph{indeterminate}, the concept of which originates from \citet{DBLP:journals/pacmpl/OmarVCH19}.
+  \item The scrutinee doesn't match the pattern of the current rule, the pointer will be moved to the next rule. \Theoremref{thm:progress} ensures that there are remaining rules for the pointer to move on.
+\end{enumerate}
+
+The following theorem establishes that for a match expresion, no matter the scrutinee matches the current rule or not, the stepping preserves its typing.
+
+\begin{thm}[Preservation]
+  \label{thrm:preservation}
+  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\htrans{e}{e'}$
+  then $\hexptyp{\cdot}{\Delta}{e'}{\tau}$
+\end{thm}
+
+Since \Theoremref{thrm:preservation} ensures that no matter where the rule pointer is at, the match expression is still well-typed.
+For Rule \TMatchZPre, we simply have $\csatisfyormay{e}{\xi}$. Since $\xi$ constrains the set of expressions that match the rules, the judgement means that the scrutinee either matches or may match one of the rules.
+For Rule \TMatchNZPre, the premises gives us $\csatisfyormay{e}{\xi_{rest}}$. Besides, $\xi_{rest}$ is the corresponding constraint of the remaining rules, and thus the scrutinee either matches or may match the current rule, or matches or may match one of the rest rules.
+Therefore, we conclude that any well-typed match expression can take a step or is indeterminate, which constructs the proof of the following theorem.
+
+\begin{thm}[Progress]
+ \label{thm:progress}
+ If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then either $\isFinal{e}$ or $\htrans{e}{e'}$ for some $e'$.
+\end{thm}
+
+\Theoremref{thm:progress} states that for all well-typed expression, either it is final, \ie, a value or is indeterminate, or it can take a step. The proof relies on the one-to-one correspondance between pattern matching and constraint satisfaction.
+
+\section{Exhaustiveness and Redundancy}
+\label{sec:exhaustivens-redundancy}
+
+With the intuition of what constraint is for as discussed in \Secref{sec:statics} and \Secref{sec:dynamics}, we will talk about how constraint is used to check exhaustivenss of rules and redundancy of any single rule and give formal definition.
+
+$\csatisfy{e}{\xi}$ is inductively defined by a set of rules, with meaning that expression $e$ satisfies constraint $\xi$. For example, any expression satisfy Truth constraint, $\csatisfy{e}{\ctruth}$.
+
+$\cmaysatisfy{e}{\xi}$ is inductively defined by a set of rules, with the meaning that expression $e$ may satisfy constraint $\xi$. For example, expression hole, no matter it is empty or not, may satisfy any constraint, \ie, $\cmaysatisfy{\hehole{u}}{\xi}$ and $\cmaysatisfy{\hhole{e}{u}}{\xi}$, since expression hole may match arbitrary patterns.
+
+Assume the constraint is associated with all the rules in the match expression. The definition of the constraint's exhaustivenss is that for all final expression of the same type as the constraint, it either satisfy or may satisfy the constraint. Since the constraint is a disjunction of constrains that are associated with each rule in the match expression respectively, the definition means either $e$ matches or may match one of the rules.
+The definition requires that the expression is final because exhaustiveness is reasoning the runtime behavior of the match expression. Consequently, even if the scrutinee is a hole, the progress will still hold.
+
+Note that only when the match expression can't be exhaustive, should the programming environment warn the programmer. Therefore, the exhaustiveness we define here is actually "exhaustiveness or maybe exhaustiveness".
+
+\begin{defn}[Exhaustiveness]
+  \label{defn:exhaustiveness}
+  $\csatisfyormay{\ctruth}{\xi}$ iff $\ctyp{\xi}{\tau}$ and for all $e$ such that $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfy{e}{\xi}$ or $\cmaysatisfy{e}{\xi}$.
+\end{defn}
+
+Assume the constraint $\xi_r$ is associated with the current rule, $r$, and the constraint $\xi_{pre}$ is associated with the previous rules, $rs_{pre}$. The idea that rule $r$ is redundant with respect to $rs_{pre}$ is described by $\csatisfy{\xi_r}{\xi_{pre}}$.
+The definition requires that the expression is a value because redundancy checking is helping programmer eliminate redundant code and the definition is based on the fact that the scrutinee is complete (without holes).
+
+Similar to the exhaustiveness, only when some rule must be redundant, should we warn the programmer. Therefore, for those expression that may match the current rule, they should match one of the previous rules so that we can say with confidence that the current rule can't be reached.
+\begin{defn}[Redundancy]
+  \label{defn:redundancy}
+  $\csatisfy{\xi_r}{\xi_{pre}}$ iff $\ctyp{\xi_r}{\tau}$ and $\ctyp{\xi_{pre}}{\tau}$ and for all $e$ such that $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isVal{e}$ we have $\csatisfy{e}{\xi_r}$ or $\cmaysatisfy{e}{\xi_r}$ implies $\csatisfy{e}{\xi_{pre}}$.
+\end{defn}
+
+\clearpage
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
 \end{document}
