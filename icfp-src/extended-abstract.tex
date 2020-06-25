@@ -131,7 +131,7 @@ disconjunction of constraints $\cor{\xi_1}{\xi_2}$ corresponds to multiple patte
 
 The dual of a constraint, $\cdual{\xi}$, predicts the complement of the set of expressions that match the corresponding pattern of $\xi$.
 \eg $\cdual{\cnum{n}}=\cnotnum{n}$ means all numbers other than $n$;
-$\cdual{\cor{\xi_1}{\xi_2}}=\cand{\cdual{\xi_1}}{\cdual{\xi_2}}$ means the complement of a union.
+$\cdual{\cor{\xi_1}{\xi_2}}=\cand{\cdual{\xi_1}}{\cdual{\xi_2}}$ means the complement of the union of two constraints.
 
 To give an idea of how rules is related to constraints:
 in \Eqref{eq:pathole-exhaustive}, the corresponding constraint of two rules is $\cor{\cpair{\cinl{\ctruth}}{\ctruth}}{\cpair{\ctruth}{\cunknown}}$;
@@ -162,6 +162,8 @@ By comparing two constraints $\cpair{\cinl{\ctruth}}{\ctruth}$ and $\cpair{\cinl
 $\cmaysatisfy{e}{\cpair{\cinl{\cunknown}}{\cunknown}}$ implies $\csatisfy{e}{\cpair{\cinl{\ctruth}}{\ctruth}}$
 , which means that no matter how we fill the holes in $\hpair{\hinlp{\hehole{w_1}}}{\hehole{w_2}}$, all expressions that matches the completed pattern also matches $\hpair{\hinlp{x}}{\_}$. Hence, the second rule must be redundant.
 \Definitionref{defn:redundancy} gives the formal definition of redundancy.
+
+However, to determine if the redundancy judgement is true, we have to apply \emph{material entailment of constraints} and $\csatisfy{\xi_r}{\xi_{pre}}$ is equivalent to $\csatisfy{\ctruth}{\cor{\cdual{\xi_r}}{\xi_{pre}}}$. Then, we only need to determine if $\cor{\cdual{\xi_r}}{\xi_{pre}}$ can be satisfied by all expressions.
 
 \begin{defn}[Redundancy]
   \label{defn:redundancy}
