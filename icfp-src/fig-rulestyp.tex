@@ -5,10 +5,6 @@
 {$rs$ is of type $\trulnp{\tau_1}{\tau_2}$, \\ following rules constrained by $\xi_{pre}$ and constrained by $\xi_{rs}$}
 
 \begin{mathpar}
-\Infer{\TZeroRule}{ }{
-  \chrulstyp{\Gamma}{\Delta}{\xi}{\cdot}{\tau_1}{\cfalsity}{\tau_2}
-}
-
 \Infer{\TRules}{
   \chrultyp{\Gamma}{\Delta}{r}{\tau_1}{\xi_r}{\tau_2} \\
   \chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r}}{rs}

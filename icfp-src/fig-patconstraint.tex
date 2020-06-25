@@ -1,0 +1,28 @@
+% !TEX root= extended-abstract.tex
+
+\begin{figure}[h]
+$\arraycolsep=4pt\begin{array}{lll}
+p & ::= &
+  x ~\vert~
+  \hnum{n} ~\vert~
+  \_ ~\vert~
+  \hpair{p_1}{p_2} ~\vert~
+  \hinlp{p} ~\vert~
+  \hinrp{p} ~\vert~
+  \hehole{w} ~\vert~
+  \hhole{p}{w} \\
+\xi & ::= &
+  \ctruth ~\vert~
+  \cfalsity ~\vert~
+  \cnum{n} ~\vert~
+  \cnotnum{n} ~\vert~
+  \cand{\xi_1}{\xi_2} ~\vert~
+  \cor{\xi_1}{\xi_2} ~\vert~
+  \cpair{\xi_1}{\xi_2} ~\vert~
+  \cinl{\xi} ~\vert~
+  \cinr{\xi} ~\vert~
+  \cunknown
+\end{array}$
+\caption{Syntax of patterns and constraints}
+\label{fig:pat-constraint}
+\end{figure}
