@@ -54,11 +54,14 @@
 
 \section{Introduction}
 \label{sec:intro}
-Today's programming environment either only provides meaningful feedback for complete programs or simply takes heuristic approach to achieve similar results.
-By modeling incomplete programs as typed expressions with \emph{holes}, \citet{DBLP:conf/popl/OmarVHAH17} describes a static semantics for incomplete functional programs. Based on that, \citet{DBLP:journals/pacmpl/OmarVCH19} develops a dynamic semantics to evaluate such incomplete programs without exceptions.
+Most contemporary programming environments either provide meaningful feedback only for complete programs, or fall back to limited heuristic approaches when the program is incomplete.
+Recent work on modeling incomplete programs as typed expressions with \emph{holes} has focused on tackling this problem. \citet{DBLP:conf/popl/OmarVHAH17} describes a static semantics for incomplete functional programs. Based on that, \citet{DBLP:journals/pacmpl/OmarVCH19} develops a dynamic semantics to evaluate such incomplete programs.
+These foundational treatments are being implemented and extended in the Hazel programming environment (hazel.org).
 
-\emph{Pattern matching} is a cornerstone of functional programming languages including ML family. An expression of product or sum types often relies on pattern matching to be eliminated.
-However, \citet{DBLP:journals/pacmpl/OmarVCH19} only introduces a rudimentary form of pattern matching that only allows case analysis on binary sum type and doesn't support nested patterns.
+\emph{Pattern matching} is a cornerstone of functional programming languages in the ML family. 
+However, \citet{DBLP:journals/pacmpl/OmarVCH19} only supports simple case analysis on binary sum types and does not support nested patterns nor pattern holes.
+This paper addresses this problem, focusing on adding full ML-style pattern matching with support for pattern holes to the Hazelnut core calculus and implementing 
+this system at full scale into Hazel. Consider the examples below, which contain expression and pattern holes, denoted $\hehole{u}$ (where each hole has a unique name, $u$). 
 
 \begin{figure}[h]
 \begin{minipage}{0.33\textwidth}
@@ -96,16 +99,20 @@ However, \citet{DBLP:journals/pacmpl/OmarVCH19} only introduces a rudimentary fo
 \end{minipage}%
 \end{figure}
 
-Holes in match expression don't have to stop the match expression from being evaluated.
-For a match expression shown in \Eqref{eq:complete}, the scrutinee contains a hole.
-By considering two rules in order, we observe that
+For the match expression shown in \Eqref{eq:complete}, the scrutinee contains a hole.
+By considering the match two rules in order, we observe that
 no matter how the hole $u$ is filled, $\hpair{\hinl{\tnum}{\hehole{u}}}{2}$ doesn't match $\hrul{\hpair{\hinrp{x}}{\_}}{x}$,
-and always matches $\hpair{\_}{x}$. And thus the value of the match expression is $2$.
+and always matches $\hpair{\_}{x}$. And thus the value of the match expression is $2$, despite the fact that the program is incomplete.
+If, however, we replaced the pattern in the first rule with $(\hinlp{3}, _)$, it would be impossible to decide whether the pattern matches
+or not, and so the match expression would be \emph{indeterminate}, i.e. awaiting hole filling. Similarly, if we had replaced the 
+pattern in the first rule with $(\hinlp{x}, \hehole{w})$, then it is impossible to tell whether the pattern hole $w$ will match $2$ or not,
+so the match would also be indeterminate.
 
-Besides the computation result, the real time feedback as we enter a match expression can help programmers correct mistakes.
-However, it is subtle and complicated to check if the rules in \Eqref{eq:pathole-exhaustive} cover all the possibilities, \ie \emph{exhaustiveness}, or if the second rule in \Eqref{eq:pathole-redundant} can never be reached, \ie \emph{redundancy}. 
+One of the benefits of pattern matching is that it allows for static reasoning about exhaustiveness and redundancy.
+However, reasoning about these matters is subtle and complicated in the presence of holes. 
+For example, consider the problem of checking if the rules in \Eqref{eq:pathole-exhaustive} cover all the possibilities, \ie \emph{exhaustiveness}, or if the second rule in \Eqref{eq:pathole-redundant} can never be reached no matter how the holes are filled, \ie \emph{redundancy}. 
 
-This abstract focuses on the formalism of full-fledged pattern matching with typed holes so that the programming environment could give feedback on incomplete match expressions.
+This abstract focuses on the formalism of full-fledged pattern matching with typed holes so that the programming environment could give this sort of feedback even when considering incomplete match expressions.
 
 \section{Static Semantics}
 \label{sec:statics}
@@ -113,18 +120,8 @@ This abstract focuses on the formalism of full-fledged pattern matching with typ
 \input{fig-exptyp}
 
 Part of the definition of the internal language is shown in \Figref{fig:exptyp}. 
-Different from the examples in \Secref{sec:intro}, the constinuent rules in a match expression has a pointer to indicate which rule is being considered. The pointer would move as we evaluate the match expression.
-
-Note that the premise of Rule \TMatchZPre and Rule \TMatchNZPre involves judgement of the form $\csatisfyormay{\ctruth}{\xi}$. That means, the rules in match expression either must be or may be exhaustive.
-Take \Eqref{eq:pathole-exhaustive} as an example, by filling the pattern hole $w$, the rules may cover all the possibilities of scrutinee and we shouldn't generate warning about non-exhaustiveness.
-
-\input{fig-rulestyp}
-
-\Figref{fig:rulestyp} describes the inductive construction of rules. The premise $\cnotsatisfy{\xi_r}{\xi_{pre}}$ in Rule \TRules ensures that rule $r$ is not redundant with respect to rules $rs_{pre}$.
-Take \Eqref{eq:pathole-redundant} as an example, all sub-expressions that match or may match $\hinlp{\hehole{w_1}}$ also matche $\hinlp{x}$.
-Even if the second rule is not complete, we know it is redundant and thus we can suggest the programmer to either rewrite or eliminate it.
-
-\input{fig-patconstraint}
+Different from the examples in \Secref{sec:intro}, the rules in a match expression have a pointer to indicate which rule is being considered. The pointer would move as we evaluate the match expression.
+This pointer is particularly useful when returning an indeterminate match expression to the user, because it shows which rules have been checked.
 
 Constraints $\xi$ is emitted from patterns. The syntax of them is given in \Figref{fig:pat-constraint}. A constraint predict the set of expressions that match the corresponding pattern.
 For example, variable patterns or wild card patterns emit \emph{Truth} constraint $\ctruth$;
@@ -138,10 +135,24 @@ $\cdual{\cor{\xi_1}{\xi_2}}=\cand{\cdual{\xi_1}}{\cdual{\xi_2}}$ means the compl
 To give an idea of how rules is related to constraints:
 in \Eqref{eq:pathole-exhaustive}, the corresponding constraint of two rules is $\cor{\cpair{\cinl{\ctruth}}{\ctruth}}{\cpair{\ctruth}{\cunknown}}$;
 in \Eqref{eq:pathole-redundant}, the constraint of the second rule is $\cpair{\cinl{\cunknown}}{\cunknown}$ while the constraint of the first rule is $\cpair{\cinl{\ctruth}}{\ctruth}$.
-We will see in \Secref{sec:exhaustiveness-redundancy} how these constraints are used to check exhaustiveness and redundancy.
+
+\input{fig-rulestyp}
+
+\Figref{fig:rulestyp} describes the inductive construction of rules. 
+
+\input{fig-patconstraint}
+
 
 \section{Exhaustiveness and Redundancy}
 \label{sec:exhaustiveness-redundancy}
+TODO: moved the discussion of exhaustiveness and redundancy from above to here. please integrate it.
+
+Note that the premise of Rule \TMatchZPre and Rule \TMatchNZPre involves judgement of the form $\csatisfyormay{\ctruth}{\xi}$. That means, the rules in match expression either must be or may be exhaustive.
+Take \Eqref{eq:pathole-exhaustive} as an example, by filling the pattern hole $w$, the rules may cover all the possibilities of scrutinee and we shouldn't generate warning about non-exhaustiveness.
+
+The premise $\cnotsatisfy{\xi_r}{\xi_{pre}}$ in Rule \TRules ensures that rule $r$ is not redundant with respect to rules $rs_{pre}$.
+Take \Eqref{eq:pathole-redundant} as an example, all sub-expressions that match or may match $\hinlp{\hehole{w_1}}$ also matche $\hinlp{x}$.
+Even if the second rule is not complete, we know it is redundant and thus we can suggest the programmer to either rewrite or eliminate it.
 
 Since constraints correspond to patterns, the relationship between an expression and a constraint should be defined in a way to represent that the expression match the associated pattern of the constraint.
 
