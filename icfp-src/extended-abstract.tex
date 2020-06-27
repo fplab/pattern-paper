@@ -101,12 +101,13 @@ this system at full scale into Hazel. Consider the examples below, which contain
 
 For the match expression shown in \Eqref{eq:complete}, the scrutinee contains a hole.
 By considering the match two rules in order, we observe that
-no matter how the hole $u$ is filled, $\hpair{\hinl{\tnum}{\hehole{u}}}{2}$ doesn't match $\hrul{\hpair{\hinrp{x}}{\_}}{x}$,
+no matter how the hole $u$ is filled, $\hpair{\hinl{\tnum}{\hehole{u}}}{2}$ doesn't match $\hpair{\hinrp{x}}{\_}$,
 and always matches $\hpair{\_}{x}$. And thus the value of the match expression is $2$, despite the fact that the program is incomplete.
-If, however, we replaced the pattern in the first rule with $(\hinlp{3}, _)$, it would be impossible to decide whether the pattern matches
-or not, and so the match expression would be \emph{indeterminate}, i.e. awaiting hole filling. Similarly, if we had replaced the 
-pattern in the first rule with $(\hinlp{x}, \hehole{w})$, then it is impossible to tell whether the pattern hole $w$ will match $2$ or not,
-so the match would also be indeterminate.
+If, however, we replaced the pattern in the first rule with $(\hinlp{3}, \_)$, it would be impossible to decide whether the pattern matches
+or not, and so the match expression would be \emph{indeterminate}, i.e. awaiting hole filling.
+%Similarly, if we had replaced the pattern in the first rule with $(\hinlp{x}, \hehole{w})$,
+%then it is impossible to tell whether the pattern hole $w$ will match $2$ or not,
+%so the match would also be indeterminate.
 
 One of the benefits of pattern matching is that it allows for static reasoning about exhaustiveness and redundancy.
 However, reasoning about these matters is subtle and complicated in the presence of holes. 
@@ -119,9 +120,10 @@ This abstract focuses on the formalism of full-fledged pattern matching with typ
 
 \input{fig-exptyp}
 
-Part of the definition of the internal language is shown in \Figref{fig:exptyp}. 
-Different from the examples in \Secref{sec:intro}, the rules in a match expression have a pointer to indicate which rule is being considered. The pointer would move as we evaluate the match expression.
-This pointer is particularly useful when returning an indeterminate match expression to the user, because it shows which rules have been checked.
+\Figref{fig:exptyp} defines part of the internal language.
+Different from the examples in \Secref{sec:intro}, the rules in a match expression have a pointer to indicate which rule is being considered.
+The pointer would move as we evaluate the match expression and 
+is particularly useful when returning an indeterminate match expression to the user, because it shows which rules have been checked.
 
 \input{fig-rulestyp}
 
@@ -129,29 +131,24 @@ This pointer is particularly useful when returning an indeterminate match expres
 
 Constraints $\xi$ is emitted from patterns. The syntax of them is given in \Figref{fig:pat-constraint}. A constraint predict the set of expressions that match the corresponding pattern.
 For example, variable patterns or wild card patterns emit \emph{Truth} constraint $\ctruth$;
-pattern holes emit \emph{Unknown} constraint $?$;
+a pattern hole emits \emph{Unknown} constraint $?$;
 patterns in multiple rules altogether emit disconjunction of constraints $\xi_1 \vee \xi_2 \vee \dots \vee \xi_n$.
 
 The dual of a constraint, $\cdual{\xi}$, predicts the complement of the set of expressions that match the corresponding pattern of $\xi$.
 \eg $\cdual{\cnum{n}}=\cnotnum{n}$ means all numbers other than $n$;
 $\cdual{\cor{\xi_1}{\xi_2}}=\cand{\cdual{\xi_1}}{\cdual{\xi_2}}$ means the complement of the union of two constraints.
 
-To give an idea of how rules is related to constraints:
-in \Eqref{eq:pathole-exhaustive}, the corresponding constraint of two rules is $\cor{\cpair{\cinl{\ctruth}}{\ctruth}}{\cpair{\ctruth}{\cunknown}}$;
-in \Eqref{eq:pathole-redundant}, the constraint of the second rule is $\cpair{\cinl{\cunknown}}{\cunknown}$ while the constraint of the first rule is $\cpair{\cinl{\ctruth}}{\ctruth}$.
-
 \input{fig-patconstraint}
 
 
 \section{Exhaustiveness and Redundancy}
 \label{sec:exhaustiveness-redundancy}
-Since constraints correspond to patterns, the relationship between an expression and a constraint should be defined in a way to represent that the expression match the associated pattern of the constraint.
+We define a satisfaction judgment between an expression and a constraint, $\csatisfy{e}{\xi}$, to represent if the expression match the associated pattern(s),
+\eg any expression satisfies Truth constraint, $\csatisfy{e}{\ctruth}$.
 
-We write $\csatisfy{e}{\xi}$ to denote that the expression $e$ satisfies the constraint $\xi$, which is inductively defined by a set of rules. For example, any expression satisfies Truth constraint, $\csatisfy{e}{\ctruth}$.
+Similarly, we define a maybe satisfaction judgment $\cmaysatisfy{e}{\xi}$ with the meaning that $e$ may match the associated pattern(s). For example, an expression hole can be filled by any expression and thus may satisfy any constraint, \ie $\cmaysatisfy{\hehole{u}}{\xi}$ and $\cmaysatisfy{\hhole{e}{u}}{\xi}$.
 
-Similarly, we inductively define a maybe satisfaction judgement $\cmaysatisfy{e}{\xi}$ to denote that the expression $e$ may satisfy the constraint $\xi$, \ie $e$ may match the associated pattern. For example, an expression hole, no matter it is empty or not, may satisfy any constraint, \ie $\cmaysatisfy{\hehole{u}}{\xi}$ and $\cmaysatisfy{\hhole{e}{u}}{\xi}$, since we can always fill the hole with an expression that matches a given pattern.
-
-Since pattern matching only works with final expressions, the judgements mentioned above only makes sense when $\isFinal{e}$, \ie $\isVal{e}$ or $\isIndet{e}$. $\isIndet{e}$ means that $e$ can't be further evaluated due to the existence of holes \cite{DBLP:journals/pacmpl/OmarVCH19}.
+Note that matching process only makes sense for \emph{final} expressions, \ie either values or indeterminate. The same goes for two sorts of satisfaction judgments.
 
 \Definitionref{defn:exhaustiveness} gives the formal definition of exhaustiveness or maybe exhaustiveness.
 Rule \TMatchZPre uses it to enforce the rules associated with $\xi$ cover or may cover all the possibilities of the scrutinee.
