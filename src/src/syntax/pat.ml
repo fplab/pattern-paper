@@ -1,7 +1,8 @@
 type t =
-  | EmptyHole
+  | EmptyHole of Hole.t
+  | NonEmptyHole of Hole.t * t
   | Wild
-  | Var of Err.t * string
-  | Int of Err.t * int
-  | Pair of Err.t * t * t
-  | Inj of Err.t * InjSide.t * t
+  | Var of Var.t
+  | Num of int
+  | Pair of t * t
+  | Inj of InjSide.t * t

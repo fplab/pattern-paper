@@ -100,7 +100,7 @@ let rec is_inconsistent ?(may = false) (xis : Constraint.t list) : bool =
           | Some (ns, []) -> is_inconsistent_nums ns
           | Some (ns, other) -> is_inconsistent ~may (other @ ns)
         )
-      | Pair (xi_1, xi_2) -> (
+      | Pair (_, _) -> (
           match
             List.partition
               (function Constraint.Pair _ -> true | _ -> false)
