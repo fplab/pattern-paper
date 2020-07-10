@@ -1,6 +1,6 @@
 include Syntax
 
-exception DuplicateVarInPat
+exception DuplicateVarInPat of Var.t
 
 type t = (Var.t * Typ.t) List.t 
 
@@ -36,10 +36,15 @@ let rec drop x ctx =
 
 let extend ctx (x, elt) = (x, elt)::(drop x ctx)
 
+let extend_opt ctx (x, elt) = 
+  if contains x ctx then
+    None
+  else
+    Some ((x, elt)::ctx)
 
 let strict_extend ctx (x, elt) =
   if contains x ctx then
-    raise DuplicateVarInPat
+    raise (DuplicateVarInPat x)
   else
     (x, elt)::ctx
 
