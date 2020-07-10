@@ -1,6 +1,6 @@
 type t =
   | EmptyHole of Hole.t
-  | NonEmptyHole of Hole.t * t
+  | NonEmptyHole of Hole.t * Typ.t * t
   | Wild
   | Var of Var.t
   | Num of int

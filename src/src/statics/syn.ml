@@ -1,8 +1,10 @@
 include Util
 include Syntax
+include Dynamics
 
 exception Unimplemented
 
+(*TODO change option to different error*)
 let rec syn_exp (gamma: VarCtx.t) (delta: HoleCtx.t) : (Exp.t -> Typ.t Option.t) =
   function
   | EmptyHole h -> (HoleCtx.find_opt h delta)
@@ -46,12 +48,12 @@ let rec syn_exp (gamma: VarCtx.t) (delta: HoleCtx.t) : (Exp.t -> Typ.t Option.t)
     )
   | Match (scrut, zrules) -> (
       match zrules with
-      | ZRules (Empty, r, rs) -> (
+      | ZRules ([], r, rs) -> (
           match syn_exp gamma delta scrut with
           | Some typ -> (
               match syn_rules
                       gamma delta
-                      (Exp.Rules (r, rs)) typ Constraint.Falsity
+                      (r::rs) typ Constraint.Falsity
               with
               | Some (xi, typ') ->
                 if Incon.is_exhaustive xi then
@@ -62,10 +64,61 @@ let rec syn_exp (gamma: VarCtx.t) (delta: HoleCtx.t) : (Exp.t -> Typ.t Option.t)
             )
           | None -> None
         )
-      | ZRules (rs_pre, r, rs_post) -> raise Unimplemented (* is it okay to assume xi_pre is of the form of disjunction *)
+      | ZRules (rs_pre, r, rs_post) -> (
+          match syn_exp gamma delta scrut with
+          | Some typ -> 
+            if Eval.is_final scrut then (
+              match syn_rules
+                      gamma delta
+                      rs_pre typ Constraint.Falsity
+              with
+              | Some (xi_pre, typ') ->
+                (* TODO check if e mustn't satisfy xi_pre *)
+                (match
+                   syn_rules
+                     gamma delta
+                     (r::rs_post) typ xi_pre
+                 with
+                 | Some (xi_rest, typ'') ->
+                   if typ' <> typ'' then
+                     None (* type inconsistency *)
+                   else if not (Incon.is_exhaustive (Constraint.Or (xi_pre, xi_rest))) then
+                     None (* not exhaustive, the original match expression not well typed *)
+                   else
+                     Some typ'
+                 | None -> None (* rs_pre not well typed *)
+                )
+              | None -> None
+            )
+            else None (* scrut not final *)
+          | None -> None
+        )
+
     )
 and syn_rules gamma delta rules typ xi_pre : (Constraint.t * Typ.t) option =
-  raise Unimplemented (* state explicited for the return type of match? *)
+  match 
+    rules
+    |> List.map 
+      (fun rule -> syn_rule gamma delta rule typ)
+  with
+  | [] (* empty rule shouldn't exist *)
+  | None::_ -> None (* first rule not well typed *)
+  | Some (xi_r, typ')::xi_typ_opts -> 
+    List.fold_left
+      (fun acc xi_typ_opt ->
+         match (acc, xi_typ_opt) with
+         | (None, _) (* error pass through *)
+         | (_, None) -> None (* rule not well typed *)
+         | (Some (xi_pre, typ'_last), Some (xi_r, typ')) ->
+           if Incon.is_redundant xi_r xi_pre then
+             None (* rule is redundant *)
+           else if typ'_last <> typ' then
+             None (* type inconsistency *)
+           else
+             Some (Constraint.Or (xi_pre, xi_r), typ')
+      )
+      (Some (Constraint.Or (xi_pre, xi_r), typ'))
+      xi_typ_opts
 and syn_rule gamma delta (Exp.Rule (pat, exp)) typ : (Constraint.t * Typ.t) option =
   match ana_pat pat typ with
   | Some (xi, gamma', delta') -> (
@@ -86,8 +139,12 @@ and ana_pat (pat: Pat.t) (typ: Typ.t) : (Constraint.t * VarCtx.t * HoleCtx.t) op
       VarCtx.empty,
       HoleCtx.add h (HoleCtx.PatHole, typ) HoleCtx.empty
     )
-  | (NonEmptyHole (h, p), typ) -> 
-    raise Unimplemented 
+  | (NonEmptyHole (h, typ', p), typ) -> 
+    (ana_pat p typ')
+    |> Option.map (
+      fun (_xi, ctx, delta) ->
+        (Constraint.Unknown, ctx, HoleCtx.add h (HoleCtx.PatHole, typ) delta)
+    )
   | (Var x, typ) -> Some (Truth, [(x, typ)], HoleCtx.empty)
   | (Num n, Num) -> Some (Num n, VarCtx.empty, HoleCtx.empty)
   | (Inj (L, p), Sum (typ1, _typ2)) ->
@@ -110,7 +167,17 @@ and ana_pat (pat: Pat.t) (typ: Typ.t) : (Constraint.t * VarCtx.t * HoleCtx.t) op
       | (Some (xi1, gamma1, delta1), Some (xi2, gamma2, delta2)) ->
         Some
           (Constraint.Pair (xi1, xi2),
-           VarCtx.union gamma1 gamma2, (* TODO duplicate var *)
+           VarCtx.strict_union gamma1 gamma2,
            HoleCtx.union delta1 delta2)
       | _ -> None
     )
+  | _ -> None
+
+let%test _= syn_rules VarCtx.empty HoleCtx.empty [Rule (Var "x", Num 1); Rule (EmptyHole 1, Num 2)] Num Constraint.Falsity = None
+let%expect_test _ = 
+  try
+    raise Unimplemented
+  with Unimplemented ->
+    print_endline "unimplemented";
+    [%expect{| unimplemented |}]
+;;

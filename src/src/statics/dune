@@ -1,3 +1,6 @@
 (library
  (name statics)
- (libraries syntax util))
+ (libraries syntax dynamics util)
+ (inline_tests)
+ (preprocess
+  (pps ppx_expect ppx_inline_test)))
