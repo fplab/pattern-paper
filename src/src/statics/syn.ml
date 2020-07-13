@@ -1,6 +1,7 @@
 include Util
 include Syntax
 include Dynamics
+include Seq
 
 exception Unimplemented
 
@@ -115,7 +116,7 @@ and syn_rule gamma delta (Exp.Rule (pat, exp)) typ : (Constraint.t * Typ.t) =
   let typ' =
     try
       syn_exp
-        (VarCtx.strict_union gamma gamma') 
+        (VarCtx.union gamma gamma') 
         (HoleCtx.strict_union delta delta') 
         exp
     with
@@ -181,11 +182,189 @@ let syn gamma delta exp : unit =
       | ScrutNotFinal -> Printf.printf "The scrutinee of indemediate match expressions must be final\n"
     )
 
-let%expect_test _=
-  syn VarCtx.empty HoleCtx.empty (
+let%expect_test "[no-pat-hole]well-typed"=
+  syn VarCtx.empty (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
     Match (
-      Num 1, 
-      ZRules ([], Rule (Var "x", Num 1), [Rule (EmptyHole 1, Num 2)])
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, Var "x"), Wild), Var "x"),
+        [Rule (Pair (Wild, Var "x"), Var "x")]
+      )
+    )
+  );
+  syn VarCtx.empty (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, Num 0), Var "x"), Var "x"),
+        [
+          Rule (Pair (Inj(R, Num 1), Var "x"), Var "x");
+          Rule (Pair (Wild, Var "x"), Var "x")
+        ]
+      )
     )
   ); 
-  [%expect{| Redundant rule 2 |}]
+  [%expect{| |}]
+
+let%expect_test "[no-pat-hole]not-exhaustive"=
+  syn VarCtx.empty (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, Var "x"), Wild), Var "x"),
+        [Rule (Pair (Inj(L, Var "x"), Num 2), Var "x")]
+      )
+    )
+  );
+  syn VarCtx.empty (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, Num 0), Var "x"), Var "x"),
+        [
+          Rule (Pair (Inj(L, Var "x"), Num 1), Var "x");
+          Rule (Pair (Inj(L, Num 1), Var "x"), Var "x")
+        ]
+      )
+    )
+  ); 
+  [%expect{|
+    The match expression mustn't be exhaustive
+    The match expression mustn't be exhaustive |}]
+
+let%expect_test "[no-pat-hole]redundant"=
+  syn (VarCtx.singleton "x" Typ.Num) (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, Num 2), Var "x"), Var "x"), (* (inr(2), x) *)
+        [
+          Rule (Pair (Inj(R, Var "x"), Num 3), Var "x"); (* (inr(x), 3) *)
+          Rule (Pair (Inj(L, Var "x"), Num 2), Var "x");
+          Rule (Pair (Inj(R, Num 2), Num 3), Var "x"); (* (inr(2), 3) *)
+        ]
+      )
+    )
+  );
+  syn VarCtx.empty (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, Var "x"), Num 1), Var "x"),
+        [
+          Rule (Pair (Inj(L, Var "x"), Num 1), Var "x");
+          Rule (Pair (Var "x", Num 1), Num 0);
+          Rule (Pair (Wild, Var "x"), Var "x")
+        ]
+      )
+    )
+  ); 
+  [%expect{|
+    Redundant rule 4
+    Redundant rule 3 |}]
+
+let%expect_test "[pat-hole]well-typed"=
+  syn
+    (VarCtx.singleton "x" Typ.Num)
+    (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, Num 2), Var "x"), Var "x"), (* (inr(2), x) *)
+        [
+          Rule (Pair (Inj(R, Var "x"), Num 3), Var "x"); (* (inr(x), 3) *)
+          Rule (Pair (Inj(L, Var "x"), Num 2), Var "x");
+          Rule (Pair (Inj(R, EmptyHole 2), EmptyHole 3), Var "x"); (* (inr(hole), hole) *)
+        ]
+      )
+    )
+  );
+  syn VarCtx.empty (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, Var "x"), Num 1), Var "x"),
+        [
+          Rule (Pair (Inj(L, Var "x"), Num 1), Var "x");
+          Rule (Pair (Var "x", EmptyHole 2), Num 0);
+          Rule (Pair (Wild, Var "x"), Var "x")
+        ]
+      )
+    )
+  ); 
+  [%expect{| |}]
+
+let%expect_test "[pat-hole]not-exhaustive"=
+  syn
+    (VarCtx.singleton "x" Typ.Num)
+    (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Num 1, Num 2),
+      ZRules (
+        [],
+          Rule (Pair (Num 2, EmptyHole 3), Var "x"),
+        [
+        ]
+      )
+    )
+  );
+  syn
+    (VarCtx.singleton "x" Typ.Num)
+    (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, EmptyHole 2), Var "x"), Var "x"), (* (inr(2), x) *)
+        [
+          Rule (Pair (Inj(R, Var "x"), EmptyHole 3), Var "x"); (* (inr(x), 3) *)
+          Rule (Pair (Inj(L, Num 2), Var "x"), Var "x");
+        ]
+      )
+    )
+  );
+  [%expect{| |}]
+
+
+let%expect_test "[pat-hole]redundant"=
+  syn
+    (VarCtx.singleton "x" Typ.Num)
+    (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, Num 2), Var "x"), Var "x"), (* (inr(2), x) *)
+        [
+          Rule (Pair (Inj(R, Var "x"), Num 3), Var "x"); (* (inr(x), 3) *)
+          Rule (Pair (Inj(L, Var "x"), Num 2), Var "x");
+          Rule (Pair (Inj(R, EmptyHole 2), Num 3), Var "x"); (* (inr(hole), 3) *)
+        ]
+      )
+    )
+  );
+  syn VarCtx.empty (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, Var "x"), Num 1), Var "x"),
+        [
+          Rule (Pair (Inj(L, Var "x"), Num 1), Var "x");
+          Rule (Pair (EmptyHole 2, Num 1), Num 0);
+          Rule (Pair (Wild, Var "x"), Var "x")
+        ]
+      )
+    )
+  ); 
+  [%expect{|
+    Redundant rule 4
+    Redundant rule 3 |}]
