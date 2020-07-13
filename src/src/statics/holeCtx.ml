@@ -13,3 +13,10 @@ let strict_union delta delta' =
     (fun h _bind _bind' -> raise (DuplicateHoleName h))
     delta
     delta'
+
+let of_list ls = List.fold_left
+    (fun (ctx: t) (h, a) ->
+       add h a ctx
+    )
+    empty
+    ls

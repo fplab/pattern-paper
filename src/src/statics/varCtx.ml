@@ -6,6 +6,8 @@ type t = (Var.t * Typ.t) List.t
 
 let empty = []
 
+let singleton x typ = [(x, typ)]
+
 let is_empty =
   function
   | [] -> true
