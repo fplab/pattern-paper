@@ -37,5 +37,18 @@ let rec truify =
   | Or (xi_1, xi_2) -> Or (truify xi_1, truify xi_2)
   | Inl xi -> Inl (truify xi)
   | Inr xi -> Inr (truify xi)
-  | Pair (xi_1, xi_2) ->
-    Pair (truify xi_1, truify xi_2)
+  | Pair (xi_1, xi_2) -> Pair (truify xi_1, truify xi_2)
+
+let rec falsify =
+  function
+  | Truth -> Truth
+  | Falsity -> Falsity
+  | Unknown -> Falsity
+  | Num n -> Num n
+  | NotNum n -> NotNum n
+  | And (xi_1, xi_2) -> And (falsify xi_1, falsify xi_2)
+  | Or (xi_1, xi_2) -> Or (falsify xi_1, falsify xi_2)
+  | Inl xi -> Inl (falsify xi)
+  | Inr xi -> Inr (falsify xi)
+  | Pair (xi_1, xi_2) -> Pair (falsify xi_1, falsify xi_2)
+

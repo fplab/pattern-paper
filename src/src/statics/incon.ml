@@ -106,7 +106,7 @@ let rec is_inconsistent ?(may = false) (xis : t list) : bool =
     )
 
 let is_redundant (xi_cur : t) (xi_pre : t) : bool =
-  is_inconsistent ~may:false [And (xi_cur, dual xi_pre)]
+  is_inconsistent ~may:false [And (truify xi_cur, dual (falsify xi_pre))]
 
 let is_exhaustive (xi : t) : bool =
   is_inconsistent ~may:true [dual (truify xi)]
