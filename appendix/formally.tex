@@ -805,29 +805,36 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{equation}
 \end{subequations}
 
-\fbox{$\cmaysatisfy{e}{\xi}$}~~\text{Value $e$ possibly satisfies constraint $\xi$}
+\fbox{$\cmaysatisfy{e}{\xi}$}~~\text{Final $e$ may satisfies constraint $\xi$}
 \begin{subequations}\label{rules:MaySatisfy}
 \begin{equation}
-\inferrule[CPSUnknown]{ }{
+\inferrule[CMSUnknown]{ }{
   \cmaysatisfy{e}{\cunknown}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CPSExpEHole]{
+\inferrule[CMSExpEHole]{
   \cnotsatisfy{\hehole{u}}{\xi}
 }{
   \cmaysatisfy{\hehole{u}}{\xi}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CPSExpHole]{
+\inferrule[CMSExpHole]{
   \cnotsatisfy{\hhole{e}{u}}{\xi}
 }{
   \cmaysatisfy{\hhole{e}{u}}{\xi}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CPSAnd1]{
+\inferrule[CMSAp]{
+  \cnotsatisfy{\hap{e_1}{e_2}}{\xi}
+}{
+  \cmaysatisfy{\hap{e_1}{e_2}}{\xi}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CMSAnd1]{
   \cmaysatisfy{e}{\xi_1} \\
   \csatisfy{e}{\xi_2}
 }{
@@ -835,7 +842,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CPSAnd2]{
+\inferrule[CMSAnd2]{
   \csatisfy{e}{\xi_1} \\
   \cmaysatisfy{e}{\xi_2}
 }{
@@ -843,23 +850,23 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CPSAnd3]{
+\inferrule[CMSAnd3]{
   \cmaysatisfy{e}{\xi_1} \\
   \cmaysatisfy{e}{\xi_2}
 }{
   \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
 }
 \end{equation}
-\begin{equation}\label{rule:CPSOr1}
-\inferrule[CPSOr1]{
+\begin{equation}\label{rule:CMSOr1}
+\inferrule[CMSOr1]{
   \cmaysatisfy{e}{\xi_1} \\
   \cnotsatisfy{e}{\xi_2}
 }{
   \cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}
 }
 \end{equation}
-\begin{equation}\label{rule:CPSOr2}
-\inferrule[CPSOr2]{
+\begin{equation}\label{rule:CMSOr2}
+\inferrule[CMSOr2]{
   \cnotsatisfy{e}{\xi_1} \\
   \cmaysatisfy{e}{\xi_2}
 }{
@@ -867,7 +874,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CPSInl]{
+\inferrule[CMSInl]{
   \cmaysatisfy{e_1}{\xi_1}
 }{
   \cmaysatisfy{
@@ -878,7 +885,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CPSInr]{
+\inferrule[CMSInr]{
   \cmaysatisfy{e_2}{\xi_2}
 }{
   \cmaysatisfy{
@@ -889,7 +896,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CPSPair1]{
+\inferrule[CMSPair1]{
   \cmaysatisfy{e_1}{\xi_1} \\
   \csatisfy{e_2}{\xi_2}
 }{
@@ -897,7 +904,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CPSPair2]{
+\inferrule[CMSPair2]{
   \csatisfy{e_1}{\xi_1} \\
   \cmaysatisfy{e_2}{\xi_2}
 }{
@@ -905,7 +912,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CPSPair3]{
+\inferrule[CMSPair3]{
   \cmaysatisfy{e_1}{\xi_1} \\
   \cmaysatisfy{e_2}{\xi_2}
 }{

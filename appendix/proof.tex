@@ -42,7 +42,7 @@
       \item[\text{(\ref{rule:CMSPossibly})}]
         \begin{pfsteps*}
         \item $\cmaysatisfy{e}{\xi}$ \BY{assumption} \pflabel{maysatisfyxi}
-        \item $\cmaysatisfy{e}{\cor{\xi}{\cfalsity}}$ \BY{Rule (\ref{rule:CPSOr1}) on \pfref{maysatisfyxi} and Lemma \ref{lem:no-e-satisfy-falsity}} \pflabel{maysatisfyxi+bot}
+        \item $\cmaysatisfy{e}{\cor{\xi}{\cfalsity}}$ \BY{Rule (\ref{rule:CMSOr1}) on \pfref{maysatisfyxi} and Lemma \ref{lem:no-e-satisfy-falsity}} \pflabel{maysatisfyxi+bot}
         \item $\csatisfyormay{e}{\cor{\xi}{\cfalsity}}$ \BY{Rule (\ref{rule:CMSPossibly}) on \pfref{maysatisfyxi+bot}}
         \end{pfsteps*}
 
@@ -69,13 +69,13 @@
         \end{pfsteps*}
         By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysatisfyxi+bot}, only two of them apply.
         \begin{byCases}
-        \item[\text{(\ref{rule:CPSOr1})}]
+        \item[\text{(\ref{rule:CMSOr1})}]
           \begin{pfsteps*}
           \item $\cmaysatisfy{e}{\xi}$ \BY{assumption} \pflabel{maysatisfyxi}
           \item $\csatisfyormay{e}{\xi}$ \BY{Rule (\ref{rule:CMSPossibly}) on \pfref{maysatisfyxi}}
           \end{pfsteps*}
 
-        \item[\text{(\ref{rule:CPSOr2})}]
+        \item[\text{(\ref{rule:CMSOr2})}]
           \begin{pfsteps*}
           \item $\cmaysatisfy{e}{\cfalsity}$ \BY{assumption} \pflabel{maysatisfybot}
           \item $\cnotmaysatisfy{e}{\cfalsity}$ \BY{Lemma \ref{lem:no-e-may-satisfy-falsity}} \pflabel{notmaysatisfybot}
@@ -294,14 +294,14 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1+2}.
   By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysatisfy1+2} and only two of them apply.
   \begin{byCases}
 
-  \item[\text{(\ref{rule:CPSOr1})}]
+  \item[\text{(\ref{rule:CMSOr1})}]
     \begin{pfsteps*}
     \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{maysatisfy1}
     \item $\csatisfyormay{e}{\xi_1}$ \BY{Rule (\ref{rule:CMSPossibly}) on \pfref{maysatisfy1}} \pflabel{satormay1'}
     \end{pfsteps*}
     \pfref{satormay1'} and \pfref{notsatormay1} are contradictory with each other.
 
-  \item[\text{(\ref{rule:CPSOr2})}]
+  \item[\text{(\ref{rule:CMSOr2})}]
     \begin{pfsteps*}
     \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{maysatisfy2}
     \item $\csatisfyormay{e}{\xi_2}$ \BY{Rule (\ref{rule:CMSPossibly}) on \pfref{maysatisfy2}} \pflabel{satormay2'}
@@ -353,13 +353,13 @@ The conclusion holds as follow:
     \end{pfsteps*}
     By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysatisfy1+2} and only two of them apply.
     \begin{byCases}
-    \item[\text{(\ref{rule:CPSOr1})}]
+    \item[\text{(\ref{rule:CMSOr1})}]
       \begin{pfsteps*}
       \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{maysatisfy1}
       \item $\csatisfyormay{e}{\xi_1}$ \BY{Rule (\ref{rule:CMSPossibly}) on \pfref{maysatisfy1}}
       \end{pfsteps*}
       Contradictory to \pfref{notsatormay1}.
-    \item[\text{(\ref{rule:CPSOr2})}]
+    \item[\text{(\ref{rule:CMSOr2})}]
       \begin{pfsteps*}
       \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{maysatisfy2}
       \item $\csatisfyormay{e}{\xi_2}$ \BY{Rule (\ref{rule:CMSPossibly}) on \pfref{maysatisfy2}}
