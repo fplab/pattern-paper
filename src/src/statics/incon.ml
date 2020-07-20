@@ -37,7 +37,6 @@ let rec is_inconsistent ?(may = false) (xis : t list) : bool =
       | Unknown -> if may then true else (is_inconsistent ~may xis')
       | And (xi_1, xi_2) -> is_inconsistent ~may (xi_1::xi_2::xis')
       | Or (xi_1, xi_2) -> is_inconsistent ~may (xi_1::xis') && is_inconsistent ~may (xi_2::xis')
-      | Unit -> is_inconsistent ~may xis'
       | Inl _ -> 
         if List.exists
             (function Inr _ -> true | _ -> false)
@@ -110,7 +109,7 @@ let is_redundant (xi_cur : t) (xi_pre : t) : bool =
   is_inconsistent ~may:false [And (xi_cur, dual xi_pre)]
 
 let is_exhaustive (xi : t) : bool =
-  is_inconsistent ~may:true [dual xi]
+  is_inconsistent ~may:true [dual (truify xi)]
 
 let%test "exhaustive1" =
   is_inconsistent [Inl Truth; Inr Truth] = true

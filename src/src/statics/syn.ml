@@ -280,7 +280,7 @@ let%expect_test "[pat-hole]well-typed"=
         Rule (Pair (Inj(R, Num 2), Var "x"), Var "x"), (* (inr(2), x) *)
         [
           Rule (Pair (Inj(R, Var "x"), Num 3), Var "x"); (* (inr(x), 3) *)
-          Rule (Pair (Inj(L, Var "x"), Num 2), Var "x");
+          Rule (Pair (Inj(L, Var "x"), EmptyHole 4), Var "x");
           Rule (Pair (Inj(R, EmptyHole 2), EmptyHole 3), Var "x"); (* (inr(hole), hole) *)
         ]
       )
@@ -331,7 +331,9 @@ let%expect_test "[pat-hole]not-exhaustive"=
       )
     )
   );
-  [%expect{| |}]
+  [%expect{|
+    The match expression mustn't be exhaustive
+    The match expression mustn't be exhaustive |}]
 
 
 let%expect_test "[pat-hole]redundant"=
