@@ -205,7 +205,20 @@ let%expect_test "[no-pat-hole]well-typed"=
         ]
       )
     )
-  ); 
+  );
+  syn VarCtx.empty (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, Num 0), Var "x"), Var "x"),
+        [
+          Rule (Pair (Inj(R, Num 1), Var "x"), Var "x");
+          Rule (Wild, Num 3)
+        ]
+      )
+    )
+  );
   [%expect{| |}]
 
 let%expect_test "[no-pat-hole]not-exhaustive"=
@@ -232,7 +245,34 @@ let%expect_test "[no-pat-hole]not-exhaustive"=
       )
     )
   ); 
+  syn VarCtx.empty (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, Num 0), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, Num 0), Var "x"), EmptyHole 1),
+        [
+          Rule (Pair (Wild, Num 1), Num 1);
+          Rule (Pair (Inj(L, Num 1), Wild), Num 2)
+        ]
+      )
+    )
+  );
+  syn VarCtx.empty HoleCtx.empty (
+    Match (
+      Pair (Num 1, Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Num 2, Num 2), Num 1),
+        [
+          Rule (Pair (Num 1, Wild), Num 1);
+        ]
+      )
+    )
+  );
   [%expect{|
+    The match expression mustn't be exhaustive
+    The match expression mustn't be exhaustive
     The match expression mustn't be exhaustive
     The match expression mustn't be exhaustive |}]
 
@@ -264,8 +304,38 @@ let%expect_test "[no-pat-hole]redundant"=
         ]
       )
     )
+  );
+  syn VarCtx.empty (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Var "x", Num 1), Num 1),
+        [
+          Rule (Pair (Inj(L, Var "x"), Var "z"), Var "x");
+          Rule (Pair (Inj(R, Var "y"), Wild), Num 0);
+          Rule (Pair (Wild, Var "x"), Var "x")
+        ]
+      )
+    )
+  );
+  syn VarCtx.empty (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Var "x", Num 1), Num 1),
+        [
+          Rule (Wild, Num 0);
+          Rule (Pair (Inj(R, Var "y"), Wild), Num 0);
+          Rule (Pair (Wild, Var "x"), Var "x")
+        ]
+      )
+    )
   ); 
   [%expect{|
+    Redundant rule 4
+    Redundant rule 3
     Redundant rule 4
     Redundant rule 3 |}]
 
@@ -300,6 +370,21 @@ let%expect_test "[pat-hole]well-typed"=
       )
     )
   ); 
+  syn
+    (VarCtx.singleton "x" Typ.Num) HoleCtx.empty (
+    Match (
+      Pair (Inj(L, Num, Num 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, Num 1), Num 1), Var "x"),
+        [
+          Rule (Pair (Inj(R, Var "x"),
+               (NonEmptyHole (3, Prod(Num, Num), Pair(Num 1, Num 2)))), Var "x");
+          Rule (Pair (Inj(L, Var "y"), Var "z"), Var "x");
+        ]
+      )
+    )
+  );
   [%expect{| |}]
 
 let%expect_test "[pat-hole]not-exhaustive"=
@@ -331,7 +416,24 @@ let%expect_test "[pat-hole]not-exhaustive"=
       )
     )
   );
+  syn
+    (VarCtx.singleton "x" Typ.Num)
+    (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, EmptyHole 2), Var "x"), Var "x"), (* (inr(2), x) *)
+        [
+          Rule (Pair (Inj(R, Var "x"), EmptyHole 3), Var "x"); (* (inr(x), 3) *)
+          Rule (Pair (Inj(L, Num 2), EmptyHole 4), Var "x"); (* If this and rule below are flipped, redundant*)
+          Rule (Pair (Inj(L, Num 2), Var "x"), Var "x");
+        ]
+      )
+    )
+  );
   [%expect{|
+    The match expression mustn't be exhaustive
     The match expression mustn't be exhaustive
     The match expression mustn't be exhaustive |}]
 
@@ -367,6 +469,23 @@ let%expect_test "[pat-hole]redundant"=
       )
     )
   ); 
+  syn
+    (VarCtx.singleton "x" Typ.Num)
+    (HoleCtx.singleton 1 (HoleCtx.ExpHole, Typ.Num)) (
+    Match (
+      Pair (Inj(L, Num, EmptyHole 1), Num 2),
+      ZRules (
+        [],
+        Rule (Pair (Inj(R, EmptyHole 2), Var "x"), Var "x"), (* (inr(2), x) *)
+        [
+          Rule (Pair (Inj(R, Var "x"), EmptyHole 3), Var "x"); (* (inr(x), 3) *)
+          Rule (Pair (Inj(L, Num 2), Var "x"), Var "x"); (* If this and rule below are flipped, not exhaustive*)
+          Rule (Pair (Inj(L, Num 2), EmptyHole 4), Var "x");
+        ]
+      )
+    )
+  );
   [%expect{|
     Redundant rule 4
-    Redundant rule 3 |}]
+    Redundant rule 3
+    Redundant rule 4 |}]
