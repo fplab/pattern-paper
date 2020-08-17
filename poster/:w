@@ -1,0 +1,374 @@
+\documentclass{beamer}
+\usepackage[orientation=landscape,size=a0,scale=1.4]{beamerposter}
+\usepackage[absolute,overlay]{textpos}
+
+\definecolor{hazelgreen}{RGB}{7,63,36}
+\definecolor{hazellightgreen}{RGB}{103,138,97}
+\definecolor{hazelyellow}{RGB}{245,222,179}
+\definecolor{hazellightyellow}{RGB}{254,254,234}
+
+\setbeamercolor{background canvas}{bg=hazellightyellow}
+\setbeamercolor{itemize item}{fg=hazelgreen}
+\setbeamercolor{block title}{fg=white,bg=hazellightgreen}
+\setbeamercolor{block body}{fg=black,bg=white}
+
+\newlength{\sepwid}
+\newlength{\onecolwid}
+\newlength{\twocolwid}
+\setlength{\sepwid}{0.025\paperwidth}
+\setlength{\onecolwid}{0.3\paperwidth}
+\setlength{\twocolwid}{0.625\paperwidth}
+
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{calc,fit,tikzmark}
+\usetikzmarklibrary{listings}
+
+\lstset{
+  language=caml,
+  breaklines=true,
+       showspaces=false,                          % show spaces (with underscores)
+     showstringspaces=false,            % underline spaces within strings
+     showtabs=false,                            % show tabs using underscores
+     tabsize=4,                     % default tabsize
+     columns=fullflexible,
+     breakautoindent=false,
+     framerule=1pt,
+     xleftmargin=0pt,
+     xrightmargin=0pt,
+     breakindent=0pt,
+     resetmargins=true
+  }
+
+\tikzset{
+  next page=below,
+%  every highlighter/.style={rounded corners},
+  line/.style={
+    draw,
+    rounded corners=3pt,
+    -latex
+  },
+  balloon/.style={
+    draw,
+    fill=red!20,
+    opacity=0.4,
+    inner sep=4pt,
+    inner ysep=0pt,
+    rounded corners=2pt,
+    shift={(0,-0.5)}
+  },
+  comment/.style={
+    draw,
+    fill=blue!70,
+    text=white,
+%    text width=3cm,
+%    minimum height=1cm,
+    rounded corners,
+    drop shadow,
+    align=left,
+%    font=\scriptsize
+  },
+}
+
+\newcommand\balloon[4]{%
+  \pgfmathtruncatemacro\firstline{%
+    #3-1
+  }%
+  \iftikzmark{line-#2-\firstline-start}{%
+    \iftikzmark{line-#2-#3-first}{%
+      \xdef\blines{({pic cs:line-#2-\firstline-start} -| {pic           cs:line-#2-#3-first})}%
+    }{%
+      \iftikzmark{line-#2-#3-start}{%
+        \xdef\blines{({pic cs:line-#2-\firstline-start} -| {pic             cs:line-#2-#3-start})}%
+      }{%
+        \xdef\blines{(pic cs:line-#2-\firstline-start)}%
+      }%
+    }%
+  }{%
+    \xdef\blines{}%
+  }%
+  \foreach \k in {#3,...,#4} {%
+    \iftikzmark{line-#2-\k-first}{%
+      \xdef\blines{\blines (pic cs:line-#2-\k-first) }
+    }{}
+    \iftikzmark{line-#2-\k-end}{%
+      \xdef\blines{\blines (pic cs:line-#2-\k-end) }
+    }{}
+  }%
+  \ifx\blines\empty
+  \else
+  \edef\temp{\noexpand\tikz[remember picture,overlay]\noexpand\node[fit={\blines},balloon] (#1) {};}%
+\temp
+  \fi
+}
+
+\title{Pattern Matching with Typed Holes}
+\author{Yongwei Yuan}
+\institute{University of Michigan}
+
+\begin{document}
+\addtobeamertemplate{block end}{}{\vspace*{2ex}} % White space under blocks
+\addtobeamertemplate{block example end}{}{\vspace*{2ex}} % White space under example blocks
+\addtobeamertemplate{block alerted end}{}{\vspace*{2ex}} % White space under highlighted (alert) blocks
+
+\setlength{\belowcaptionskip}{2ex} % White space under figures
+\setlength\belowdisplayshortskip{2ex} % White space under equations
+%\begin{darkframes} % Uncomment for dark theme, don't forget to \end{darkframes}
+\begin{frame}[containsverbatim] % The whole poster is enclosed in one beamer frame
+
+%==========================Begin Head===============================
+  \begin{columns}
+   \begin{column}{\linewidth}
+    \vskip1cm
+    \centering
+    \usebeamercolor{title in headline}{\color{fg}\Huge{\textbf{\inserttitle}}\\[0.5ex]}
+    \usebeamercolor{author in headline}{\color{fg}\Large{\insertauthor}\\[1ex]}
+    \usebeamercolor{institute in headline}{\color{fg}\large{\insertinstitute}\\[1ex]}
+    \vskip1cm
+   \end{column}
+   \vspace{1cm}
+  \end{columns}
+ \vspace{1cm}
+
+%==========================End Head===============================
+
+\begin{columns}[t] % The whole poster consists of three major columns, the second of which is split into two columns twice - the [t] option aligns each column's content to the top
+
+\begin{column}{\sepwid}\end{column} % Empty spacer column
+
+\begin{column}{\onecolwid} % The first column
+
+%----------------------------------------------------------------------------------------
+%	OBJECTIVES
+%----------------------------------------------------------------------------------------
+
+\begin{block}{What is Pattern Matching}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{lstlisting}[name=not exhaustive,caption={Not Exhaustive},captionpos=b,escapechar=!]
+        match (3::[]) {
+        | [] -> "empty"
+        | 1::xs -> "1,..."
+        | 2::xs -> "2,..."
+        }
+      \end{lstlisting}
+      \balloon{comment}{not exhaustive}{2}{4}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \begin{lstlisting}[name=redundant,caption={Redundant Branch},captionpos=b,escapechar=!]
+        match (2::[]) {
+        | [] -> "empty"
+        | 1::xs -> "1,..."
+        | 1::2::xs -> "1,2,..."
+        }
+      \end{lstlisting}
+      \balloon{comment}{redundant}{4}{4}
+    \end{column}
+  \end{columns}
+\end{block}
+
+\begin{block}{Why Adding Holes to Pattern Matching}
+
+\begin{itemize}
+  \item \textsf{Hazel} is a programming environment featuring typed holes, but it only supports simple case analysis on binary sum types. We want to \textcolor{red}{formalize the full-fledged pattern matching}.
+  \item Chapter \textit{Pattern Matching} in \textsf{PFPL} \cite{Harper2012} introduces a match constraint language to check exhaustiveness of a match expression and redundancy of a single rule. We extend the language with \textit{Unknown} constraint and adapt the checking algorithm to our setting.
+  \item While in \textsf{Agda}, a programmer could automatically split a variable into different patterns through "case splitting", our work is more focused on giving live feedbacks without synthesizing code for programmers.
+\end{itemize}
+\end{block}
+
+\begin{table}
+\vspace{2ex}
+\begin{tabular}{l l l}
+\toprule
+\textbf{Treatments} & \textbf{Response 1} & \textbf{Response 2}\\
+\midrule
+Treatment 1 & 0.0003262 & 0.562 \\
+Treatment 2 & 0.0015681 & 0.910 \\
+Treatment 3 & 0.0009271 & 0.296 \\
+\bottomrule
+\end{tabular}
+\caption{Table caption}
+\end{table}
+
+%----------------------------------------------------------------------------------------
+%	INTRODUCTION
+%----------------------------------------------------------------------------------------
+
+\begin{block}{Introduction}
+
+Lorem ipsum dolor \textbf{sit amet}, consectetur adipiscing elit. Sed commodo molestie porta. Sed ultrices scelerisque sapien ac commodo. Donec ut volutpat elit. Sed laoreet accumsan mattis. Integer sapien tellus, auctor ac blandit eget, sollicitudin vitae lorem. Praesent dictum tempor pulvinar. Suspendisse potenti. Sed tincidunt varius ipsum, et porta nulla suscipit et. Etiam congue bibendum felis, ac dictum augue cursus a. \textbf{Donec} magna eros, iaculis sit amet placerat quis, laoreet id est.
+
+This statement requires citation \cite{Smith:2012qr}.
+
+\end{block}
+
+%------------------------------------------------
+
+\begin{figure}
+\includegraphics[width=0.1\linewidth]{img/placeholder.jpg}
+\caption{Figure caption}
+\end{figure}
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of the first column
+
+\begin{column}{\sepwid}\end{column} % Empty spacer column
+
+\begin{column}{\twocolwid} % Begin a column which is two columns wide (column 2)
+
+\begin{columns}[t,totalwidth=\twocolwid] % Split up the two columns wide column
+
+\begin{column}{\onecolwid}\vspace{-.58in} % The first column within column 2 (column 2.1)
+
+%----------------------------------------------------------------------------------------
+%	MATERIALS
+%----------------------------------------------------------------------------------------
+
+\begin{block}{Materials}
+
+The following materials were required to complete the research:
+
+\begin{itemize}
+\item Curabitur pellentesque dignissim
+\item Eu facilisis est tempus quis
+\end{itemize}
+
+The materials were prepared according to the steps outlined below:
+
+\begin{enumerate}
+\item Curabitur pellentesque dignissim
+\item Eu facilisis est tempus quis
+\end{enumerate}
+
+\end{block}
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of column 2.1
+\begin{column}{\sepwid}\end{column} % Empty spacer column
+
+\begin{column}{\onecolwid}\vspace{-.74in} % The second column within column 2 (column 2.2)
+
+%----------------------------------------------------------------------------------------
+%	CONCLUSION
+%----------------------------------------------------------------------------------------
+
+\begin{block}{Conclusion}
+
+Nunc tempus venenatis facilisis. \textbf{Curabitur suscipit} consequat eros non porttitor. Sed a massa dolor, id ornare enim. Fusce quis massa dictum tortor \textbf{tincidunt mattis}. Donec quam est, lobortis quis pretium at, laoreet scelerisque lacus. Nam quis odio enim, in molestie libero. Vivamus cursus mi at \textit{nulla elementum sollicitudin}.
+
+\end{block}
+
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of column 2.2
+
+\end{columns} % End of the split of column 2 - any content after this will now take up 2 columns width
+
+%----------------------------------------------------------------------------------------
+%	IMPORTANT RESULT
+%----------------------------------------------------------------------------------------
+
+\begin{alertblock}{Important Result}
+
+Lorem ipsum dolor \textbf{sit amet}, consectetur adipiscing elit. Sed commodo molestie porta. Sed ultrices scelerisque sapien ac commodo. Donec ut volutpat elit.
+
+\end{alertblock} 
+
+%----------------------------------------------------------------------------------------
+
+\begin{columns}[t,totalwidth=\twocolwid] % Split up the two columns wide column again
+
+\begin{column}{\onecolwid} % The first column within column 2 (column 2.1)
+
+%----------------------------------------------------------------------------------------
+%	MATHEMATICAL SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{block}{Mathematical Section}
+
+Nam quis odio enim, in molestie libero. Vivamus cursus mi at nulla elementum sollicitudin. Nam quis odio enim, in molestie libero. Vivamus cursus mi at nulla elementum sollicitudin.
+  
+\begin{equation}
+E = mc^{2}
+\label{eqn:Einstein}
+\end{equation}
+
+\begin{equation}
+\cos^3 \theta =\frac{1}{4}\cos\theta+\frac{3}{4}\cos 3\theta
+\label{eqn:cosfunc}
+\end{equation}
+
+Nam quis odio enim, in molestie libero. Vivamus cursus mi at nulla elementum sollicitudin. Nam quis odio enim, in molestie libero. Vivamus cursus mi at nulla elementum sollicitudin.
+
+\begin{equation}
+\kappa =\frac{\xi}{E_{\mathrm{max}}} %\mathbb{ZNR}
+\label{eqn:kappa}
+\end{equation}
+
+\end{block}
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of column 2.1
+\begin{column}{\sepwid}\end{column} % Empty spacer column
+
+\begin{column}{\onecolwid} % The second column within column 2 (column 2.2)
+
+%----------------------------------------------------------------------------------------
+%	CONCLUSION
+%----------------------------------------------------------------------------------------
+
+\begin{block}{Conclusion}
+
+Nunc tempus venenatis facilisis. \textbf{Curabitur suscipit} consequat eros non porttitor. Sed a massa dolor, id ornare enim. Fusce quis massa dictum tortor \textbf{tincidunt mattis}. Donec quam est, lobortis quis pretium at, laoreet scelerisque lacus. Nam quis odio enim, in molestie libero. Vivamus cursus mi at \textit{nulla elementum sollicitudin}.
+
+\end{block}
+
+%----------------------------------------------------------------------------------------
+%	ADDITIONAL INFORMATION
+%----------------------------------------------------------------------------------------
+
+\begin{block}{Additional Information}
+
+Maecenas ultricies feugiat velit non mattis. Fusce tempus arcu id ligula varius dictum. 
+\begin{itemize}
+\item Curabitur pellentesque dignissim
+\item Eu facilisis est tempus quis
+\item Duis porta consequat lorem
+\end{itemize}
+
+\end{block}
+
+%----------------------------------------------------------------------------------------
+%	REFERENCES
+%----------------------------------------------------------------------------------------
+
+\begin{block}{References}
+
+\small{\bibliographystyle{apalike}
+\bibliography{references}\vspace{1cm}}
+\end{block}
+
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of column 2.2
+
+\end{columns} % End of the split of column 2
+
+\end{column} % End of the second column
+
+\begin{column}{\sepwid}\end{column} % Empty spacer column
+
+\end{columns} % End of all the columns in the poster
+
+\end{frame} % End of the enclosing frame
+%\end{darkframes} % Uncomment for dark theme
+
+\end{document}
