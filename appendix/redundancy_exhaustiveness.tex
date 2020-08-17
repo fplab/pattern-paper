@@ -1,0 +1,1186 @@
+% !TEX root = ./pattern-paper.tex
+\section{Redundancy and Exhaustiveness}
+$\arraycolsep=4pt\begin{array}{lll}
+\xi & ::= &
+  \ctruth ~\vert~
+  \cfalsity ~\vert~
+  \cunknown ~\vert~
+  \cnum{n} ~\vert~
+  \cnotnum{n} ~\vert~
+  \cand{\xi_1}{\xi_2} ~\vert~
+  \cor{\xi_1}{\xi_2} ~\vert~
+  \cinl{\xi} ~\vert~
+  \cinr{\xi} ~\vert~
+  \cpair{\xi_1}{\xi_2}
+\end{array}$
+
+\fbox{$\ctyp{\xi}{\tau}$}~~\text{Constraint $\xi$ constrains values of type $\tau$}
+\begin{subequations}
+\begin{equation}\label{rule:CTTruth}
+\inferrule[CTTruth]{ }{
+  \ctyp{\ctruth}{\tau}
+}
+\end{equation}
+\begin{equation}\label{rule:CTFalsity}
+\inferrule[CTFalsity]{ }{
+  \ctyp{\cfalsity}{\tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTUnknown]{ }{
+  \ctyp{\cunknown}{\tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTNum]{ }{
+  \ctyp{\cnum{n}}{\tnum}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTNotNum]{ }{
+  \ctyp{\cnotnum{n}}{\tnum}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTAnd]{
+  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
+}{
+  \ctyp{\cand{\xi_1}{\xi_2}}{\tau}
+}
+\end{equation}
+\begin{equation}\label{rule:CTOr}
+\inferrule[CTOr]{
+  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
+}{
+  \ctyp{\cor{\xi_1}{\xi_2}}{\tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTInl]{
+  \ctyp{\xi_1}{\tau_1}
+}{
+  \ctyp{\cinl{\xi_1}}{\tsum{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTInr]{
+  \ctyp{\xi_2}{\tau_2}
+}{
+  \ctyp{\cinr{\xi_2}}{\tsum{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTPair]{
+  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
+}{
+  \ctyp{\cpair{\xi_1}{\xi_2}}{\tau}
+}
+\end{equation}
+\end{subequations}
+
+\fbox{$\cdual{\xi_1} = \xi_2$}~~\text{The dual of a match constraint $\xi_1$ is $\xi_2$}
+\begin{subequations}\label{defn:dual}
+\begin{align}
+  \cdual{\ctruth} &= \cfalsity \\
+  \cdual{\cfalsity} &= \ctruth \\
+  \cdual{\cunknown} &= \cunknown \\
+  \cdual{\cnum{n}} &= \cnotnum{n} \\
+  \cdual{\cnotnum{n}} &= \cnum{n} \\
+  \cdual{\cand{\xi_1}{\xi_2}} &= \cor{\cdual{\xi_1}}{\cdual{\xi_2}} \\
+  \cdual{\cor{\xi_1}{\xi_2}} &= \cand{\cdual{\xi_1}}{\cdual{\xi_2}} \\
+  \cdual{\cinl{\xi_1}} &= \cor{ \cinl{\cdual{\xi_1}} }{ \cinr{\ctruth} } \\
+  \cdual{\cinr{\xi_2}} &= \cor{ \cinr{\cdual{\xi_2}} }{ \cinl{\ctruth} } \\
+  \cdual{\cpair{\xi_1}{\xi_2}} &=
+  \cor{ \cor{ 
+    \cpair{\xi_1}{\cdual{\xi_2}}
+  }{
+    \cpair{\cdual{\xi_1}}{\xi_2}
+  }}{
+    \cpair{\cdual{\xi_1}}{\cdual{\xi_2}}
+  }
+\end{align}
+\end{subequations}
+
+\fbox{$\ctruify{\xi_1} = \xi_2$}~~\text{$\xi_2$ is obtained by substituting Unknown for Truth in $\xi_1$}
+\begin{subequations}\label{defn:truify}
+\begin{align}
+  \ctruify{\ctruth} &= \ctruth \\
+  \ctruify{\cfalsity} &= \cfalsity \\
+  \ctruify{\cunknown} &= \ctruth \\
+  \ctruify{\cnum{n}} &= \cnum{n} \\
+  \ctruify{\cnotnum{n}} &= \cnotnum{n} \\
+  \ctruify{\cand{\xi_1}{\xi_2}} &= \cand{\ctruify{\xi_1}}{\ctruify{\xi_2}} \\
+  \ctruify{\cor{\xi_1}{\xi_2}} &= \cor{\ctruify{\xi_1}}{\ctruify{\xi_2}} \\
+  \ctruify{\cinl{\xi}} &= \cinl{\ctruify{\xi}} \\
+  \ctruify{\cinr{\xi}} &= \cinr{\ctruify{\xi}} \\
+  \ctruify{\cpair{\xi_1}{\xi_2}} &= \cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}
+\end{align}
+\end{subequations}
+
+\fbox{$\cfalsify{\xi_1} = \xi_2$}~~\text{$\xi_2$ is obtained by substituting Unknown for Falsity in $\xi_1$}
+\begin{subequations}\label{defn:falsify}
+\begin{align}
+  \cfalsify{\ctruth} &= \ctruth \\
+  \cfalsify{\cfalsity} &= \cfalsity \\
+  \cfalsify{\cunknown} &= \cfalsity \\
+  \cfalsify{\cnum{n}} &= \cnum{n} \\
+  \cfalsify{\cnotnum{n}} &= \cnotnum{n} \\
+  \cfalsify{\cand{\xi_1}{\xi_2}} &= \cand{\cfalsify{\xi_1}}{\cfalsify{\xi_2}} \\
+  \cfalsify{\cor{\xi_1}{\xi_2}} &= \cor{\cfalsify{\xi_1}}{\cfalsify{\xi_2}} \\
+  \cfalsify{\cinl{\xi}} &= \cinl{\cfalsify{\xi}} \\
+  \cfalsify{\cinr{\xi}} &= \cinr{\cfalsify{\xi}} \\
+  \cfalsify{\cpair{\xi_1}{\xi_2}} &= \cpair{\cfalsify{\xi_1}}{\cfalsify{\xi_2}}
+\end{align}
+\end{subequations}
+
+\fbox{$\csatisfy{e}{\xi}$}~~\text{Value $e$ satisfies constraint $\xi$}
+\begin{subequations}\label{rules:Satisfy}
+\begin{equation}\label{rule:CSTruth}
+\inferrule[CSTruth]{ }{
+  \csatisfy{e}{\ctruth}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CSNum]{ }{
+  \csatisfy{\hnum{n}}{\cnum{n}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CSNotNum]{
+  n_1 \neq n_2
+}{
+  \csatisfy{\hnum{n_1}}{\cnotnum{n_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CSAnd}
+\inferrule[CSAnd]{
+  \csatisfy{e}{\xi_1} \\
+  \csatisfy{e}{\xi_2}
+}{
+  \csatisfy{e}{\cand{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CSOr1}
+\inferrule[CSOr1]{
+  \csatisfy{e}{\xi_1}
+}{
+  \csatisfy{e}{\cor{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CSOr2}
+\inferrule[CSOr2]{
+  \csatisfy{e}{\xi_2}
+}{
+  \csatisfy{e}{\cor{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CSInl}
+\inferrule[CSInl]{
+  \csatisfy{e_1}{\xi_1}
+}{
+  \csatisfy{
+    \hinl{\tau_2}{e_1}
+  }{
+    \cinl{\xi_1}
+  }
+}
+\end{equation}
+\begin{equation}\label{rule:CSInr}
+\inferrule[CSInr]{
+  \csatisfy{e_2}{\xi_2}
+}{
+  \csatisfy{
+    \hinr{\tau_1}{e_2}
+  }{
+    \cinr{\xi_2}
+  }
+}
+\end{equation}
+\begin{equation}\label{rule:CSPair}
+\inferrule[CSPair]{
+  \csatisfy{e_1}{\xi_1} \\
+  \csatisfy{e_2}{\xi_2}
+}{
+\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
+}
+\end{equation}
+\end{subequations}
+
+\fbox{$\cmaysatisfy{e}{\xi}$}~~\text{Final $e$ may satisfies constraint $\xi$}
+\begin{subequations}\label{rules:MaySatisfy}
+\begin{equation}\label{rule:CMSUnknown}
+\inferrule[CMSUnknown]{ }{
+  \cmaysatisfy{e}{\cunknown}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSExpEHole}
+\inferrule[CMSExpEHole]{
+  \cnotsatisfy{\hehole{u}}{\xi}
+}{
+  \cmaysatisfy{\hehole{u}}{\xi}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSExpHole}
+\inferrule[CMSExpHole]{
+  \cnotsatisfy{\hhole{e}{u}}{\xi}
+}{
+  \cmaysatisfy{\hhole{e}{u}}{\xi}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSAp}
+\inferrule[CMSAp]{
+  \cnotsatisfy{\hap{e_1}{e_2}}{\xi}
+}{
+  \cmaysatisfy{\hap{e_1}{e_2}}{\xi}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSMatch}
+\inferrule[CMSMatch]{
+  \cnotsatisfy{\hmatch{e}{\zrules}}{\xi}
+}{
+  \cmaysatisfy{\hmatch{e}{\zrules}}{\xi}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSAnd1}
+\inferrule[CMSAnd1]{
+  \cmaysatisfy{e}{\xi_1} \\
+  \csatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSAnd2}
+\inferrule[CMSAnd2]{
+  \csatisfy{e}{\xi_1} \\
+  \cmaysatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSAnd3}
+\inferrule[CMSAnd3]{
+  \cmaysatisfy{e}{\xi_1} \\
+  \cmaysatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSOr1}
+\inferrule[CMSOr1]{
+  \cmaysatisfy{e}{\xi_1} \\
+  \cnotsatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSOr2}
+\inferrule[CMSOr2]{
+  \cnotsatisfy{e}{\xi_1} \\
+  \cmaysatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSInl}
+\inferrule[CMSInl]{
+  \cmaysatisfy{e_1}{\xi_1}
+}{
+  \cmaysatisfy{
+    \hinl{\tau_2}{e_1}
+  }{
+    \cinl{\xi_1}
+  }
+}
+\end{equation}
+\begin{equation}\label{rule:CMSInr}
+\inferrule[CMSInr]{
+  \cmaysatisfy{e_2}{\xi_2}
+}{
+  \cmaysatisfy{
+    \hinr{\tau_1}{e_2}
+  }{
+    \cinr{\xi_2}
+  }
+}
+\end{equation}
+\begin{equation}\label{rule:CMSPair1}
+\inferrule[CMSPair1]{
+  \cmaysatisfy{e_1}{\xi_1} \\
+  \csatisfy{e_2}{\xi_2}
+}{
+  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSPair2}
+\inferrule[CMSPair2]{
+  \csatisfy{e_1}{\xi_1} \\
+  \cmaysatisfy{e_2}{\xi_2}
+}{
+  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSPair3}
+\inferrule[CMSPair3]{
+  \cmaysatisfy{e_1}{\xi_1} \\
+  \cmaysatisfy{e_2}{\xi_2}
+}{
+  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
+}
+\end{equation}
+\end{subequations}
+
+\fbox{$\csatisfyormay{e}{\xi}$}
+\begin{subequations}\label{rules:satormay}
+\begin{equation}\label{rule:CSMSMay}
+\inferrule[CSMSMay]{
+  \cmaysatisfy{e}{\xi}
+}{
+  \csatisfyormay{e}{\xi}
+}
+\end{equation}
+\begin{equation}\label{rule:CSMSSat}
+\inferrule[CSMSSat]{
+  \csatisfy{e}{\xi}
+}{
+  \csatisfyormay{e}{\xi}
+}
+\end{equation}
+\end{subequations}
+
+\begin{thm}[Exclusiveness of Constraint Satisfaction]
+  \label{thrm:exclusive-constraint-satisfaction}
+  If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ then exactly one of the following holds
+  \begin{enumerate}
+    \item $\csatisfy{e}{\xi}$
+    \item $\cmaysatisfy{e}{\xi}$
+    \item $\csatisfy{e}{\cdual{\xi}}$
+  \end{enumerate}
+\end{thm}
+
+\begin{lem}[Negation of Satisfaction]
+  \label{lem:neg-satisfy}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$. Then $\cnotsatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
+\end{lem}
+\begin{lem}[Negation of Possible Satisfaction]
+  \label{lem:neg-possible-satisfy}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$. Then $\cnotmaysatisfy{e}{\xi}$ iff $\csatisfy{e}{\xi}$ or $\cnotsatisfy{e}{\cdual{\xi}}$
+\end{lem}
+\begin{lem}[Negation of Dual Satisfaction]
+  \label{lem:neg-dual-satisfy}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$. Then $\cnotsatisfy{e}{\cdual{\xi}}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\xi}$ \textit{i.e.} $\csatisfyormay{e}{\xi}$
+\end{lem}
+\begin{lem}[Coverage of Constraint Satisfaction]
+  \label{lem:coverage-constraint-satisfy}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$. Then either $\csatisfy{e}{\xi}$ or $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
+\end{lem}
+
+\begin{corol}[Possible Satisfaction of Dual Constraint]
+  \label{corol:possible-satisfy-dual}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$. Then $\cmaysatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\cdual{\xi}}$
+\end{corol}
+
+\begin{defn}[Not Not Entailment of Constraints]
+  \label{defn:nn-entailment}
+  $\csatisfyormay{\xi_1}{\xi_2}$ iff $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$ and for all $e$ such that $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfyormay{e}{\xi_2}$ 
+\end{defn}
+
+\begin{corol}
+  \label{corol:nn-exhaust}
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$. Then $\csatisfyormay{\ctruth}{\xi}$ implies $\csatisfyormay{e}{\xi}$
+\end{corol}
+\begin{proof}
+  \begin{pfsteps*}
+  \item $\ctyp{\xi}{\tau}$ \BY{assumption} \pflabel{CTyp}
+  \item $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ \BY{assumption} \pflabel{eTyp}
+  \item $\isFinal{e}$ \BY{assumption} \pflabel{eFinal}
+  \item $\csatisfyormay{\ctruth}{\xi}$ \BY{assumption} \pflabel{entailormay}
+  \item $\csatisfy{e_1}{\ctruth}$ \BY{Rule (\ref{rule:CSTruth})} \pflabel{satisfytop}
+  \item $\csatisfyormay{e_1}{\ctruth}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfytop}} \pflabel{satisfyormaytop}
+  \item $\ctyp{\ctruth}{\tau}$ \BY{Rule (\ref{rule:CTTruth})} \pflabel{topCTyp}
+  \item $\csatisfyormay{e_1}{\xi_r}$ \BY{Definition \ref{defn:nn-entailment} of \pfref{entailormay} on \pfref{topCTyp} and \pfref{CTyp} and \pfref{eTyp} and \pfref{eFinal} and \pfref{satisfyormaytop}}
+  \end{pfsteps*}
+  \resetpfcounter
+\end{proof}
+
+\begin{defn}[Entailment of Constraints]
+  \label{defn:const-entailment}
+  Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$.
+  Then $\csatisfy{\xi_1}{\xi_2}$ iff and for all $e$ such that $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$
+\end{defn}
+\begin{corol}[Material Entailment of Constraints]
+  \label{lem:material-entailment}
+  Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$. Then $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{\ctruth}{\cor{\cdual{\xi_1}}{\xi_2}}$
+\end{corol}
+
+\begin{lem}[Matching Coherence of Constraint]
+  \label{lem:const-matching-coherence}
+  Suppose that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$. Then we have
+  \begin{enumerate}
+    \item $\csatisfy{e}{\xi}$ iff $\hpatmatch{e}{p}{\theta}$
+    \item $\csatisfy{e}{\cdual{\xi}}$ iff $\hnotmatch{e}{p}$
+    \item $\cmaysatisfy{e}{\xi}$ iff $\hmaymatch{e}{p}$
+  \end{enumerate}
+\end{lem}
+
+\fbox{$\cincon{\Xi}$}~~\text{A finite set $\Xi$ of constraints is inconsistent}
+\begin{subequations}
+\begin{equation}
+\inferrule[CINCTruth]{
+  \cincon{\Xi}
+}{
+  \cincon{\Xi, \ctruth}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCFalsity]{ }{
+  \cincon{\Xi, \cfalsity}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCNum]{
+  n_1 \neq n_2
+}{
+  \cincon{\Xi, \cnum{n_1}, \cnum{n_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCNotNum]{ }{
+  \cincon{\Xi, \cnum{n}, \cnotnum{n}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCAnd]{
+  \cincon{\Xi, \xi_1, \xi_2}
+}{
+  \cincon{\Xi, \cand{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCOr]{
+  \cincon{\Xi, \xi_1} \\
+  \cincon{\Xi, \xi_2}
+}{
+  \cincon{\Xi, \cor{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCInj]{ }{
+  \cincon{\Xi, \cinl{\xi_1}, \cinr{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCInl]{
+  \cincon{\Xi}
+}{
+  \cincon{\cinl{\Xi}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCInr]{
+  \cincon{\Xi}
+}{
+  \cincon{\cinr{\Xi}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCPair1]{
+  \cincon{\Xi_1}
+}{
+  \cincon{\cpair{\Xi_1}{\Xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCPair2]{
+  \cincon{\Xi_2}
+}{
+  \cincon{\cpair{\Xi_1}{\Xi_2}}
+}
+\end{equation}
+\end{subequations}
+
+\begin{lem}[Decidability Inconsistency]
+  \label{lem:inconsistency-decidability}
+  It is decidable whether $\cincon{\Xi}$
+\end{lem}
+
+\begin{lem}[Inconsistency and Entailment of Constraint]
+  \label{lem:inconsistency-and-entailment}
+  Suppose that $\ctruify{\xi} = \xi$. Then $\cincon{\cdual{\xi}}$ iff $\csatisfy{\ctruth}{\xi}$
+\end{lem}
+
+\begin{lem}
+  \label{lem:satormay-and}
+  If $\csatisfyormay{e}{\xi_1}$ and $\csatisfyormay{e}{\xi_2}$ then $\csatisfyormay{e}{\cand{\xi_1}{\xi_2}}$
+\end{lem}
+
+\begin{lem}
+  \label{lem:satormay-or}
+  If $\csatisfyormay{e}{\xi_1}$ then $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$ and
+$\csatisfyormay{e}{\cor{\xi_2}{\xi_1}}$
+\end{lem}
+\begin{proof}
+\begin{pfsteps*}
+\item $\csatisfyormay{e}{\xi_1}$ \BY{assumption} \pflabel{satormay1},
+\end{pfsteps*}
+By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
+\begin{byCases}
+\item[\text{(\ref{rule:CSMSSat})}]
+  \begin{pfsteps*}
+  \item $\csatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[sat]satisfy1}
+  \item $\csatisfy{e}{\cor{\xi_1}{\xi_2}}$ \BY{Rule (\ref{rule:CSOr1}) on \pfref{[sat]satisfy1}} \pflabel{[sat]satisfyOr12}
+  \item $\csatisfy{e}{\cor{\xi_2}{\xi_1}}$ \BY{Rule (\ref{rule:CSOr2}) on \pfref{[sat]satisfy1}} \pflabel{[sat]satisfyOr21}
+  \item $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[sat]satisfyOr12}}
+  \item $\csatisfyormay{e}{\cor{\xi_2}{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[sat]satisfyOr21}}
+  \end{pfsteps*}
+
+\item[\text{(\ref{rule:CSMSMay})}]
+  \begin{pfsteps*}
+  \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{maysat1}
+  \end{pfsteps*}
+  By case analysis on whether $\csatisfy{e}{\xi_2}$ is derivable,
+  \begin{byCases}
+  \item[\text{$\csatisfy{e}{\xi_2}$ is derivable}]
+    \begin{pfsteps*}
+    \item $\csatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{satisfy2}
+    \item $\csatisfy{e}{\cor{\xi_1}{\xi_2}}$ \BY{Rule (\ref{rule:CSOr2}) on \pfref{satisfy2}} \pflabel{satisfyOr12}
+    \item $\csatisfy{e}{\cor{\xi_2}{\xi_1}}$ \BY{Rule (\ref{rule:CSOr1}) on \pfref{satisfy2}} \pflabel{satisfyOr21}
+    \item $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyOr12}}
+    \item $\csatisfyormay{e}{\cor{\xi_2}{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyOr21}}
+    \end{pfsteps*}
+
+  \item[\text{$\csatisfy{e}{\xi_2}$ is not derivable}]
+    \begin{pfsteps*}
+    \item $\cnotsatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{notSatisfy2}
+    \item $\cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}$ \BY{Rule (\ref{rule:CMSOr1}) on \pfref{maysat1} and \pfref{notSatisfy2}} \pflabel{maysatOr}
+    \item $\csatisfyormay{e}{\cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatOr}}
+    \end{pfsteps*}
+  \end{byCases}
+
+\end{byCases}
+\resetpfcounter
+\end{proof}
+
+\begin{lem}
+  \label{lem:satormay-inl}
+  If $\csatisfyormay{e_1}{\xi_1}$ then $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$
+\end{lem}
+\begin{proof}
+  \begin{pfsteps*}
+  \item $\csatisfyormay{e_1}{\xi_1}$ \BY{assumption} \pflabel{satormay1}
+  \end{pfsteps*}
+  By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
+  \begin{byCases}
+  \item[\text{(\ref{rule:CSMSSat})}]
+    \begin{pfsteps*}
+    \item $\csatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{satisfy1}
+    \item $\csatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ \BY{Rule (\ref{rule:CSInl}) on \pfref{satisfy1}} \pflabel{satisfyInl}
+    \item $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyInl}}
+    \end{pfsteps*}
+
+  \item[\text{(\ref{rule:CSMSMay})}]
+    \begin{pfsteps*}
+    \item $\cmaysatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{maysat1}
+    \item $\cmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ \BY{Rule (\ref{rule:CMSInl}) on \pfref{maysat1}} \pflabel{maysatInl}
+    \item $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatInl}}
+    \end{pfsteps*}
+  \end{byCases}
+  \resetpfcounter
+\end{proof}
+
+\begin{lem}
+  \label{lem:satormay-inr}
+  If $\csatisfyormay{e_2}{\xi_2}$ then $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$
+\end{lem}
+\begin{proof}
+  \begin{pfsteps*}
+  \item $\csatisfyormay{e_2}{\xi_2}$ \BY{assumption} \pflabel{satormay2}
+  \end{pfsteps*}
+  By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay2},
+  \begin{byCases}
+  \item[\text{(\ref{rule:CSMSSat})}]
+    \begin{pfsteps*}
+    \item $\csatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{satisfy2}
+    \item $\csatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$ \BY{Rule (\ref{rule:CSInr}) on \pfref{satisfy2}} \pflabel{satisfyInr}
+    \item $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyInr}}
+    \end{pfsteps*}
+
+  \item[\text{(\ref{rule:CSMSMay})}]
+    \begin{pfsteps*}
+    \item $\cmaysatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{maysat2}
+    \item $\cmaysatisfy{\hinl{\tau_1}{e_2}}{\cinr{\xi_2}}$ \BY{Rule (\ref{rule:CMSInr}) on \pfref{maysat2}} \pflabel{maysatInr}
+    \item $\csatisfyormay{\hinl{\tau_1}{e_2}}{\cinr{\xi_2}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatInr}}
+    \end{pfsteps*}
+  \end{byCases}
+  \resetpfcounter
+\end{proof}
+
+\begin{lem}
+  \label{lem:satormay-pair}
+  If $\csatisfyormay{e_1}{\xi_1}$ and $\csatisfyormay{e_2}{\xi_2}$ then $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$
+\end{lem}
+
+\begin{lem}
+  \label{lem:satisfy-truify}
+  If $\csatisfy{e}{\xi}$ then $\csatisfy{e}{\ctruify{\xi}}$
+\end{lem}
+\begin{proof}
+  By showing that $\ctruify{\xi} = \xi$
+\end{proof}
+
+\begin{lem}
+  \label{lem:maysat-satormay-truify}
+  If $\cmaysatisfy{e}{\xi}$ then $\csatisfyormay{e}{\ctruify{\xi}}$.
+\end{lem}
+\begin{proof}
+  \begin{pfsteps*}
+  \item $\cmaysatisfy{e}{\xi}$ \BY{assumption} \pflabel{maysat}
+  \end{pfsteps*}
+  By Rule Induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysat},
+  \begin{byCases}
+  \item[\text{(\ref{rule:CMSUnknown})}]
+      \begin{pfsteps*}
+      \item $\xi = \cunknown$ \BY{assumption}
+      \item $\csatisfy{e}{\ctruth}$ \BY{Rule (\ref{rule:CSTruth})} \pflabel{satisfyT}
+      \item $\csatisfyormay{e}{\ctruth}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyT}} \pflabel{satormayT}
+      \end{pfsteps*}
+      
+  \item[\text{(\ref{rule:CMSExpEHole})}]
+    \begin{pfsteps*}
+    \item $e = \hehole{u}$ \BY{assumption} \pflabel{eholeSatisfy}
+    \end{pfsteps*}
+    By case analysis on whether $\csatisfy{\hehole{u}}{\ctruify{\xi}}$ is derivable,
+    \begin{byCases}
+    \item[\text{$\csatisfy{\hehole{u}}{\ctruify{\xi}}$ is derivable}]
+      \begin{pfsteps*}
+      \item $\csatisfy{\hehole{u}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{satisfyTruify}
+      \item $\csatisfyormay{\hehole{u}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyTruify}}
+      \end{pfsteps*}
+    \item[\text{$\csatisfy{\hehole{u}}{\ctruify{\xi}}$ is not derivable}]
+      \begin{pfsteps*}
+      \item $\cnotsatisfy{\hehole{u}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{notsatisfyTruify}
+      \item $\cmaysatisfy{\hehole{u}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CMSExpEHole}) on \pfref{notsatisfyTruify}} \pflabel{maysatTruify}
+      \item $\csatisfyormay{\hehole{u}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatTruify}}
+      \end{pfsteps*}
+    \end{byCases}
+
+  \item[\text{(\ref{rule:CMSExpHole})}]
+    \begin{pfsteps*}
+    \item $e = \hhole{e}{u}$ \BY{assumption} \pflabel{holeSatisfy}
+    \end{pfsteps*}
+    By case analysis on whether $\csatisfy{\hhole{e}{u}}{\ctruify{\xi}}$ is derivable,
+    \begin{byCases}
+    \item[\text{$\csatisfy{\hhole{e}{u}}{\ctruify{\xi}}$ is derivable}]
+      \begin{pfsteps*}
+      \item $\csatisfy{\hhole{e}{u}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{holeSatisfyTruify}
+      \item $\csatisfyormay{\hhole{e}{u}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{holeSatisfyTruify}}
+      \end{pfsteps*}
+    \item[\text{$\csatisfy{\hhole{e}{u}}{\ctruify{\xi}}$ is not derivable}]
+      \begin{pfsteps*}
+      \item $\cnotsatisfy{\hhole{e}{u}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{HoleNotsatisfyTruify}
+      \item $\cmaysatisfy{\hhole{e}{u}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CMSExpHole}) on \pfref{HoleNotsatisfyTruify}} \pflabel{HoleMaysatTruify}
+      \item $\csatisfyormay{\hhole{e}{u}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{HoleMaysatTruify}}
+      \end{pfsteps*}
+    \end{byCases}
+
+  \item[\text{(\ref{rule:CMSAp})}]
+    \begin{pfsteps*}
+    \item $e = \hap{e_1}{e_2}$ \BY{assumption} \pflabel{apSatisfy}
+    \end{pfsteps*}
+    By case analysis on whether $\csatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$ is derivable,
+    \begin{byCases}
+    \item[\text{$\csatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$ is derivable}]
+      \begin{pfsteps*}
+      \item $\csatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{apSatisfyTruify}
+      \item $\csatisfyormay{\hap{e_1}{e_2}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{apSatisfyTruify}}
+      \end{pfsteps*}
+    \item[\text{$\csatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$ is not derivable}]
+      \begin{pfsteps*}
+      \item $\cnotsatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{apNotsatisfyTruify}
+      \item $\cmaysatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CMSAp}) on \pfref{apNotsatisfyTruify}} \pflabel{apMaysatTruify}
+      \item $\csatisfyormay{\hap{e_1}{e_2}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{apMaysatTruify}}
+      \end{pfsteps*}
+    \end{byCases}
+
+  \item[\text{(\ref{rule:CMSMatch})}]
+    \begin{pfsteps*}
+    \item $e = \hmatch{e}{\zrules}$ \BY{assumption}
+    \end{pfsteps*}
+    By case analysis on whether $\csatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ is derivable,
+    \begin{byCases}
+    \item[\text{$\csatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ is derivable}]
+      \begin{pfsteps*}
+      \item $\csatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{MatchSatisfyTruify}
+      \item $\csatisfyormay{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{MatchSatisfyTruify}}
+      \end{pfsteps*}
+    \item[\text{$\csatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ is not derivable}]
+      \begin{pfsteps*}
+      \item $\cnotsatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{MatchSotsatisfyTruify}
+      \item $\cmaysatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CMSMatch}) on \pfref{MatchSotsatisfyTruify}} \pflabel{MatchSaysatTruify}
+      \item $\csatisfyormay{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{MatchSaysatTruify}}
+      \end{pfsteps*}
+
+    \end{byCases}
+
+  \item[\text{(\ref{rule:CMSAnd1})}]
+    \begin{pfsteps*}
+    \item $\xi = \cand{\xi_1}{\xi_2}$ \BY{assumption}
+    \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[and1]maysat1}
+    \item $\csatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[and1]satisfy2}
+    \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[and1]maysat1}} \pflabel{[and1]satormay1}
+    \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{Lemma \ref{lem:satisfy-truify} on \pfref{[and1]satisfy2}} \pflabel{[and1]satormay2}
+    \item $\csatisfyormay{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and1]satormay1} and \pfref{[and1]satormay2}}
+    \end{pfsteps*}
+
+  \item[\text{(\ref{rule:CMSAnd2})}]
+    \begin{pfsteps*}
+    \item $\xi = \cand{\xi_1}{\xi_2}$ \BY{assumption}
+    \item $\csatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[and2]satisfy1}
+    \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[and2]maysat2}
+    \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{Lemma \ref{lem:satisfy-truify} on \pfref{[and2]satisfy1}} \pflabel{[and2]satormay1}
+    \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[and2]maysat2}} \pflabel{[and2]satormay2}
+    \item $\csatisfyormay{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and2]satormay1} and \pfref{[and2]satormay2}}
+    \end{pfsteps*}
+
+  \item[\text{(\ref{rule:CMSAnd3})}]
+    \begin{pfsteps*}
+    \item $\xi = \cand{\xi_1}{\xi_2}$ \BY{assumption}
+    \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[and3]maysat1}
+    \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[and3]maysat2}
+    \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[and3]maysat1}} \pflabel{[and3]satormay1}
+    \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[and3]maysat2}} \pflabel{[and3]satormay2}
+    \item $\csatisfyormay{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and3]satormay1} and \pfref{[and3]satormay2}}
+    \end{pfsteps*}
+
+  \item[\text{(\ref{rule:CMSOr1})}]
+    \begin{pfsteps*}
+    \item $\xi = \cor{\xi_1}{\xi_2}$ \BY{assumption}
+    \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[or1]maysat1}
+    \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[or1]maysat1}} \pflabel{[or1]satormayTruify1}
+    \item $\csatisfyormay{e}{\cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-or} on \pfref{[or1]satormayTruify1}}
+    \end{pfsteps*}
+
+  \item[\text{(\ref{rule:CMSOr2})}]
+    \begin{pfsteps*}
+    \item $\xi = \cor{\xi_1}{\xi_2}$ \BY{assumption}
+    \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[or2]maysat2}
+    \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[or2]maysat2}} \pflabel{[or2]satormayTruify2}
+    \item $\csatisfyormay{e}{\cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-or} on \pfref{[or2]satormayTruify2}}
+    \end{pfsteps*}
+
+  \item[\text{(\ref{rule:CMSInl})}]
+    \begin{pfsteps*}
+    \item $e = \hinl{\tau_2}{e_1}$ \BY{assumption}
+    \item $\xi = \cinl{\xi_1}$ \BY{assumption}
+    \item $\cmaysatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[inl]maysat1}
+    \item $\csatisfyormay{e_1}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[inl]maysat1}} \pflabel{[inl]satormayTruify1}
+    \item $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinl{\ctruify{\xi_1}}}$ \BY{Lemma \ref{lem:satormay-inl} on \pfref{[inl]satormayTruify1}}
+    \end{pfsteps*}
+
+  \item[\text{(\ref{rule:CMSInr})}]
+    \begin{pfsteps*}
+    \item $e = \hinr{\tau_1}{e_2}$ \BY{assumption}
+    \item $\xi = \cinr{\xi_2}$ \BY{assumption}
+    \item $\cmaysatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{[inr]maysat2}
+    \item $\csatisfyormay{e_2}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[inr]maysat2}} \pflabel{[inr]satormayTruify2}
+    \item $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinr{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-inr} on \pfref{[inr]satormayTruify2}}
+    \end{pfsteps*}
+
+  \item[\text{(\ref{rule:CMSPair1})}]
+    \begin{pfsteps*}
+    \item $e = \hpair{e_1}{e_2}$ \BY{assumption}
+    \item $\xi = \cpair{\xi_1}{\xi_2}$ \BY{assumption}
+    \item $\cmaysatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[pair1]maysat1}
+    \item $\csatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{[pair1]satisfy2}
+    \item $\csatisfyormay{e_1}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[pair1]maysat1}} \pflabel{[pair1]satormay1}
+    \item $\csatisfyormay{e_2}{\ctruify{\xi_2}}$ \BY{Lemma \ref{lem:satisfy-truify} on \pfref{[pair1]satisfy2}} \pflabel{[pair1]satormay2}
+    \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-pair} on \pfref{[pair1]satormay1} and \pfref{[pair1]satormay2}}
+    \end{pfsteps*}
+
+  \item[\text{(\ref{rule:CMSPair2})}]
+    \begin{pfsteps*}
+    \item $e = \hpair{e_1}{e_2}$ \BY{assumption}
+    \item $\xi = \cpair{\xi_1}{\xi_2}$ \BY{assumption}
+    \item $\csatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[pair2]satisfy1}
+    \item $\cmaysatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{[pair2]maysat2}
+    \item $\csatisfyormay{e_1}{\ctruify{\xi_1}}$ \BY{Lemma \ref{lem:satisfy-truify} on \pfref{[pair2]satisfy1}} \pflabel{[pair2]satormay1}
+    \item $\csatisfyormay{e_2}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[pair2]maysat2}} \pflabel{[pair2]satormay2}
+    \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-pair} on \pfref{[pair2]satormay1} and \pfref{[pair2]satormay2}}
+    \end{pfsteps*}
+
+  \item[\text{(\ref{rule:CMSPair3})}]
+    \begin{pfsteps*}
+    \item $e = \hpair{e_1}{e_2}$ \BY{assumption}
+    \item $\xi = \cpair{\xi_1}{\xi_2}$ \BY{assumption}
+    \item $\cmaysatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[Pair3]maysat1}
+    \item $\cmaysatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{[Pair3]maysat2}
+    \item $\csatisfyormay{e_1}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[Pair3]maysat1}} \pflabel{[Pair3]satormay1}
+    \item $\csatisfyormay{e_2}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[Pair3]maysat2}} \pflabel{[Pair3]satormay2}
+    \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-pair} on \pfref{[Pair3]satormay1} and \pfref{[Pair3]satormay2}}
+    \end{pfsteps*}
+
+
+  \end{byCases}
+
+  \resetpfcounter
+\end{proof}
+
+\begin{lem}
+  \label{lem:satormay-truify}
+  $\csatisfyormay{e}{\xi}$ iff $\csatisfyormay{e}{\ctruify{\xi}}$
+\end{lem}
+\begin{proof}
+  \begin{enumerate}
+    \item Sufficiency:
+      \begin{pfsteps*}
+      \item $\csatisfyormay{e}{\xi}$ \BY{assumption} \pflabel{satormay}
+      \end{pfsteps*}
+      By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay}
+      \begin{byCases}
+      \item[\text{(\ref{rule:CSMSSat})}]
+        \begin{pfsteps*}
+        \item $\csatisfy{e}{\xi}$ \BY{assumption} \pflabel{sat}
+        \item $\csatisfy{e}{\ctruify{\xi}}$ \BY{Lemma \ref{lem:satisfy-truify} on \pfref{sat}} \pflabel{[sat]sat-truify}
+        \item $\csatisfyormay{e}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[sat]sat-truify}}
+        \end{pfsteps*}
+
+      \item[\text{(\ref{rule:CSMSMay})}]
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{e}{\xi}$ \BY{assumption} \pflabel{maysat}
+        \item $\csatisfyormay{e}{\ctruify{\xi}}$ \BY{Lemma \ref{lem:maysat-satormay-truify} on \pfref{maysat}}
+        \end{pfsteps*}
+
+      \end{byCases}
+
+    \resetpfcounter
+
+    \item Necessity:
+    \begin{pfsteps*}
+    \item $\csatisfyormay{e}{\ctruify{\xi}}$ \BY{assumption} \pflabel{satormayTruify}
+    \end{pfsteps*}
+
+    By structural induction on $\xi$,
+    \begin{byCases}
+    \item[\xi=\ctruth, \cfalsity, \cnum{n}, \cnotnum{n}]
+      \begin{pfsteps*}
+      \item $\ctruify{\xi}=\xi$ \BY{Definition \ref{defn:truify}} \pflabel{truify=xi}
+      \item $\csatisfyormay{e}{\xi}$ \BY{Substitution of \pfref{truify=xi} into \pfref{satormayTruify}}
+      \end{pfsteps*}
+
+    \item[\xi=\cunknown]
+      \begin{pfsteps*}
+      \item $\cmaysatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:CMSUnknown})} \pflabel{[unknown]maysatUnknown}
+      \item $\csatisfyormay{e}{\cunknown}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[unknown]maysatUnknown}}
+      \end{pfsteps*}
+    
+    \item[\xi=\cand{\xi_1}{\xi_2}]
+      \begin{pfsteps*}
+      \item $\ctruify{\xi} = \cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{Definition \ref{defn:truify}}
+      \end{pfsteps*}
+      By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayTruify},
+      \begin{byCases}
+      \item[\text{(\ref{rule:CSMSSat})}]
+        \begin{pfsteps*}
+        \item $\csatisfy{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{satisfyAndTruify}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfyAndTruify} and only one case applies,
+        \begin{byCases}
+        \item[\text{(\ref{rule:CSAnd})}]
+          \begin{pfsteps*}
+          \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[and]satisfyTruify1}
+          \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[and]satisfyTruify2}
+          \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[and]satisfyTruify1}} \pflabel{[and]satormayTruify1}
+          \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[and]satisfyTruify2}} \pflabel{[and]satormayTruify2}
+          \item $\csatisfyormay{e}{\xi_1}$ \BY{IH on \pfref{[and]satormayTruify1}} \pflabel{[and]satormay1}
+          \item $\csatisfyormay{e}{\xi_2}$ \BY{IH on \pfref{[and]satormayTruify2}} \pflabel{[and]satormay2}
+          \item $\csatisfyormay{e}{\cand{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and]satormay1} and \pfref{[and]satormay2}}
+          \end{pfsteps*}
+        \end{byCases}
+
+      \item[\text{(\ref{rule:CSMSMay})}]
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{maysatAndTruify}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysatAndTruify} and three cases apply,
+        \begin{byCases}
+
+        \item[\text{(\ref{rule:CMSAnd1})}]
+          \begin{pfsteps*}
+          \item $\cmaysatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[and1]maysatTruify1}
+          \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[and1]satisfyTruify2}
+          \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[and1]maysatTruify1}} \pflabel{[and1]satormayTruify1}
+          \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[and1]satisfyTruify2}} \pflabel{[and1]satormayTruify2}
+          \item $\csatisfyormay{e}{\xi_1}$ \BY{IH on \pfref{[and1]satormayTruify1}} \pflabel{[and1]satormay1}
+          \item $\csatisfyormay{e}{\xi_2}$ \BY{IH on \pfref{[and1]satormayTruify2}} \pflabel{[and1]satormay2}
+          \item $\csatisfyormay{e}{\cand{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and1]satormay1} and \pfref{[and1]satormay2}}
+          \end{pfsteps*}
+
+        \item[\text{(\ref{rule:CMSAnd2})}]
+          \begin{pfsteps*}
+          \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[and2]satisfyTruify1}
+          \item $\cmaysatisfy{e}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[and2]maysatTruify2}
+          \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[and2]satisfyTruify1}} \pflabel{[and2]satormayTruify1}
+          \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[and2]maysatTruify2}} \pflabel{[and2]satormayTruify2}
+          \item $\csatisfyormay{e}{\xi_1}$ \BY{IH on \pfref{[and2]satormayTruify1}} \pflabel{[and2]satormay1}
+          \item $\csatisfyormay{e}{\xi_2}$ \BY{IH on \pfref{[and2]satormayTruify2}} \pflabel{[and2]satormay2}
+          \item $\csatisfyormay{e}{\cand{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and2]satormay1} and \pfref{[and2]satormay2}}
+          \end{pfsteps*}
+
+        \item[\text{(\ref{rule:CMSAnd3})}]
+          \begin{pfsteps*}
+          \item $\cmaysatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[and3]maysatTruify1}
+          \item $\cmaysatisfy{e}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[and3]maysatTruify2}
+          \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[and3]maysatTruify1}} \pflabel{[and3]satormayTruify1}
+          \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[and3]maysatTruify2}} \pflabel{[and3]satormayTruify2}
+          \item $\csatisfyormay{e}{\xi_1}$ \BY{IH on \pfref{[and3]satormayTruify1}} \pflabel{[and3]satormay1}
+          \item $\csatisfyormay{e}{\xi_2}$ \BY{IH on \pfref{[and3]satormayTruify2}} \pflabel{[and3]satormay2}
+          \item $\csatisfyormay{e}{\cand{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and3]satormay1} and \pfref{[and3]satormay2}}
+          \end{pfsteps*}
+        \end{byCases}
+      \end{byCases}
+
+    \item[\xi=\cor{\xi_1}{\xi_2}]
+      \begin{pfsteps*}
+      \item $\ctruify{\cor{\xi_1}{\xi_2}} = \cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{Definition \ref{defn:truify}}
+      \end{pfsteps*}
+      By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayTruify},
+      \begin{byCases}
+
+      \item[\text{(\ref{rule:CSMSSat})}]
+        \begin{pfsteps*}
+        \item $\csatisfy{e}{\cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{satisfyOrTruify}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfyOrTruify} and two cases apply,
+        \begin{byCases}
+
+        \item[\text(\ref{rule:CSOr1})]
+          \begin{pfsteps*}
+          \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[or1]satisfyTruify1}
+          \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[or1]satisfyTruify1}} \pflabel{[or1]satormayTruify1}
+          \item $\csatisfyormay{e}{\xi_1}$ \BY{IH on \pfref{[or1]satormayTruify1}} \pflabel{[or1]satormay1}
+          \item $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-or} on \pfref{[or1]satormay1}}
+          \end{pfsteps*}
+
+        \item[\text(\ref{rule:CSOr2})]
+          \begin{pfsteps*}
+          \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[or2]satisfyTruify2}
+          \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[or2]satisfyTruify2}} \pflabel{[or2]satormayTruify2}
+          \item $\csatisfyormay{e}{\xi_2}$ \BY{IH on \pfref{[or2]satormayTruify2}} \pflabel{[or2]satormay2}
+          \item $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-or} on \pfref{[or2]satormay2}}
+          \end{pfsteps*}
+
+        \end{byCases}
+
+      \item[\text{(\ref{rule:CSMSMay})}]
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{e}{\cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{maysatOrTruify}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysatOrTruify} and two cases apply,
+        \begin{byCases}
+
+        \item[\text{(\ref{rule:CMSOr1})}]
+          \begin{pfsteps*}
+          \item $\cmaysatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[or3]maysatTruify1}
+          \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[or3]maysatTruify1}} \pflabel{[or3]satormayTruify1}
+          \item $\csatisfyormay{e}{\xi_1}$ \BY{IH on \pfref{[or3]satormayTruify1}} \pflabel{[or3]satormay1}
+          \item $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-or} on \pfref{[or3]satormay1}}
+          \end{pfsteps*}
+          
+        \item[\text{(\ref{rule:CMSOr2})}]
+          \begin{pfsteps*}
+          \item $\cmaysatisfy{e}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[or4]maysatTruify2}
+          \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[or4]maysatTruify2}} \pflabel{[or4]satormayTruify2}
+          \item $\csatisfyormay{e}{\xi_2}$ \BY{IH on \pfref{[or4]satormayTruify2}} \pflabel{[or4]satormay2}
+          \item $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-or} on \pfref{[or4]satormay2}}
+          \end{pfsteps*}
+          
+        \end{byCases}
+      \end{byCases}
+
+    \item[\xi=\cinl{\xi_1}]
+      \begin{pfsteps*}
+      \item $e = \hinl{\tau_2}{e_1}$ \BY{assumption}
+      \item $\ctruify{\xi} = \cinl{\ctruify{\xi_1}}$ \BY{assumption}
+      \end{pfsteps*}
+      By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayTruify},
+      \begin{byCases}
+
+      \item[\text{(\ref{rule:CSMSSat})}]
+        \begin{pfsteps*}
+        \item $\csatisfy{\hinl{\tau_2}{e_1}}{\cinl{\ctruify{\xi_1}}}$ \BY{assumption} \pflabel{satisfyInlTruify1}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:Satisfy}) and only one case applies,
+        \begin{byCases}
+        \item[\text{(\ref{rule:CSInl})}]
+          \begin{pfsteps*}
+          \item $\csatisfy{e_1}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{satisfyTruify1}
+          \item $\csatisfyormay{e_1}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyTruify1}} \pflabel{satormayTruify1}
+          \item $\csatisfyormay{e_1}{\xi_1}$ \BY{IH on \pfref{satormayTruify1}} \pflabel{satormay1}
+          \item $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ \BY{Lemma \ref{lem:satormay-inl} on \pfref{satormay1}}
+          \end{pfsteps*}
+        \end{byCases}
+
+      \item[\text{(\ref{rule:CSMSMay})}]
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\ctruify{\xi_1}}}$ \BY{assumption} \pflabel{maysatInlTruify1}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:MaySatisfy}) and only one case applies,
+        \begin{byCases}
+        \item[\text{(\ref{rule:CMSInl})}]
+          \begin{pfsteps*}
+          \item $\cmaysatisfy{e_1}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{maysatTruify1}
+          \item $\csatisfyormay{e_1}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatTruify1}} \pflabel{[may]satormayTruify1}
+          \item $\csatisfyormay{e_1}{\xi_1}$ \BY{IH on \pfref{[may]satormayTruify1}} \pflabel{[may]satormay1}
+          \item $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ \BY{Lemma \ref{lem:satormay-inl} on \pfref{[may]satormay1}}
+          \end{pfsteps*}
+        \end{byCases}
+      \end{byCases}
+
+    \item[\xi=\cinr{\xi_2}]
+      \begin{pfsteps*}
+      \item $e = \hinr{\tau_1}{e_2}$ \BY{assumption}
+      \item $\ctruify{\xi} = \cinr{\ctruify{\xi_2}}$ \BY{assumption}
+      \end{pfsteps*}
+      By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayTruify},
+      \begin{byCases}
+
+      \item[\text{(\ref{rule:CSMSSat})}]
+        \begin{pfsteps*}
+        \item $\csatisfy{\hinr{\tau_1}{e_2}}{\cinr{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{satisfyInrTruify2}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:Satisfy}) and only one case applies,
+        \begin{byCases}
+        \item[\text{(\ref{rule:CSInr})}]
+          \begin{pfsteps*}
+          \item $\csatisfy{e_2}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{satisfyTruify2}
+          \item $\csatisfyormay{e_2}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyTruify2}} \pflabel{satormayTruify2}
+          \item $\csatisfyormay{e_2}{\xi_2}$ \BY{IH on \pfref{satormayTruify2}} \pflabel{satormay2}
+          \item $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$ \BY{Lemma \ref{lem:satormay-inr} on \pfref{satormay2}}
+          \end{pfsteps*}
+        \end{byCases}
+
+      \item[\text{(\ref{rule:CSMSMay})}]
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{maysatInrTruify2}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:MaySatisfy}) and only one case applies,
+        \begin{byCases}
+        \item[\text{(\ref{rule:CMSInr})}]
+          \begin{pfsteps*}
+          \item $\cmaysatisfy{e_2}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{maysatTruify2}
+          \item $\csatisfyormay{e_2}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatTruify2}} \pflabel{[may]satormayTruify2}
+          \item $\csatisfyormay{e_2}{\xi_2}$ \BY{IH on \pfref{[may]satormayTruify2}} \pflabel{[may]satormay2}
+          \item $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$ \BY{Lemma \ref{lem:satormay-inr} on \pfref{[may]satormay2}}
+          \end{pfsteps*}
+        \end{byCases}
+      \end{byCases}
+
+    \item[\xi=\cpair{\xi_1}{\xi_2}]
+      \begin{pfsteps*}
+      \item $e = \hpair{e_1}{e_2}$ \BY{assumption}
+      \item $\ctruify{\xi} = \cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{Definition \ref{defn:truify}}
+      \end{pfsteps*}
+      By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayTruify},
+      \begin{byCases}
+      \item[\text{(\ref{rule:CSMSSat})}]
+        \begin{pfsteps*}
+        \item $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{satisfyPairTruify}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfyPairTruify} and only one case applies,
+        \begin{byCases}
+        \item[\text{(\ref{rule:CSPair})}]
+          \begin{pfsteps*}
+          \item $\csatisfy{e_1}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[pair]satisfyTruify1}
+          \item $\csatisfy{e_2}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[pair]satisfyTruify2}
+          \item $\csatisfyormay{e_1}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[pair]satisfyTruify1}} \pflabel{[pair]satormayTruify1}
+          \item $\csatisfyormay{e_2}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[pair]satisfyTruify2}} \pflabel{[pair]satormayTruify2}
+          \item $\csatisfyormay{e_1}{\xi_1}$ \BY{IH on \pfref{[pair]satormayTruify1}} \pflabel{[pair]satormay1}
+          \item $\csatisfyormay{e_2}{\xi_2}$ \BY{IH on \pfref{[pair]satormayTruify2}} \pflabel{[pair]satormay2}
+          \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-pair} on \pfref{[pair]satormay1} and \pfref{[pair]satormay2}}
+          \end{pfsteps*}
+        \end{byCases}
+
+      \item[\text{(\ref{rule:CSMSMay})}]
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{maysatPairTruify}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysatPairTruify} and three cases apply,
+        \begin{byCases}
+
+        \item[\text{(\ref{rule:CMSPair1})}]
+          \begin{pfsteps*}
+          \item $\cmaysatisfy{e_1}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[pair1]maysatTruify1}
+          \item $\csatisfy{e_2}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[pair1]satisfyTruify2}
+          \item $\csatisfyormay{e_1}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[pair1]maysatTruify1}} \pflabel{[pair1]satormayTruify1}
+          \item $\csatisfyormay{e_2}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[pair1]satisfyTruify2}} \pflabel{[pair1]satormayTruify2}
+          \item $\csatisfyormay{e_1}{\xi_1}$ \BY{IH on \pfref{[pair1]satormayTruify1}} \pflabel{[pair1]satormay1}
+          \item $\csatisfyormay{e_2}{\xi_2}$ \BY{IH on \pfref{[pair1]satormayTruify2}} \pflabel{[pair1]satormay2}
+          \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-pair} on \pfref{[pair1]satormay1} and \pfref{[pair1]satormay2}}
+          \end{pfsteps*}
+
+        \item[\text{(\ref{rule:CMSPair2})}]
+          \begin{pfsteps*}
+          \item $\csatisfy{e_1}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[pair2]satisfyTruify1}
+          \item $\cmaysatisfy{e_2}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[pair2]maysatTruify2}
+          \item $\csatisfyormay{e_1}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[pair2]satisfyTruify1}} \pflabel{[pair2]satormayTruify1}
+          \item $\csatisfyormay{e_2}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[pair2]maysatTruify2}} \pflabel{[pair2]satormayTruify2}
+          \item $\csatisfyormay{e_1}{\xi_1}$ \BY{IH on \pfref{[pair2]satormayTruify1}} \pflabel{[pair2]satormay1}
+          \item $\csatisfyormay{e_2}{\xi_2}$ \BY{IH on \pfref{[pair2]satormayTruify2}} \pflabel{[pair2]satormay2}
+          \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-pair} on \pfref{[pair2]satormay1} and \pfref{[pair2]satormay2}}
+          \end{pfsteps*}
+
+        \item[\text{(\ref{rule:CMSAnd3})}]
+          \begin{pfsteps*}
+          \item $\cmaysatisfy{e_1}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[pair3]maysatTruify1}
+          \item $\cmaysatisfy{e_2}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[pair3]maysatTruify2}
+          \item $\csatisfyormay{e_1}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[pair3]maysatTruify1}} \pflabel{[pair3]satormayTruify1}
+          \item $\csatisfyormay{e_2}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[pair3]maysatTruify2}} \pflabel{[pair3]satormayTruify2}
+          \item $\csatisfyormay{e_1}{\xi_1}$ \BY{IH on \pfref{[pair3]satormayTruify1}} \pflabel{[pair3]satormay1}
+          \item $\csatisfyormay{e_2}{\xi_2}$ \BY{IH on \pfref{[pair3]satormayTruify2}} \pflabel{[pair3]satormay2}
+          \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-pair} on \pfref{[pair3]satormay1} and \pfref{[pair3]satormay2}}
+          \end{pfsteps*}
+        \end{byCases}
+      \end{byCases}
+
+    \end{byCases}
+      
+    \resetpfcounter
+  \end{enumerate}
+\end{proof}
+
+\begin{lem}
+  \label{lem:val-satisfy-truify}
+  Assume that $\isVal{e}$. Then $\csatisfyormay{e}{\xi}$ iff $\csatisfy{e}{\ctruify{\xi}}$
+\end{lem}
+
+\begin{lem}
+  \label{lem:satisfy-falsify}
+  $\csatisfy{e}{\xi}$ iff $\csatisfy{e}{\cfalsify{\xi}}$
+\end{lem}
+\begin{proof}
+  \begin{enumerate}
+    \item Sufficiency:
+  \end{enumerate}
+\end{proof}
+
+\begin{thm}[Inconsistency and Redundancy]
+  \label{lem:inconsistency-and-redundancy}
+  $\cincon{\cand{\ctruify{\xi_r}}{\cdual{\cfalsify{\xi_{rs}}}}}$ iff $\csatisfy{\xi_r}{\xi_{rs}}$
+\end{thm}
+\begin{proof}
+  According to Lemma \ref{lem:satormay-truify}, $\csatisfyormay{e}{\xi_r}$
+\end{proof}
+
+\begin{thm}[Inconsistency and Exhaustiveness or Maybe Exhaustiveness]
+  \label{lem:inconsistency-and-exhaustiveness}
+  $\cincon{\cdual{\ctruify{\xi}}}$ iff $\csatisfyormay{\ctruth}{\xi}$
+\end{thm}
+
+\begin{thm}[Decidability of Redundancy]
+  \label{lem:redundancy-decidability}
+  It is decidable whether $\csatisfy{\xi_r}{\xi_{rs}}$, i.e., $\xi_r$ is redundant with respect to $\xi_{rs}$
+\end{thm}
+
+\begin{thm}[Decidability of Exhaustiveness or Maybe Exhaustiveness]
+  \label{lem:exhaustiveness-decidability}
+  It is decidable whether $\csatisfyormay{\ctruth}{\xi}$, i.e., $\xi$ is exhaustive or $\xi$ is possibly exhaustive
+\end{thm}

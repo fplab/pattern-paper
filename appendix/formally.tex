@@ -17,10 +17,12 @@ e & ::= &
   & ~\vert~ &
   \hinl{\tau}{e} ~\vert~
   \hinr{\tau}{e} ~\vert~
-  \hmatch{e}{rs} \\
+  \hmatch{e}{\hat{rs}} \\
   & ~\vert~ &
   \hehole{u} ~\vert~
   \hhole{e}{u} \\
+\hat{rs} & ::= &
+  \inparens{\zruls{rs}{r}{rs}} \\
 rs & ::= &
   \cdot ~\vert~ \hrulesP{r}{rs'} \\
 r & ::= &
@@ -36,11 +38,31 @@ p & ::= &
   \hhole{p}{w}
 \end{array}$
 
-\fbox{$\hexptyp{\Gamma}{\Delta}{e}{\tau}$}~~\text{$e$ is of type $\tau$}
+\fbox{$\rmpointer{\zrules} = rs$}~~\text{erase pointer from $\zrules$}
 \begin{subequations}
+\begin{align}
+  \rmpointer{\zruls{\cdot}{r}{rs}} &= \hrules{r}{rs} \\
+  \rmpointer{\zruls{\hrulesP{r'}{rs'}}{r}{rs}} &= \hrules{r'}{\rmpointer{\zruls{rs'}{r}{rs}}}
+\end{align}
+\end{subequations}
+
+\fbox{$\hexptyp{\Gamma}{\Delta}{e}{\tau}$}~~\text{$e$ is of type $\tau$}
+\begin{subequations}\label{rules:TExp}
 \begin{equation}
 \inferrule[TVar]{ }{
   \hexptyp{\Gamma, x : \tau}{\Delta}{x}{\tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[TEHole]{ }{
+  \hexptyp{\Gamma}{\Delta, u::\tau}{\hehole{u}}{\tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[THole]{
+  \hexptyp{\Gamma}{\Delta, u::\tau}{e}{\tau'}
+}{
+  \hexptyp{\Gamma}{\Delta, u::\tau}{\hhole{e}{u}}{\tau}
 }
 \end{equation}
 \begin{equation}
@@ -85,108 +107,110 @@ p & ::= &
   \hexptyp{\Gamma}{\Delta}{\hinr{\tau_1}{e}}{\tsum{\tau_1}{\tau_2}}
 }
 \end{equation}
-\begin{equation}
-\inferrule[TMatch]{
-  \hexptyp{\Gamma}{\Delta}{e_1}{\tau_1} \\
-  \hexptyp{\Gamma}{\Delta}{rs}{\trul{\tau_1}{\tau}}
+\begin{equation}\label{rule:TMatchZPre}
+\inferrule[TMatchZPre]{
+  \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
+  \chrulstyp{\Gamma}{\Delta}{\cfalsity}{\hrules{r}{rs}}{\tau}{\xi}{\tau'} \\
+  \csatisfyormay{\ctruth}{\xi}
 }{
-  \hexptyp{\Gamma}{\Delta}{\hmatch{e_1}{rs}}{\tau}
+\hexptyp{\Gamma}{\Delta}{\hmatch{e}{\zruls{\cdot}{r}{rs}}}{\tau'}
 }
 \end{equation}
-\begin{equation}
-\inferrule[TEHole]{ }{
-  \hexptyp{\Gamma}{\Delta, u::\tau}{\hehole{u}}{\tau}
-}
-\end{equation}
-\begin{equation}
-\inferrule[THole]{
-  \hexptyp{\Gamma}{\Delta, u::\tau}{e}{\tau'}
+\begin{equation}\label{rule:TMatchNZPre}
+\inferrule[TMatchNZPre]{
+  \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
+  \isFinal{e} \\
+  \chrulstyp{\Gamma}{\Delta}{\cfalsity}{rs_{pre}}{\tau}{\xi_{pre}}{\tau'} \\
+  \chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrules{r}{rs_{post}}}{\tau}{\xi_{rest}}{\tau'} \\
+  \cnotsatisfyormay{e}{\xi_{pre}} \\
+  \csatisfyormay{\ctruth}{\cor{\xi_{pre}}{\xi_{post}}}
 }{
-  \hexptyp{\Gamma}{\Delta, u::\tau}{\hhole{e}{u}}{\tau}
+  \hexptyp{\Gamma}{\Delta}{\hmatch{e}{\zruls{rs_{pre}}{r}{rs_{post}}}}{\tau'}
 }
 \end{equation}
 \end{subequations}
 
-\fbox{$\hexptyp{\Gamma}{\Delta}{r}{\trul{\tau_1}{\tau_2}}$}~~\text{$r$ is of type $\trulnp{\tau_1}{\tau_2}$}
-\begin{subequations}
-\begin{equation}
-\inferrule[TRule]{
-  \hpattyp{p}{\tau_1}{\Gamma'}{\Delta'} \\
-  \hexptyp{\Gamma \uplus \Gamma'}{\Delta \uplus \Delta'}{e}{\tau_2}
+\fbox{$\chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi}{\tau'}$}~~\text{$r$ transforms values of type $\tau$, constrained by $\xi$, to type $\tau'$}
+\begin{equation}\label{rule:CTRule}
+\inferrule[CTRule]{
+  \chpattyp{p}{\tau}{\xi}{\Gamma'}{\Delta'} \\
+  \hexptyp{\Gamma \uplus \Gamma'}{\Delta \uplus \Delta'}{e}{\tau'}
 }{
-  \hexptyp{\Gamma}{\Delta}{\hrulP{p}{e}}{\trul{\tau_1}{\tau_2}}
+  \chrultyp{\Gamma}{\Delta}{\hrul{p}{e}}{\tau}{\xi}{\tau'}
+}
+\end{equation}
+
+\fbox{$\chrulstyp{\Gamma}{\Delta}{\xi}{rs}{\tau}{\xi'}{\tau'}$}~~\text{all rules in $rs$ transform values of type $\tau$, constrained by $\xi$, to type $\tau'$}
+\begin{subequations}\label{rules:CTRules}
+\begin{equation}\label{rule:CTZeroRule}
+\inferrule[CTZeroRule]{ }{
+  \chrulstyp{\Gamma}{\Delta}{\xi}{\cdot}{\tau}{\cfalsity}{\tau'}
+}
+\end{equation}
+\begin{equation}\label{rule:CTRules}
+\inferrule[CTRules]{
+  \chrultyp{\Gamma}{\Delta}{r}{\tau_1}{\xi_r}{\tau_2} \\
+  \chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r}}{rs}
+  {\tau_1}{\xi_{rs}}{\tau_2} \\
+  \cnotsatisfy{\xi_r}{\xi_{pre}}
+}{
+  \chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrules{r}{rs}}
+  {\tau_1}{\cor{\xi_r}{\xi_{rs}}}{\tau_2}
 }
 \end{equation}
 \end{subequations}
 
-\fbox{$\hexptyp{\Gamma}{\Delta}{rs}{\trul{\tau_1}{\tau_2}}$}~~\text{$rs$ is of type $\trulnp{\tau_1}{\tau_2}$}
+\fbox{$\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$}~~\text{$p$ matches expression of type $\tau$, emits match constraint $\xi$ and generates context $\Gamma$}
 \begin{subequations}
 \begin{equation}
-\inferrule[TZeroRule]{ }{
-  \hexptyp{\Gamma}{\Delta}{\cdot}{\trul{\tau_1}{\tau_2}}
+\inferrule[CTPVar]{ }{
+  \chpattyp{x}{\tau}{\ctruth}{\cdot}{x : \tau}
 }
 \end{equation}
 \begin{equation}
-\inferrule[TRules]{
-  \hexptyp{\Gamma}{\Delta}{r}{\trul{\tau_1}{\tau_2}} \\
-  \hexptyp{\Gamma}{\Delta}{rs}{\trul{\tau_1}{\tau_2}}
+\inferrule[CTPNum]{ }{
+  \chpattyp{\hnum{n}}{\tnum}{\cnum{n}}{\cdot}{\cdot}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTPWild]{ }{
+  \chpattyp{\_}{\tau}{\ctruth}{\cdot}{\cdot}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CTPInL]{
+  \chpattyp{p}{\tau_1}{\xi}{\Gamma}{\Delta}
 }{
-  \hexptyp{\Gamma}{\Delta}{\hrulesP{r}{rs}}{\trul{\tau_1}{\tau_2}}
-}
-\end{equation}
-\end{subequations}
-
-\fbox{$\hpattyp{p}{\tau}{\Gamma}{\Delta}$}~~\text{$p$ matches expression of type $\tau$ and generates context $\Gamma$ and hole context $\Delta$}
-\begin{subequations}
-\begin{equation}
-\inferrule[PTVar]{ }{
-  \hpattyp{x}{\tau}{x : \tau}{\cdot}
+  \chpattyp{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\cinl{\xi}}{\Gamma}{\Delta}
 }
 \end{equation}
 \begin{equation}
-\inferrule[PTNum]{ }{
-  \hpattyp{\hnum{n}}{\tnum}{\cdot}{\cdot}
-}
-\end{equation}
-\begin{equation}
-\inferrule[PTWild]{ }{
-  \hpattyp{\_}{\tau}{\cdot}{\cdot}
-}
-\end{equation}
-\begin{equation}
-\inferrule[PTPair]{
-  \hpattyp{p_1}{\tau_1}{\Gamma_1}{\Delta_1} \\
-  \hpattyp{p_2}{\tau_2}{\Gamma_2}{\Delta_2}
+\inferrule[CTPInR]{
+  \chpattyp{p}{\tau_2}{\xi}{\Gamma}{\Delta}
 }{
-  \hpattyp{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}
-    {\Gamma_1 \uplus \Gamma_2}{\Delta_1 \uplus \Delta_2}
+  \chpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\cinr{\xi}}{\Gamma}{\Delta}
 }
 \end{equation}
 \begin{equation}
-\inferrule[PTInL]{
-  \hpattyp{p}{\tau_1}{\Gamma}{\Delta}
+\inferrule[CTPPair]{
+  \chpattyp{p_1}{\tau_1}{\xi_1}{\Gamma_1}{\Delta_1} \\
+  \chpattyp{p_2}{\tau_2}{\xi_2}{\Gamma_2}{\Delta_2}
 }{
-  \hpattyp{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}{\Delta}
+  \chpattyp{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}
+  {\cpair{\xi_1}{\xi_2}}{\Gamma_1 \uplus \Gamma_2}{\Delta_1 \uplus \Delta_2}
 }
 \end{equation}
 \begin{equation}
-\inferrule[PTInR]{
-  \hpattyp{p}{\tau_2}{\Gamma}{\Delta}
+\inferrule[CTPEHole]{ }{
+  \chpattyp{\hehole{w}}{\tau}{\cunknown}{\cdot}{w :: \tau}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CPTHole]{
+  \chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}
 }{
-  \hpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\Gamma}{\Delta}
-}
-\end{equation}
-\begin{equation}
-\inferrule[PTEHole]{ }{
-  \hpattyp{\hehole{w}}{\tau}{\cdot}{w :: \tau}
-}
-\end{equation}
-\begin{equation}
-\inferrule[PTHole]{
-  \hpattyp{p}{\tau'}{\Gamma}{\Delta}
-}{
-  \hpattyp{\hhole{p}{w}}{\tau}
-  {\Gamma}{\Delta , w :: \tau}
+  \chpattyp{\hhole{p}{w}}{\tau'}{\cunknown}
+  {\Gamma}{\Delta , w :: \tau'}
 }
 \end{equation}
 \end{subequations}
@@ -393,40 +417,40 @@ p & ::= &
 
 \fbox{$\isIndet{e}$}~~\text{$e$ is indeterminate}
 \begin{subequations}\label{rules:Indet}
-\begin{equation}
+\begin{equation}\label{rule:IEHole}
 \inferrule[IEHole]{ }{
   \isIndet{\hehole{u}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:IHole}
 \inferrule[IHole]{
   \isFinal{e}
 }{
   \isIndet{\hhole{e}{u}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:IAp1}
 \inferrule[IAp1]{
   \isIndet{e_1}
 }{
   \isIndet{\hap{e_1}{e_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:IAp2}
 \inferrule[IAp2]{
   \isVal{e_1} \\ \isIndet{e_2}
 }{
   \isIndet{\hap{e_1}{e_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:IPair1}
 \inferrule[IPair1]{
   \isIndet{e_1}
 }{
   \isIndet{\hpair{e_1}{e_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:IPair2}
 \inferrule[IPair2]{
   \isVal{e_1} \\
   \isIndet{e_2}
@@ -434,22 +458,22 @@ p & ::= &
   \isIndet{\hpair{e_1}{e_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:IInl}
 \inferrule[IInL]{
   \isIndet{e}
 }{
   \isIndet{\hinl{\tau}{e}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:IInR}
 \inferrule[IInR]{
   \isIndet{e}
 }{
   \isIndet{\hinr{\tau}{e}}
 }
 \end{equation}
-\begin{equation}\label{rule:IMayMatch}
-\inferrule[IMayMatch]{
+\begin{equation}\label{rule:IMatch}
+\inferrule[IMatch]{
   \isFinal{e} \\
   \hmaymatch{e}{p_0}
 }{
@@ -462,7 +486,7 @@ p & ::= &
 
 \fbox{$\isFinal{e}$}~~\text{$e$ is final}
 \begin{subequations}\label{rules:Final}
-\begin{equation}
+  \begin{equation}\label{rule:FVal}
 \inferrule[FVal]{
   \isVal{e}
 }{
@@ -591,7 +615,7 @@ Proof by induction on the derivation of $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}
 
 \begin{lem}[Substitution Typing]
   \label{lem:subs-typing}
-  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta'}$
+  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$
   then $\hsubstyp{\theta}{\Gamma}$
 \end{lem}
 Proof by induction on the derivation of $\hpatmatch{e}{p}{\theta}$.
@@ -600,7 +624,7 @@ To apply this lemma in ITSuccMatch case, first apply inversion lemma on premise 
 
 \begin{lem}[Matching Progress]
   \label{lem:match-progress}
-  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$
+  If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta'}$
   then $\hnotmatch{e}{p}$ or $\hmaymatch{e}{p}$ or $\hpatmatch{e}{p}{\theta}$ for some $\theta$
 \end{lem}
 Proof by induction on two premises.
@@ -615,7 +639,6 @@ Proof by induction on two premises.
   If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then exactly one of the following holds
   \begin{enumerate}
     \item $\isVal{e}$
-    \item $\isErr{e}$
     \item $\isIndet{e}$
     \item $\htrans{e}{e'}$ for some unique $e'$
   \end{enumerate}
@@ -623,711 +646,10 @@ Proof by induction on two premises.
 
 \begin{lem}[Matching Determinism]
   \label{lem:match-determinism}
-  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$ then exactly one of the following holds
+  If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$ then exactly one of the following holds
   \begin{enumerate}
     \item $\hpatmatch{e}{p}{\theta}$ for some $\theta$
     \item $\hmaymatch{e}{p}$
     \item $\hnotmatch{e}{p}$
-  \end{enumerate}
-\end{lem}
-
-$\arraycolsep=4pt\begin{array}{lll}
-\xi & ::= &
-  \ctruth ~\vert~
-  \cfalsity ~\vert~
-  \cunknown ~\vert~
-  \cnum{n} ~\vert~
-  \cnotnum{n} ~\vert~
-  \cand{\xi_1}{\xi_2} ~\vert~
-  \cor{\xi_1}{\xi_2} ~\vert~
-  \cinl{\xi} ~\vert~
-  \cinr{\xi} ~\vert~
-  \cpair{\xi_1}{\xi_2}
-\end{array}$
-
-\fbox{$\ctyp{\xi}{\tau}$}~~\text{Constraint $\xi$ constrains values of type $\tau$}
-\begin{subequations}
-\begin{equation}\label{rule:CTTruth}
-\inferrule[CTTruth]{ }{
-  \ctyp{\ctruth}{\tau}
-}
-\end{equation}
-\begin{equation}\label{rule:CTFalsity}
-\inferrule[CTFalsity]{ }{
-  \ctyp{\cfalsity}{\tau}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTUnknown]{ }{
-  \ctyp{\cunknown}{\tau}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTNum]{ }{
-  \ctyp{\cnum{n}}{\tnum}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTNotNum]{ }{
-  \ctyp{\cnotnum{n}}{\tnum}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTAnd]{
-  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
-}{
-  \ctyp{\cand{\xi_1}{\xi_2}}{\tau}
-}
-\end{equation}
-\begin{equation}\label{rule:CTOr}
-\inferrule[CTOr]{
-  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
-}{
-  \ctyp{\cor{\xi_1}{\xi_2}}{\tau}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTInl]{
-  \ctyp{\xi_1}{\tau_1}
-}{
-  \ctyp{\cinl{\xi_1}}{\tsum{\tau_1}{\tau_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTInr]{
-  \ctyp{\xi_2}{\tau_2}
-}{
-  \ctyp{\cinr{\xi_2}}{\tsum{\tau_1}{\tau_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTPair]{
-  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
-}{
-  \ctyp{\cpair{\xi_1}{\xi_2}}{\tau}
-}
-\end{equation}
-\end{subequations}
-
-\fbox{$\cdual{\xi_1} = \xi_2$}~~\text{The dual of a match constraint $\xi_1$ is $\xi_2$}
-\begin{subequations}
-\begin{align}
-  \cdual{\ctruth} &= \cfalsity \\
-  \cdual{\cfalsity} &= \ctruth \\
-  \cdual{\cunknown} &= \cunknown \\
-  \cdual{\cnum{n}} &= \cnotnum{n} \\
-  \cdual{\cnotnum{n}} &= \cnum{n} \\
-  \cdual{\cand{\xi_1}{\xi_2}} &= \cor{\cdual{\xi_1}}{\cdual{\xi_2}} \\
-  \cdual{\cor{\xi_1}{\xi_2}} &= \cand{\cdual{\xi_1}}{\cdual{\xi_2}} \\
-  \cdual{\cinl{\xi_1}} &= \cor{ \cinl{\cdual{\xi_1}} }{ \cinr{\ctruth} } \\
-  \cdual{\cinr{\xi_2}} &= \cor{ \cinr{\cdual{\xi_2}} }{ \cinl{\ctruth} } \\
-  \cdual{\cpair{\xi_1}{\xi_2}} &=
-  \cor{ \cor{ 
-    \cpair{\xi_1}{\cdual{\xi_2}}
-  }{
-    \cpair{\cdual{\xi_1}}{\xi_2}
-  }}{
-    \cpair{\cdual{\xi_1}}{\cdual{\xi_2}}
-  }
-\end{align}
-\end{subequations}
-
-\fbox{$\csatisfy{e}{\xi}$}~~\text{Value $e$ satisfies constraint $\xi$}
-\begin{subequations}\label{rules:Satisfy}
-\begin{equation}\label{rule:CSTruth}
-\inferrule[CSTruth]{ }{
-  \csatisfy{e}{\ctruth}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CSNum]{ }{
-  \csatisfy{\hnum{n}}{\cnum{n}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CSNotNum]{
-  n_1 \neq n_2
-}{
-  \csatisfy{\hnum{n_1}}{\cnotnum{n_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CSAnd]{
-  \csatisfy{e}{\xi_1} \\
-  \csatisfy{e}{\xi_2}
-}{
-  \csatisfy{e}{\cand{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CSOr1}
-\inferrule[CSOr1]{
-  \csatisfy{e}{\xi_1}
-}{
-  \csatisfy{e}{\cor{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CSOr2}
-\inferrule[CSOr2]{
-  \csatisfy{e}{\xi_2}
-}{
-  \csatisfy{e}{\cor{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CSInl]{
-  \csatisfy{e_1}{\xi_1}
-}{
-  \csatisfy{
-    \hinl{\tau_2}{e_1}
-  }{
-    \cinl{\xi_1}
-  }
-}
-\end{equation}
-\begin{equation}
-\inferrule[CSInr]{
-  \csatisfy{e_2}{\xi_2}
-}{
-  \csatisfy{
-    \hinr{\tau_1}{e_2}
-  }{
-    \cinr{\xi_2}
-  }
-}
-\end{equation}
-\begin{equation}
-\inferrule[CSPair]{
-  \csatisfy{e_1}{\xi_1} \\
-  \csatisfy{e_2}{\xi_2}
-}{
-\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
-}
-\end{equation}
-\end{subequations}
-
-\fbox{$\cmaysatisfy{e}{\xi}$}~~\text{Final $e$ may satisfies constraint $\xi$}
-\begin{subequations}\label{rules:MaySatisfy}
-\begin{equation}
-\inferrule[CMSUnknown]{ }{
-  \cmaysatisfy{e}{\cunknown}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CMSExpEHole]{
-  \cnotsatisfy{\hehole{u}}{\xi}
-}{
-  \cmaysatisfy{\hehole{u}}{\xi}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CMSExpHole]{
-  \cnotsatisfy{\hhole{e}{u}}{\xi}
-}{
-  \cmaysatisfy{\hhole{e}{u}}{\xi}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CMSAp]{
-  \cnotsatisfy{\hap{e_1}{e_2}}{\xi}
-}{
-  \cmaysatisfy{\hap{e_1}{e_2}}{\xi}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CMSAnd1]{
-  \cmaysatisfy{e}{\xi_1} \\
-  \csatisfy{e}{\xi_2}
-}{
-  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CMSAnd2]{
-  \csatisfy{e}{\xi_1} \\
-  \cmaysatisfy{e}{\xi_2}
-}{
-  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CMSAnd3]{
-  \cmaysatisfy{e}{\xi_1} \\
-  \cmaysatisfy{e}{\xi_2}
-}{
-  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSOr1}
-\inferrule[CMSOr1]{
-  \cmaysatisfy{e}{\xi_1} \\
-  \cnotsatisfy{e}{\xi_2}
-}{
-  \cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSOr2}
-\inferrule[CMSOr2]{
-  \cnotsatisfy{e}{\xi_1} \\
-  \cmaysatisfy{e}{\xi_2}
-}{
-  \cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CMSInl]{
-  \cmaysatisfy{e_1}{\xi_1}
-}{
-  \cmaysatisfy{
-    \hinl{\tau_2}{e_1}
-  }{
-    \cinl{\xi_1}
-  }
-}
-\end{equation}
-\begin{equation}
-\inferrule[CMSInr]{
-  \cmaysatisfy{e_2}{\xi_2}
-}{
-  \cmaysatisfy{
-    \hinr{\tau_1}{e_2}
-  }{
-    \cinr{\xi_2}
-  }
-}
-\end{equation}
-\begin{equation}
-\inferrule[CMSPair1]{
-  \cmaysatisfy{e_1}{\xi_1} \\
-  \csatisfy{e_2}{\xi_2}
-}{
-  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CMSPair2]{
-  \csatisfy{e_1}{\xi_1} \\
-  \cmaysatisfy{e_2}{\xi_2}
-}{
-  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CMSPair3]{
-  \cmaysatisfy{e_1}{\xi_1} \\
-  \cmaysatisfy{e_2}{\xi_2}
-}{
-  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
-}
-\end{equation}
-\end{subequations}
-
-\fbox{$\csatisfyormay{e}{\xi}$}
-\begin{subequations}\label{rules:satormay}
-\begin{equation}\label{rule:CMSPossibly}
-\inferrule[CMSPossibly]{
-  \cmaysatisfy{e}{\xi}
-}{
-  \csatisfyormay{e}{\xi}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSMust}
-\inferrule[CMSMust]{
-  \csatisfy{e}{\xi}
-}{
-  \csatisfyormay{e}{\xi}
-}
-\end{equation}
-\end{subequations}
-
-\begin{thm}[Exclusiveness of Constraint Satisfaction]
-  \label{thrm:exclusive-constraint-satisfaction}
-  If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$ then exactly one of the following holds
-  \begin{enumerate}
-    \item $\csatisfy{e}{\xi}$
-    \item $\cmaysatisfy{e}{\xi}$
-    \item $\csatisfy{e}{\cdual{\xi}}$
-  \end{enumerate}
-\end{thm}
-
-\begin{lem}[Negation of Satisfaction]
-  \label{lem:neg-satisfy}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. Then $\cnotsatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
-\end{lem}
-\begin{lem}[Negation of Possible Satisfaction]
-  \label{lem:neg-possible-satisfy}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. Then $\cnotmaysatisfy{e}{\xi}$ iff $\csatisfy{e}{\xi}$ or $\cnotsatisfy{e}{\cdual{\xi}}$
-\end{lem}
-\begin{lem}[Negation of Dual Satisfaction]
-  \label{lem:neg-dual-satisfy}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. Then $\cnotsatisfy{e}{\cdual{\xi}}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\xi}$ \textit{i.e.} $\csatisfyormay{e}{\xi}$
-\end{lem}
-\begin{lem}[Coverage of Constraint Satisfaction]
-  \label{lem:coverage-constraint-satisfy}
-  Suppose $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. Then either $\csatisfy{e}{\xi}$ or $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
-\end{lem}
-
-\begin{corol}[Possible Satisfaction of Dual Constraint]
-  \label{corol:possible-satisfy-dual}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$. Then $\cmaysatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\cdual{\xi}}$
-\end{corol}
-
-\begin{defn}[Entailment of Constraints]
-  \label{defn:const-entailment}
-  $\csatisfy{\xi_1}{\xi_2}$ iff $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$ and for all $e$ such that $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$
-\end{defn}
-\begin{corol}[Material Entailment of Constraints]
-  \label{lem:material-entailment}
-  Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$. Then $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{\ctruth}{\cor{\cdual{\xi_1}}{\xi_2}}$
-\end{corol}
-
-\fbox{$\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$}~~\text{$p$ matches expression of type $\tau$, emits match constraint $\xi$ and generates context $\Gamma$}
-\begin{subequations}
-\begin{equation}
-\inferrule[CTPVar]{ }{
-  \chpattyp{x}{\tau}{\ctruth}{\cdot}{x : \tau}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTPNum]{ }{
-  \chpattyp{\hnum{n}}{\tnum}{\cnum{n}}{\cdot}{\cdot}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTPWild]{ }{
-  \chpattyp{\_}{\tau}{\ctruth}{\cdot}{\cdot}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTPInL]{
-  \chpattyp{p}{\tau_1}{\xi}{\Gamma}{\Delta}
-}{
-  \chpattyp{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\cinl{\xi}}{\Gamma}{\Delta}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTPInR]{
-  \chpattyp{p}{\tau_2}{\xi}{\Gamma}{\Delta}
-}{
-  \chpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\cinr{\xi}}{\Gamma}{\Delta}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTPPair]{
-  \chpattyp{p_1}{\tau_1}{\xi_1}{\Gamma_1}{\Delta_1} \\
-  \chpattyp{p_2}{\tau_2}{\xi_2}{\Gamma_2}{\Delta_2}
-}{
-  \chpattyp{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}
-  {\cpair{\xi_1}{\xi_2}}{\Gamma_1 \uplus \Gamma_2}{\Delta_1 \uplus \Delta_2}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTPEHole]{ }{
-  \chpattyp{\hehole{w}}{\tau}{\cunknown}{\cdot}{w :: \tau}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CPTHole]{
-  \chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}
-}{
-  \chpattyp{\hhole{p}{w}}{\tau'}{\cunknown}
-  {\Gamma}{\Delta , w :: \tau'}
-}
-\end{equation}
-\end{subequations}
-
-\fbox{$\chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi}{\tau'}$}~~\text{$r$ transforms values of type $\tau$, constrained by $\xi$, to type $\tau'$}
-\begin{equation}\label{rule:CTRule}
-\inferrule[CTRule]{
-  \chpattyp{p}{\tau}{\xi}{\Gamma'}{\Delta'} \\
-  \hexptyp{\Gamma \uplus \Gamma'}{\Delta \uplus \Delta'}{e}{\tau'}
-}{
-  \chrultyp{\Gamma}{\Delta}{\hrul{p}{e}}{\tau}{\xi}{\tau'}
-}
-\end{equation}
-
-$\arraycolsep=4pt\begin{array}{lll}
-  \hat{rs} & ::= & \inparens{\zruls{rs}{r}{rs}}
-\end{array}$
-
-\fbox{$\rmpointer{\zrules} = rs$}~~\text{erase pointer from $\zrules$}
-\begin{subequations}
-\begin{align}
-  \rmpointer{\zruls{\cdot}{r}{rs}} &= \hrules{r}{rs} \\
-  \rmpointer{\zruls{\hrulesP{r'}{rs'}}{r}{rs}} &= \hrules{r'}{\rmpointer{\zruls{rs'}{r}{rs}}}
-\end{align}
-\end{subequations}
-
-\fbox{$\chrulstyp{\Gamma}{\Delta}{\xi}{rs}{\tau}{\xi'}{\tau'}$}~~\text{all rules in $rs$ transform values of type $\tau$, constrained by $\xi$, to type $\tau'$}
-\begin{subequations}\label{rules:CTRules}
-\begin{equation}\label{rule:CTZeroRule}
-\inferrule[CTZeroRule]{ }{
-  \chrulstyp{\Gamma}{\Delta}{\xi}{\cdot}{\tau}{\cfalsity}{\tau'}
-}
-\end{equation}
-\begin{equation}\label{rule:CTRules}
-\inferrule[CTRules]{
-  \chrultyp{\Gamma}{\Delta}{r}{\tau_1}{\xi_r}{\tau_2} \\
-  \chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r}}{rs}
-  {\tau_1}{\xi_{rs}}{\tau_2} \\
-  \cnotsatisfy{\xi_r}{\xi_{pre}}
-}{
-  \chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrules{r}{rs}}
-  {\tau_1}{\cor{\xi_r}{\xi_{rs}}}{\tau_2}
-}
-\end{equation}
-\end{subequations}
-
-\fbox{$\hexptyp{\Gamma}{\Delta}{e}{\tau}$}~~\text{$e$ is of type $\tau$}
-\begin{subequations}\label{rules:CTExp}
-\begin{equation}\label{rule:CTMatchZPre}
-\inferrule[CTMatchZPre]{
-  \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
-  \chrulstyp{\Gamma}{\Delta}{\cfalsity}{\hrules{r}{rs}}{\tau}{\xi}{\tau'} \\
-  \csatisfyormay{\ctruth}{\xi}
-}{
-\hexptyp{\Gamma}{\Delta}{\hmatch{e}{\zruls{\cdot}{r}{rs}}}{\tau'}
-}
-\end{equation}
-\begin{equation}\label{rule:CTMatchNZPre}
-\inferrule[CTMatchNZPre]{
-  \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
-  \isFinal{e} \\
-  \chrulstyp{\Gamma}{\Delta}{\cfalsity}{rs_{pre}}{\tau}{\xi_{pre}}{\tau'} \\
-  \chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrules{r}{rs_{post}}}{\tau}{\xi_{rest}}{\tau'} \\
-  \cnotsatisfyormay{e}{\xi_{pre}} \\
-  \csatisfyormay{\ctruth}{\cor{\xi_{pre}}{\xi_{post}}}
-}{
-\hexptyp{\Gamma}{\Delta}{\hmatch{e}{\zruls{rs_{pre}}{r}{rs_{post}}}}{\tau'}
-}
-\end{equation}
-\end{subequations}
-
-\begin{lem}[Matching Coherence of Constraint]
-  \label{lem:const-matching-coherence}
-  If $\hexptyp{\cdot}{\cdot}{e}{\tau}$ and $\isFinal{e}$ and $\cpattyp{p}{\tau}{\xi}{\Gamma}$ then
-  \begin{enumerate}
-    \item $\csatisfy{e}{\xi}$ iff $\hpatmatch{e}{p}{\theta}$
-    \item $\csatisfy{e}{\cdual{\xi}}$ iff $\hnotmatch{e}{p}$
-    \item $\cmaysatisfy{e}{\xi}$ iff $\hmaymatch{e}{p}$
-  \end{enumerate}
-\end{lem}
-
-\fbox{$\cincon{\Xi}$}~~\text{A finite set $\Xi$ of constraints is inconsistent}
-\begin{subequations}
-\begin{equation}
-\inferrule[CINCTruth]{
-  \cincon{\Xi}
-}{
-  \cincon{\Xi, \ctruth}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CINCFalsity]{ }{
-  \cincon{\Xi, \cfalsity}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CINCUnknown]{
-  \cincon{\Xi}
-}{
-  \cincon{\Xi, \cunknown}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CINCNum]{
-  n_1 \neq n_2
-}{
-  \cincon{\Xi, \cnum{n_1}, \cnum{n_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CINCNotNum]{ }{
-  \cincon{\Xi, \cnum{n}, \cnotnum{n}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CINCAnd]{
-  \cincon{\Xi, \xi_1, \xi_2}
-}{
-  \cincon{\Xi, \cand{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CINCOr]{
-  \cincon{\Xi, \xi_1} \\
-  \cincon{\Xi, \xi_2}
-}{
-  \cincon{\Xi, \cor{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CINCInj]{ }{
-  \cincon{\Xi, \cinl{\xi_1}, \cinr{\xi_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CINCInl]{
-  \cincon{\Xi}
-}{
-  \cincon{\cinl{\Xi}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CINCInr]{
-  \cincon{\Xi}
-}{
-  \cincon{\cinr{\Xi}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CINCPair1]{
-  \cincon{\Xi_1}
-}{
-  \cincon{\cpair{\Xi_1}{\Xi_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CINCPair2]{
-  \cincon{\Xi_2}
-}{
-  \cincon{\cpair{\Xi_1}{\Xi_2}}
-}
-\end{equation}
-\end{subequations}
-
-\fbox{$\cmayincon{\Xi}$}~~\text{A finite set $\Xi$ of constraints is either inconsistent or may be inconsistent}
-\begin{subequations}
-\begin{equation}
-\inferrule[CNNINCTruth]{
-  \cincon{\Xi}
-}{
-  \cincon{\Xi, \ctruth}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CNNINCFalsity]{ }{
-  \cincon{\Xi, \cfalsity}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CNNINCUnknown]{ }{
-  \cincon{\Xi, \cunknown}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CNNINCNum]{
-  n_1 \neq n_2
-}{
-  \cincon{\Xi, \cnum{n_1}, \cnum{n_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CNNINCNotNum]{ }{
-  \cincon{\Xi, \cnum{n}, \cnotnum{n}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CNNINCAnd]{
-  \cincon{\Xi, \xi_1, \xi_2}
-}{
-  \cincon{\Xi, \cand{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CNNINCOr]{
-  \cincon{\Xi, \xi_1} \\
-  \cincon{\Xi, \xi_2}
-}{
-  \cincon{\Xi, \cor{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CNNINCInj]{ }{
-  \cincon{\Xi, \cinl{\xi_1}, \cinr{\xi_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CNNINCInl]{
-  \cincon{\Xi}
-}{
-  \cincon{\cinl{\Xi}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CNNINCInr]{
-  \cincon{\Xi}
-}{
-  \cincon{\cinr{\Xi}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CNNINCPair1]{
-  \cincon{\Xi_1}
-}{
-  \cincon{\cpair{\Xi_1}{\Xi_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CINCPair2]{
-  \cincon{\Xi_2}
-}{
-  \cincon{\cpair{\Xi_1}{\Xi_2}}
-}
-\end{equation}
-\end{subequations}
-
-\begin{lem}[Inconsistency Decidability]
-  \label{lem:inconsistency-decidability}
-  It is decidable whether $\cincon{\Xi}$
-\end{lem}
-\begin{lem}[Not Not Inconsistency Decidability]
-  \label{lem:not-not-inconsistency-decidability}
-  It is decidable whether $\cmayincon{\Xi}$
-\end{lem}
-\begin{lem}[Inconsistency and Entailment of Constraint]
-  \label{lem:inconsistent-and-entailment}
-  $\cincon{\cdual{\xi}}$ iff $\csatisfy{\ctruth}{\xi}$
-\end{lem}
-\begin{lem}[Not Not Inconsistency and Possible Entailment of Constraint]
-  \label{lem:not-not-inconsistent-and-possible-entailment}
-  $\cmayincon{\cdual{\xi}}$ iff $\csatisfyormay{\ctruth}{\xi}$
-\end{lem}
-\begin{lem}[Redundancy Decidability]
-  \label{lem:redundancy-decidability}
-  It is decidable whether $\csatisfy{\xi_1}{\xi_2}$, i.e., $\xi_1$ is redundant with respect to $\xi_2$
-\end{lem}
-\begin{lem}[Exhaustiveness Decidability]
-  \label{lem:exhaustiveness-decidability}
-  It is decidable whether $\csatisfy{\ctruth}{\xi}$, i.e., $\xi$ is exhaustive
-\end{lem}
-\begin{lem}[Not Not Exhaustiveness Decidability]
-  \label{lem:not-not-exhaustiveness-decidability}
-  It is decidable whether $\csatisfyormay{\ctruth}{\xi}$, i.e., $\xi$ is exhaustive or $\xi$ is possibly exhaustive
-\end{lem}
-\begin{lem}[Exhaustive Matching Progress when e is a value]
-  \label{lem:val-match-progress}
-  If $\isVal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\czrulstyp{\cdot}{\Delta}{\cfalsity}{\rmpointer{\zrules}}{\xi'}{\tau}{\tau'}$ and $\csatisfy{\ctruth}{\cor{\xi}{\xi'}}$
-  then either
-  \begin{enumerate}
-    \item $\csatisfy{e}{\xi}$
-    \item $\cnotsatisfy{e}{\xi}$ and $\htrans{\hmatch{e}{\zrules}}{e'}$ for some $e'$
-  \end{enumerate}
-\end{lem}
-\begin{lem}[Exhaustive Matching Progress when e is final]
-  \label{lem:final-match-progress}
-  If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\czrulstyp{\cdot}{\Delta}{\xi}{\zrules}{\xi'}{\tau}{\tau'}$ and $\csatisfy{\ctruth}{\cor{\xi}{\xi'}}$
-  then either
-  \begin{enumerate}
-    \item $\csatisfy{e}{\xi}$
-    \item $\cnotsatisfy{e}{\xi}$ and either $\isIndet{\hmatch{e}{\zrules}}$ or $\htrans{\hmatch{e}{\zrules}}{e'}$ for some $e'$
-  \end{enumerate}
-\end{lem}
-\begin{lem}[Undetermined Exhaustive Matching Progress when e is final]
-  \label{lem:final-undet-match-progress}
-  If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\czrulstyp{\cdot}{\Delta}{\xi}{\zrules}{\xi'}{\tau}{\tau'}$ and $\csatisfyormay{\ctruth}{\cor{\xi}{\xi'}}$
-  then either
-  \begin{enumerate}
-    \item $\csatisfy{e}{\xi}$
-    \item $\cnotsatisfy{e}{\xi}$ and either $\isIndet{\hmatch{e}{\zrules}}$ or $\htrans{\hmatch{e}{\zrules}}{e'}$ for some $e'$
   \end{enumerate}
 \end{lem}
