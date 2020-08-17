@@ -11,12 +11,12 @@ type our_fault =
   | BranchIncon of int
   | EmptyRules
   | TypeAnnIncon
+  | ScrutNotFinal
 
 (* fault that is handled by us *)
 type their_fault =
   | Redundant of int
   | NonExhaustive
-  | ScrutNotFinal
 
 type t =
   | Our of our_fault

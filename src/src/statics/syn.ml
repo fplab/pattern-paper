@@ -68,7 +68,7 @@ let rec syn_exp (gamma: VarCtx.t) (delta: HoleCtx.t) : (Exp.t -> Typ.t) =
       | ZRules (rs_pre, r, rs_post) ->
         let typ = syn_exp gamma delta scrut in
         if not (Eval.is_final scrut) then 
-          raise (Error (Their (ScrutNotFinal)))
+          raise (Error (Our (ScrutNotFinal)))
         else
           let (count_pre, xi_pre, typ') =
             syn_rules
@@ -174,12 +174,12 @@ let syn gamma delta exp : unit =
       | BranchIncon i -> Printf.printf "Branch %d breaks the consistency\n" i
       | EmptyRules -> Printf.printf "Match expression should at least have one rule\n"
       | TypeAnnIncon -> Printf.printf "The annotated type is inconsistent with the pattern\n"
+      | ScrutNotFinal -> Printf.printf "The scrutinee of intermediate match expressions must be final\n"
     )
   | Error (Their fault) -> (
       match fault with
       | Redundant i -> Printf.printf "Redundant rule %d\n" i
       | NonExhaustive -> Printf.printf "The match expression mustn't be exhaustive\n"
-      | ScrutNotFinal -> Printf.printf "The scrutinee of indemediate match expressions must be final\n"
     )
 
 let%expect_test "[no-pat-hole]well-typed"=
