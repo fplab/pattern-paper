@@ -70,6 +70,16 @@ pdfborder={0 0 0},  %removes outlines around hyper links in online display
 \allowdisplaybreaks[1]
 
 \usepackage{pfsteps}
+\makeatletter
+\newcommand{\savelocalsteps}[1]{
+  \@ifundefined{c@#1}
+    {% the counter doesn't exist
+     \newcounter{#1}
+   }{}
+  \setcounter{#1}{\value{pfsteps@pfc@local}}
+}
+\makeatother
+\newcommand{\restorelocalsteps}[1]{\setcounter{pfsteps@pfc@local}{\value{#1}}}
 
 \usepackage[noabbrev]{cleveref}
 

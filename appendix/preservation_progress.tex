@@ -30,6 +30,8 @@
       \end{pfsteps*}
       By rule induction over Rules (\ref{rules:satormay}) on \pfref{nnsatisfyxi}.
       \begin{byCases}
+
+      \savelocalsteps{lem:relax-nn-satisfy-suff-1}
       \item[\text{(\ref{rule:CSMSMay})}]
         \begin{pfsteps*}
         \item $\cmaysatisfy{e}{\xi}$ \BY{assumption} \pflabel{maysatisfyxi}
@@ -37,6 +39,7 @@
         \item $\csatisfyormay{e}{\cor{\xi}{\cfalsity}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatisfyxi+bot}}
         \end{pfsteps*}
 
+      \restorelocalsteps{lem:relax-nn-satisfy-suff-1}
       \item[\text{(\ref{rule:CSMSSat})}]
         \begin{pfsteps*}
         \item $\csatisfy{e}{\xi}$ \BY{assumption} \pflabel{satisfyxi}
@@ -54,45 +57,56 @@
       \end{pfsteps*}
       By rule induction over Rules (\ref{rules:satormay}) on \pfref{nnsatisfyxi+bot}.
       \begin{byCases}
+
+      \savelocalsteps{lem:relax-nn-satisfy-necs-1}
       \item[\text{(\ref{rule:CSMSMay})}]
         \begin{pfsteps*}
         \item $\cmaysatisfy{e}{\cor{\xi}{\cfalsity}}$ \BY{assumption} \pflabel{maysatisfyxi+bot}
         \end{pfsteps*}
         By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysatisfyxi+bot}, only two of them apply.
         \begin{byCases}
+
+        \savelocalsteps{lem:relax-nn-satisfy-necs-2}
         \item[\text{(\ref{rule:CMSOr1})}]
           \begin{pfsteps*}
           \item $\cmaysatisfy{e}{\xi}$ \BY{assumption} \pflabel{maysatisfyxi}
           \item $\csatisfyormay{e}{\xi}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatisfyxi}}
           \end{pfsteps*}
 
+        \restorelocalsteps{lem:relax-nn-satisfy-necs-2}
         \item[\text{(\ref{rule:CMSOr2})}]
           \begin{pfsteps*}
           \item $\cmaysatisfy{e}{\cfalsity}$ \BY{assumption} \pflabel{maysatisfybot}
           \item $\cnotmaysatisfy{e}{\cfalsity}$ \BY{Lemma \ref{lem:no-e-may-satisfy-falsity}} \pflabel{notmaysatisfybot}
           \end{pfsteps*}
-          \pfref{maysatisfybot} and \pfref{notmaysatisfybot} is contradictory to each other.
+          \pfref{maysatisfybot} contradicts \pfref{notmaysatisfybot}.
+
         \end{byCases}
 
+      \restorelocalsteps{lem:relax-nn-satisfy-necs-1}
       \item[\text{(\ref{rule:CSMSSat})}]
         \begin{pfsteps*}
         \item $\csatisfy{e}{\cor{\xi}{\cfalsity}}$ \BY{assumption} \pflabel{satisfyxi+bot}
         \end{pfsteps*}
         By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfyxi+bot}, only two of them apply.
         \begin{byCases}
+
+        \savelocalsteps{lem:relax-nn-satisfy-necs-2}
         \item[\text{(\ref{rule:CSOr1})}]
           \begin{pfsteps*}
           \item $\csatisfy{e}{\xi}$ \BY{assumption} \pflabel{satisfyxi}
           \item $\csatisfyormay{e}{\xi}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyxi}}
           \end{pfsteps*}
 
+        \restorelocalsteps{lem:relax-nn-satisfy-necs-2}
         \item[\text{(\ref{rule:CSOr2})}]
           \begin{pfsteps*}
           \item $\csatisfy{e}{\cfalsity}$ \BY{assumption} \pflabel{satisfybot}
           \item $\cnotsatisfy{e}{\cfalsity}$ \BY{Lemma \ref{lem:no-e-satisfy-falsity}} \pflabel{notsatisfybot}
           \end{pfsteps*}
-          \pfref{satisfybot} and \pfref{notsatisfybot} is contradictory to each other.
+          \pfref{satisfybot} contradicts \pfref{notsatisfybot}.
         \end{byCases}
+
       \resetpfcounter
       \end{byCases}
   \end{enumerate}
@@ -108,11 +122,20 @@
 
 \begin{lem}
   \label{lem:relax-not-redundant}
-  $\cnotsatisfy{\xi_1}{\xi_2}$ iff $\cnotsatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$
+  Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$. Then $\cnotsatisfy{\xi_1}{\xi_2}$ iff $\cnotsatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$
 \end{lem}
-\begin{proof}We prove sufficiency and necessity separately.
+\begin{proof}
 
+  \begin{pfsteps*}
+  \item $\ctyp{\xi_1}{\tau}$ \BY{assumption} \pflabel{1CTyp}
+  \item $\ctyp{\xi_2}{\tau}$ \BY{assumption} \pflabel{2CTyp}
+  \item $\ctyp{\cfalsity}{\tau}$ \BY{Rule (\ref{rule:CTFalsity})} \pflabel{fCTyp}
+  \item $\ctyp{\cor{\xi_2}{\cfalsity}}{\tau}$ \BY{Rule (\ref{rule:CTOr}) on \pfref{2CTyp} and \pfref{fCTyp}} \pflabel{2+botCTyp}
+  \end{pfsteps*}
+  Then we prove sufficiency and necessity separately.
 \begin{enumerate}
+  
+\savelocalsteps{lem:relax-not-redundant-0}
 \item Sufficiency:
   \begin{pfsteps*}
   \item $\cnotsatisfy{\xi_1}{\xi_2}$ \BY{assumption} \pflabel{1notsatisfy2}
@@ -120,39 +143,42 @@
   Assume, for the sake of contradiction, that $\csatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$. 
   \begin{pfsteps*}
   \item $\csatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$ \BY{assumption} \pflabel{1=>2+bot}
-  \item $\ctyp{\xi_1}{\tau}$ \BY{Definition \ref{defn:const-entailment} over \pfref{1=>2+bot}} \pflabel{1CTyp}
-  \item $\ctyp{\cor{\xi_2}{\cfalsity}}{\tau}$ \BY{Definition \ref{defn:const-entailment} over \pfref{1=>2+bot}} \pflabel{2+botCTyp}
-  \item $\ctyp{\xi_2}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTOr}) on \pfref{2+botCTyp}} \pflabel{2CTyp}
   \end{pfsteps*}
-  Let $\csatisfyormay{e}{\xi_1}$.
+  For all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies
   \begin{pfsteps*}
-  \item $\csatisfyormay{e}{\xi_1}$ \BY{assumption} \pflabel{satisfyormay1}
-  \item $\csatisfy{e}{\cor{\xi_2}{\cfalsity}}$ \BY{Definition \ref{defn:const-entailment} over \pfref{1=>2+bot} on \pfref{satisfyormay1}} \pflabel{satisfy2+bot}
+  \item $\csatisfy{e}{\cor{\xi_2}{\cfalsity}}$ \BY{Definition \ref{defn:const-entailment} on \pfref{1CTyp} and \pfref{2+botCTyp} and \pfref{1=>2+bot}} \pflabel{satisfy2+bot}
   \end{pfsteps*}
-
   By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfy2+bot}.
   \begin{byCases}
+
+  \savelocalsteps{lem:relax-not-redundant-1}
   \item[\text{(\ref{rule:CSOr1})}]
     \begin{pfsteps*}
     \item $\csatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{satisfy2}
-    \item If $\csatisfyormay{e}{\xi_1}$ then $\csatisfy{e}{\xi_2}$ \BY{Inference from \pfref{satisfyormay1} to \pfref{satisfy2}} \pflabel{1=>2}
-    \item $\csatisfy{\xi_1}{\xi_2}$ \BY{Definition \ref{defn:const-entailment} on \pfref{1CTyp} and \pfref{2CTyp} and \pfref{1=>2}} \pflabel{1satisfy2}
     \end{pfsteps*}
-    \pfref{1notsatisfy2} and \pfref{1satisfy2} are contradictory to each other.
+  As a result,
+    \begin{pfsteps*}
+    \item for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ \\
+        we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$ \pflabel{defn:1|=2}
+    \item $\csatisfy{\xi_1}{\xi_2}$ \BY{Definition \ref{defn:const-entailment} on \pfref{defn:1|=2}} \pflabel{1satisfy2}
+    \end{pfsteps*}
+    \pfref{1notsatisfy2} contradicts \pfref{1satisfy2}.
+
+
+  \restorelocalsteps{lem:relax-not-redundant-1}
   \item[\text{(\ref{rule:CSOr2})}]
     \begin{pfsteps*}
     \item $\csatisfy{e}{\cfalsity}$ \BY{assumption} \pflabel{satisfybot}
     \item $\cnotsatisfy{e}{\cfalsity}$ \BY{Lemma \ref{lem:no-e-satisfy-falsity}} \pflabel{notsatisfybot}
     \end{pfsteps*}
-    \pfref{satisfybot} and \pfref{notsatisfybot} are contradictory to each other.
+    \pfref{satisfybot} contradicts \pfref{notsatisfybot}.
   \end{byCases}
-
-  The conclusion holds as follow:
+  The conclusion holds as follows:
   \begin{enumerate}
-    \item $\cnotsatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$ 
+    \item $\cnotsatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$
   \end{enumerate}
-  
-\resetpfcounter
+
+\restorelocalsteps{lem:relax-not-redundant-0}
 \item Necessity:
   \begin{pfsteps*}
   \item $\cnotsatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$ \BY{assumption} \pflabel{1notentail2+bot}
@@ -160,25 +186,26 @@
   Assume, for the sake of contradiction, that $\csatisfy{\xi_1}{\xi_2}$.
   \begin{pfsteps*}
   \item $\csatisfy{\xi_1}{\xi_2}$ \BY{assumption} \pflabel{1entail2}
-  \item $\ctyp{\xi_1}{\tau}$ \BY{Definition \ref{defn:const-entailment} over \pfref{1entail2}} \pflabel{1CTyp}
-  \item $\ctyp{\xi_2}{\tau}$ \BY{Definition \ref{defn:const-entailment} over \pfref{1entail2}} \pflabel{2CTyp}
-  \item $\ctyp{\cfalsity}{\tau}$ \BY{Rule (\ref{rule:CTFalsity})} \pflabel{botCTyp}
-  \item $\ctyp{\cor{\xi_2}{\cfalsity}}{\tau}$ \BY{Rule (\ref{rule:CTOr}) on \pfref{2CTyp} and \pfref{botCTyp}} \pflabel{2+botCTyp}
   \end{pfsteps*}
-  Let $\csatisfyormay{e}{\xi_1}$.
+  For all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies
   \begin{pfsteps*}
-  \item $\csatisfyormay{e}{\xi_1}$ \BY{assumption} \pflabel{satisfyormay1}
-  \item $\csatisfy{e}{\xi_2}$ \BY{Definition \ref{defn:const-entailment} over \pfref{1entail2} on \pfref{satisfyormay1}} \pflabel{satisfy2}
-  \item $\csatisfy{e}{\cor{\xi_2}{\cfalsity}}$ \BY{Rule (\ref{rule:CSOr1}) on \pfref{satisfy2}} \pflabel{satisfy2+bot}
-  \item If $\csatisfyormay{e}{\xi_1}$ then $\csatisfy{e}{\cor{\xi_2}{\cfalsity}}$ \BY{Inference from \pfref{satisfyormay1} to \pfref{satisfy2+bot}} \pflabel{1=>2}
-  \item $\csatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$ \BY{Definition \ref{defn:const-entailment} on \pfref{1CTyp} and \pfref{2+botCTyp} and \pfref{1=>2}}
+  \item $\csatisfy{e}{\xi_2}$ \BY{Definition \ref{defn:const-entailment} on \pfref{1CTyp} and \pfref{2CTyp} and \pfref{1entail2}} \pflabel{esatisfy2}
+  \item $\csatisfy{e}{\cor{\xi_2}{\cfalsity}}$ \BY{Rule (\ref{rule:CSOr1}) on \pfref{esatisfy2}} \pflabel{esatisfy2+bot}
   \end{pfsteps*}
+  As a result,
+  \begin{pfsteps*}
+  \item for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ \\
+    we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\cor{\xi_2}{\cfalsity}}$ \pflabel{defn:1|=2vbot}
+  \item $\csatisfy{\xi_1}{\cor{\xi_2}{\cfalsity}}$ \BY{Definition \ref{defn:const-entailment} on \pfref{defn:1|=2vbot}} \pflabel{1|=2vbot}
+  \end{pfsteps*}
+  \pfref{1|=2vbot} contradicts \pfref{1notentail2+bot}.
 
-  The conclusion holds as follow:
+  The conclusion holds as follows:
   \begin{enumerate}
-    \item $\cnotsatisfy{\xi_1}{\xi_2}$ 
+    \item $\cnotsatisfy{\xi_1}{\xi_2}$
   \end{enumerate}
 \end{enumerate}
+\resetpfcounter
 \end{proof}
 
 \begin{lem}[Finality]
@@ -189,40 +216,43 @@
  
   By rule induction over Rules (\ref{rules:Final}) and Rules (\ref{rules:ITExp}), \textit{i.e.}, over Rules (\ref{rules:Value}) and Rules (\ref{rules:ITExp}) and over Rules (\ref{rules:Indet}) and Rules (\ref{rules:ITExp}) respectively. The proof can be done by straightforward observation of syntactic contradictions.
 \end{proof}
+
 \begin{lem}
   \label{lem:rule-append}
   If $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{rs}{\tau}{\xi_{rs}}{\tau'}$ and $\chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi_r}{\tau'}$ and $\cnotsatisfy{\xi_r}{\cor{\xi_{pre}}{\xi_{rs}}}$ then $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\rmpointer{\zruls{rs}{r}{\cdot}}}{\tau}{\cor{\xi_{rs}}{\xi_r}}{\tau'}$
 \end{lem}
 \begin{proof}
-  By rule induction over Rules (\ref{rules:CTRules}) on typing judgement of $rs$.
+  \begin{pfsteps*}
+  \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{rs}{\tau}{\xi_{rs}}{\tau'}$ \BY{assumption} \pflabel{rsType}
+  \item $\chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi_r}{\tau'}$ \BY{assumption} \pflabel{rType}
+  \item $\cnotsatisfy{\xi_r}{\cor{\xi_{pre}}{\xi_{rs}}}$ \BY{assumption} \pflabel{r|/=pre+rs}
+  \end{pfsteps*}
+  By rule induction over Rules (\ref{rules:CTRules}) on \pfref{rsType}.
   \begin{byCases}
+    
+  \savelocalsteps{lem:rule-append-1}
   \item[\text{(\ref{rule:CTZeroRule})}]
     \begin{pfsteps*}
     \item $rs = \cdot$ \BY{assumption}
     \item $\xi_{rs} = \cfalsity$ \BY{assumption}
-    \item $\chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi_r}{\tau'}$ \BY{assumption} \pflabel{ruleType}
-    \item $\cnotsatisfy{\xi_r}{\cor{\xi_{pre}}{\cfalsity}}$ \BY{assumption} \pflabel{pre+botnotredundant}
-    \item $\cnotsatisfy{\xi_r}{\xi_{pre}}$ \BY{Lemma \ref{lem:relax-not-redundant} on \pfref{pre+botnotredundant}} \pflabel{prenotredundant}
+    \item $\cnotsatisfy{\xi_r}{\xi_{pre}}$ \BY{Lemma \ref{lem:relax-not-redundant} on \pfref{r|/=pre+rs}} \pflabel{r|/=pre}
     \item $\chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r}}{\cdot}{\tau}{\cfalsity}{\tau'}$ \BY{Rule (\ref{rule:CTZeroRule})} \pflabel{zeroType}
-    \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrulesP{r}{\cdot}}{\tau}{\cor{\xi_r}{\cfalsity}}{\tau'}$ \BY{Rule (\ref{rule:CTRules}) on \pfref{ruleType} and \pfref{zeroType} and \pfref{prenotredundant}}
+    \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrulesP{r}{\cdot}}{\tau}{\cor{\xi_r}{\cfalsity}}{\tau'}$ \BY{Rule (\ref{rule:CTRules}) on \pfref{rType} and \pfref{zeroType} and \pfref{r|/=pre}} \pflabel{[zero]conc}
+    \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\rmpointer{\zruls{\cdot}{r}{\cdot}}}{\tau}{\cor{\xi_r}{\cfalsity}}{\tau'}$\todolater{commut} \BY{Definition \ref{defn:rmpointer} on \pfref{[zero]conc}}
     \end{pfsteps*}
 
-  \resetpfcounter
-
+  \restorelocalsteps{lem:rule-append-1}
   \item[\text{(\ref{rule:CTRules})}]
     \begin{pfsteps*}
     \item $rs = \hrules{r'}{rs'}$ \BY{assumption}
     \item $\xi_{rs} = \cor{\xi_r'}{\xi_{rs}'}$ \BY{assumption}
-    \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrulesP{r'}{rs'}}{\tau}{\cor{\xi_r'}{\xi_{rs}'}}{\tau'}$ \BY{assumption} \pflabel{rsType}
-    \item $\chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi_r}{\tau'}$ \BY{assumption} \pflabel{rType}
-    \item $\cnotsatisfy{\xi_r}{\cor{\xi_{pre}}{\cor{\xi_r'}{\xi_{rs}'}}}$ \BY{assumption} \pflabel{pre+rsnotredundant}
-    \item $\chrultyp{\Gamma}{\Delta}{r'}{\tau}{\xi_r'}{\tau'}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{rsType}} \pflabel{r'Type}
-    \item $\chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r'}}{rs'}{\tau}{\xi_r'}{\tau'}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{rsType}} \pflabel{rs'Type}
-    \item $\cnotsatisfy{\xi_r'}{\xi_{pre}}$ \BY{Inversion of Rule (\ref{rule:CTRules}) on \pfref{rsType}} \pflabel{prenotredundant}
-    \item $\chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r'}}{\rmpointer{\zruls{rs'}{r}{\cdot}}}{\tau}{\cor{\xi_{rs}'}{\xi_r}}{\tau'}$ \BY{IH on \pfref{rs'Type} and \pfref{rType} and \pfref{pre+rsnotredundant}} \pflabel{rs'+rType}
+    \item $\chrultyp{\Gamma}{\Delta}{r'}{\tau}{\xi_r'}{\tau'}$ \BY{assumption} \pflabel{r'Type}
+    \item $\chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r'}}{rs'}{\tau}{\xi_{rs}'}{\tau'}$ \BY{assumption} \pflabel{rs'Type}
+    \item $\cnotsatisfy{\xi_r'}{\xi_{pre}}$ \BY{assumption} \pflabel{prenotredundant}
+    \item $\chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r'}}{\rmpointer{\zruls{rs'}{r}{\cdot}}}{\tau}{\cor{\xi_{rs}'}{\xi_r}}{\tau'}$\todolater{assoc} \BY{IH on \pfref{rs'Type} and \pfref{rType} and \pfref{r|/=pre+rs}} \pflabel{rs'+rType}
     \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrulesP{r'}{\rmpointer{\zruls{rs'}{r}{\cdot}}}}{\tau}{\cor{\xi_r'}{\cor{\xi_{rs}'}{\xi_r}}}{\tau'}$ \BY{Rule (\ref{rule:CTRules}) on \pfref{r'Type} and \pfref{rs'+rType} and \pfref{prenotredundant}}
+    \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\rmpointer{\zruls{\hrulesP{r'}{rs'}}{r}{\cdot}}}{\tau}{\cor{\xi_r'}{\cor{\xi_{rs}'}{\xi_r}}}{\tau'}$ \BY{Definition \ref{defn:rmpointer} on \pfref{[zero]conc}}
     \end{pfsteps*}
-
   \resetpfcounter
   \end{byCases}
 \end{proof}
@@ -240,6 +270,8 @@
 \end{pfsteps*}
 By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1+2}.
 \begin{byCases}
+
+\savelocalsteps{lem:or-nn-satisfy-1}
 \item[\text{(\ref{rule:CSMSSat})}]
   \begin{pfsteps*}
   \item $\csatisfy{e}{\cor{\xi_1}{\xi_2}}$ \BY{assumption} \pflabel{satisfy1+2}
@@ -247,22 +279,25 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1+2}.
   By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfy1+2} and only two of them apply.
   \begin{byCases}
 
+  \savelocalsteps{lem:or-nn-satisfy-2}
   \item[\text{(\ref{rule:CSOr1})}]
     \begin{pfsteps*}
     \item $\csatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{satisfy1}
     \item $\csatisfyormay{e}{\xi_1}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfy1}} \pflabel{satormay1}
     \end{pfsteps*}
-    \pfref{satormay1} and \pfref{notsatormay1} are contradictory with each other.
+    \pfref{satormay1} contradicts \pfref{notsatormay1}.
 
+  \restorelocalsteps{lem:or-nn-satisfy-2}
   \item[\text{(\ref{rule:CSOr2})}]
     \begin{pfsteps*}
     \item $\csatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{satisfy2}
     \item $\csatisfyormay{e}{\xi_2}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfy2}} \pflabel{satormay2}
     \end{pfsteps*}
-    \pfref{satormay2} and \pfref{notsatormay2} are contradictory with each other.
+    \pfref{satormay2} contradicts \pfref{notsatormay2}.
 
   \end{byCases}
 
+\restorelocalsteps{lem:or-nn-satisfy-1}
 \item[\text{(\ref{rule:CSMSMay})}]
   \begin{pfsteps*}
   \item $\cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}$ \BY{assumption} \pflabel{maysatisfy1+2}
@@ -270,25 +305,27 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1+2}.
   By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysatisfy1+2} and only two of them apply.
   \begin{byCases}
 
+  \savelocalsteps{lem:or-nn-satisfy-2}
   \item[\text{(\ref{rule:CMSOr1})}]
     \begin{pfsteps*}
     \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{maysatisfy1}
     \item $\csatisfyormay{e}{\xi_1}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatisfy1}} \pflabel{satormay1'}
     \end{pfsteps*}
-    \pfref{satormay1'} and \pfref{notsatormay1} are contradictory with each other.
+    \pfref{satormay1'} contradicts \pfref{notsatormay1}.
 
+  \restorelocalsteps{lem:or-nn-satisfy-2}
   \item[\text{(\ref{rule:CMSOr2})}]
     \begin{pfsteps*}
     \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{maysatisfy2}
     \item $\csatisfyormay{e}{\xi_2}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatisfy2}} \pflabel{satormay2'}
     \end{pfsteps*}
-    \pfref{satormay2'} and \pfref{notsatormay2} are contradictory with each other.
+    \pfref{satormay2'} contradicts \pfref{notsatormay2}.
 
   \end{byCases}
 \end{byCases}
-The conclusion holds as follow:
+The conclusion holds as follows:
 \begin{enumerate}
-  \item $\csatisfyormay{\xi_1}{\xi_2}$
+  \item $\cnotsatisfyormay{e}{\cor{\xi_1}{\xi_2}}$
 \end{enumerate}
 \resetpfcounter
 \end{proof}
@@ -304,18 +341,24 @@ The conclusion holds as follow:
   \end{pfsteps*}
   By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1+2}.
   \begin{byCases}
+
+  \savelocalsteps{lem:satisfy-substraction-1}
   \item[\text{(\ref{rule:CSMSSat})}]
     \begin{pfsteps*}
     \item $\csatisfy{e}{\cor{\xi_1}{\xi_2}}$ \BY{assumption} \pflabel{satisfy1+2}
     \end{pfsteps*}
     By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfy1+2} and only two of them apply.
     \begin{byCases}
+
+    \savelocalsteps{lem:satisfy-substraction-2}
     \item[\text{(\ref{rule:CSOr1})}]
       \begin{pfsteps*}
       \item $\csatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{satisfy1}
-      \item $\csatisfyormay{e}{\xi_1}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfy1}}
+      \item $\csatisfyormay{e}{\xi_1}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfy1}} \pflabel{[sat]satormay1}
       \end{pfsteps*}
-      Contradictory to \pfref{notsatormay1}.
+      \pfref{[sat]satormay1} contradicts \pfref{notsatormay1}.
+
+    \restorelocalsteps{lem:satisfy-substraction-2}
     \item[\text{(\ref{rule:CSOr2})}]
       \begin{pfsteps*}
       \item $\csatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{satisfy2}
@@ -323,24 +366,30 @@ The conclusion holds as follow:
       \end{pfsteps*}
     \end{byCases}
 
+  \restorelocalsteps{lem:satisfy-substraction-1}
   \item[\text{(\ref{rule:CSMSMay})}]
     \begin{pfsteps*}
     \item $\cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}$ \BY{assumption} \pflabel{maysatisfy1+2}
     \end{pfsteps*}
     By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysatisfy1+2} and only two of them apply.
     \begin{byCases}
+
+    \savelocalsteps{lem:satisfy-substraction-2}
     \item[\text{(\ref{rule:CMSOr1})}]
       \begin{pfsteps*}
       \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{maysatisfy1}
-      \item $\csatisfyormay{e}{\xi_1}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatisfy1}}
+      \item $\csatisfyormay{e}{\xi_1}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatisfy1}} \pflabel{[may]satormay1}
       \end{pfsteps*}
-      Contradictory to \pfref{notsatormay1}.
+      \pfref{[may]satormay1} contradicts \pfref{notsatormay1}.
+
+    \restorelocalsteps{lem:satisfy-substraction-2}
     \item[\text{(\ref{rule:CMSOr2})}]
       \begin{pfsteps*}
       \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{maysatisfy2}
       \item $\csatisfyormay{e}{\xi_2}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatisfy2}}
       \end{pfsteps*}
     \end{byCases}
+    \resetpfcounter
   \end{byCases}
 \end{proof}
 
@@ -359,10 +408,9 @@ The conclusion holds as follow:
   If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\htrans{e}{e'}$
   then $\hexptyp{\cdot}{\Delta}{e'}{\tau}$
 \end{thm}
-
 \begin{proof}
-By rule induction over Rules (\ref{rules:TExp}) on typing judgement of $e$.
-For simplicity, we only consider two cases here.
+By rule induction over Rules (\ref{rules:TExp}) on typing judgment of $e$.
+For simplicity, we only consider two cases for match expressions here.
 \begin{byCases}
 \item[\text{(\ref{rule:TMatchZPre})}]
   \begin{pfsteps*}
@@ -380,6 +428,8 @@ For simplicity, we only consider two cases here.
   \end{pfsteps*}
   By rule induction over Rules (\ref{rules:ITExp}) on \pfref{expTrans}.
   \begin{byCases}
+    
+  \savelocalsteps{thrm:preservation-1}
   \item[\text{(\ref{rule:ITExpMatch})}]
     \begin{pfsteps*}
     \item $e' = \hmatch{e_1'}{\zruls{\cdot}{\hrulP{p_r}{e_r}}{rs}}$ \BY{assumption}
@@ -387,6 +437,8 @@ For simplicity, we only consider two cases here.
     \item $\hexptyp{\cdot}{\Delta}{e_1'}{\tau_1}$ \BY{IH over \pfref{scrutType} and \pfref{scrutTrans}} \pflabel{newscrutType}
     \item $\hexptyp{\cdot}{\Delta}{\hmatch{e_1'}{\zruls{\cdot}{\hrulP{p_r}{e_r}}{rs}}}{\tau}$ \BY{Rule (\ref{rule:TMatchZPre}) on \pfref{newscrutType} and \pfref{rulesType} and \pfref{exhaust}}
     \end{pfsteps*}
+
+  \restorelocalsteps{thrm:preservation-1}
   \item[\text{(\ref{rule:ITSuccMatch})}]
     \begin{pfsteps*}
     \item $e' = [\theta](e_r)$ \BY{assumption}
@@ -394,6 +446,8 @@ For simplicity, we only consider two cases here.
     \item $\hsubstyp{\theta}{\Gamma_r}$ \BY{Lemma \ref{lem:subs-typing} on \pfref{scrutType} and \pfref{patType} and \pfref{patMatch}} \pflabel{substType}
     \item $\hexptyp{\cdot}{\Delta \uplus \Delta_r}{[\theta](e_r)}{\tau}$ \BY{Lemma \ref{lem:simult-substitution} on \pfref{expinruleType} and \pfref{substType}}
     \end{pfsteps*}
+
+  \restorelocalsteps{thrm:preservation-1}
   \item[\text{(\ref{rule:ITFailMatch})}]
     \begin{pfsteps*}
     \item $rs = \hrules{r'}{rs'}$ \BY{assumption}
@@ -431,13 +485,16 @@ For simplicity, we only consider two cases here.
   \end{pfsteps*}
   By rule induction over Rules (\ref{rules:ITExp}) on \pfref{expTrans}.
   \begin{byCases}
+
+  \savelocalsteps{thrm:preservation-1}
   \item[\text{(\ref{rule:ITExpMatch})}]
     \begin{pfsteps*}
     \item $e' = \hmatch{e_1}{\zruls{rs_{pre}}{\hrulP{p_r}{e_r}}{rs_{post}}}$ \BY{assumption}
     \item $\htrans{e_1}{e_1'}$ \BY{assumption} \pflabel{scrutTrans}
-    \item contradiction \BY{Lemma \ref{lem:finality} on \pfref{scrutFinal} and \pfref{scrutTrans}}
     \end{pfsteps*}
+    By Lemma \ref{lem:finality},  \pfref{scrutTrans} contradicts \pfref{scrutFinal}.
   
+  \restorelocalsteps{thrm:preservation-1}
   \item[\text{(\ref{rule:ITSuccMatch})}]
     \begin{pfsteps*}
     \item $e' = [\theta](e_r)$ \BY{assumption}
@@ -446,6 +503,7 @@ For simplicity, we only consider two cases here.
     \item $\hexptyp{\cdot}{\Delta \uplus \Delta_r}{[\theta](e_r)}{\tau}$ \BY{Lemma \ref{lem:simult-substitution} on \pfref{expinruleType} and \pfref{substType}}
     \end{pfsteps*}
   
+  \restorelocalsteps{thrm:preservation-1}
   \item[\text{(\ref{rule:ITFailMatch})}]
     \begin{pfsteps*}
     \item $rs_{post} = \hrules{r'}{rs'}$ \BY{assumption}
@@ -464,11 +522,11 @@ For simplicity, we only consider two cases here.
 
 \begin{thm}[Progress]
  \label{thrm:progress}
- If $\hexptyp{\cdot}{\cdot}{e}{\tau}$ then either $\isFinal{e}$ or $\htrans{e}{e'}$ for some $e'$.
+ If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then either $\isFinal{e}$ or $\htrans{e}{e'}$ for some $e'$.
 \end{thm}
 
 \begin{proof}
-By rule induction over Rules (\ref{rules:TExp}) on \pfref{expType}. For simplicity, we only consider two cases here.
+By rule induction over Rules (\ref{rules:TExp}) on typing judgment of $e$. For simplicity, we only consider two cases for match expressions here.
 \begin{byCases}
 \item[\text{(\ref{rule:TMatchZPre})}]
   \begin{pfsteps*}
@@ -485,17 +543,23 @@ By rule induction over Rules (\ref{rules:TExp}) on \pfref{expType}. For simplici
   \end{pfsteps*}
   By IH on \pfref{scrutType}.
   \begin{byCases}
+
+  \savelocalsteps{thrm:progress-1}
   \item[\text{Scrutinee takes a step}]
     \begin{pfsteps*}
     \item $\htrans{e_1}{e_1'}$ \BY{assumption} \pflabel{scrutStep}
     \item $\htrans{\hmatch{e_1}{\zruls{\cdot}{r}{rs}}}{\hmatch{e_1'}{\zruls{\cdot}{r}{rs}}}$ \BY{Rule (\ref{rule:ITExpMatch}) on \pfref{scrutStep}}
     \end{pfsteps*}
+
+  \restorelocalsteps{thrm:progress-1}
   \item[\text{Scrutinee is final}]
     \begin{pfsteps*}
     \item $\isFinal{e_1}$ \BY{assumption} \pflabel{scrutFinal}
     \end{pfsteps*}
     By rule induction over Rules (\ref{rules:CTRules}) on \pfref{postrulesType}.
     \begin{byCases}
+
+    \savelocalsteps{thrm:progress-2}
     \item[\text{(\ref{rule:CTZeroRule})}]
       \begin{pfsteps*}
       \item $rs = \cdot$ \BY{assumption}
@@ -505,6 +569,8 @@ By rule induction over Rules (\ref{rules:TExp}) on \pfref{expType}. For simplici
       \end{pfsteps*}
       By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayr}.
       \begin{byCases}
+
+      \savelocalsteps{thrm:progress-3}
       \item[\text{(\ref{rule:CSMSMay})}]
         \begin{pfsteps*}
         \item $\cmaysatisfy{e_1}{\xi_r}$ \BY{assumption} \pflabel{maysatr}
@@ -512,6 +578,8 @@ By rule induction over Rules (\ref{rules:TExp}) on \pfref{expType}. For simplici
         \item $\isIndet{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{\cdot}}}$ \BY{Rule (\ref{rule:IMatch}) on \pfref{scrutFinal} and \pfref{maymatchr}} \pflabel{matchIndet}
         \item $\isFinal{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{\cdot}}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{matchIndet}}
         \end{pfsteps*}
+
+      \restorelocalsteps{thrm:progress-3}
       \item[\text{(\ref{rule:CSMSSat})}]
         \begin{pfsteps*}
         \item $\csatisfy{e_1}{\xi_r}$ \BY{assumption} \pflabel{satisfyr}
@@ -519,23 +587,31 @@ By rule induction over Rules (\ref{rules:TExp}) on \pfref{expType}. For simplici
         \item $\htrans{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{\cdot}}}{[\theta](e_r)}$ \BY{Rule (\ref{rule:ITSuccMatch}) on \pfref{scrutFinal} and \pfref{matchr}}
         \end{pfsteps*}
       \end{byCases}
+
+    \restorelocalsteps{thrm:progress-2}
     \item[\text{(\ref{rule:CTRules})}]
       \begin{pfsteps*}
       \item $rs = \hrules{r'}{rs'}$ \BY{assumption}
       \end{pfsteps*}
       By Lemma \ref{lem:match-determinism} on \pfref{scrutType} and \pfref{scrutFinal} and \pfref{patType}.
       \begin{byCases}
+
+      \savelocalsteps{thrm:progress-3}
       \item[\text{Scrutinee matches pattern}]
         \begin{pfsteps*}
         \item $\hpatmatch{e_1}{p_r}{\theta}$ \BY{assumption} \pflabel{succmatch}
         \item $\htrans{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{rs}}}{[\theta](e_r)}$ \BY{Rule (\ref{rule:ITSuccMatch}) on \pfref{scrutFinal} and \pfref{succmatch}}
         \end{pfsteps*}
+
+      \restorelocalsteps{thrm:progress-3}
       \item[\text{Scrutinee may matches pattern}]
         \begin{pfsteps*}
         \item $\hmaymatch{e_1}{p_r}$ \BY{assumption} \pflabel{maymatch}
         \item $\isIndet{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{rs}}}$ \BY{Rule (\ref{rule:IMatch}) on \pfref{scrutFinal} and \pfref{maymatch}} \pflabel{indetmatch}
         \item $\isFinal{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{rs}}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{indetmatch}}
         \end{pfsteps*}
+
+      \restorelocalsteps{thrm:progress-3}
       \item[\text{Scrutinee doesn't matche pattern}]
         \begin{pfsteps*}
         \item $\hnotmatch{e_1}{p_r}$ \BY{assumption} \pflabel{notmatch}
@@ -563,6 +639,8 @@ By rule induction over Rules (\ref{rules:TExp}) on \pfref{expType}. For simplici
   \end{pfsteps*}
   By rule induction over Rules (\ref{rules:CTRules}) on \pfref{postrulesType}.
   \begin{byCases}
+
+  \restorelocalsteps{thrm:progress-1}
   \item[\text{(\ref{rule:CTZeroRule})}]
     \begin{pfsteps*}
     \item $rs_{post} = \cdot$ \BY{assumption}
@@ -573,6 +651,8 @@ By rule induction over Rules (\ref{rules:TExp}) on \pfref{expType}. For simplici
     \end{pfsteps*}
     By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayr}.
     \begin{byCases}
+
+    \restorelocalsteps{thrm:progress-2}
     \item[\text{(\ref{rule:CSMSMay})}]
       \begin{pfsteps*}
       \item $\cmaysatisfy{e_1}{\xi_r}$ \BY{assumption} \pflabel{maysatr}
@@ -580,6 +660,8 @@ By rule induction over Rules (\ref{rules:TExp}) on \pfref{expType}. For simplici
       \item $\isIndet{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{\cdot}}}$ \BY{Rule (\ref{rule:IMatch}) on \pfref{scrutFinal} and \pfref{maymatchr}} \pflabel{matchIndet}
       \item $\isFinal{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{\cdot}}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{matchIndet}}
       \end{pfsteps*}
+
+    \savelocalsteps{thrm:progress-2}
     \item[\text{(\ref{rule:CSMSSat})}]
       \begin{pfsteps*}
       \item $\csatisfy{e_1}{\xi_r}$ \BY{assumption} \pflabel{satisfyr}
@@ -587,23 +669,31 @@ By rule induction over Rules (\ref{rules:TExp}) on \pfref{expType}. For simplici
       \item $\htrans{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{\cdot}}}{[\theta](e_r)}$ \BY{Rule (\ref{rule:ITSuccMatch}) on \pfref{scrutFinal} and \pfref{matchr}}
       \end{pfsteps*}
     \end{byCases}
+
+  \restorelocalsteps{thrm:progress-1}
   \item[\text{(\ref{rule:CTRules})}]
     \begin{pfsteps*}
     \item $rs_{post} = \hrules{r'}{rs_{post}'}$ \BY{assumption}
     \end{pfsteps*}
     By Lemma \ref{lem:match-determinism} on \pfref{scrutType} and \pfref{scrutFinal} and \pfref{patType}.
     \begin{byCases}
+
+    \savelocalsteps{thrm:progress-2}
     \item[\text{Scrutinee matches pattern}]
       \begin{pfsteps*}
       \item $\hpatmatch{e_1}{p_r}{\theta}$ \BY{assumption} \pflabel{succmatch}
       \item $\htrans{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{rs_{post}}}}{[\theta](e_r)}$ \BY{Rule (\ref{rule:ITSuccMatch}) on \pfref{scrutFinal} and \pfref{succmatch}}
       \end{pfsteps*}
+
+    \restorelocalsteps{thrm:progress-2}
     \item[\text{Scrutinee may matches pattern}]
       \begin{pfsteps*}
       \item $\hmaymatch{e_1}{p_r}$ \BY{assumption} \pflabel{maymatch}
       \item $\isIndet{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{rs_{post}}}}$ \BY{Rule (\ref{rule:IMatch}) on \pfref{scrutFinal} and \pfref{maymatch}} \pflabel{indetmatch}
       \item $\isFinal{\hmatch{e_1}{\zruls{\cdot}{\hrul{p_r}{e_r}}{rs_{post}}}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{indetmatch}}
       \end{pfsteps*}
+
+    \restorelocalsteps{thrm:progress-2}
     \item[\text{Scrutinee doesn't matche pattern}]
       \begin{pfsteps*}
       \item $\hnotmatch{e_1}{p_r}$ \BY{assumption} \pflabel{notmatch}

@@ -381,12 +381,12 @@ $\arraycolsep=4pt\begin{array}{lll}
 
 \begin{defn}[Not Not Entailment of Constraints]
   \label{defn:nn-entailment}
-  $\csatisfyormay{\xi_1}{\xi_2}$ iff $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$ and for all $e$ such that $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfyormay{e}{\xi_2}$ 
+  Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$. Then $\csatisfyormay{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfyormay{e}{\xi_2}$ 
 \end{defn}
 
 \begin{corol}
   \label{corol:nn-exhaust}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$. Then $\csatisfyormay{\ctruth}{\xi}$ implies $\csatisfyormay{e}{\xi}$
+  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$. Then $\csatisfyormay{\ctruth}{\xi}$ implies $\csatisfyormay{e}{\xi}$
 \end{corol}
 \begin{proof}
   \begin{pfsteps*}
@@ -405,7 +405,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{defn}[Entailment of Constraints]
   \label{defn:const-entailment}
   Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$.
-  Then $\csatisfy{\xi_1}{\xi_2}$ iff and for all $e$ such that $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$
+  Then $\csatisfy{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$
 \end{defn}
 \begin{corol}[Material Entailment of Constraints]
   \label{lem:material-entailment}
@@ -523,7 +523,9 @@ $\csatisfyormay{e}{\cor{\xi_2}{\xi_1}}$
 \item $\csatisfyormay{e}{\xi_1}$ \BY{assumption} \pflabel{satormay1},
 \end{pfsteps*}
 By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
+\savelocalsteps{lem:satormay-or-1}
 \begin{byCases}
+
 \item[\text{(\ref{rule:CSMSSat})}]
   \begin{pfsteps*}
   \item $\csatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[sat]satisfy1}
@@ -533,12 +535,16 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
   \item $\csatisfyormay{e}{\cor{\xi_2}{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[sat]satisfyOr21}}
   \end{pfsteps*}
 
+\restorelocalsteps{lem:satormay-or-1}
+
 \item[\text{(\ref{rule:CSMSMay})}]
   \begin{pfsteps*}
   \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{maysat1}
   \end{pfsteps*}
   By case analysis on whether $\csatisfy{e}{\xi_2}$ is derivable,
+  \savelocalsteps{lem:satormay-or-2}
   \begin{byCases}
+
   \item[\text{$\csatisfy{e}{\xi_2}$ is derivable}]
     \begin{pfsteps*}
     \item $\csatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{satisfy2}
@@ -547,6 +553,8 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
     \item $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyOr12}}
     \item $\csatisfyormay{e}{\cor{\xi_2}{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyOr21}}
     \end{pfsteps*}
+
+  \restorelocalsteps{lem:satormay-or-2}
 
   \item[\text{$\csatisfy{e}{\xi_2}$ is not derivable}]
     \begin{pfsteps*}
@@ -569,13 +577,17 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
   \item $\csatisfyormay{e_1}{\xi_1}$ \BY{assumption} \pflabel{satormay1}
   \end{pfsteps*}
   By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
+  \savelocalsteps{lem:satormay-inl-1}
   \begin{byCases}
+
   \item[\text{(\ref{rule:CSMSSat})}]
     \begin{pfsteps*}
     \item $\csatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{satisfy1}
     \item $\csatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ \BY{Rule (\ref{rule:CSInl}) on \pfref{satisfy1}} \pflabel{satisfyInl}
     \item $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyInl}}
     \end{pfsteps*}
+
+  \restorelocalsteps{lem:satormay-inl-1}
 
   \item[\text{(\ref{rule:CSMSMay})}]
     \begin{pfsteps*}
@@ -596,13 +608,17 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
   \item $\csatisfyormay{e_2}{\xi_2}$ \BY{assumption} \pflabel{satormay2}
   \end{pfsteps*}
   By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay2},
+  \savelocalsteps{lem:satormay-inr-1}
   \begin{byCases}
+
   \item[\text{(\ref{rule:CSMSSat})}]
     \begin{pfsteps*}
     \item $\csatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{satisfy2}
     \item $\csatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$ \BY{Rule (\ref{rule:CSInr}) on \pfref{satisfy2}} \pflabel{satisfyInr}
     \item $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyInr}}
     \end{pfsteps*}
+
+  \restorelocalsteps{lem:satormay-inr-1}
 
   \item[\text{(\ref{rule:CSMSMay})}]
     \begin{pfsteps*}
@@ -636,7 +652,9 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
   \item $\cmaysatisfy{e}{\xi}$ \BY{assumption} \pflabel{maysat}
   \end{pfsteps*}
   By Rule Induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysat},
+  \savelocalsteps{lem:maysat-satormay-truify-1}
   \begin{byCases}
+
   \item[\text{(\ref{rule:CMSUnknown})}]
       \begin{pfsteps*}
       \item $\xi = \cunknown$ \BY{assumption}
@@ -644,17 +662,22 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
       \item $\csatisfyormay{e}{\ctruth}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyT}} \pflabel{satormayT}
       \end{pfsteps*}
       
+  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSExpEHole})}]
     \begin{pfsteps*}
     \item $e = \hehole{u}$ \BY{assumption} \pflabel{eholeSatisfy}
     \end{pfsteps*}
+
     By case analysis on whether $\csatisfy{\hehole{u}}{\ctruify{\xi}}$ is derivable,
+    \savelocalsteps{lem:maysat-satormay-truify-2}
     \begin{byCases}
     \item[\text{$\csatisfy{\hehole{u}}{\ctruify{\xi}}$ is derivable}]
       \begin{pfsteps*}
       \item $\csatisfy{\hehole{u}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{satisfyTruify}
       \item $\csatisfyormay{\hehole{u}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyTruify}}
       \end{pfsteps*}
+
+    \restorelocalsteps{lem:maysat-satormay-truify-2}
     \item[\text{$\csatisfy{\hehole{u}}{\ctruify{\xi}}$ is not derivable}]
       \begin{pfsteps*}
       \item $\cnotsatisfy{\hehole{u}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{notsatisfyTruify}
@@ -663,17 +686,21 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
       \end{pfsteps*}
     \end{byCases}
 
+  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSExpHole})}]
     \begin{pfsteps*}
     \item $e = \hhole{e}{u}$ \BY{assumption} \pflabel{holeSatisfy}
     \end{pfsteps*}
     By case analysis on whether $\csatisfy{\hhole{e}{u}}{\ctruify{\xi}}$ is derivable,
+    \savelocalsteps{lem:maysat-satormay-truify-2}
     \begin{byCases}
     \item[\text{$\csatisfy{\hhole{e}{u}}{\ctruify{\xi}}$ is derivable}]
       \begin{pfsteps*}
       \item $\csatisfy{\hhole{e}{u}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{holeSatisfyTruify}
       \item $\csatisfyormay{\hhole{e}{u}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{holeSatisfyTruify}}
       \end{pfsteps*}
+
+    \restorelocalsteps{lem:maysat-satormay-truify-2}
     \item[\text{$\csatisfy{\hhole{e}{u}}{\ctruify{\xi}}$ is not derivable}]
       \begin{pfsteps*}
       \item $\cnotsatisfy{\hhole{e}{u}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{HoleNotsatisfyTruify}
@@ -682,17 +709,22 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
       \end{pfsteps*}
     \end{byCases}
 
+  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSAp})}]
     \begin{pfsteps*}
     \item $e = \hap{e_1}{e_2}$ \BY{assumption} \pflabel{apSatisfy}
     \end{pfsteps*}
     By case analysis on whether $\csatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$ is derivable,
+    \savelocalsteps{lem:maysat-satormay-truify-2}
     \begin{byCases}
+
     \item[\text{$\csatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$ is derivable}]
       \begin{pfsteps*}
       \item $\csatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{apSatisfyTruify}
       \item $\csatisfyormay{\hap{e_1}{e_2}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{apSatisfyTruify}}
       \end{pfsteps*}
+
+    \restorelocalsteps{lem:maysat-satormay-truify-2}
     \item[\text{$\csatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$ is not derivable}]
       \begin{pfsteps*}
       \item $\cnotsatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{apNotsatisfyTruify}
@@ -701,26 +733,31 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
       \end{pfsteps*}
     \end{byCases}
 
+  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSMatch})}]
     \begin{pfsteps*}
     \item $e = \hmatch{e}{\zrules}$ \BY{assumption}
     \end{pfsteps*}
     By case analysis on whether $\csatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ is derivable,
+    \savelocalsteps{lem:maysat-satormay-truify-2}
     \begin{byCases}
+
     \item[\text{$\csatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ is derivable}]
       \begin{pfsteps*}
       \item $\csatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{MatchSatisfyTruify}
       \item $\csatisfyormay{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{MatchSatisfyTruify}}
       \end{pfsteps*}
+
+    \restorelocalsteps{lem:maysat-satormay-truify-2}
     \item[\text{$\csatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ is not derivable}]
       \begin{pfsteps*}
       \item $\cnotsatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{assumption} \pflabel{MatchSotsatisfyTruify}
       \item $\cmaysatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CMSMatch}) on \pfref{MatchSotsatisfyTruify}} \pflabel{MatchSaysatTruify}
       \item $\csatisfyormay{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{MatchSaysatTruify}}
       \end{pfsteps*}
-
     \end{byCases}
 
+  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSAnd1})}]
     \begin{pfsteps*}
     \item $\xi = \cand{\xi_1}{\xi_2}$ \BY{assumption}
@@ -731,6 +768,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
     \item $\csatisfyormay{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and1]satormay1} and \pfref{[and1]satormay2}}
     \end{pfsteps*}
 
+  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSAnd2})}]
     \begin{pfsteps*}
     \item $\xi = \cand{\xi_1}{\xi_2}$ \BY{assumption}
@@ -741,6 +779,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
     \item $\csatisfyormay{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and2]satormay1} and \pfref{[and2]satormay2}}
     \end{pfsteps*}
 
+  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSAnd3})}]
     \begin{pfsteps*}
     \item $\xi = \cand{\xi_1}{\xi_2}$ \BY{assumption}
@@ -751,6 +790,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
     \item $\csatisfyormay{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and3]satormay1} and \pfref{[and3]satormay2}}
     \end{pfsteps*}
 
+  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSOr1})}]
     \begin{pfsteps*}
     \item $\xi = \cor{\xi_1}{\xi_2}$ \BY{assumption}
@@ -759,6 +799,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
     \item $\csatisfyormay{e}{\cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-or} on \pfref{[or1]satormayTruify1}}
     \end{pfsteps*}
 
+  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSOr2})}]
     \begin{pfsteps*}
     \item $\xi = \cor{\xi_1}{\xi_2}$ \BY{assumption}
@@ -767,6 +808,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
     \item $\csatisfyormay{e}{\cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-or} on \pfref{[or2]satormayTruify2}}
     \end{pfsteps*}
 
+  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSInl})}]
     \begin{pfsteps*}
     \item $e = \hinl{\tau_2}{e_1}$ \BY{assumption}
@@ -776,6 +818,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
     \item $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinl{\ctruify{\xi_1}}}$ \BY{Lemma \ref{lem:satormay-inl} on \pfref{[inl]satormayTruify1}}
     \end{pfsteps*}
 
+  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSInr})}]
     \begin{pfsteps*}
     \item $e = \hinr{\tau_1}{e_2}$ \BY{assumption}
@@ -785,6 +828,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
     \item $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinr{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-inr} on \pfref{[inr]satormayTruify2}}
     \end{pfsteps*}
 
+  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSPair1})}]
     \begin{pfsteps*}
     \item $e = \hpair{e_1}{e_2}$ \BY{assumption}
@@ -796,6 +840,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
     \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-pair} on \pfref{[pair1]satormay1} and \pfref{[pair1]satormay2}}
     \end{pfsteps*}
 
+  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSPair2})}]
     \begin{pfsteps*}
     \item $e = \hpair{e_1}{e_2}$ \BY{assumption}
@@ -807,6 +852,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
     \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-pair} on \pfref{[pair2]satormay1} and \pfref{[pair2]satormay2}}
     \end{pfsteps*}
 
+  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSPair3})}]
     \begin{pfsteps*}
     \item $e = \hpair{e_1}{e_2}$ \BY{assumption}
@@ -817,7 +863,6 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
     \item $\csatisfyormay{e_2}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[Pair3]maysat2}} \pflabel{[Pair3]satormay2}
     \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-pair} on \pfref{[Pair3]satormay1} and \pfref{[Pair3]satormay2}}
     \end{pfsteps*}
-
 
   \end{byCases}
 
@@ -835,7 +880,9 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
       \item $\csatisfyormay{e}{\xi}$ \BY{assumption} \pflabel{satormay}
       \end{pfsteps*}
       By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay}
+      \savelocalsteps{lem:satormay-truify-suff-1}
       \begin{byCases}
+
       \item[\text{(\ref{rule:CSMSSat})}]
         \begin{pfsteps*}
         \item $\csatisfy{e}{\xi}$ \BY{assumption} \pflabel{sat}
@@ -843,6 +890,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
         \item $\csatisfyormay{e}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[sat]sat-truify}}
         \end{pfsteps*}
 
+      \restorelocalsteps{lem:satormay-truify-suff-1}
       \item[\text{(\ref{rule:CSMSMay})}]
         \begin{pfsteps*}
         \item $\cmaysatisfy{e}{\xi}$ \BY{assumption} \pflabel{maysat}
@@ -857,27 +905,32 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
     \begin{pfsteps*}
     \item $\csatisfyormay{e}{\ctruify{\xi}}$ \BY{assumption} \pflabel{satormayTruify}
     \end{pfsteps*}
-
     By structural induction on $\xi$,
+    \savelocalsteps{lem:satormay-truify-necs-1}
     \begin{byCases}
+
     \item[\xi=\ctruth, \cfalsity, \cnum{n}, \cnotnum{n}]
       \begin{pfsteps*}
       \item $\ctruify{\xi}=\xi$ \BY{Definition \ref{defn:truify}} \pflabel{truify=xi}
       \item $\csatisfyormay{e}{\xi}$ \BY{Substitution of \pfref{truify=xi} into \pfref{satormayTruify}}
       \end{pfsteps*}
 
+    \restorelocalsteps{lem:satormay-truify-necs-1}
     \item[\xi=\cunknown]
       \begin{pfsteps*}
       \item $\cmaysatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:CMSUnknown})} \pflabel{[unknown]maysatUnknown}
       \item $\csatisfyormay{e}{\cunknown}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[unknown]maysatUnknown}}
       \end{pfsteps*}
     
+    \restorelocalsteps{lem:satormay-truify-necs-1}
     \item[\xi=\cand{\xi_1}{\xi_2}]
       \begin{pfsteps*}
       \item $\ctruify{\xi} = \cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{Definition \ref{defn:truify}}
       \end{pfsteps*}
       By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayTruify},
+      \savelocalsteps{lem:satormay-truify-necs-2}
       \begin{byCases}
+
       \item[\text{(\ref{rule:CSMSSat})}]
         \begin{pfsteps*}
         \item $\csatisfy{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{satisfyAndTruify}
@@ -896,11 +949,13 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
           \end{pfsteps*}
         \end{byCases}
 
+      \restorelocalsteps{lem:satormay-truify-necs-2}
       \item[\text{(\ref{rule:CSMSMay})}]
         \begin{pfsteps*}
         \item $\cmaysatisfy{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{maysatAndTruify}
         \end{pfsteps*}
         By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysatAndTruify} and three cases apply,
+        \savelocalsteps{lem:satormay-truify-necs-3}
         \begin{byCases}
 
         \item[\text{(\ref{rule:CMSAnd1})}]
@@ -914,6 +969,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
           \item $\csatisfyormay{e}{\cand{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and1]satormay1} and \pfref{[and1]satormay2}}
           \end{pfsteps*}
 
+        \restorelocalsteps{lem:satormay-truify-necs-3}
         \item[\text{(\ref{rule:CMSAnd2})}]
           \begin{pfsteps*}
           \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[and2]satisfyTruify1}
@@ -925,6 +981,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
           \item $\csatisfyormay{e}{\cand{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and2]satormay1} and \pfref{[and2]satormay2}}
           \end{pfsteps*}
 
+        \restorelocalsteps{lem:satormay-truify-necs-3}
         \item[\text{(\ref{rule:CMSAnd3})}]
           \begin{pfsteps*}
           \item $\cmaysatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[and3]maysatTruify1}
@@ -938,11 +995,13 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
         \end{byCases}
       \end{byCases}
 
+    \restorelocalsteps{lem:satormay-truify-necs-1}
     \item[\xi=\cor{\xi_1}{\xi_2}]
       \begin{pfsteps*}
       \item $\ctruify{\cor{\xi_1}{\xi_2}} = \cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{Definition \ref{defn:truify}}
       \end{pfsteps*}
       By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayTruify},
+      \savelocalsteps{lem:satormay-truify-necs-2}
       \begin{byCases}
 
       \item[\text{(\ref{rule:CSMSSat})}]
@@ -952,6 +1011,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
         By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfyOrTruify} and two cases apply,
         \begin{byCases}
 
+        \savelocalsteps{lem:satormay-truify-necs-3}
         \item[\text(\ref{rule:CSOr1})]
           \begin{pfsteps*}
           \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[or1]satisfyTruify1}
@@ -960,6 +1020,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
           \item $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-or} on \pfref{[or1]satormay1}}
           \end{pfsteps*}
 
+        \restorelocalsteps{lem:satormay-truify-necs-3}
         \item[\text(\ref{rule:CSOr2})]
           \begin{pfsteps*}
           \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[or2]satisfyTruify2}
@@ -970,6 +1031,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
 
         \end{byCases}
 
+      \restorelocalsteps{lem:satormay-truify-necs-2}
       \item[\text{(\ref{rule:CSMSMay})}]
         \begin{pfsteps*}
         \item $\cmaysatisfy{e}{\cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{maysatOrTruify}
@@ -977,6 +1039,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
         By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysatOrTruify} and two cases apply,
         \begin{byCases}
 
+        \savelocalsteps{lem:satormay-truify-necs-3}
         \item[\text{(\ref{rule:CMSOr1})}]
           \begin{pfsteps*}
           \item $\cmaysatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[or3]maysatTruify1}
@@ -985,6 +1048,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
           \item $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-or} on \pfref{[or3]satormay1}}
           \end{pfsteps*}
           
+        \restorelocalsteps{lem:satormay-truify-necs-3}
         \item[\text{(\ref{rule:CMSOr2})}]
           \begin{pfsteps*}
           \item $\cmaysatisfy{e}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[or4]maysatTruify2}
@@ -996,6 +1060,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
         \end{byCases}
       \end{byCases}
 
+    \restorelocalsteps{lem:satormay-truify-necs-1}
     \item[\xi=\cinl{\xi_1}]
       \begin{pfsteps*}
       \item $e = \hinl{\tau_2}{e_1}$ \BY{assumption}
@@ -1004,6 +1069,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
       By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayTruify},
       \begin{byCases}
 
+      \savelocalsteps{lem:satormay-truify-necs-2}
       \item[\text{(\ref{rule:CSMSSat})}]
         \begin{pfsteps*}
         \item $\csatisfy{\hinl{\tau_2}{e_1}}{\cinl{\ctruify{\xi_1}}}$ \BY{assumption} \pflabel{satisfyInlTruify1}
@@ -1019,6 +1085,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
           \end{pfsteps*}
         \end{byCases}
 
+      \restorelocalsteps{lem:satormay-truify-necs-2}
       \item[\text{(\ref{rule:CSMSMay})}]
         \begin{pfsteps*}
         \item $\cmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\ctruify{\xi_1}}}$ \BY{assumption} \pflabel{maysatInlTruify1}
@@ -1035,6 +1102,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
         \end{byCases}
       \end{byCases}
 
+    \restorelocalsteps{lem:satormay-truify-necs-1}
     \item[\xi=\cinr{\xi_2}]
       \begin{pfsteps*}
       \item $e = \hinr{\tau_1}{e_2}$ \BY{assumption}
@@ -1043,6 +1111,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
       By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayTruify},
       \begin{byCases}
 
+      \savelocalsteps{lem:satormay-truify-necs-2}
       \item[\text{(\ref{rule:CSMSSat})}]
         \begin{pfsteps*}
         \item $\csatisfy{\hinr{\tau_1}{e_2}}{\cinr{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{satisfyInrTruify2}
@@ -1058,6 +1127,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
           \end{pfsteps*}
         \end{byCases}
 
+      \restorelocalsteps{lem:satormay-truify-necs-2}
       \item[\text{(\ref{rule:CSMSMay})}]
         \begin{pfsteps*}
         \item $\cmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{maysatInrTruify2}
@@ -1074,6 +1144,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
         \end{byCases}
       \end{byCases}
 
+    \restorelocalsteps{lem:satormay-truify-necs-1}
     \item[\xi=\cpair{\xi_1}{\xi_2}]
       \begin{pfsteps*}
       \item $e = \hpair{e_1}{e_2}$ \BY{assumption}
@@ -1081,6 +1152,8 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
       \end{pfsteps*}
       By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayTruify},
       \begin{byCases}
+
+      \savelocalsteps{lem:satormay-truify-necs-2}
       \item[\text{(\ref{rule:CSMSSat})}]
         \begin{pfsteps*}
         \item $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{satisfyPairTruify}
@@ -1099,6 +1172,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
           \end{pfsteps*}
         \end{byCases}
 
+      \restorelocalsteps{lem:satormay-truify-necs-2}
       \item[\text{(\ref{rule:CSMSMay})}]
         \begin{pfsteps*}
         \item $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{maysatPairTruify}
@@ -1106,6 +1180,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
         By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysatPairTruify} and three cases apply,
         \begin{byCases}
 
+        \savelocalsteps{lem:satormay-truify-necs-3}
         \item[\text{(\ref{rule:CMSPair1})}]
           \begin{pfsteps*}
           \item $\cmaysatisfy{e_1}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[pair1]maysatTruify1}
@@ -1117,6 +1192,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
           \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-pair} on \pfref{[pair1]satormay1} and \pfref{[pair1]satormay2}}
           \end{pfsteps*}
 
+        \restorelocalsteps{lem:satormay-truify-necs-3}
         \item[\text{(\ref{rule:CMSPair2})}]
           \begin{pfsteps*}
           \item $\csatisfy{e_1}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[pair2]satisfyTruify1}
@@ -1128,6 +1204,7 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
           \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-pair} on \pfref{[pair2]satormay1} and \pfref{[pair2]satormay2}}
           \end{pfsteps*}
 
+        \restorelocalsteps{lem:satormay-truify-necs-3}
         \item[\text{(\ref{rule:CMSAnd3})}]
           \begin{pfsteps*}
           \item $\cmaysatisfy{e_1}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[pair3]maysatTruify1}

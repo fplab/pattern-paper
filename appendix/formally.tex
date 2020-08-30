@@ -39,7 +39,7 @@ p & ::= &
 \end{array}$
 
 \fbox{$\rmpointer{\zrules} = rs$}~~\text{erase pointer from $\zrules$}
-\begin{subequations}
+\begin{subequations}\label{defn:rmpointer}
 \begin{align}
   \rmpointer{\zruls{\cdot}{r}{rs}} &= \hrules{r}{rs} \\
   \rmpointer{\zruls{\hrulesP{r'}{rs'}}{r}{rs}} &= \hrules{r'}{\rmpointer{\zruls{rs'}{r}{rs}}}
