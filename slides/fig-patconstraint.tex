@@ -1,0 +1,42 @@
+% !TEX root= extended-abstract.tex
+
+\begin{figure}[h]
+$\arraycolsep=4pt\begin{array}{lll}
+e & ::= &
+  x ~\vert~
+  \htriv ~\vert~
+  \hnum{n} ~\vert~
+  \hpair{e_1}{e_2} ~\vert~
+  \hinl{\tau}{e} ~\vert~
+  \hinr{\tau}{e} ~\vert~
+  \hehole{u} ~\vert~
+  \hhole{e}{u} \\
+  & ~\vert~ &
+  \hlam{x}{\tau}{e} ~\vert~
+  \hap{e_1}{e_2} ~\vert~
+  \hmatch{e}{\hat{rs}} \\
+p & ::= &
+  x ~\vert~
+  \_ ~\vert~
+  \htriv ~\vert~
+  \hnum{n} ~\vert~
+  \hpair{p_1}{p_2} ~\vert~
+  \hinlp{p} ~\vert~
+  \hinrp{p} ~\vert~
+  \hehole{w} ~\vert~
+  \hhole{p}{w} \\
+\xi & ::= &
+  \ctruth ~\vert~
+  \cfalsity ~\vert~
+  \cunit ~\vert~
+  \cnum{n} ~\vert~
+  \cnotnum{n} ~\vert~
+  \cpair{\xi_1}{\xi_2} ~\vert~
+  \cinl{\xi} ~\vert~
+  \cinr{\xi} ~\vert~
+  \cunknown ~\vert~
+  \cand{\xi_1}{\xi_2} ~\vert~
+  \cor{\xi_1}{\xi_2}
+\end{array}$
+\label{fig:exp-pat-constraint}
+\end{figure}

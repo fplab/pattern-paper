@@ -1,5 +1,5 @@
 \documentclass[notheorems]{beamer}
-\usepackage[orientation=landscape,size=a0,scale=1.4]{beamerposter}
+\usepackage[orientation=landscape,size=a0,scale=1.3]{beamerposter}
 \usepackage[absolute,overlay]{textpos}
 
 \usepackage{amsmath,amsthm}
@@ -185,7 +185,7 @@
 %	OBJECTIVES
 %----------------------------------------------------------------------------------------
 
-\begin{block}{What is Pattern Matching}
+\begin{block}{What is Exhaustiveness and Redundancy}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \begin{lstlisting}[name=not exhaustive,caption={Not Exhaustive},captionpos=b,escapechar=!]
@@ -214,9 +214,9 @@
 \begin{block}{Why Adding Holes to Pattern Matching}
 
 \begin{itemize}
-  \item Chapter \textit{Pattern Matching} in \textsf{PFPL} \cite{Harper2012} introduces a match constraint language to check exhaustiveness of a match expression and redundancy of a single rule. We \textcolor{red}{extend the constraint language with \textit{Unknown} constraint} and adapt the checking algorithm to our setting.
-  \item \textsf{Hazel} is a programming environment featuring typed holes \cite{DBLP:conf/popl/OmarVHAH17,DBLP:journals/pacmpl/OmarVCH19}, but it only supports simple case analysis on binary sum types. We want to \textcolor{red}{formalize the full-fledged pattern matching with Typed Holes}.
-  \item \textsf{Agda} allows the programmer to automatically generate code through "case splitting", our work is focused on \textcolor{red}{giving live feedbacks and guidance} as the programmer enters a match expression.
+  \item Chapter \textit{Pattern Matching} in \textsf{PFPL} \cite{Harper2012} introduces a match constraint language to check exhaustiveness of a match expression and redundancy of a single rule. We \textcolor{red}{extend the constraint language with \textbf{Unknown constraint}} and adapt the checking algorithm to our setting.
+  \item \textsf{Hazel} is a programming environment featuring typed holes \cite{DBLP:conf/popl/OmarVHAH17,DBLP:journals/pacmpl/OmarVCH19}, but it only supports simple case analysis on binary sum types. We want to \textcolor{red}{formalize the full-fledged pattern matching with \textbf{typed holes}}.
+  \item \textsf{Agda} allows the programmer to automatically generate code through "case splitting", while our work is focused on \textcolor{red}{giving live feedbacks and guidance} as the programmer enters a match expression.
 \end{itemize}
 \end{block}
 
@@ -233,9 +233,9 @@
     \end{column}
     \begin{column}{.2\textwidth}
       \begin{itemize}
-        \item[\tikzmark{scrut}] 1::?
+        \item[\tikzmark{scrut}] 1::$\hehole{u}$
         \item[\tikzmark{empty}] [\,]
-        \item[\tikzmark{hole-xs}] ?::xs
+        \item[\tikzmark{hole-xs}] $\hehole{w}$::xs
         \item[\tikzmark{1-2-xs}] 1::2::xs
       \end{itemize}
     \end{column}
@@ -296,7 +296,7 @@
     \end{tikzpicture}
   \end{columns}
   We know that an expression that cannot be further evaluated is a \textbf{value}.
-  When the value of an expression is indeterminate due to unfilled holes, such an expression is \textbf{indeterminate}. For example,
+  When we can't determine the value of an expression due to unfilled holes, such an expression is \textbf{indeterminate}. For example,
   \begin{itemize}
     \item any expression that contains an expression hole $\hehole{u}$ or $\hhole{e}{u}$
     \item a match expression in which the scrutinee may match the branch under the pointer
@@ -316,14 +316,15 @@
   \input{fig-patconstraint}
   \begin{tikzpicture}
     \node (E) at (0,0) {expression e};
-    \node (P) [below left=12cm and 8cm of E] {pattern p};
-    \node (Xi) [below right=12cm and 8cm of E] {constraint $\xi$};
+    \node (P) [below left=11cm and 8cm of E] {pattern p};
+    \node (Xi) [below right=11cm and 8cm of E] {constraint $\xi$};
 
     \draw [line width=5, ->] (E) -- (P) node (Match) [midway, above, sloped] {\begin{tabular}{c} \textcolor{green}{match} \\ \textcolor{yellow}{may match} \\ \textcolor{red}{not match} \end{tabular}};
     \draw [line width=5, ->] (E) -- (Xi) node (Satisfy) [midway, above, sloped] {\begin{tabular}{c} \textcolor{green}{satisfy $\csatisfy{e}{\xi}$} \\ \textcolor{yellow}{may satisfy $\cmaysatisfy{e}{\xi}$} \\ \textcolor{red}{not satisfy $\csatisfy{e}{\cdual{\xi}}$} \end{tabular}};
     \draw [color=hazellightgreen, line width=5, ->] (P) -- (Xi) node [midway, below, sloped] {emit};
     \draw [color=hazellightgreen, line width=4, {Latex[length=1cm]}-{Latex[length=1cm]},double] ($(Match)+(5,0)$) -- ($(Satisfy)-(5,0)$) node [midway, below, sloped] {one-to-one equivalence};
   \end{tikzpicture}
+
   For example,
   \begin{tikzpicture}
     \node (H) at (0,0) {pattern hole $\hehole{w}$ or $\hhole{p}{w}$};
@@ -343,7 +344,7 @@
   \end{tikzpicture}
 \end{block}
 
-\begin{block}{Typing Judgment of Branches (Rules rs) and Redundancy}
+\begin{block}{Redundancy and Typing Judgment of Branches (Rules rs)}
   \begin{align*}
     & Branch & & Constraint \\
     ~\vert~ &
@@ -354,7 +355,7 @@
     \hrul{\hinrp{\hpair{\hnum{1}}{\hinrp{\hpair{\hnum{2}}{xs}}}}}{\text{"empty"}} & \longrightarrow & \cinr{\cpair{\cnum{1}}{\cinr{\cpair{\cnum{2}}{\ctruth}}}}
   \end{align*}
 
-  A branch is redundant $\textit{iff}$ all expressions that match or may match that branch, must match one of its preceding branches.
+  A branch \textbf{must be redundant} \textit{iff} all expressions that match or may match that branch, must match one of its preceding branches.
   
   We use emitted constraints to check redundancy of every single branch
   \begin{itemize}
@@ -363,8 +364,8 @@
   \end{itemize}
 \end{block}
 
-\begin{block}{Typing Judgment of Match Expression and Exhaustiveness}
-  Branches must or may be exhaustive \textit{iff} all expressions either matches one of the branches or may match one of the branches.
+\begin{block}{Exhaustiveness and Typing Judgment of Match Expression}
+  Branches \textbf{must or may be exhaustive} \textit{iff} all expressions either must or may match one of the branches.
 
   We use the constraint emitted from the three branches to enforce that the match expression must or may be exhaustive
 \[
@@ -410,7 +411,7 @@
     \node (De-Exh) at (0,-3) {$\csatisfy{\ctruth}{\cor{\hinlp{\cunit}}{\cor{\hinrp{\cpair{\ctruth}{\ctruth}}}{\cinr{\cpair{\cnum{1}}{\cinr{\cpair{\cnum{2}}{\ctruth}}}}}}}$};
     \node (Red2) at (0,-6) {\begin{tabular}{c} Redundancy of Second Branch \\ $\csatisfy{\hinrp{\cpair{\cunknown}{\ctruth}}}{\hinlp{\cunit}}$\end{tabular}};
     \node (De-Red2) at (0,-9) {$\csatisfy{\hinrp{\cpair{\ctruth}{\ctruth}}}{\hinlp{\cunit}}$};
-    \node (Red3) at (0,-12) {\begin{tabular}{c} Redundancy of Second Branch \\ $\csatisfy{\cinr{\cpair{\cnum{1}}{\cinr{\cpair{\cnum{2}}{\ctruth}}}}}{\cor{\hinlp{\cunit}}{\hinrp{\cpair{\cunknown}{\ctruth}}}}$\end{tabular}};
+    \node (Red3) at (0,-12) {\begin{tabular}{c} Redundancy of Third Branch \\ $\csatisfy{\cinr{\cpair{\cnum{1}}{\cinr{\cpair{\cnum{2}}{\ctruth}}}}}{\cor{\hinlp{\cunit}}{\hinrp{\cpair{\cunknown}{\ctruth}}}}$\end{tabular}};
     \node (De-Red3) at (0,-15) {$\csatisfy{\cinr{\cpair{\cnum{1}}{\cinr{\cpair{\cnum{2}}{\ctruth}}}}}{\cor{\hinlp{\cunit}}{\hinrp{\cpair{\cfalsity}{\ctruth}}}}$};
 
     \draw [color=hazellightgreen,line width=2,Latex-Latex,double] ($(Exh.west)+(0.15,-0.5)$) to [out=200,in=160] (De-Exh.west);
@@ -422,8 +423,8 @@
 \end{block}
 
 \begin{block}{Conclusion}
-  We have formalized the type system and are still working on the proof of the correctness of exhaustiveness checking and redundancy checking. The idea has been implemented in a toy programming language
-  (\url{https://github.com/fplab/pattern-paper/tree/master/src}).
+  We have formalized the type system and are still working on the proof of the correctness of exhaustiveness checking and redundancy checking. The idea has already been implemented in a toy programming language
+  (\url{https://github.com/fplab/pattern-paper/tree/master/src}) and next step we will integrate it into \textsf{Hazel}.
 \end{block}
 
 %----------------------------------------------------------------------------------------
@@ -446,6 +447,7 @@
 
 \end{columns} % End of all the columns in the poster
 
+\hspace{2in}\small{Advisor: Cyrus Omar, Author: Yongwei Yuan, slark@umich.edu, Future of Programming Lab, University of Michigan}
 \end{frame} % End of the enclosing frame
 %\end{darkframes} % Uncomment for dark theme
 

@@ -1,0 +1,825 @@
+\documentclass[notheorems]{beamer}
+\usepackage{beamerthemeshadow}
+\usepackage[absolute,overlay]{textpos}
+
+\usepackage{amsmath,amsthm}
+
+\usepackage{stmaryrd} % llparenthesis
+\usepackage{anyfontsize} % workaround for font size difference warning
+
+\usepackage{cancel} % slash over symbol
+
+\newcommand{\highlight}[1]{\colorbox{yellow}{$\displaystyle #1$}}
+
+\newcommand{\todo}[1]{{\color{red} TODO: #1}}
+
+%% Joshua Dunfield macros
+\def\OPTIONConf{1}
+\usepackage{jdunfield}
+\usepackage{rulelinks} % hyperlink of rule name
+
+\newtheoremstyle{slplain}% name
+  {.15\baselineskip\@plus.1\baselineskip\@minus.1\baselineskip}% Space above
+  {.15\baselineskip\@plus.1\baselineskip\@minus.1\baselineskip}% Space below
+  {\slshape}% Body font
+  {\parindent}%Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries}%  Thm head font
+  {.}%       Punctuation after thm head
+  { }%      Space after thm head: " " = normal interword space;
+       %       \newline = linebreak
+  {}%       Thm head spec
+\theoremstyle{slplain}
+\newtheorem{thm}{Theorem}  % Numbered with the equation counter
+\numberwithin{thm}{section}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{corol}[thm]{Corollary}
+
+% BEAMER
+\definecolor{hazelgreen}{RGB}{7,63,36}
+\definecolor{hazellightgreen}{RGB}{103,138,97}
+\definecolor{hazelyellow}{RGB}{245,222,179}
+\definecolor{hazellightyellow}{RGB}{254,254,234}
+
+\definecolor{green}{RGB}{132, 194, 70}
+\definecolor{yellow}{RGB}{227, 202, 43}
+\definecolor{red}{RGB}{249,130,147}
+
+\useoutertheme{infolines}
+\useinnertheme{rectangles}
+
+\definecolor{myblue1}{RGB}{35,119,189}
+\definecolor{myblue2}{RGB}{95,179,238}
+\definecolor{myblue3}{RGB}{129,168,207}
+\definecolor{myblue4}{RGB}{26,89,142}
+
+\setbeamercolor*{structure}{fg=hazellightgreen,bg=blue}
+\setbeamercolor*{palette primary}{use=structure,fg=white,bg=structure.fg}
+\setbeamercolor*{palette secondary}{use=structure,fg=white,bg=structure.fg!75!black}
+\setbeamercolor*{palette tertiary}{use=structure,fg=white,bg=structure.fg!50!black}
+\setbeamercolor*{palette quaternary}{fg=black,bg=white}
+
+\setbeamercolor{background canvas}{bg=hazellightyellow}
+\setbeamercolor{itemize item}{fg=hazelgreen}
+\setbeamercolor{frame title}{fg=white,bg=hazellightgreen}
+\setbeamercolor{block body}{fg=black,bg=white}
+
+\newlength{\sepwid}
+\newlength{\onecolwid}
+\newlength{\twocolwid}
+\setlength{\sepwid}{0.025\paperwidth}
+\setlength{\onecolwid}{0.3\paperwidth}
+\setlength{\twocolwid}{0.625\paperwidth}
+
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{calc,fit,tikzmark,plotmarks,arrows.meta,positioning,overlay-beamer-styles}
+\usetikzmarklibrary{listings}
+
+\lstset{
+  language=caml,
+  breaklines=true,
+       showspaces=false,                          % show spaces (with underscores)
+     showstringspaces=false,            % underline spaces within strings
+     showtabs=false,                            % show tabs using underscores
+     tabsize=4,                     % default tabsize
+     columns=fullflexible,
+     breakautoindent=false,
+     framerule=1pt,
+     xleftmargin=0pt,
+     xrightmargin=0pt,
+     breakindent=0pt,
+     resetmargins=true
+  }
+
+\tikzset{
+  next page=below,
+%  every highlighter/.style={rounded corners},
+  line/.style={
+    draw,
+    rounded corners=3pt,
+    -latex
+  },
+  balloon/.style={
+    draw,
+    fill=red!20,
+    opacity=0.4,
+    inner sep=4pt,
+    inner ysep=0pt,
+    rounded corners=2pt,
+    shift={(0,-0.14)}
+  },
+  comment/.style={
+    draw,
+    fill=blue!70,
+    text=white,
+%    text width=3cm,
+%    minimum height=1cm,
+    rounded corners,
+    drop shadow,
+    align=left,
+%    font=\scriptsize
+  },
+}
+
+\newcommand\balloon[4]{%
+  \pgfmathtruncatemacro\firstline{%
+    #3-1
+  }%
+  \iftikzmark{line-#2-\firstline-start}{%
+    \iftikzmark{line-#2-#3-first}{%
+      \xdef\blines{({pic cs:line-#2-\firstline-start} -| {pic           cs:line-#2-#3-first})}%
+    }{%
+      \iftikzmark{line-#2-#3-start}{%
+        \xdef\blines{({pic cs:line-#2-\firstline-start} -| {pic             cs:line-#2-#3-start})}%
+      }{%
+        \xdef\blines{(pic cs:line-#2-\firstline-start)}%
+      }%
+    }%
+  }{%
+    \xdef\blines{}%
+  }%
+  \foreach \k in {#3,...,#4} {%
+    \iftikzmark{line-#2-\k-first}{%
+      \xdef\blines{\blines (pic cs:line-#2-\k-first) }
+    }{}
+    \iftikzmark{line-#2-\k-end}{%
+      \xdef\blines{\blines (pic cs:line-#2-\k-end) }
+    }{}
+  }%
+  \ifx\blines\empty
+  \else
+  \edef\temp{\noexpand\tikz[remember picture,overlay]\noexpand\node[fit={\blines},balloon] (#1) {};}%
+\temp
+  \fi
+}
+
+
+\input{macros}
+\input{rulecommands}
+
+\title{Pattern Matching with Typed Holes}
+\author{Yongwei Yuan}
+\institute{University of Michigan}
+
+\begin{document}
+\addtobeamertemplate{block end}{}{\vspace*{2ex}} % White space under blocks
+\addtobeamertemplate{block example end}{}{\vspace*{2ex}} % White space under example blocks
+\addtobeamertemplate{block alerted end}{}{\vspace*{2ex}} % White space under highlighted (alert) blocks
+
+\setlength{\belowcaptionskip}{2ex} % White space under figures
+\setlength\belowdisplayshortskip{2ex} % White space under equations
+%\begin{darkframes} % Uncomment for dark theme, don't forget to \end{darkframes}
+
+
+\frame{
+  \titlepage
+  \let\thefootnote\relax\footnote{Supervised by Cyrus Omar at Future of Programming Lab}
+}
+
+\section{Motivation and Background}
+\begin{frame}[fragile]
+  \frametitle{Pattern Matching}
+\begin{center}
+\begin{tabular}{c}
+  \begin{lstlisting}[basicstyle=\small,name=pm no hole,escapechar=!,mathescape]
+    match (1::[ ]) {
+    !\tikzmark{pm no hole rule1}!| [ ] -> "empty"
+    !\tikzmark{pm no hole rule2}!| 1::xs -> "1,..."
+    | 2::xs -> "2,..."
+    }
+  \end{lstlisting}
+\end{tabular}
+\\
+\vspace{1cm}
+\only<1>{
+  The scrutinee \textsf{does not match} the pattern in the first branch.
+}
+\only<2>{
+  The scrutinee \textsf{matches} the pattern in the second branch.
+}
+\end{center}
+
+\only<1>{
+\begin{tikzpicture}[remember picture, overlay]
+  \node[rotate=-90,mark size=5pt,color=hazellightgreen,shift={(-0.1,-0.2)}] at (pic cs:pm no hole rule1) {\pgfuseplotmark{triangle*}};
+\end{tikzpicture}
+}
+\only<2>{
+\begin{tikzpicture}[remember picture, overlay]
+  \node[rotate=-90,mark size=5pt,color=hazellightgreen,shift={(-0.1,-0.2)}] at (pic cs:pm no hole rule2) {\pgfuseplotmark{triangle*}};
+\end{tikzpicture}
+}
+\end{frame}
+
+\frame[containsverbatim]{\frametitle{Exhaustiveness and Redundancy}
+  \begin{columns}
+    \begin{column}{5cm}
+      \begin{lstlisting}[name=not exhaustive,title={Not Exhaustive},captionpos=b,escapechar=!]
+        match (3::[ ]) {
+        | [ ] -> "empty"
+        | 1::xs -> "1,..."
+        | 2::xs -> "2,..."
+        }
+      \end{lstlisting}
+      \balloon{comment}{not exhaustive}{2}{4}
+    \end{column}
+
+    \begin{column}{5cm}
+      \begin{lstlisting}[name=redundant,title={Redundant Branch},captionpos=b,escapechar=!]
+        match (1::2::[ ]) {
+        | [ ] -> "empty"
+        | 1::xs -> "1,..."
+        | 1::2::xs -> "1,2,..."
+        }
+      \end{lstlisting}
+      \balloon{comment}{redundant}{4}{4}
+    \end{column}
+  \end{columns}
+Chapter \textit{Pattern Matching} in \textsf{PFPL} \cite{Harper2012} introduces a match constraint language and the algorithm to check exhaustiveness of branches and redundancy of a single branch with respect to its preceding branches.
+}
+
+\begin{frame}[fragile]
+  \frametitle{What if Match Expression is Incomplete?}
+  \only<1>{
+    \begin{itemize}
+       \item \textsf{Agda} and \textsf{Haskell} allow programmers to use typed holes to represent missing parts in the program.
+       \item \textsf{Hazel} is a live programming environment featuring typed holes \cite{DBLP:conf/popl/OmarVHAH17,DBLP:journals/pacmpl/OmarVCH19}, but it only supports simple case analysis on binary sum types.
+      
+    \end{itemize}
+  }
+  \begin{columns}
+    \begin{column}{5cm}
+      \begin{onlyenv}<2->
+      \begin{lstlisting}[name=not exhaustive,title={Expression hole},captionpos=b,escapechar=!]
+        match (1::!\textcolor{green}{?}!) {
+        | [ ] -> "empty"
+        | 1::xs -> "1,..."
+        | 2::xs -> "2,..."
+        }
+      \end{lstlisting}
+    \end{onlyenv}
+    \end{column}
+
+    \begin{column}{5cm}
+      \begin{onlyenv}<3->
+      \begin{lstlisting}[name=redundant,title={Pattern hole},captionpos=b,escapechar=!]
+        match (1::[ ]) {
+        | [ ] -> "empty"
+        | !\textcolor{green}{?}!::xs -> "1,..."
+        | 2::xs -> "2,..."
+        }
+      \end{lstlisting}
+      \end{onlyenv}
+    \end{column}
+  \end{columns}
+  \begin{columns}
+    \begin{column}{5cm}
+      \begin{onlyenv}<4->
+      \begin{lstlisting}[title={Exhaustive?},captionpos=b,escapechar=!]
+        match (3::[ ]) {
+        | [ ] -> "empty"
+        | 1::xs -> "1,..."
+        | !\textcolor{green}{?}!::xs -> "2,..."
+        }
+      \end{lstlisting}
+      \end{onlyenv}
+    \end{column}
+
+    \begin{column}{5cm}
+      \begin{onlyenv}<5->
+      \begin{lstlisting}[title={Redundant?},captionpos=b,escapechar=!]
+        match (1::2::[ ]) {
+        | [ ] -> "empty"
+        | !\textcolor{green}{?}!::xs -> "1,..."
+        | 1::2::xs -> "1,2,..."
+        }
+      \end{lstlisting}
+      \end{onlyenv}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Our Approach}
+\frame{
+  The key point behind reasoning about incomplete programs is to give feedback that is always correct no matter how programmers fill these holes at the end.
+}
+\frame{
+  \frametitle{Early Evaluation}
+  We can evaluate the expression even if there are holes \\
+  as long as the evaluation is correct regardless of how holes are filled.
+}
+\subsection{Early Evaluation}
+
+\begin{frame}[fragile]
+  \frametitle{Expression Hole doesn't have to Stop Evaluation}
+\begin{center}
+\begin{tabular}{c}
+  \begin{lstlisting}[basicstyle=\small,name=exp hole,escapechar=!,mathescape]
+    match (1::!\textcolor{green}{?}!) {
+    !\tikzmark{exp hole rule1}!| [ ] -> "empty"
+    !\tikzmark{exp hole rule2}!| 1::xs -> "1,..."
+    | 2::xs -> "2,..."
+    }
+  \end{lstlisting}
+\end{tabular}
+\\
+\vspace{1cm}
+\only<1>{
+  The scrutinee \textsf{does not match} the pattern in the first branch.
+}
+\only<2>{
+  The scrutinee \textsf{matches} the pattern in the second branch. \\
+  The value of the match expression is a string "1,...".
+}
+\end{center}
+
+\only<1>{
+\begin{tikzpicture}[remember picture, overlay]
+  \node[rotate=-90,mark size=5pt,color=hazellightgreen,shift={(-0.1,-0.2)}] at (pic cs:exp hole rule1) {\pgfuseplotmark{triangle*}};
+\end{tikzpicture}
+}
+\only<2>{
+\begin{tikzpicture}[remember picture, overlay]
+  \node[rotate=-90,mark size=5pt,color=hazellightgreen,shift={(-0.1,-0.2)}] at (pic cs:exp hole rule2) {\pgfuseplotmark{triangle*}};
+\end{tikzpicture}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Pattern Hole May be Matched}
+\begin{center}
+\begin{tabular}{c}
+  \begin{lstlisting}[basicstyle=\small,name=pat hole,escapechar=!,mathescape]
+    match (1::[ ]) {
+    !\tikzmark{pat hole rule1}!| [ ] -> "empty"
+    !\tikzmark{pat hole rule2}!| !\textcolor{green}{?}!::xs -> "1,..."
+    | 2::xs -> "2,..."
+    }
+  \end{lstlisting}
+\end{tabular}
+\\
+\vspace{1cm}
+\only<1>{
+  The scrutinee \textsf{does not match} the pattern in the first branch.
+}
+\only<2>{
+  The scrutinee \textbf{may match} the pattern in the second branch.\\
+  Because $1$ may match the hole $?$ depending on what is filled. \\
+  We say that the match expression is \textbf{indeterminate}.
+}
+\end{center}
+
+\only<1>{
+\begin{tikzpicture}[remember picture, overlay]
+  \node[rotate=-90,mark size=5pt,color=hazellightgreen,shift={(-0.1,-0.2)}] at (pic cs:pat hole rule1) {\pgfuseplotmark{triangle*}};
+\end{tikzpicture}
+}
+\only<2>{
+\begin{tikzpicture}[remember picture, overlay]
+  \node[rotate=-90,mark size=5pt,color=hazellightgreen,shift={(-0.1,-0.2)}] at (pic cs:pat hole rule2) {\pgfuseplotmark{triangle*}};
+\end{tikzpicture}
+}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Evaluate as further as possible}
+  We keep evaluating the expression until it is either a \textbf{value} or \textbf{indeterminate}. \\
+  We regard such an expression as \textbf{final}.
+\end{frame}
+
+\subsection{Best-Case Error Reporting}
+\frame{
+  \frametitle{Best-Case Error Reporting}
+  Report error only when it can't be avoided.
+}
+
+\begin{frame}[fragile]
+  \frametitle{No Error Messsage when the Branches May be Exhaustive}
+\begin{center}
+\begin{tabular}{c}
+  \begin{lstlisting}[escapechar=!]
+    match (3::[ ]) {
+    | [ ] -> "empty"
+    | 1::xs -> "1,..."
+    | !
+    \textcolor{green}{
+    \begin{onlyenv}<1>
+      ?
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+      x
+    \end{onlyenv}
+    }
+    !::xs -> "2,..."
+    }
+  \end{lstlisting}
+\end{tabular}
+\\
+\vspace{1cm}
+\only<1>{
+  Any pattern of Num type can be filled in the hole.
+}
+\only<2>{
+  By filling the hole with some variable, the branches can be exhaustive.
+}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Prompt Error Messsage \\ only when the Branches Mustn't be Exhaustive}
+\begin{center}
+\begin{tabular}{c}
+  \begin{lstlisting}[escapechar=!]
+    match (3::[ ]) {
+    | [ ] -> "empty"
+    | 1::xs -> "1,..."
+    | 2::!
+    \textcolor{green}{
+    \begin{onlyenv}<1>
+      ?
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+      xs
+    \end{onlyenv}
+    }
+    ! -> "2,..."
+    }
+  \end{lstlisting}
+\end{tabular}
+\\
+\vspace{1cm}
+\only<1>{
+  Any pattern of List of Num type can be filled in the hole.
+}
+\only<2>{
+  No matter what pattern we fill in the hole, \\
+  the branches can't be exhaustive.
+}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{No Error Messsage when the Branch may be Redundant}
+\begin{center}
+\begin{tabular}{c}
+  \begin{lstlisting}[escapechar=!]
+    match (2::[ ]) {
+    | [ ] -> "empty"
+    | !
+    \textcolor{green}{
+    \begin{onlyenv}<1>
+      ?
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+      2
+    \end{onlyenv}
+    \begin{onlyenv}<3>
+      x
+    \end{onlyenv}
+    \begin{onlyenv}<4>
+      3
+    \end{onlyenv}
+    }
+    !::xs -> "1,..."
+    | 2::xs -> "2,..."
+    }
+  \end{lstlisting}
+\end{tabular}
+\\
+\vspace{1cm}
+\only<1>{
+  Any pattern of Num type can be filled in the hole.
+}
+\only<2>{
+  By filling the hole with number 2, the third branch can be redundant.
+}
+\only<3>{
+  By filling the hole with a variable, the third branch is also redundant.
+}
+\only<4>{
+  By filling the hole with a number other than 2, \\
+  the third branch is not redundant.
+}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Prompt Error Messsage when the Branch must be Redundant}
+\begin{center}
+\begin{tabular}{c}
+  \begin{lstlisting}[escapechar=!]
+    match (3::[ ]) {
+    | [ ] -> "empty"
+    | x::xs -> "..."
+    | !
+    \textcolor{green}{
+    \begin{onlyenv}<1>
+      ?
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+      1
+    \end{onlyenv}
+    \begin{onlyenv}<3>
+      2
+    \end{onlyenv}
+    \begin{onlyenv}<4>
+      y
+    \end{onlyenv}
+    }
+    !::xs -> "?,..."
+    }
+  \end{lstlisting}
+\end{tabular}
+\\
+\vspace{1cm}
+\only<1>{
+  Any pattern of Num type can be filled in the hole.
+}
+\only<2->{
+  No matter what pattern we fill in the hole, \\
+  the third branch must be exhaustive.
+}
+\end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Prompt Error Message or Not}
+  Yes
+  \begin{itemize}
+    \item Branches mustn't be exhaustive
+    \item Some branch must be redundant
+  \end{itemize}
+  No
+  \begin{itemize}
+    \item Branches must be exhaustive
+    \item Branches may be exhaustive
+    \item Every branch either
+      \begin{itemize}
+        \item mustn't be redundant
+        \item may be redundant
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\section{Formalism}
+\subsection{Syntax}
+\frame[containsverbatim]{
+  \frametitle{A Match Expression in Our Internal Language}
+  \begin{columns}
+    \begin{column}{.8\textwidth}
+    \begin{lstlisting}[name=syntax,escapechar=!,mathescape]
+      match (!\tikzmark{scrut-left}!inr((1, $\hehole{u}$))!\tikzmark{scrut-right}!) {
+      | !\tikzmark{empty-left}!inl(())!\tikzmark{empty-right}! -> "empty"
+      | !\tikzmark{hole-xs-left}!inr(($\hehole{w}$, xs))!\tikzmark{hole-xs-right}! -> "1,..."
+      | !\tikzmark{1-2-xs-left}!inr((1, inr((2, xs))))!\tikzmark{1-2-xs-right}! -> "1,2,..."
+      }
+    \end{lstlisting}
+    \end{column}
+    \begin{column}{.2\textwidth}
+      \begin{itemize}
+        \item[\tikzmark{scrut}] 1::?
+        \item[\tikzmark{empty}] [\,]
+        \item[\tikzmark{hole-xs}] ?::xs
+        \item[\tikzmark{1-2-xs}] 1::2::xs
+      \end{itemize}
+    \end{column}
+      \begin{tikzpicture}[remember picture, overlay]
+        \draw[hazellightgreen,rounded corners]
+        ([shift={(0pt,2ex)}]pic cs:scrut-left) 
+          rectangle 
+        ([shift={(0pt,-0.65ex)}]pic cs:scrut-right);
+        \draw[line width=1,hazellightgreen,->]
+        (pic cs:scrut-right) -> ($(pic cs:scrut)+(0,0.1)$);
+
+        \draw[hazellightgreen,rounded corners]
+        ([shift={(-3pt,2ex)}]pic cs:empty-left) 
+          rectangle 
+        ([shift={(3pt,-0.65ex)}]pic cs:empty-right);
+        \draw[line width=1,hazellightgreen,->]
+        (pic cs:empty-right) -> ($(pic cs:empty)+(0,0.1)$);
+
+        \draw[hazellightgreen,rounded corners]
+        ([shift={(-3pt,2ex)}]pic cs:hole-xs-left) 
+          rectangle 
+        ([shift={(3pt,-0.65ex)}]pic cs:hole-xs-right);
+        \draw[line width=1,hazellightgreen,->]
+        (pic cs:hole-xs-right) -> ($(pic cs:hole-xs)+(0,0.1)$);
+
+        \draw[hazellightgreen,rounded corners]
+        ([shift={(-3pt,2ex)}]pic cs:1-2-xs-left) 
+          rectangle 
+        ([shift={(3pt,-0.65ex)}]pic cs:1-2-xs-right);
+        \draw[line width=1,hazellightgreen,->]
+          (pic cs:1-2-xs-right) -> ($(pic cs:1-2-xs)+(0,0.1)$);
+      \end{tikzpicture}
+  \end{columns}
+}
+
+\subsection{Constraint Language: how to "predict" pattern matching}
+\frame{
+  \frametitle{Constraint Emitting and Relationship Triangle}
+%  \input{fig-patconstraint}
+  \begin{tikzpicture}
+    \node (E) at (0,0) {expression e};
+    \node (P) [below left=5cm and 3cm of E] {pattern p};
+    \node (Xi) [below right=5cm and 3cm of E] {constraint $\xi$};
+
+    \draw [line width=2, ->] (E) -- (P) node (Match) [midway, above, sloped] {\begin{tabular}{c} \textcolor{green}{match} \\ \textcolor{yellow}{may match} \\ \textcolor{red}{not match} \end{tabular}};
+    \draw [line width=2, ->] (E) -- (Xi) node (Satisfy) [midway, above, sloped] {\begin{tabular}{c} \textcolor{green}{satisfy $\csatisfy{e}{\xi}$} \\ \textcolor{yellow}{may satisfy $\cmaysatisfy{e}{\xi}$} \\ \textcolor{red}{not satisfy $\csatisfy{e}{\cdual{\xi}}$} \end{tabular}};
+    \draw [color=hazellightgreen, line width=2, ->] (P) -- (Xi) node [midway, below, sloped] {emit};
+    \draw [color=hazellightgreen, line width=1, {Latex[length=0.2cm]}-{Latex[length=0.2cm]},double] ($(Match)+(5,-0.5)$) -- ($(Satisfy)-(5,0.5)$) node [midway, below, sloped] {one-to-one equivalence};
+  \end{tikzpicture}
+}
+
+%\frame{
+%  \frametitle{Pattern Hole and Unknown Constraint}
+%%  \input{fig-patconstraint}
+%  \begin{tikzpicture}
+%    \node (E) at (0,0) {any expression e};
+%    \node (P) [below left=5cm and 2cm of E] {pattern hole $\hehole{w}$};
+%    \node (Xi) [below right=5cm and 2cm of E] {constraint $\cunknown$};
+%
+%    \draw [line width=2, ->] (E) -- (P) node (Match) [midway, above, sloped] {\textcolor{yellow}{may match}};
+%    \draw [line width=2, ->] (E) -- (Xi) node (Satisfy) [midway, above, sloped] {\textcolor{yellow}{may satisfy $\cmaysatisfy{e}{\cunknown}$}};
+%    \draw [color=hazellightgreen, line width=2, ->] (P) -- (Xi) node [midway, below, sloped] {emit};
+%    \draw [color=hazellightgreen, line width=1, {Latex[length=0.2cm]}-{Latex[length=0.2cm]},double] ($(Match)+(5,-0.5)$) -- ($(Satisfy)-(5,0.5)$) node [midway, below, sloped] {equivalence};
+%  \end{tikzpicture}
+%}
+%
+%\frame{
+%  \frametitle{Expression Hole and Truth Constraint}
+%%  \input{fig-patconstraint}
+%  \begin{tikzpicture}
+%    \node (E) at (0,0) {expression hole $\hehole{u}$};
+%    \node (P) [below left=5cm and 2cm of E] {pattern $xs$};
+%    \node (Xi) [below right=5cm and 2cm of E] {constraint $\ctruth$};
+%
+%    \draw [line width=2, ->] (E) -- (P) node (Match) [midway, above, sloped] {\textcolor{yellow}{match}};
+%    \draw [line width=2, ->] (E) -- (Xi) node (Satisfy) [midway, above, sloped] {\textcolor{yellow}{satisfy $\csatisfy{\hehole{u}}{\ctruth}$}};
+%    \draw [color=hazellightgreen, line width=2, ->] (P) -- (Xi) node [midway, below, sloped] {emit};
+%    \draw [color=hazellightgreen, line width=1, {Latex[length=0.2cm]}-{Latex[length=0.2cm]},double] ($(Match)+(5,-0.5)$) -- ($(Satisfy)-(5,0.5)$) node [midway, below, sloped] {equivalence};
+%  \end{tikzpicture}
+%}
+
+\subsection{Redundancy and Exhaustiveness Checking}
+\frame{
+  \frametitle{Branches and $\vee$ constraint}
+  \begin{align*}
+    & \text{Branch } r & \text{Constraint } \xi\\
+    ~\vert~ &
+    \hrul{\hinlp{\htriv}}{\text{"empty"}} & \hinlp{\cunit} \\
+    ~\vert~ &
+    \hrul{\hinrp{\hpair{\hehole{w}}{xs}}}{\text{"empty"}} & \hinrp{\cpair{\cunknown}{\ctruth}} \\
+    ~\vert~ &
+    \hrul{\hinrp{\hpair{\hnum{1}}{\hinrp{\hpair{\hnum{2}}{xs}}}}}{\text{"empty"}} & \cinr{\cpair{\cnum{1}}{\cinr{\cpair{\cnum{2}}{\ctruth}}}} \\
+  \end{align*}
+  And multiple branches correspond to their constraints connected by $\vee$.
+}
+\frame{
+  \frametitle{Entailment of Constraints}
+  \begin{defn}["Must" or "May" Entailment]
+  \label{defn:exhaustiveness}
+  $\csatisfyormay{\xi_1}{\xi_2}$ iff $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$ and for all $e$ such that $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isFinal{e}$ we have \textcolor{green}{$\csatisfy{e}{\xi_1}$} or \textcolor{yellow}{$\cmaysatisfy{e}{\xi_1}$} implies \textcolor{green}{$\csatisfy{e}{\xi_2}$} or \textcolor{yellow}{$\cmaysatisfy{e}{\xi_2}$}.
+\end{defn}
+
+\begin{defn}["Must" Entailment]
+  \label{defn:redundancy}
+  $\csatisfy{\xi_1}{\xi_2}$ iff $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$ and for all $e$ such that $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ and $\isVal{e}$ we have \textcolor{green}{$\csatisfy{e}{\xi_1}$} or \textcolor{yellow}{$\cmaysatisfy{e}{\xi_1}$} implies \textcolor{green}{$\csatisfy{e}{\xi_2}$}.
+\end{defn}
+}
+
+\frame{
+  \frametitle{Redundancy(must) Checking in Statics}
+  \begin{align*}
+    & \text{Branch } r & \text{Constraint } \xi\\
+    ~\vert~ &
+    \hrul{\hinlp{\htriv}}{\text{"empty"}} & \hinlp{\cunit} \\
+    ~\vert~ &
+    \hrul{\hinrp{\hpair{\hehole{w}}{xs}}}{\text{"empty"}} & \hinrp{\cpair{\cunknown}{\ctruth}} \\
+    ~\vert~ &
+    \hrul{\hinrp{\hpair{\hnum{1}}{\hinrp{\hpair{\hnum{2}}{xs}}}}}{\text{"empty"}} & \cinr{\cpair{\cnum{1}}{\cinr{\cpair{\cnum{2}}{\ctruth}}}} \\
+  \end{align*}
+\only<1>{
+  \begin{itemize}
+    \item the second branch is not redundant, $\cnotsatisfy{\hinrp{\cpair{\cunknown}{\ctruth}}}{\hinlp{\cunit}}$
+  \item the third branch is not redundant, $\cnotsatisfy{\cinr{\cpair{\cnum{1}}{\cinr{\cpair{\cnum{2}}{\ctruth}}}}}{\cor{\hinlp{\cunit}}{\hinrp{\cpair{\cunknown}{\ctruth}}}}$
+  \end{itemize}
+}
+\only<2>{
+\begin{mathpar}
+\Infer{\TRules}{
+  \chrultyp{\Gamma}{\Delta}{r}{\tau_1}{\xi_r}{\tau_2} \\
+  \chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r}}{rs}
+  {\tau_1}{\xi_{rs}}{\tau_2} \\
+  \boxed{\cnotsatisfy{\xi_r}{\xi_{pre}}}
+}{
+  \chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrules{r}{rs}}
+  {\tau_1}{\cor{\xi_r}{\xi_{rs}}}{\tau_2}
+}
+\end{mathpar}
+}
+}
+
+\frame{
+  \frametitle{Exhaustiveness(must or maybe) Checking in Statics}
+  \begin{align*}
+    & \text{Branch } r & \text{Constraint } \xi\\
+    ~\vert~ &
+    \hrul{\hinlp{\htriv}}{\text{"empty"}} & \hinlp{\cunit} \\
+    ~\vert~ &
+    \hrul{\hinrp{\hpair{\hehole{w}}{xs}}}{\text{"empty"}} & \hinrp{\cpair{\cunknown}{\ctruth}} \\
+    ~\vert~ &
+    \hrul{\hinrp{\hpair{\hnum{1}}{\hinrp{\hpair{\hnum{2}}{xs}}}}}{\text{"empty"}} & \cinr{\cpair{\cnum{1}}{\cinr{\cpair{\cnum{2}}{\ctruth}}}} \\
+  \end{align*}
+\only<1>{
+  \[
+  \csatisfyormay{\ctruth}{
+    \cor{\hinlp{\cunit}}{\cor{\hinrp{\cpair{\cunknown}{\ctruth}}}{\cinr{\cpair{\cnum{1}}{\cinr{\cpair{\cnum{2}}{\ctruth}}}}}}
+  }
+\]
+}
+\only<2>{
+\begin{mathpar}
+\Infer{\TMatchZPre}{
+  \hexptyp{\Gamma}{\Delta}{e}{\tau_1} \\
+  \chrulstyp{\Gamma}{\Delta}{\cfalsity}{\hrules{r}{rs}}{\tau_1}{\xi}{\tau_2} \\
+  \boxed{\csatisfyormay{\ctruth}{\xi}}
+}{
+  \hexptyp{\Gamma}{\Delta}{\hmatch{e}{\zruls{\cdot}{r}{rs}}}{\tau_2}
+}
+\end{mathpar}
+}
+}
+
+\subsection{Checking Algorithm}
+\frame{
+  \frametitle{De-unknown in Exhaustiveness Checking}
+  \begin{center}
+  \begin{tikzpicture}
+    \node (Exh) at (0,-3) {$\csatisfyormay{\ctruth}{\cor{\hinlp{\cunit}}{\cor{\hinrp{\cpair{\cunknown}{\ctruth}}}{\cinr{\cpair{\cnum{1}}{\cinr{\cpair{\cnum{2}}{\ctruth}}}}}}}$};
+    \node (De-Exh) at (0,-5) {$\csatisfy{\ctruth}{\cor{\hinlp{\cunit}}{\cor{\hinrp{\cpair{\ctruth}{\ctruth}}}{\cinr{\cpair{\cnum{1}}{\cinr{\cpair{\cnum{2}}{\ctruth}}}}}}}$};
+    \node (De) at (0,-4) {$?::xs \longrightarrow x::xs$};
+
+    \draw [color=hazellightgreen,line width=1,Latex-Latex,double] ($(Exh.west)+(0,0)$) to [out=200,in=160] (De-Exh.west);
+  \end{tikzpicture}
+  \end{center}
+}
+
+\frame{
+  \frametitle{De-unknown in Redundancy Checking}
+  Second branch:
+  \begin{center}
+  \begin{tikzpicture}
+    \node (Red2) at (0,-3) {$\csatisfy{\hinrp{\cpair{\cunknown}{\ctruth}}}{\hinlp{\cunit}}$};
+    \node (De-Red2) at (0,-4.5) {$\csatisfy{\hinrp{\cpair{\ctruth}{\ctruth}}}{\hinlp{\cunit}}$};
+    \node (De) at (0,-3.75) {$?::xs \longrightarrow x::xs$};
+
+    \draw [color=hazellightgreen,line width=1,Latex-Latex,double] ($(Red2.west)+(0,0)$) to [out=200,in=160] (De-Red2.west);
+  \end{tikzpicture}
+  \end{center}
+  Third Branch:
+  \begin{center}
+  \begin{tikzpicture}
+    \node (Red3) at (0,-6) {$\csatisfy{\cinr{\cpair{\cnum{1}}{\cinr{\cpair{\cnum{2}}{\ctruth}}}}}{\cor{\hinlp{\cunit}}{\hinrp{\cpair{\cunknown}{\ctruth}}}}$};
+    \node (De-Red3) at (0,-7.5) {$\csatisfy{\cinr{\cpair{\cnum{1}}{\cinr{\cpair{\cnum{2}}{\ctruth}}}}}{\cor{\hinlp{\cunit}}{\hinrp{\cpair{\cfalsity}{\ctruth}}}}$};
+    \node (De) at (0,-6.75) {$?::xs \longrightarrow 2::xs \text{, or } 3::xs \text{, or } ...$};
+    \draw [color=hazellightgreen,line width=1,Latex-Latex,double] ($(Red3.west)+(0,0)$) to [out=200,in=160] (De-Red3.west);
+  \end{tikzpicture}
+  \end{center}
+  Then, we can apply similar checking algorithm as described in Chapter $\textit{Pattern Matching}$ of PFPL \cite{Harper2012}.
+}
+
+\section{Results and Contribution}
+\frame{
+  \frametitle{Conclusion}
+  \begin{itemize}
+    \item Formalize pattern matching with typed holes in a type system
+    \item Develop a theoretical foundation for constant feedback on match expressions
+    \item Implement the type system in a toy programming language
+    (\url{https://github.com/fplab/pattern-paper/tree/master/src})
+  \end{itemize}
+  \pause
+  What is next?
+  \begin{itemize}
+    \item Prove the correctness of checking algorithm
+    \item Integrate it into \textsf{Hazel}
+  \end{itemize}
+}
+
+\section{Bibliography}
+\frame{
+  \frametitle{References}
+
+\small{\bibliographystyle{apalike}
+\bibliography{references}\vspace{1cm}}
+}
+
+
+%\end{darkframes} % Uncomment for dark theme
+
+\end{document}
