@@ -121,7 +121,7 @@ p & ::= &
   \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
   \isFinal{e} \\
   \chrulstyp{\Gamma}{\Delta}{\cfalsity}{rs_{pre}}{\tau}{\xi_{pre}}{\tau'} \\
-  \chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrules{r}{rs_{post}}}{\tau}{\xi_{rest}}{\tau'} \\
+  \chrulstyp{\Gamma}{\Delta}{\cor{\cfalsity}{\xi_{pre}}}{\hrules{r}{rs_{post}}}{\tau}{\xi_{rest}}{\tau'} \\
   \cnotsatisfyormay{e}{\xi_{pre}} \\
   \csatisfyormay{\ctruth}{\cor{\xi_{pre}}{\xi_{post}}}
 }{
@@ -142,9 +142,12 @@ p & ::= &
 
 \fbox{$\chrulstyp{\Gamma}{\Delta}{\xi}{rs}{\tau}{\xi'}{\tau'}$}~~\text{all rules in $rs$ transform values of type $\tau$, constrained by $\xi$, to type $\tau'$}
 \begin{subequations}\label{rules:CTRules}
-\begin{equation}\label{rule:CTZeroRule}
-\inferrule[CTZeroRule]{ }{
-  \chrulstyp{\Gamma}{\Delta}{\xi}{\cdot}{\tau}{\cfalsity}{\tau'}
+\begin{equation}\label{rule:CTOneRules}
+\inferrule[CTOneRules]{
+  \chrultyp{\Gamma}{\Delta}{r}{\tau_1}{\xi_r}{\tau_2} \\
+  \cnotsatisfy{\xi_r}{\xi_{pre}}
+}{
+  \chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrulesP{r}{\cdot}}{\tau_1}{\xi_r}{\tau_2}
 }
 \end{equation}
 \begin{equation}\label{rule:CTRules}
@@ -475,10 +478,10 @@ p & ::= &
 \begin{equation}\label{rule:IMatch}
 \inferrule[IMatch]{
   \isFinal{e} \\
-  \hmaymatch{e}{p_0}
+  \hmaymatch{e}{p_r}
 }{
   \isIndet{
-    \hmatch{e}{\zruls{rs}{\hrul{p_0}{e_0}}{rs'}}
+    \hmatch{e}{\zruls{rs_{pre}}{\hrulP{p_r}{e_r}}{rs_{post}}}
   }
 }
 \end{equation}
@@ -573,27 +576,27 @@ p & ::= &
 \begin{equation}\label{rule:ITSuccMatch}
 \inferrule[ITSuccMatch]{
   \isFinal{e} \\
-  \hpatmatch{e}{p_0}{\theta}
+  \hpatmatch{e}{p_r}{\theta}
 }{
   \htrans{
-    \hmatch{e}{\zruls{rs}{\hrul{p_0}{e_0}}{rs'}}
+    \hmatch{e}{\zruls{rs_{pre}}{\hrulP{p_r}{e_r}}{rs_{post}}}
   }{
-    [\theta](e_0)
+    [\theta](e_r)
   }
 }
 \end{equation}
 \begin{equation}\label{rule:ITFailMatch}
 \inferrule[ITFailMatch]{
   \isFinal{e} \\
-  \hnotmatch{e}{p_0}
+  \hnotmatch{e}{p_r}
 }{
   \htrans{
-    \hmatch{e}{\zruls{rs}{\hrul{p_0}{e_0}}{\hrulesP{r}{rs'}}}
+    \hmatch{e}{\zruls{rs}{\hrulP{p_r}{e_r}}{\hrulesP{r'}{rs'}}}
   }{
     \hmatch{e}{
       \zruls{
-        \rmpointer{\zruls{rs}{\hrul{p_0}{e_0}}{\cdot}}
-      }{r}{rs'}
+        \rmpointer{\zruls{rs}{\hrulP{p_r}{e_r}}{\cdot}}
+      }{r'}{rs'}
     }
   }
 }
