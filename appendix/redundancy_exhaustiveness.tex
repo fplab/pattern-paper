@@ -101,6 +101,8 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{align}
 \end{subequations}
 
+\newpage
+
 \fbox{$\ctruify{\xi_1} = \xi_2$}~~\text{$\xi_2$ is obtained by substituting Unknown for Truth in $\xi_1$}
 \begin{subequations}\label{defn:truify}
 \begin{align}
@@ -133,6 +135,37 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{align}
 \end{subequations}
 
+\newpage
+
+\fbox{$\fsatisfy{e}{\xi}$}
+\begin{subequations}\label{defn:satisfy}
+\begin{align}
+  \fsatisfy{e}{\ctruth} &= \text{true} \label{defn:satisfy-truth}\\
+  \fsatisfy{e}{\cfalsity} &= \text{false} \label{defn:satisfy-falsity}\\
+  \fsatisfy{\hnum{n_1}}{\cnum{n_2}} &= (n_1 ==n_2) \label{defn:num-satisfy-num}\\
+  \fsatisfy{\hnum{n_1}}{\cnotnum{n_2}} &= (n_1 !=n_2) \\
+  \fsatisfy{e}{\cand{\xi_1}{\xi_2}} &= \fsatisfy{e}{\xi_1} \text{ and } \fsatisfy{e}{\xi_2} \\
+  \fsatisfy{e}{\cor{\xi_1}{\xi_2}} &= \fsatisfy{e}{\xi_1} \text{ or } \fsatisfy{e}{\xi_2} \\
+  \fsatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}} &= \fsatisfy{e_1}{\xi_1} \\
+  \fsatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}} &= \fsatisfy{e_2}{\xi_2} \\
+  \fsatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}} &= \fsatisfy{e_1}{\xi_1} \text{ and } \fsatisfy{e_2}{\xi_2} \\
+  \fsatisfy{\hnum{n}}{\cinl{\xi}} &= \text{false} \\
+  \fsatisfy{\hnum{n}}{\cinr{\xi}} &= \text{false} \\
+  \fsatisfy{\hnum{n}}{\cpair{\xi_1}{\xi_2}} &= \text{false} \\
+  \fsatisfy{\hinl{\tau}{e}}{\cnum{n}} &= \text{false} \\
+  \fsatisfy{\hinl{\tau}{e}}{\cnotnum{n}} &= \text{false} \\
+  \fsatisfy{\hinl{\tau}{e}}{\cinr{\xi}} &= \text{false} \\
+  \fsatisfy{\hinl{\tau}{e}}{\cpair{\xi_1}{\xi_2}} &= \text{false} \\
+  \fsatisfy{\hinr{\tau}{e}}{\cnum{n}} &= \text{false} \\
+  \fsatisfy{\hinr{\tau}{e}}{\cnotnum{n}} &= \text{false} \\
+  \fsatisfy{\hinr{\tau}{e}}{\cinl{\xi}} &= \text{false} \\
+  \fsatisfy{\hinr{\tau}{e}}{\cpair{\xi_1}{\xi_2}} &= \text{false} \\
+  \fsatisfy{\hpair{e_1}{e_2}}{\cnum{n}} &= \text{false} \\
+  \fsatisfy{\hpair{e_1}{e_2}}{\cnotnum{n}} &= \text{false} \\
+  \fsatisfy{\hpair{e_1}{e_2}}{\cinl{\xi}} &= \text{false} \\
+  \fsatisfy{\hpair{e_1}{e_2}}{\cinr{\xi}} &= \text{false}
+\end{align}
+\end{subequations}
 \fbox{$\csatisfy{e}{\xi}$}~~\text{Value $e$ satisfies constraint $\xi$}
 \begin{subequations}\label{rules:Satisfy}
 \begin{equation}\label{rule:CSTruth}
@@ -507,6 +540,48 @@ $\arraycolsep=4pt\begin{array}{lll}
   \label{lem:inconsistency-and-entailment}
   Suppose that $\ctruify{\xi} = \xi$. Then $\cincon{\cdual{\xi}}$ iff $\csatisfy{\ctruth}{\xi}$
 \end{lem}
+
+\begin{lem}[Soundness and Completeness of Satisfaction Judgment]
+  \label{lem:sound-complete-satisfy}
+  $\csatisfy{e}{\xi}$ iff $\fsatisfy{e}{\xi}$ returns true.
+\end{lem}
+\begin{proof}
+  We prove soundness and completeness separately.
+  \begin{enumerate}
+    \item Soundness:
+      \begin{pfsteps*}
+      \item $\csatisfy{e}{\xi}$ \BY{assumption} \pflabel{satisfy}
+      \end{pfsteps*}
+      By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfy}.
+      \begin{byCases}
+
+      \savelocalsteps{lem:sound-complete-satisfy-1}
+      \item[\text{(\ref{rule:CSTruth})}]
+        \begin{pfsteps*}
+        \item $\xi = \ctruth$ \BY{assumption}
+        \item $\fsatisfy{e}{\ctruth} = \text{true}$ \BY{Definition \ref{defn:satisfy-truth}}
+        \end{pfsteps*}
+
+      \restorelocalsteps{lem:sound-complete-satisfy-1}
+      \item[\text{(\ref{rule:CSNum})}]
+        \begin{pfsteps*}
+        \item $e = \hnum{n}$ \BY{assumption}
+        \item $\xi = \cnum{n}$ \BY{assumption}
+        \item $\fsatisfy{\hnum{n}}{\cnum{n}} = (n==n) = \text{true}$ \BY{Definition \ref{defn:num-satisfy-num}}
+        \end{pfsteps*}
+
+      \restorelocalsteps{lem:sound-complete-satisfy-1}
+      \item[\text{(\ref{rule:CSNotNum})}]
+        \begin{pfsteps*}
+        \item $e = \hnum{n}$ \BY{assumption}
+        \item $\xi = \cnum{n}$ \BY{assumption}
+        \item $\fsatisfy{\hnum{n}}{\cnum{n}} = (n==n) = \text{true}$ \BY{Definition \ref{defn:num-satisfy-num}}
+        \end{pfsteps*}
+
+      \end{byCases}
+  \end{enumerate}
+  \resetpfcounter
+\end{proof}
 
 \begin{lem}
   \label{lem:satormay-and}
