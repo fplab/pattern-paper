@@ -1,12 +1,15 @@
-% !TEX root= extended-abstract.tex
+% !TEX root= pattern-paper.tex
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \judgbox{\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{rs}{\tau_1}{\xi_{rs}}{\tau_2}}
-{$rs$ is of type $\trulnp{\tau_1}{\tau_2}$, \\ following rules constrained by $\xi_{pre}$ and constrained by $\xi_{rs}$}
+{$rs$ is of type $\trulnp{\tau_1}{\tau_2}$}
 
 \begin{mathpar}
-\Infer{\TZeroRule}{ }{
-  \chrulstyp{\Gamma}{\Delta}{\xi}{\cdot}{\tau_1}{\cfalsity}{\tau_2}
+\Infer{\TOneRules}{
+  \chrultyp{\Gamma}{\Delta}{r}{\tau_1}{\xi_r}{\tau_2} \\
+  \cnotsatisfy{\xi_r}{\xi_{pre}}
+}{
+  \chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrulesP{r}{\cdot}}{\tau_1}{\xi_r}{\tau_2}
 }
 
 \Infer{\TRules}{
@@ -19,6 +22,6 @@
   {\tau_1}{\cor{\xi_r}{\xi_{rs}}}{\tau_2}
 }
 \end{mathpar}
-\caption{Typing of rules}
+\caption{Typing of Rules}
 \label{fig:rulestyp}
 \end{figure}

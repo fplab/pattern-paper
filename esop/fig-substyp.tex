@@ -1,8 +1,12 @@
-% !TEX root= extended-abstract.tex
+% !TEX root= pattern-paper.tex
 
-\begin{figure}[h]
-\judgbox{\hsubstyp{\theta}{\Gamma}}
-{Substitution $\theta$ is of type $\Gamma$}
+\begin{figure}[ht]
+
+\judgbox{
+  \hsubstyp{\theta}{\Gamma}
+}{
+  $\theta$ is of type $\Gamma$
+}
 
 \begin{mathpar}
 \Infer{\STEmpty}{ }{
@@ -16,6 +20,7 @@
   \hsubstyp{\theta , x / e}{\Gamma , x : \tau}
 }
 \end{mathpar}
-\caption{Typing of substitutions}
+
+\caption{Typing of Substitution}
 \label{fig:substyp}
 \end{figure}

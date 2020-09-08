@@ -1,0 +1,195 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+
+\judgbox{\csatisfy{e}{\xi}}{$e$ satisfies $\xi$}
+
+\begin{mathpar}
+\Infer{\CSTruth}{ }{
+  \csatisfy{e}{\ctruth}
+}
+
+\Infer{\CSNum}{ }{
+  \csatisfy{\hnum{n}}{\cnum{n}}
+}
+
+\Infer{\CSNotNum}{
+  n_1 \neq n_2
+}{
+  \csatisfy{\hnum{n_1}}{\cnotnum{n_2}}
+}
+
+\Infer{\CSAnd}{
+  \csatisfy{e}{\xi_1} \\
+  \csatisfy{e}{\xi_2}
+}{
+  \csatisfy{e}{\cand{\xi_1}{\xi_2}}
+}
+
+\Infer{\CSOrL}{
+  \csatisfy{e}{\xi_1}
+}{
+  \csatisfy{e}{\cor{\xi_1}{\xi_2}}
+}
+
+\Infer{\CSOrR}{
+  \csatisfy{e}{\xi_2}
+}{
+  \csatisfy{e}{\cor{\xi_1}{\xi_2}}
+}
+
+\Infer{\CSInl}{
+  \csatisfy{e_1}{\xi_1}
+}{
+  \csatisfy{
+    \hinl{\tau_2}{e_1}
+  }{
+    \cinl{\xi_1}
+  }
+}
+
+\Infer{\CSInr}{
+  \csatisfy{e_2}{\xi_2}
+}{
+  \csatisfy{
+    \hinr{\tau_1}{e_2}
+  }{
+    \cinr{\xi_2}
+  }
+}
+
+\Infer{\CSPair}{
+  \csatisfy{e_1}{\xi_1} \\
+  \csatisfy{e_2}{\xi_2}
+}{
+\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
+}
+\end{mathpar}
+
+\judgbox{\cmaysatisfy{e}{\xi}}{$e$ may satisfy $\xi$}
+
+\begin{mathpar}
+\Infer{\CMSUnknown}{ }{
+  \cmaysatisfy{e}{\cunknown}
+}
+
+\Infer{\CMSExpEHole}{
+  \cnotsatisfy{\hehole{u}}{\xi}
+}{
+  \cmaysatisfy{\hehole{u}}{\xi}
+}
+
+\Infer{\CMSExpHole}{
+  \cnotsatisfy{\hhole{e}{u}}{\xi}
+}{
+  \cmaysatisfy{\hhole{e}{u}}{\xi}
+}
+
+\Infer{\CMSAp}{
+  \cnotsatisfy{\hap{e_1}{e_2}}{\xi}
+}{
+  \cmaysatisfy{\hap{e_1}{e_2}}{\xi}
+}
+
+\Infer{\CMSMatch}{
+  \cnotsatisfy{\hmatch{e}{\zrules}}{\xi}
+}{
+  \cmaysatisfy{\hmatch{e}{\zrules}}{\xi}
+}
+
+\Infer{\CMSAndL}{
+  \cmaysatisfy{e}{\xi_1} \\
+  \csatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
+}
+
+\Infer{\CMSAndR}{
+  \csatisfy{e}{\xi_1} \\
+  \cmaysatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
+}
+
+\Infer{\CMSAnd}{
+  \cmaysatisfy{e}{\xi_1} \\
+  \cmaysatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
+}
+
+\Infer{\CMSOrL}{
+  \cmaysatisfy{e}{\xi_1} \\
+  \cnotsatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}
+}
+
+\Infer{\CMSOrR}{
+  \cnotsatisfy{e}{\xi_1} \\
+  \cmaysatisfy{e}{\xi_2}
+}{
+  \cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}
+}
+
+\Infer{\CMSInl}{
+  \cmaysatisfy{e_1}{\xi_1}
+}{
+  \cmaysatisfy{
+    \hinl{\tau_2}{e_1}
+  }{
+    \cinl{\xi_1}
+  }
+}
+
+\Infer{\CMSInr}{
+  \cmaysatisfy{e_2}{\xi_2}
+}{
+  \cmaysatisfy{
+    \hinr{\tau_1}{e_2}
+  }{
+    \cinr{\xi_2}
+  }
+}
+
+\Infer{\CMSPairL}{
+  \cmaysatisfy{e_1}{\xi_1} \\
+  \csatisfy{e_2}{\xi_2}
+}{
+  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
+}
+
+\Infer{\CMSPairR}{
+  \csatisfy{e_1}{\xi_1} \\
+  \cmaysatisfy{e_2}{\xi_2}
+}{
+  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
+}
+
+\Infer{\CMSPair}{
+  \cmaysatisfy{e_1}{\xi_1} \\
+  \cmaysatisfy{e_2}{\xi_2}
+}{
+  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
+}
+\end{mathpar}
+
+\judgbox{\csatisfyormay{e}{\xi}}{$e$ satisfies or may satisfy $\xi$}
+
+\begin{mathpar}
+\Infer{\CSMSMay}{
+  \cmaysatisfy{e}{\xi}
+}{
+  \csatisfyormay{e}{\xi}
+}
+
+\Infer{\CSMSSat}{
+  \csatisfy{e}{\xi}
+}{
+  \csatisfyormay{e}{\xi}
+}
+\end{mathpar}
+
+  \caption{Satisfaction Judgments}
+  \label{fig:satisfy}
+\end{figure}

@@ -1,0 +1,114 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+
+\judgbox{\isVal{e}}{$e$ is a value}
+
+\begin{mathpar}
+\Infer{\VNum}{ }{
+  \isVal{\hnum{n}}
+}
+
+\Infer{\VLam}{ }{
+  \isVal{\hlam{x}{\tau}{e}}
+}
+
+\Infer{\VPair}{
+  \isVal{e_1} \\
+  \isVal{e_2}
+}{
+  \isVal{\hpair{e_1}{e_2}}
+}
+
+\Infer{\VInl}{
+  \isVal{e}
+}{
+  \isVal{\hinl{\tau}{e}}
+}
+
+\Infer{\VInr}{
+  \isVal{e}
+}{
+  \isVal{\hinr{\tau}{e}}
+}
+\end{mathpar}
+
+\judgbox{\isIndet{e}}{$e$ is indeterminate}
+
+\begin{mathpar}
+\Infer{\IEHole}{ }{
+  \isIndet{\hehole{u}}
+}
+
+\Infer{\IHole}{
+  \isFinal{e}
+}{
+  \isIndet{\hhole{e}{u}}
+}
+
+\Infer{\IApFun}{
+  \isIndet{e_1}
+}{
+  \isIndet{\hap{e_1}{e_2}}
+}
+
+\Infer{\IApArg}{
+  \isVal{e_1} \\ \isIndet{e_2}
+}{
+  \isIndet{\hap{e_1}{e_2}}
+}
+
+\Infer{\IPairL}{
+  \isIndet{e_1}
+}{
+  \isIndet{\hpair{e_1}{e_2}}
+}
+
+\Infer{\IPairR}{
+  \isVal{e_1} \\
+  \isIndet{e_2}
+}{
+  \isIndet{\hpair{e_1}{e_2}}
+}
+
+\Infer{\IInl}{
+  \isIndet{e}
+}{
+  \isIndet{\hinl{\tau}{e}}
+}
+
+\Infer{\IInr}{
+  \isIndet{e}
+}{
+  \isIndet{\hinr{\tau}{e}}
+}
+
+\Infer{\IMatch}{
+  \isFinal{e} \\
+  \hmaymatch{e}{p_r}
+}{
+  \isIndet{
+    \hmatch{e}{\zruls{rs_{pre}}{\hrulP{p_r}{e_r}}{rs_{post}}}
+  }
+}
+\end{mathpar}
+
+\judgbox{\isFinal{e}}{$e$ is final}
+
+\begin{mathpar}
+\Infer{\FVal}{
+  \isVal{e}
+}{
+  \isFinal{e}
+}
+
+\Infer{\FIndet}{
+  \isIndet{e}
+}{
+  \isFinal{e}
+}
+\end{mathpar}
+
+  \caption{Final Expressions}
+  \label{fig:final}
+\end{figure}

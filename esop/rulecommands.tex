@@ -1,3 +1,4 @@
+% !TEX root = pattern-paper.tex
 %% Statics
 
 % typing of internal expressions
@@ -6,8 +7,8 @@
 \newrulecommand{TLam}{TLam}
 \newrulecommand{TAp}{TAp}
 \newrulecommand{TPair}{TPair}
-\newrulecommand{TInL}{TInL}
-\newrulecommand{TInR}{TInR}
+\newrulecommand{TInl}{TInl}
+\newrulecommand{TInr}{TInr}
 \newrulecommand{TMatchZPre}{TMatchZPre}
 \newrulecommand{TMatchNZPre}{TMatchNZPre}
 \newrulecommand{TEHole}{TEHole}
@@ -15,7 +16,7 @@
 
 % typing of rule and rules
 \newrulecommand{TRule}{TRule}
-\newrulecommand{TZeroRule}{TZeroRule}
+\newrulecommand{TOneRules}{TOneRules}
 \newrulecommand{TRules}{TRules}
 
 % typing of pattern
@@ -23,8 +24,8 @@
 \newrulecommand{PTNum}{PTNum}
 \newrulecommand{PTWild}{PTWild}
 \newrulecommand{PTPair}{PTPair}
-\newrulecommand{PTInL}{PTInL}
-\newrulecommand{PTInR}{PTInR}
+\newrulecommand{PTInl}{PTInl}
+\newrulecommand{PTInr}{PTInr}
 \newrulecommand{PTEHole}{PTEHole}
 \newrulecommand{PTHole}{PTHole}
 
@@ -35,28 +36,107 @@
 \newrulecommand{STExtend}{STExtend}
 
 % match
-\newrulecommand{MPVar}{MPVar}
-\newrulecommand{MPNum}{MPNum}
-\newrulecommand{MPWild}{MPWild}
-\newrulecommand{MPPair}{MPPair}
-\newrulecommand{MPInL}{MPInL}
-\newrulecommand{MPInR}{MPInR}
+\newrulecommand{MVar}{MVar}
+\newrulecommand{MNum}{MNum}
+\newrulecommand{MWild}{MWild}
+\newrulecommand{MPair}{MPair}
+\newrulecommand{MInl}{MInl}
+\newrulecommand{MInr}{MInr}
 
 % may match
 \newrulecommand{MMEHole}{MMEHole}
 \newrulecommand{MMHole}{MMHole}
-\newrulecommand{EMMEHole}{EMMEHole}
-\newrulecommand{EMMHole}{EMMHole}
+\newrulecommand{MMExpEHole}{EMMExpEHole}
+\newrulecommand{MMExpHole}{MMExpHole}
 \newrulecommand{MMPairL}{MMPairL}
 \newrulecommand{MMPairR}{MMPairR}
 \newrulecommand{MMPair}{MMPair}
-\newrulecommand{MMInL}{MMInL}
-\newrulecommand{MMInR}{MMInR}
+\newrulecommand{MMInl}{MMInl}
+\newrulecommand{MMInr}{MMInr}
 
 % not match
 \newrulecommand{NMPairL}{NMPairL}
 \newrulecommand{NMPairR}{NMPairR}
 \newrulecommand{NMConfL}{NMConfL}
 \newrulecommand{NMConfR}{NMConfR}
-\newrulecommand{NMInL}{NMInL}
-\newrulecommand{NMInR}{NMInR}
+\newrulecommand{NMInl}{NMInl}
+\newrulecommand{NMInr}{NMInr}
+
+% value
+\newrulecommand{VNum}{VNum}
+\newrulecommand{VLam}{VLam}
+\newrulecommand{VPair}{VPair}
+\newrulecommand{VInl}{VInl}
+\newrulecommand{VInr}{VInr}
+
+% indeterminate
+\newrulecommand{IEHole}{IEHole}
+\newrulecommand{IHole}{IHole}
+\newrulecommand{IApFun}{IApFun}
+\newrulecommand{IApArg}{IApArg}
+\newrulecommand{IPairL}{IPairL}
+\newrulecommand{IPairR}{IPairR}
+\newrulecommand{IInl}{IInl}
+\newrulecommand{IInr}{IInr}
+\newrulecommand{IMatch}{IMatch}
+
+% final
+\newrulecommand{FVal}{FVal}
+\newrulecommand{FIndet}{FIndet}
+
+% step
+\newrulecommand{ITHole}{ITHole}
+\newrulecommand{ITApFun}{ITApFun}
+\newrulecommand{ITApArg}{ITApArg}
+\newrulecommand{ITAp}{ITAp}
+\newrulecommand{ITPairL}{ITPairL}
+\newrulecommand{ITPairR}{ITPairR}
+\newrulecommand{ITInl}{ITInl}
+\newrulecommand{ITInr}{ITInr}
+\newrulecommand{ITExpMatch}{ITExpMatch}
+\newrulecommand{ITSuccMatch}{ITSuccMatch}
+\newrulecommand{ITFailMatch}{ITFailMatch}
+
+% typing of constraints
+\newrulecommand{CTTruth}{CTTruth}
+\newrulecommand{CTFalsity}{CTFalsity}
+\newrulecommand{CTUnknown}{CTUnknown}
+\newrulecommand{CTNum}{CTNum}
+\newrulecommand{CTNotNum}{CTNotNum}
+\newrulecommand{CTAnd}{CTAnd}
+\newrulecommand{CTOr}{CTOr}
+\newrulecommand{CTInl}{CTInl}
+\newrulecommand{CTInr}{CTInr}
+\newrulecommand{CTPair}{CTPair}
+
+% satisfaction judgment
+\newrulecommand{CSTruth}{CSTruth}
+\newrulecommand{CSNum}{CSNum}
+\newrulecommand{CSNotNum}{CSNotNum}
+\newrulecommand{CSAnd}{CSAnd}
+\newrulecommandONE{CSOrL}{CSOrL}
+\newrulecommandONE{CSOrR}{CSOrR}
+\newrulecommand{CSInl}{CSInl}
+\newrulecommand{CSInr}{CSInr}
+\newrulecommand{CSPair}{CSPair}
+
+% maybe satisfaction judgment
+\newrulecommand{CMSUnknown}{CMSUnknown}
+\newrulecommand{CMSExpEHole}{CMSExpEHole}
+\newrulecommand{CMSExpHole}{CMSExpHole}
+\newrulecommand{CMSAp}{CMSAp}
+\newrulecommand{CMSMatch}{CMSMatch}
+\newrulecommand{CMSAndL}{CMSAndL}
+\newrulecommand{CMSAndR}{CMSAndR}
+\newrulecommand{CMSAnd}{CMSAnd}
+\newrulecommand{CMSOrL}{CMSOrL}
+\newrulecommand{CMSOrR}{CMSOrR}
+\newrulecommand{CMSInl}{CMSInl}
+\newrulecommand{CMSInr}{CMSInr}
+\newrulecommand{CMSPairL}{CMSPairL}
+\newrulecommand{CMSPairR}{CMSPairR}
+\newrulecommand{CMSPair}{CMSPair}
+
+% must or maybe satisfaction judgment
+\newrulecommand{CSMSMay}{CSMSMay}
+\newrulecommand{CSMSSat}{CSMSSat}

@@ -1,0 +1,139 @@
+\RequirePackage{etex}
+\documentclass[runningheads,envcountsame,a4paper]{llncs}
+
+\usepackage[T1]{fontenc} % fix missing font cmtt
+\usepackage{amsmath}
+\usepackage{amssymb} % Vdash
+\usepackage{graphicx} % rotatebox
+\usepackage{stmaryrd} % llparenthesis
+\usepackage{anyfontsize} % workaround for font size difference warning
+
+\usepackage{cancel} % slash over symbol
+\usepackage{hyperref}
+\renewcommand\UrlFont{\color{blue}\rmfamily}
+
+\newcommand{\highlight}[1]{\colorbox{yellow}{$\displaystyle #1$}}
+
+\newcommand{\todo}[1]{{\color{red} TODO: #1}}
+
+%% Joshua Dunfield macros
+\def\OPTIONConf{1}
+\usepackage{jdunfield}
+\usepackage{rulelinks} % hyperlink of rule name
+\input{macros}
+\input{rulecommands}
+
+\begin{document}
+  
+\title{Pattern Matching with Typed Holes}
+
+\author{
+  Yongwei Yuan\inst{1} \and 
+}
+\authorrunning{Y. Yuan et al.}
+\institute{
+  Purdue University, West Lafayette, USA \\
+  \email{yuan311@purdue.edu} \and
+  University of Michigan, Ann Arbor, USA
+  \email{\{dmoo,hkpotter,wyuning,comar\}@umich.edu}}
+
+
+\maketitle
+
+\begin{abstract}
+  The abstract should briefly summarize the contents of the paper in
+  15--250 words.
+  
+  \keywords{live programming  \and typed holes \and contextual modal type theory.}
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+Most contemporary programming environments either provide meaningful feedback only for complete programs, or fall back to limited heuristic approaches when the program is incomplete.
+Recent work on modeling incomplete programs as typed expressions with \emph{holes} has focused on tackling this problem. \cite{DBLP:conf/popl/OmarVHAH17} describes a static semantics for incomplete functional programs. Based on that, \cite{DBLP:journals/pacmpl/OmarVCH19} develops a dynamic semantics to evaluate such incomplete programs.
+These foundational treatments are being implemented and extended in the Hazel programming environment (hazel.org).
+
+\begin{figure}[h]
+\begin{minipage}{0.33\textwidth}
+\begin{equation}
+\begin{split}
+  &\mathtt{match} (\hpair{\hinl{\tnum}{\hehole{u}}}{2}) \{\\
+  &|~ \hrul{\hpair{\hinrp{x}}{\_}}{x} \\
+  &|~ \hrul{\hpair{\_}{x}}{x} \\
+  &\}
+\end{split}
+\label{eq:complete}
+\end{equation}
+\end{minipage}%
+\begin{minipage}{0.33\textwidth}
+\begin{equation}
+\begin{split}
+  &\mathtt{match} (\hpair{\hinl{\tnum}{1}}{2}) \{\\
+  &|~ \hrul{\hpair{\hinlp{x}}{\_}}{x} \\
+  &|~ \hrul{\hpair{\_}{\hehole{w}}}{\hehole{u}} \\
+  &\}
+\end{split}
+\label{eq:pathole-exhaustive}
+\end{equation}
+\end{minipage}%
+\begin{minipage}{0.33\textwidth}
+\begin{equation}
+\begin{split}
+  &\mathtt{match} (\hpair{\hinl{\tnum}{1}}{2}) \{\\
+  &|~ \hrul{\hpair{\hinlp{x}}{\_}}{x} \\
+  &|~ \hrul{\hpair{\hinlp{\hehole{w_1}}}{\hehole{w_2}}}{\hehole{u}} \\
+  &\}
+\end{split}
+\label{eq:pathole-redundant}
+\end{equation}
+\end{minipage}%
+\end{figure}
+
+\emph{Pattern matching} is a cornerstone of functional programming languages in the ML family. 
+However, \cite{DBLP:journals/pacmpl/OmarVCH19} only supports simple case analysis on binary sum types and does not support nested patterns nor pattern holes.
+This paper addresses this problem, focusing on adding full ML-style pattern matching with support for pattern holes to the Hazelnut core calculus and implementing 
+this system at full scale into Hazel. Consider the examples below, which contain expression and pattern holes, denoted $\hehole{u}$ (where each hole has a unique name, $u$). 
+
+For the match expression shown in \Eqref{eq:complete}, the scrutinee contains a hole.
+By considering the match two rules in order, we observe that
+no matter how the hole $u$ is filled, $\hpair{\hinl{\tnum}{\hehole{u}}}{2}$ doesn't match $\hpair{\hinrp{x}}{\_}$,
+and always matches $\hpair{\_}{x}$. And thus the value of the match expression is $2$, despite the fact that the program is incomplete.
+If, however, we replaced the pattern in the first rule with $(\hinlp{3}, \_)$, it would be impossible to decide whether the pattern matches
+or not, and so the match expression would be \emph{indeterminate}, i.e. awaiting hole filling.
+%Similarly, if we had replaced the pattern in the first rule with $(\hinlp{x}, \hehole{w})$,
+%then it is impossible to tell whether the pattern hole $w$ will match $2$ or not,
+%so the match would also be indeterminate.
+
+One of the benefits of pattern matching is that it allows for static reasoning about exhaustiveness and redundancy.
+However, reasoning about these matters is subtle and complicated in the presence of holes. 
+For example, consider the problem of checking if the rules in \Eqref{eq:pathole-exhaustive} cover all the possibilities, \ie \emph{exhaustiveness}, or if the second rule in \Eqref{eq:pathole-redundant} can never be reached no matter how the holes are filled, \ie \emph{redundancy}. 
+
+This abstract focuses on the formalism of full-fledged pattern matching with typed holes so that the programming environment could give this sort of feedback even when considering incomplete match expressions.
+
+\section{Live Pattern Matching}
+
+\section{The Internal Language}
+\input{fig-syntax}
+\input{fig-pointer-eraser}
+\paragraph{Overview.}
+\subsection{Typing of Expressions and Patterns}
+\input{fig-exptyp}
+\input{fig-pattyp}
+\subsection{Pattern Matching and Match Constraints}
+\input{fig-substyp}
+\input{fig-patmatch}
+\input{fig-constraint}
+\input{fig-satisfy}
+\subsection{Redundancy Checking in Typing of Rules}
+\input{fig-ruletyp}
+\input{fig-rulestyp}
+\subsection{Exhaustiveness Checking in Typing of a Match Expression}
+Move two typing judgment for match expressions here?
+\subsection{Dynamic Semantics}
+\input{fig-final}
+\input{fig-step}
+\clearpage
+
+\bibliographystyle{splncs04}
+\bibliography{references.bib}
+\end{document}

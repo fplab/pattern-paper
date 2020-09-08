@@ -1,48 +1,51 @@
-% !TEX root= extended-abstract.tex
+% !TEX root= pattern-paper.tex
 
-\begin{figure}[h]
-\judgbox{\hpatmatch{e}{p}{\theta}}
-{$e$ matches $p$, emitting $\theta$}
+\begin{figure}[ht]
+
+\judgbox{
+  \hpatmatch{e}{p}{\theta}
+}{
+  $e$ matches $p$
+}
 
 \begin{mathpar}
-\Infer{\MPVar}{ }{
+\Infer{\MVar}{ }{
   \hpatmatch{e}{x}{x / e}
 }
 
-\Infer{\MPNum}{ }{
+\Infer{\MNum}{ }{
   \hpatmatch{\hnum{n}}{\hnum{n}}{\cdot}
 }
 
-\Infer{\MPWild}{ }{
+\Infer{\MWild}{ }{
   \hpatmatch{e}{\_}{\cdot}
 }
 
-\Infer{\MPPair}{
+\Infer{\MPair}{
   \hpatmatch{e_1}{p_1}{\theta_1} \\
   \hpatmatch{e_2}{p_2}{\theta_2}
 }{
   \hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
 }
 
-\Infer{\MPInL}{
+\Infer{\MInl}{
   \hpatmatch{e}{p}{\theta}
 }{
   \hpatmatch{\hinl{\tau}{e}}{\hinlp{p}}{\theta}
 }
 
-\Infer{\MPInR}{
+\Infer{\MInr}{
   \hpatmatch{e}{p}{\theta}
 }{
   \hpatmatch{\hinr{\tau}{e}}{\hinrp{p}}{\theta}
 }
 \end{mathpar}
-\caption{Successful pattern matching}
-\label{fig:succmatch}
-\end{figure}
 
-\begin{figure}[h]
-\judgbox{\hmaymatch{e}{p}}
-{$e$ may match $p$}
+\judgbox{
+  \hmaymatch{e}{p}
+}{
+  $e$ may match $p$
+}
 
 \begin{mathpar}
 \Infer{\MMEHole}{ }{
@@ -53,13 +56,13 @@
   \hmaymatch{e}{\hhole{p}{w}}
 }
 
-\Infer{\EMMEHole}{
+\Infer{\MMExpEHole}{
   p \neq x, \_
 }{
   \hmaymatch{\hehole{u}}{p}
 }
 
-\Infer{\EMMHole}{
+\Infer{\MMExpHole}{
   p \neq x, \_
 }{
   \hmaymatch{\hhole{e}{u}}{p}
@@ -86,25 +89,24 @@
   \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
 }
 
-\Infer{\MMInL}{
+\Infer{\MMInl}{
   \hmaymatch{e}{p}
 }{
   \hmaymatch{\hinl{\tau}{e}}{\hinlp{p}}
 }
 
-\Infer{\MMInR}{
+\Infer{\MMInr}{
   \hmaymatch{e}{p}
 }{
   \hmaymatch{\hinr{\tau}{e}}{\hinrp{p}}
 }
 \end{mathpar}
-\caption{Maybe pattern matching}
-\label{fig:maymatch}
-\end{figure}
 
-\begin{figure}[h]
-\judgbox{\hnotmatch{e}{p}}
-{$e$ doesn't match $p$}
+\judgbox{
+  \hnotmatch{e}{p}
+}{
+  $e$ does not match $p$
+}
 
 \begin{mathpar}
 \Infer{\NMPairL}{
@@ -127,18 +129,19 @@
   \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
 }
 
-\Infer{\NMInL}{
+\Infer{\NMInl}{
   \hnotmatch{e}{p}
 }{
   \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
 }
 
-\Infer{\NMInR}{
+\Infer{\NMInr}{
   \hnotmatch{e}{p}
 }{
   \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
 }
 \end{mathpar}
-\caption{Failed pattern matching}
-\label{fig:failmatch}
+
+\caption{Three possibilities of Pattern Matching}
+\label{fig:patmatch}
 \end{figure}

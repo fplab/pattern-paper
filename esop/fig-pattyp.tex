@@ -1,8 +1,11 @@
-% !TEX root= extended-abstract.tex
+% !TEX root= pattern-paper.tex
 
-\begin{figure}[h]
-\judgbox{\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}}
-{$p$ matches expression of type $\tau$, with match constraint $\xi$}
+\begin{figure}[ht]
+\judgbox{
+  \chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}
+}{
+  $p$ is of type $\tau$
+}
 
 \begin{mathpar}
 \Infer{\PTVar}{ }{
@@ -17,13 +20,13 @@
   \chpattyp{\_}{\tau}{\ctruth}{\cdot}{\cdot}
 }
 
-\Infer{\PTInL}{
+\Infer{\PTInl}{
   \chpattyp{p}{\tau_1}{\xi}{\Gamma}{\Delta}
 }{
   \chpattyp{\hinlp{p}}{\tsum{\tau_1}{\tau_2}}{\cinl{\xi}}{\Gamma}{\Delta}
 }
 
-\Infer{\PTInR}{
+\Infer{\PTInr}{
   \chpattyp{p}{\tau_2}{\xi}{\Gamma}{\Delta}
 }{
   \chpattyp{\hinrp{p}}{\tsum{\tau_1}{\tau_2}}{\cinr{\xi}}{\Gamma}{\Delta}
@@ -48,6 +51,6 @@
   {\Gamma}{\Delta , w :: \tau'}
 }
 \end{mathpar}
-\caption{Typing of patterns}
+\caption{Typing of Patterns}
 \label{fig:pattyp}
 \end{figure}

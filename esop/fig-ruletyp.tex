@@ -1,17 +1,21 @@
-% !TEX root= extended-abstract.tex
+% !TEX root= pattern-paper.tex
 
-\begin{figure}[h]
-\judgbox{\chrultyp{\Gamma}{\Delta}{r}{\tau_1}{\xi}{\tau_2}}
-{$r$ is of type $\trulnp{\tau_1}{\tau_2}$ and is constrained by $\xi$}
+\begin{figure}[ht]
+  \judgbox{
+    \chrultyp{\Gamma}{\Delta}{\hrulP{p}{e}}{\tau}{\xi}{\tau'}
+  }{
+    $\hrul{p}{e}$ transforms a value of type $\tau$ \\
+    into a value of type $\tau'$
+  }
 
-\begin{mathpar}
-\Infer{\TRule}{
-  \chpattyp{p}{\tau_1}{\xi}{\Gamma_p}{\Delta_p} \\
-  \hexptyp{\Gamma \uplus \Gamma_p}{\Delta \uplus \Delta_p}{e}{\tau_2}
-}{
-  \chrultyp{\Gamma}{\Delta}{\hrul{p}{e}}{\tau_1}{\xi}{\tau_2}
-}
-\end{mathpar}
-\caption{Typing of rule}
-\label{fig:ruletyp}
+  \begin{mathpar}
+    \Infer{\TRule}{
+      \chpattyp{p}{\tau}{\xi}{\Gamma'}{\Delta'} \\
+      \hexptyp{\Gamma \uplus \Gamma'}{\Delta \uplus \Delta'}{e}{\tau'}
+    }{
+      \chrultyp{\Gamma}{\Delta}{\hrulP{p}{e}}{\tau}{\xi}{\tau'}
+    }
+  \end{mathpar}
+  \caption{Typing of a Single Rule}
+  \label{fig:ruletyp}
 \end{figure}
