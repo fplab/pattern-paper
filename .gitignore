@@ -8,6 +8,14 @@
 *.toc
 *.fmt
 
+## auctex files
+auto
+_region_.log
+_region_.pdf
+_region_.prv
+_region_.tex
+prv*
+
 ## Intermediate documents:
 *.dvi
 *-converted-to.*

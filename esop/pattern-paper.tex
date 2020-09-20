@@ -7,10 +7,20 @@
 \usepackage{graphicx} % rotatebox
 \usepackage{stmaryrd} % llparenthesis
 \usepackage{anyfontsize} % workaround for font size difference warning
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{calc,fit,tikzmark,plotmarks,arrows.meta,positioning,overlay-beamer-styles}
+\usepackage[caption=false]{subfig}
 
 \usepackage{cancel} % slash over symbol
 \usepackage{hyperref}
 \renewcommand\UrlFont{\color{blue}\rmfamily}
+
+\usepackage{xcolor}
+\definecolor{hazelgreen}{RGB}{7,63,36}
+\definecolor{hazellightgreen}{RGB}{103,138,97}
+\definecolor{hazelyellow}{RGB}{245,222,179}
+\definecolor{hazellightyellow}{RGB}{254,254,234}
 
 \newcommand{\highlight}[1]{\colorbox{yellow}{$\displaystyle #1$}}
 
@@ -53,42 +63,6 @@ Most contemporary programming environments either provide meaningful feedback on
 Recent work on modeling incomplete programs as typed expressions with \emph{holes} has focused on tackling this problem. \cite{DBLP:conf/popl/OmarVHAH17} describes a static semantics for incomplete functional programs. Based on that, \cite{DBLP:journals/pacmpl/OmarVCH19} develops a dynamic semantics to evaluate such incomplete programs.
 These foundational treatments are being implemented and extended in the Hazel programming environment (hazel.org).
 
-\begin{figure}[h]
-\begin{minipage}{0.33\textwidth}
-\begin{equation}
-\begin{split}
-  &\mathtt{match} (\hpair{\hinl{\tnum}{\hehole{u}}}{2}) \{\\
-  &|~ \hrul{\hpair{\hinrp{x}}{\_}}{x} \\
-  &|~ \hrul{\hpair{\_}{x}}{x} \\
-  &\}
-\end{split}
-\label{eq:complete}
-\end{equation}
-\end{minipage}%
-\begin{minipage}{0.33\textwidth}
-\begin{equation}
-\begin{split}
-  &\mathtt{match} (\hpair{\hinl{\tnum}{1}}{2}) \{\\
-  &|~ \hrul{\hpair{\hinlp{x}}{\_}}{x} \\
-  &|~ \hrul{\hpair{\_}{\hehole{w}}}{\hehole{u}} \\
-  &\}
-\end{split}
-\label{eq:pathole-exhaustive}
-\end{equation}
-\end{minipage}%
-\begin{minipage}{0.33\textwidth}
-\begin{equation}
-\begin{split}
-  &\mathtt{match} (\hpair{\hinl{\tnum}{1}}{2}) \{\\
-  &|~ \hrul{\hpair{\hinlp{x}}{\_}}{x} \\
-  &|~ \hrul{\hpair{\hinlp{\hehole{w_1}}}{\hehole{w_2}}}{\hehole{u}} \\
-  &\}
-\end{split}
-\label{eq:pathole-redundant}
-\end{equation}
-\end{minipage}%
-\end{figure}
-
 \emph{Pattern matching} is a cornerstone of functional programming languages in the ML family. 
 However, \cite{DBLP:journals/pacmpl/OmarVCH19} only supports simple case analysis on binary sum types and does not support nested patterns nor pattern holes.
 This paper addresses this problem, focusing on adding full ML-style pattern matching with support for pattern holes to the Hazelnut core calculus and implementing 
@@ -112,6 +86,149 @@ This abstract focuses on the formalism of full-fledged pattern matching with typ
 
 \section{Live Pattern Matching}
 
+\begin{figure}[ht]
+  \centering
+  \hspace*{\fill}%
+  \subfloat[Incomplete scrutinee\label{fig:scrut-hole}]{%
+    \makebox[1.6\width]{
+      $\begin{aligned}
+        &\match (1::\?) \{ \\
+        &|~ \hrul{\nil}{\text{`first rule'}} \\
+        &|~ \hrul{1::xs}{\text{`second rule'}} \\
+        &|~ \hrul{2::xs}{\text{`third rule'}} \\
+        &\}
+      \end{aligned}$
+    }
+  }%
+  \hfill%
+  \subfloat[Incomplete pattern\label{fig:pat-hole}]{
+    \makebox[1.3\width]{
+      $\begin{aligned}
+        &\match (1::\nil) \{ \\
+        &|~ \hrul{\nil}{\text{`first rule'}} \\
+        &|~ \hrul{\?::xs}{\text{`second rule'}} \\
+        &|~ \hrul{2::xs}{\text{`third rule'}} \\
+        &\}
+      \end{aligned}$
+    }
+  }%
+  \hspace*{\fill}%
+  \caption{Incomplete Match Expressions}
+  \label{fig:exp-pat-hole}
+\end{figure}
+
+\begin{figure}[ht]
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[rotate=-90,mark size=5pt,color=hazellightgreen,shift={(-0.1,-0.2)}] at (pic cs:exp-hole-1) {\pgfuseplotmark{triangle*}};
+    \node[rotate=-90,mark size=5pt,color=hazellightgreen,shift={(-0.1,-0.2)}] at (pic cs:exp-hole-2) {\pgfuseplotmark{triangle*}};
+  \end{tikzpicture}
+
+  \centering
+  \hspace*{\fill}%
+  \captionsetup[subfloat]{labelformat=empty}
+  \subfloat[]{%
+    \makebox[\width]{
+      $\begin{aligned}
+        &\match (1::\?) \{ \\
+        &\tikzmark{exp-hole-1}|~ \hrul{\nil}{\text{`first rule'}} \\
+        &|~ \hrul{1::xs}{\text{`second rule'}} \\
+        &|~ \hrul{2::xs}{\text{`third rule'}} \\
+        &\}
+      \end{aligned}$
+    }
+  }%
+  $\rightarrow$
+  \subfloat[]{
+    \makebox[1.2\width]{
+      $\begin{aligned}
+        &\match (1::\?) \{ \\
+        &|~ \hrul{\nil}{\text{`first rule'}} \\
+        &\tikzmark{exp-hole-2}|~ \hrul{1::xs}{\text{`second rule'}} \\
+        &|~ \hrul{2::xs}{\text{`third rule'}} \\
+        &\}
+      \end{aligned}$
+    }
+  }%
+  $\rightarrow$
+  \subfloat[]{
+    `second rule'
+  }
+  \hspace*{\fill}%
+  \caption{Pattern Matching with Expression Holes}
+  \label{fig:exp-hole-step}
+\end{figure}
+
+\begin{figure}[ht]
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[rotate=-90,mark size=5pt,color=hazellightgreen,shift={(-0.1,-0.2)}] at (pic cs:pat-hole-1) {\pgfuseplotmark{triangle*}};
+    \node[rotate=-90,mark size=5pt,color=hazellightgreen,shift={(-0.1,-0.2)}] at (pic cs:pat-hole-2) {\pgfuseplotmark{triangle*}};
+  \end{tikzpicture}
+
+  \centering
+  \hspace*{\fill}%
+  \captionsetup[subfloat]{labelformat=empty}
+  \subfloat[]{%
+    \makebox[\width]{
+      $\begin{aligned}
+        &\match (1::\nil) \{ \\
+        &\tikzmark{pat-hole-1}|~ \hrul{\nil}{\text{`first rule'}} \\
+        &|~ \hrul{\?::xs}{\text{`second rule'}} \\
+        &|~ \hrul{2::xs}{\text{`third rule'}} \\
+        &\}
+      \end{aligned}$
+    }
+  }%
+  $\rightarrow$
+  \subfloat[]{
+    \makebox[1.2\width]{
+      $\begin{aligned}
+        &\match (1::\nil) \{ \\
+        &|~ \hrul{\nil}{\text{`first rule'}} \\
+        &\tikzmark{pat-hole-2}|~ \hrul{\?::xs}{\text{`second rule'}} \\
+        &|~ \hrul{2::xs}{\text{`third rule'}} \\
+        &\}
+      \end{aligned}$
+    }
+  }%
+  $\rightarrow$
+  \subfloat[]{
+    is indeterminate
+  }
+  \hspace*{\fill}%
+  \caption{Pattern Matching with Expression Holes}
+  \label{fig:exp-hole-step}
+\end{figure}
+\begin{figure}[ht]
+  \centering
+  \hspace*{\fill}%
+  \subfloat[Match expression may be exhaustive.\label{fig:may-exhaust}]{
+    \makebox[1.3\width]{
+      $\begin{aligned}
+        &\match (3::\nil) \{ \\
+        &|~ \hrul{\nil}{\text{'first rule'}} \\
+        &|~ \hrul{1::xs}{\text{'second rule'}} \\
+        &|~ \hrul{\?::xs}{\text{'third rule'}} \\
+        &\}
+      \end{aligned}$
+    }
+  }%
+  \hfill%
+  \subfloat[The third branch may not be redundant.\label{fig:may-not-redundant}]{
+    \makebox[1.3\width]{
+      $\begin{aligned}
+        &\match (1::2::\nil) \{ \\
+        &|~ \hrul{\nil}{\text{'first rule'}} \\
+        &|~ \hrul{\?::xs}{\text{'second rule'}} \\
+        &|~ \hrul{1::2::xs}{\text{'third rule'}} \\
+        &\}
+      \end{aligned}$
+    }
+  }%
+  \hspace*{\fill}%
+  \caption{Static Checking in Incomplete Match Expressions}
+  \label{fig:exh-red-hole}
+\end{figure}
+
 \section{The Internal Language}
 \input{fig-syntax}
 \input{fig-pointer-eraser}
@@ -124,10 +241,10 @@ This abstract focuses on the formalism of full-fledged pattern matching with typ
 \input{fig-patmatch}
 \input{fig-constraint}
 \input{fig-satisfy}
-\subsection{Redundancy Checking in Typing of Rules}
+\subsection{Redundancy Checking and Typing of Rules}
 \input{fig-ruletyp}
 \input{fig-rulestyp}
-\subsection{Exhaustiveness Checking in Typing of a Match Expression}
+\subsection{Exhaustiveness Checking and Typing of a Match Expression}
 Move two typing judgment for match expressions here?
 \subsection{Dynamic Semantics}
 \input{fig-final}
