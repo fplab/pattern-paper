@@ -345,6 +345,13 @@ p & ::= &
 \fbox{$\hnotmatch{e}{p}$}~~\text{$e$ doesn't match $p$}
 \begin{subequations}
 \begin{equation}
+\inferrule[NMNum]{
+  n_1 \neq n_2
+}{
+  \hnotmatch{\hnum{n_1}}{\hnum{n_2}}
+}
+\end{equation}
+\begin{equation}
 \inferrule[NMPair1]{
   \hnotmatch{e_1}{p_1}
 }{
@@ -656,3 +663,8 @@ Proof by induction on two premises.
     \item $\hnotmatch{e}{p}$
   \end{enumerate}
 \end{lem}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "pattern-paper"
+%%% End:

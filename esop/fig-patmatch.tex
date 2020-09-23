@@ -109,6 +109,13 @@
 }
 
 \begin{mathpar}
+
+\Infer{\NMNum}{
+  n_1 \neq n_2
+}{
+  \hnotmatch{\hnum{n_1}}{\hnum{n_2}}
+}
+
 \Infer{\NMPairL}{
   \hnotmatch{e_1}{p_1}
 }{
