@@ -1,6 +1,6 @@
 % !TEX root= pattern-paper.tex
 
-\begin{figure}[h]
+\begin{figure}[ht]
   $\arraycolsep=4pt\begin{array}{lll}
     \tau & ::= &
       \tnum ~\vert~
@@ -17,7 +17,8 @@
       \hpair{e_1}{e_2} \\
       & ~\vert~ &
       \hinl{\tau}{e} ~\vert~
-      \hinr{\tau}{e} ~\vert~
+      \hinr{\tau}{e} \\
+      & ~\vert~ &
       \hmatch{e}{\hat{rs}} \\
       & ~\vert~ &
       \hehole{u} ~\vert~
@@ -39,5 +40,5 @@
       \hhole{p}{w}
     \end{array}$
 \caption{Syntax of the Internal Language}
-\label{fig:pat-constraint}
+\label{fig:syntax}
 \end{figure}
