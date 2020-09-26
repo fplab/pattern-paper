@@ -46,27 +46,26 @@
   \isIndet{\hhole{e}{u}}
 }
 
-\Infer{\IApFun}{
-  \isIndet{e_1}
-}{
-  \isIndet{\hap{e_1}{e_2}}
-}
-
-\Infer{\IApArg}{
-  \isVal{e_1} \\ \isIndet{e_2}
+\Infer{\IAp}{
+  \isIndet{e_1} \\ \isFinal{e_2}
 }{
   \isIndet{\hap{e_1}{e_2}}
 }
 
 \Infer{\IPairL}{
-  \isIndet{e_1}
+  \isIndet{e_1} \\ \isVal{e_2}
 }{
   \isIndet{\hpair{e_1}{e_2}}
 }
 
 \Infer{\IPairR}{
-  \isVal{e_1} \\
-  \isIndet{e_2}
+  \isVal{e_1} \\ \isIndet{e_2}
+}{
+  \isIndet{\hpair{e_1}{e_2}}
+}
+
+\Infer{\IPair}{
+  \isIndet{e_1} \\ \isIndet{e_2}
 }{
   \isIndet{\hpair{e_1}{e_2}}
 }

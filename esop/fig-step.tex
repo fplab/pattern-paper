@@ -18,14 +18,14 @@
 }
 
 \Infer{\ITApArg}{
-  \isVal{e_1} \\
+  \isFinal{e_1} \\
   \htrans{e_2}{e_2'}
 }{
   \htrans{\hap{e_1}{e_2}}{\hap{e_1}{e_2'}}
 }
 
 \Infer{\ITAp}{
-  \isVal{e_2}
+  \isFinal{e_2}
 }{
   \hap{\hlam{x}{\tau}{e_1}}{e_2} \mapsto
     [e_2/x]e_1
@@ -38,7 +38,7 @@
 }
 
 \Infer{\ITPairR}{
-  \isVal{e_1} \\
+  \isFinal{e_1} \\
   \htrans{e_2}{e_2'}
 }{
   \htrans{\hpair{e_1}{e_2}}{\hpair{e_1}{e_2'}}
