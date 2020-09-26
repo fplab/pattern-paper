@@ -87,37 +87,6 @@ This abstract focuses on the formalism of full-fledged pattern matching with typ
 \section{Live Pattern Matching}
 
 \begin{figure}[ht]
-  \centering
-  \hspace*{\fill}%
-  \subfloat[Incomplete scrutinee\label{fig:scrut-hole}]{%
-    \makebox[1.6\width]{
-      $\begin{aligned}
-        &\match (1::\?) \{ \\
-        &|~ \hrul{\nil}{\text{`first rule'}} \\
-        &|~ \hrul{1::xs}{\text{`second rule'}} \\
-        &|~ \hrul{2::xs}{\text{`third rule'}} \\
-        &\}
-      \end{aligned}$
-    }
-  }%
-  \hfill%
-  \subfloat[Incomplete pattern\label{fig:pat-hole}]{
-    \makebox[1.3\width]{
-      $\begin{aligned}
-        &\match (1::\nil) \{ \\
-        &|~ \hrul{\nil}{\text{`first rule'}} \\
-        &|~ \hrul{\?::xs}{\text{`second rule'}} \\
-        &|~ \hrul{2::xs}{\text{`third rule'}} \\
-        &\}
-      \end{aligned}$
-    }
-  }%
-  \hspace*{\fill}%
-  \caption{Incomplete Match Expressions}
-  \label{fig:exp-pat-hole}
-\end{figure}
-
-\begin{figure}[ht]
   \begin{tikzpicture}[remember picture, overlay]
     \node[rotate=-90,mark size=5pt,color=hazellightgreen,shift={(-0.1,-0.2)}] at (pic cs:exp-hole-1) {\pgfuseplotmark{triangle*}};
     \node[rotate=-90,mark size=5pt,color=hazellightgreen,shift={(-0.1,-0.2)}] at (pic cs:exp-hole-2) {\pgfuseplotmark{triangle*}};
@@ -130,28 +99,26 @@ This abstract focuses on the formalism of full-fledged pattern matching with typ
     \makebox[\width]{
       $\begin{aligned}
         &\match (1::\?) \{ \\
-        &\tikzmark{exp-hole-1}|~ \hrul{\nil}{\text{`first rule'}} \\
-        &|~ \hrul{1::xs}{\text{`second rule'}} \\
-        &|~ \hrul{2::xs}{\text{`third rule'}} \\
+        &\tikzmark{exp-hole-1}|~ \hrul{\nil}{\none} \\
+        &|~ \hrul{x::xs}{\some{xs}} \\
         &\}
       \end{aligned}$
     }
   }%
-  $\rightarrow$
+  $\mapsto$
   \subfloat[]{
     \makebox[1.2\width]{
       $\begin{aligned}
         &\match (1::\?) \{ \\
-        &|~ \hrul{\nil}{\text{`first rule'}} \\
-        &\tikzmark{exp-hole-2}|~ \hrul{1::xs}{\text{`second rule'}} \\
-        &|~ \hrul{2::xs}{\text{`third rule'}} \\
+        &|~ \hrul{\nil}{\none} \\
+        &\tikzmark{exp-hole-2}|~ \hrul{1::xs}{\some{xs}} \\
         &\}
       \end{aligned}$
     }
   }%
-  $\rightarrow$
+  $\mapsto$
   \subfloat[]{
-    `second rule'
+    $\some{?}$
   }
   \hspace*{\fill}%
   \caption{Pattern Matching with Expression Holes}
@@ -171,62 +138,86 @@ This abstract focuses on the formalism of full-fledged pattern matching with typ
     \makebox[\width]{
       $\begin{aligned}
         &\match (1::\nil) \{ \\
-        &\tikzmark{pat-hole-1}|~ \hrul{\nil}{\text{`first rule'}} \\
-        &|~ \hrul{\?::xs}{\text{`second rule'}} \\
-        &|~ \hrul{2::xs}{\text{`third rule'}} \\
+        &\tikzmark{pat-hole-1}|~ \hrul{\nil}{\none} \\
+        &|~ \hrul{\?::xs}{\some{xs}} \\
         &\}
       \end{aligned}$
     }
   }%
-  $\rightarrow$
+  $\mapsto$
   \subfloat[]{
     \makebox[1.2\width]{
       $\begin{aligned}
         &\match (1::\nil) \{ \\
-        &|~ \hrul{\nil}{\text{`first rule'}} \\
-        &\tikzmark{pat-hole-2}|~ \hrul{\?::xs}{\text{`second rule'}} \\
-        &|~ \hrul{2::xs}{\text{`third rule'}} \\
+        &|~ \hrul{\nil}{\none} \\
+        &\tikzmark{pat-hole-2}|~ \hrul{\?::xs}{\some{xs}} \\
         &\}
       \end{aligned}$
     }
   }%
-  $\rightarrow$
-  \subfloat[]{
-    is indeterminate
-  }
+  $\not\mapsto$(indeterminate)
   \hspace*{\fill}%
-  \caption{Pattern Matching with Expression Holes}
+  \caption{Pattern Matching with Pattern Holes}
   \label{fig:pat-hole-step}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
   \hspace*{\fill}%
-  \subfloat[Match expression may be exhaustive.\label{fig:may-exhaust}]{
-    \makebox[1.3\width]{
+  \subfloat[May or may not be exhaustive.\label{fig:may-exhaustive}]{
+    \makebox[2\width]{
       $\begin{aligned}
-        &\match (3::\nil) \{ \\
-        &|~ \hrul{\nil}{\text{'first rule'}} \\
-        &|~ \hrul{1::xs}{\text{'second rule'}} \\
-        &|~ \hrul{\?::xs}{\text{'third rule'}} \\
+        &\match (1::\nil) \{ \\
+        &|~ \hrul{\nil}{\none} \\
+        &|~ \hrul{\?::xs}{\some{xs}} \\
         &\}
       \end{aligned}$
     }
   }%
   \hfill%
-  \subfloat[The third branch may not be redundant.\label{fig:may-not-redundant}]{
-    \makebox[1.3\width]{
+  \subfloat[Must not be exhaustive.\label{fig:not-exhasutive}]{
+    \makebox[2\width]{
       $\begin{aligned}
-        &\match (1::2::\nil) \{ \\
-        &|~ \hrul{\nil}{\text{'first rule'}} \\
-        &|~ \hrul{\?::xs}{\text{'second rule'}} \\
-        &|~ \hrul{1::2::xs}{\text{'third rule'}} \\
+        &\match (1::\nil) \{ \\
+        &|~ \hrul{\nil}{\none} \\
+        &|~ \hrul{1::\?}{\?} \\
         &\}
       \end{aligned}$
     }
   }%
   \hspace*{\fill}%
-  \caption{Static Checking in Incomplete Match Expressions}
+  \caption{Exhaustiveness Checking in Incomplete Match Expressions}
+  \label{fig:exh-hole}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \hspace*{\fill}%
+  \subfloat[May or may not be redundant.\label{fig:may-redundant}]{
+    \makebox[1.3\width]{
+      $\begin{aligned}
+        &\match (1::2::\nil) \{ \\
+        &|~ \hrul{\nil}{\none} \\
+        &|~ \hrul{x::\?}{\?} \\
+        &|~ \hrul{1::xs}{\some{2::xs}} \\
+        &\}
+      \end{aligned}$
+    }
+  }%
+  \hfill%
+  \subfloat[Must be redundant.\label{fig:redundant}]{
+    \makebox[1.3\width]{
+      $\begin{aligned}
+        &\match (1::2::\nil) \{ \\
+        &|~ \hrul{\nil}{\none} \\
+        &|~ \hrul{x::xs}{\some{xs}} \\
+        &|~ \hrul{\?::xs}{\some{xs}} \\
+        &\}
+      \end{aligned}$
+    }
+  }%
+  \hspace*{\fill}%
+  \caption{Redundancy Checking in Incomplete Match Expressions}
   \label{fig:exh-red-hole}
 \end{figure}
 
