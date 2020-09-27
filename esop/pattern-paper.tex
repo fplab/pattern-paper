@@ -84,7 +84,7 @@ For example, consider the problem of checking if the rules in \Eqref{eq:pathole-
 
 This abstract focuses on the formalism of full-fledged pattern matching with typed holes so that the programming environment could give this sort of feedback even when considering incomplete match expressions.
 
-\section{Live Pattern Matching}
+\section{Live Pattern Matching}\label{sec:examples}
 
 \begin{figure}[ht]
   \begin{tikzpicture}[remember picture, overlay]
@@ -218,15 +218,16 @@ This abstract focuses on the formalism of full-fledged pattern matching with typ
   }%
   \hspace*{\fill}%
   \caption{Redundancy Checking in Incomplete Match Expressions}
-  \label{fig:exh-red-hole}
+  \label{fig:red-hole}
 \end{figure}
 
 \section{The Core Calculus}
 With the intuition developed in the previous section, we can formally specify
-what we mean by pattern matching with holes and also build the core calculus to
+what we mean by pattern matching with holes and also build the type system to
 give eager feedback while the user is programming.
+
 \input{fig-syntax}
-\input{fig-pointer-eraser}
+
 \paragraph{Overview.}
 The syntax of the core calculus is given in \figurename~\ref{fig:syntax}. To
 balance simplicity and power of pattern matching with holes, we use number as
@@ -245,42 +246,71 @@ also involve holes and are assigned corresponding types (see Sec.~\ref{sec:stati
 Pattern matching happens during runtime and the dynamic semantics motivates the
 design of the static semantics in Sec.~\ref{sec:statics}. And thus, we start by
 taking a step further from the examples shown in
-\listfigurename~\ref{fig:pat-hole-step},\ref{fig:exp-hole-step} and formalize
-the heuristic in the dynamic semantics of the language.
+\listfigurename~\ref{fig:exp-hole-step},\ref{fig:pat-hole-step}, and formalize
+the heuristic in the stepping judgment.
+
+\input{fig-pointer-eraser}
+\input{fig-step}
+
+In Sec.~\ref{sec:examples}, we use a rule pointer to simulate the process in
+which we consider the rules in order. However in the syntax of the core
+calculus, we use zipper rules of the form $\zrulsP{rs}{r}{rs}$ in match
+expressions to represent the intermediate states when we are performing pattern
+matching. The former $rs$ represents the preceding rules that has already been
+considered and fails to match the scrutinee; the rule $r$ in the middle
+represents the current rule being considered; the latter $rs$ represents the
+remaining rules to be considered. \figurename~\ref{fig:pointer-eraser} defines a helper function to flatten the zipper rules. Corresponding to moving the rule pointer, we
+can append the current rule after the preceding rules, and regard the initial
+rule in the remaining rule as the new current rule. The conclusion of
+\ITFailMatch demonstrates how it works. 
 
 \input{fig-final}
-\figurename~\ref{fig:final} defines the judgment $\isFinal{e}$, which closely
-follows \cite{DBLP:journals/pacmpl/OmarVCH19}. \textit{Final} expressions are
-those who cannot be further evaluated given the current program. There are two
-classes of final expressions, \textit{values} and \textit{indeterminate}
-expressions. Ideally, running a program will give us a value. However, since
-there might be holes in the program. We regard those programs that we cannot
-obtain a value due to unfilled holes as indeterminate, denoted as
-$\isIndet{e}$. Rules \IEHole and \IHole specify that an empty hole is always
-indeterminate while a non-empty hole is indeterminate when the inner expression
-is final. Rule \IMatch specifies that a match expression is indeterminate when
-its scrutinee is final and it is not determined yet whether the scrutinee
-matches the pattern in the current rule or not, which will be discussed in
-detail in the next paragraph.
 
-\input{fig-patmatch} \figurename~\ref{fig:patmatch} specifies the three
-possible results of pattern matching. We consider a final expression $e$ and a
-pattern $p$ that are of the same type (required by Rules \TMatchZPre and
-\TMatchNZPre). The judgment $\hpatmatch{e}{p}{\theta}$ denotes that $e$ matches
-$p$, emitting a substitution of variables in $p$, while the judgment
-$\hnotmatch{e}{p}$ denotes that $e$ doesn't match $p$. Notably, we introduce
-the third possibility $\hmaymatch{e}{p}$ --- $e$ may match $p$, which is also
-the \textit{key concept} in pattern matching with holes. Rules \MMEHole and
-\MMHole specifies that any final expression may match a pattern hole,
-regardless of whether it is empty or non-empty. Rules \MMExpEHole and
-\MMExpHole specifies that an expression hole, regardless of whether it is empty
-or non-empty, may match any pattern except variable patterns and wild card
-patterns. It is because Rules \MVar and \MWild specifies any final expression
-satisfies a variable pattern or a wildcard pattern, and it does not make sense
-to allow $\hpatmatch{e}{p}{\theta}$ and $\hmaymatch{e}{p}$ at the same time.
-Actually, the three possible results of pattern matching are mutually exclusive
-and at least one of judgment can be derived, which plays an important role in
-ensuring \theoremname~\ref{thrm:determinism}.
+\figurename~\ref{fig:step} defines the stepping judgment
+$\htrans{e}{e'}$. We will focus on stepping judgments of match expressions.
+Rule \ITExpMatch specifies that the match expression can take a step as its its
+scrutinee can take a step. Note that Rule \ITFailMatch and Rule \ITSuccMatch
+share the premise, $\isFinal{e}$, which is defined in \figurename~\ref{fig:final}. It
+means that expression $e$ is \textit{final} in the sense that it is either already a
+\textit{value} or \textit{indeterminate}, \ie, cannot be evaluated further due to unfilled holes
+\cite{DBLP:journals/pacmpl/OmarVCH19}. And only when the scrutinee is final,
+shall we consider the constinuent rules of the match expression in order. As in
+the examples shown in \listfigurename~\ref{fig:exp-hole-step},\ref{fig:pat-hole-step},
+
+\begin{itemize}
+  \item
+    if the final scrutinee does not match the pattern in the current rule,
+    then we move the pointer to the next rule (Rule \ITFailMatch)
+
+  \item
+    if the final scrutinee does match the pattern in the current rule, 
+    then we take the emitted substitution $\theta$ and apply it on the subexpression of that rule (Rule \ITSuccMatch)
+
+  \item 
+    if the final scrutinee may or may not match the pattern in the current rule,
+    then the match expression is said to be indeterminate (Rule \IMatch)
+\end{itemize}
+
+\input{fig-patmatch}
+
+\figurename~\ref{fig:patmatch} defines three judgments corresponding to the
+three possible results of pattern matching. We consider a final scrutinee $e$
+and a pattern $p$ that are of the same type (see Sec.~\ref{sec:statics}). The
+judgment $\hpatmatch{e}{p}{\theta}$ denotes that $e$ matches $p$, emitting a
+substitution of variables in $p$, while the judgment $\hnotmatch{e}{p}$ denotes
+that $e$ doesn't match $p$. Notably, we introduce the third possibility
+$\hmaymatch{e}{p}$ --- $e$ may match $p$, which is also the \textit{key
+concept} in pattern matching with holes. Rules \MMEHole and \MMHole specifies
+that any final expression may match a pattern hole, regardless of whether it is
+empty or non-empty. Rules \MMExpEHole and \MMExpHole specifies that an
+expression hole, regardless of whether it is empty or non-empty, may match any
+pattern except variable patterns and wild card patterns. It is because Rules
+\MVar and \MWild specifies any final expression satisfies a variable pattern or
+a wildcard pattern, and it does not make sense to allow
+$\hpatmatch{e}{p}{\theta}$ and $\hmaymatch{e}{p}$ at the same time. Actually,
+the three possible results of pattern matching are mutually exclusive and at
+least one of judgment can be derived, which plays an important role in ensuring
+\theoremname~\ref{thrm:determinism}.
 
 \begin{lemma}[Matching Determinism]
   \label{lem:match-determinism}
@@ -292,20 +322,6 @@ ensuring \theoremname~\ref{thrm:determinism}.
   \end{enumerate}
 \end{lemma}
 
-\input{fig-step}
-\figurename~\ref{fig:step} defines the stepping rules. Rule
-\ITHole specifies that a non-empty hole can take a step as long as its inner
-expression can take a step. As shown in Rule \THole, a non-empty hole result
-from incorrect type of its inner expression, which is still well-typed on its
-own. Therefore, we try out best to evaluate non-empty holes. Now, we take a
-closer look at match expressions. Rules \ITExpMatch, \ITSuccMatch, and
-\ITFailMatch specifies that in a match expression, we first evaluate its
-scrutinee until it is final, then we consider each rule in order. If the final
-scrutinee doesn't match the pattern in the current rule (Rule \ITFailMatch),
-then we leave the current rule in the zipper rules and simply move the pointer
-to the next rule. If the final scrutinee does match the pattern in the current
-rule (Rule \ITSuccMatch), then we take the emitted substitution $\theta$ and
-apply on the subexpression of that rule.
 
 \begin{theorem}[Determinism]
   \label{thrm:determinism}
@@ -317,58 +333,93 @@ apply on the subexpression of that rule.
   \end{enumerate}
 \end{theorem}
 
-\subsection{Static Semantics}\label{sec:statics}
+\todo{State progress theorem instead of determinism or both?}
 
-We closely follow the type system of the internal language of \textsf{Hazel} and inherit the usage of variable contexts $\Gamma$ and hole contexts $\Delta$.
-\cite{DBLP:journals/pacmpl/OmarVCH19}
-
-\input{fig-exptyp}
-
-\figurename~\ref{fig:exptyp} defines the typing judgment of expressions. Rules
-\TEHole and \THole specifies that both empty holes and non-empty holes can be
-any type as we wish. In this way, any incomplete program could be type checked.
-However, there are cases where expressions may be not well-typed, \ie, the
-typing judgment cannot be derived. Rules \TMatchZPre and \TMatchNZPre specifies
-that only when its constituent rules either must be exhaustive or may be
-exhaustive, can the match expression be well-typed. This ensures that there is
-at least one rule whose pattern does match or may match the final scrutinee and
-thus the pattern matching either results in a successful match (Rule
-\ITSuccMatch) or an indeterminate match expression (Rule \IMatch).
+\begin{lemma}[Matching Progress]
+  \label{lem:match-progress}
+  If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta'}$
+  then $\hnotmatch{e}{p}$ or $\hmaymatch{e}{p}$ or $\hpatmatch{e}{p}{\theta}$ for some $\theta$
+\end{lemma}
 
 \begin{theorem}[Progress]
   \label{thrm:progress}
   If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then either $\isFinal{e}$ or $\htrans{e}{e'}$ for some $e'$.
 \end{theorem}
 
-\input{fig-substyp}
+\subsection{Static Semantics}\label{sec:statics}
 
-\begin{lemma}[Substitution]
-  \label{lem:substitution}
-  If $\hexptyp{\Gamma, x : \tau}{\Delta}{e_0}{\tau_0}$ and $\hexptyp{\Gamma}{\Delta}{e}{\tau}$
-  then $\hexptyp{\Gamma}{\Delta}{[e/x]e_0}{\tau_0}$
-\end{lemma}
+We have already introduced how pattern matching with holes works in dynamic
+semantics. However, in order to do exhaustiveness checking and redundancy
+checking of match expressions in \listfigurename~\ref{fig:exh-hole},
+\ref{fig:red-hole}, we need to predict the result of pattern matching in static
+semantics. We start by introducing \textit{match constraint language}, which
+extends the idea in \cite{Harper2012}. Then, we build a similar type system to
+\cite{DBLP:journals/pacmpl/OmarVCH19} by defining typing judgments for both
+patterns and expressions. The former generates variable contexts $\Gamma$ and
+hole contexts $\Delta$ (see \figurename~\ref{fig:pattyp}) while the latter one
+take variable contexts $\Gamma$ and hole contexts $\Delta$ as hypothesis (see
+\figurename~\ref{fig:exptyp}).
 
-\begin{lemma}[Simultaneous Substitution]
-  \label{lem:simult-substitution}
-  If $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau}$ and $\hsubstyp{\theta}{\Gamma'}$
-  then $\hexptyp{\Gamma}{\Delta}{[\theta]e}{\tau}$
-\end{lemma}
+\subsubsection{Match Constraint Language}\label{sec:constraint}
+\input{fig-constraint}
 
+\figurename~\ref{fig:constraint} gives the syntax of match constraint, which is
+used to identify a subset of the final expressions of a type. The judgment
+$\ctyp{\xi}{\tau}$ specifies that constraint $\xi$ constrains the final
+expressions of type $\tau$. The dual of $\xi$, $\cdual{\xi}$ represents the
+complement of the subset identified by $\xi$ under the set of the final
+expressions of a type.
+
+\subsubsection{Typing of Patterns}
 \input{fig-pattyp}
 
-\figurename~\ref{fig:pattyp} defines the typing judgment of patterns. Unlike
-expressions, we should think of the typing judgment of patterns as, if pattern
-$p$ is assigned type $\tau$, then we collect the typing for the pattern
-variables and pattern holes in $p$ and generate the corresponding variable
-context $\Gamma$ and hole context $\Delta$. Besides two contexts, we emit a
-constraint $\xi$ to represent the set of expressions that match $p$. We will
-discuss match constraint language in detail in Sec.~\ref{sec:constraint}.
+\figurename~\ref{fig:pattyp} defines the typing judgment for patterns and
+connects constraints with patterns. When pattern $p$ is assigned type $\tau$,
+we collect the typing for the pattern variables and pattern holes in $p$ and
+generate the corresponding variable context $\Gamma$ and hole context $\Delta$.
+Besides two contexts, we emit a constraint $\xi$ to identify the set of final
+expressions that match $p$. Rules \PTEHole and Rules \PTHole specifies that
+pattern holes emits \textit{Unknown} constraint, $\cunknown$. That means, the
+set of final expressions that matches the pattern is yet to be identified, we
+will see how it is used in \figurename~\ref{fig:satisfy}.
 
-\begin{lemma}[Substitution Typing]
-  \label{lem:subs-typing}
-  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$
-  then $\hsubstyp{\theta}{\Gamma}$
+\subsubsection{Satisfaction Judgments}
+\input{fig-satisfy}
+
+\figurename~\ref{fig:satisfy} defines satisfaction judgments.
+\todo{satisfy and may satisfy}
+
+\lemmaname~\ref{lem:const-matching-coherence} establishes a correspondence
+between pattern matching results and satisfaction judgments. That makes
+reasoning pattern matching in type system possible and helps prove
+\theoremname~\ref{thrm:preservation}.
+
+\begin{lemma}[Matching Coherence of Constraint]
+  \label{lem:const-matching-coherence}
+  Suppose that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$. Then we have
+  \begin{enumerate}
+  \item $\csatisfy{e}{\xi}$ iff $\hpatmatch{e}{p}{\theta}$
+  \item $\csatisfy{e}{\cdual{\xi}}$ iff $\hnotmatch{e}{p}$
+  \item $\cmaysatisfy{e}{\xi}$ iff $\hmaymatch{e}{p}$
+  \end{enumerate}
 \end{lemma}
+
+The following two definitions take advantage satisfaction judgments and
+corresponds to redundancy and exhaustiveness respectively. We will see how they
+can be determined in Sec.~\ref{sec:algorithm}
+
+\begin{definition}[Entailment of Constraints]
+  \label{defn:const-entailment}
+  Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$.
+  Then $\csatisfy{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$
+\end{definition}
+
+\begin{definition}[Not Not Entailment of Constraints]
+  \label{defn:nn-entailment}
+  Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$. Then $\csatisfyormay{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfyormay{e}{\xi_2}$ 
+\end{definition}
+
+\subsubsection{Typing of Rules and Redundancy Checking}
 
 \input{fig-ruletyp} 
 
@@ -383,24 +434,76 @@ subexpression. Also, a rule inherits the constraint from its pattern.
 \figurename~\ref{fig:rulestyp} defines the typing judgment of a series of rules
 that at least has one rule. Compared to a single rule, the form of the typing
 judgment of rules is slightly different and involves two constraint components,
-where $\xi_{pre}$ represent the constraints emitted from its preceding rules
-and $\xi_{rs}$ represents the constraint emitted from the series of rules being
-type checked. As we build up the rules, we check if the initial rule is
-redundant with respect to its preceding rules, and the premise in both two
-Rules, $\cnotsatisfy{\xi_r}{\xi_{pre}}$, corresponds to such a redundancy
-checking. Rule \TOneRules specifies that for \todo{single rules}, we can simply
-inherit $\xi_r$ emitted from typing of $r$ and check the redundancy of $r$.
-Rule \TRules specifies that we collect the $\xi_r$ and concatenate it with
-$\xi_{pre}$ as the new input to the typing judgment of $rs$ and then wait for
-the output $\xi_rs$ and concatenate it with $\xi_r$ to complete the conclusion.
+where $\xi_{pre}$ represent the constraints emitted from its preceding rules and
+$\xi_{rs}$ represents the constraint emitted from the series of rules being type
+checked. As we build up the rules, we check if the initial rule is redundant
+with respect to its preceding rules, and the premise in both two Rules,
+$\cnotsatisfy{\xi_r}{\xi_{pre}}$. It states that the judgment
+$\csatisfy{\xi_r}{\xi_{pre}}$, which corresponds to redundancy, is not
+derivable. In other words, rule $r$ either cannot be redundant or, may or may
+not be redundant, with respect to it preceding rules. Rule \TOneRules specifies
+that for \todo{single rules}, we can simply inherit $\xi_r$ emitted from typing
+of $r$ and check the redundancy of $r$. Rule \TRules specifies that we collect
+the $\xi_r$ and concatenate it with $\xi_{pre}$ as the new input to the typing
+judgment of $rs$ and then wait for the output $\xi_rs$ and concatenate it with
+$\xi_r$ to complete the conclusion.
 
-\section{Match Constraint Language}\label{sec:constraint}
-\subsection{Typing of Constraints}
-\input{fig-constraint}
-\subsection{Pattern Matching and Satisfaction Judgments}
-\input{fig-satisfy}
-\subsection{Redundancy Checking and Exhaustiveness Checking}
-Move two typing judgment for match expressions here?
+\subsubsection{Typing of Expressions and Exhaustiveness Checking}
+
+We have already shown how to collect constraints from rules in the typing
+judgment of rules. Now we can use collected constraints to check exhaustiveness
+in the typing judgment of match expressions.
+
+\input{fig-exptyp}
+
+\figurename~\ref{fig:exptyp} defines the typing judgment of expressions. Rule
+\TMatchZPre corresponds to the case where we haven't started pattern matching.
+As shown in \definitionname~\ref{defn:nn-entailment}, the premise
+$\csatisfyormay{\ctruth}{\xi}$ ensures that there is at least one rule whose
+pattern does match or may match the final scrutinee and thus the pattern
+matching either results in a successful match (Rule \ITSuccMatch) or an
+indeterminate match expression (Rule \IMatch). Rule \TMatchNZPre corresponds to
+the case where we have already started pattern matching and thus the rule
+pointer is not at the first rule. The premise $\cnotsatisfyormay{e}{\xi_{pre}}$
+ensures that we have already considered the previous rules and none of them
+either match or may match the final scrutinee. These two Rules specifies that
+only when its constituent rules either must be exhaustive or may be exhaustive,
+can the match expression be well-typed.
+
+\theoremname~\ref{thrm:preservation} states that the typing of a expression is
+preserved as we evaluate the expression. The correspondance between satisfaction
+judgment and pattern matching plays an important role in ensuring the
+preservation theorem.
+ 
+\begin{theorem}[Preservation]
+  \label{thrm:preservation}
+  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\htrans{e}{e'}$
+  then $\hexptyp{\cdot}{\Delta}{e'}{\tau}$
+\end{theorem}
+
+\input{fig-substyp}
+
+To prove \theoremname~\ref{thrm:progress}, we need the following lemmas.
+\begin{lemma}[Substitution]
+  \label{lem:substitution}
+  If $\hexptyp{\Gamma, x : \tau}{\Delta}{e_0}{\tau_0}$ and $\hexptyp{\Gamma}{\Delta}{e}{\tau}$
+  then $\hexptyp{\Gamma}{\Delta}{[e/x]e_0}{\tau_0}$
+\end{lemma}
+
+\begin{lemma}[Simultaneous Substitution]
+  \label{lem:simult-substitution}
+  If $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau}$ and $\hsubstyp{\theta}{\Gamma'}$
+  then $\hexptyp{\Gamma}{\Delta}{[\theta]e}{\tau}$
+\end{lemma}
+
+
+\begin{lemma}[Substitution Typing]
+  \label{lem:subs-typing}
+  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$
+  then $\hsubstyp{\theta}{\Gamma}$
+\end{lemma}
+
+\section{Algorithm}\label{sec:algorithm}
 
 \section{Conclusion}
 We can adapt our core calculus to fit in a more expressive setting.
