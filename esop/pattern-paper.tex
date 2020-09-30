@@ -247,22 +247,23 @@ Pattern matching happens during runtime and the dynamic semantics motivates the
 design of the static semantics in Sec.~\ref{sec:statics}. And thus, we start by
 taking a step further from the examples shown in
 \listfigurename~\ref{fig:exp-hole-step},\ref{fig:pat-hole-step}, and formalize
-the heuristic in the stepping judgment.
+the described heuristic.
 
 \input{fig-pointer-eraser}
 \input{fig-step}
 
 In Sec.~\ref{sec:examples}, we use a rule pointer to simulate the process in
-which we consider the rules in order. However in the syntax of the core
+which we consider the rules in order. Correspondingly, in the syntax of the core
 calculus, we use zipper rules of the form $\zrulsP{rs}{r}{rs}$ in match
 expressions to represent the intermediate states when we are performing pattern
 matching. The former $rs$ represents the preceding rules that has already been
 considered and fails to match the scrutinee; the rule $r$ in the middle
 represents the current rule being considered; the latter $rs$ represents the
-remaining rules to be considered. \figurename~\ref{fig:pointer-eraser} defines a helper function to flatten the zipper rules. Corresponding to moving the rule pointer, we
-can append the current rule after the preceding rules, and regard the initial
-rule in the remaining rule as the new current rule. The conclusion of
-\ITFailMatch demonstrates how it works. 
+remaining rules to be considered. \figurename~\ref{fig:pointer-eraser} defines a
+helper function to flatten the zipper rules. If we need to move the rule pointer
+to the next rule, we can append the current rule after the preceding rules, and
+regard the initial rule in the remaining rule as the new current rule. The
+conclusion of Rule \ITFailMatch demonstrates how it works.
 
 \input{fig-final}
 
@@ -296,21 +297,21 @@ the examples shown in \listfigurename~\ref{fig:exp-hole-step},\ref{fig:pat-hole-
 \figurename~\ref{fig:patmatch} defines three judgments corresponding to the
 three possible results of pattern matching. We consider a final scrutinee $e$
 and a pattern $p$ that are of the same type (see Sec.~\ref{sec:statics}). The
-judgment $\hpatmatch{e}{p}{\theta}$ denotes that $e$ matches $p$, emitting a
-substitution of variables in $p$, while the judgment $\hnotmatch{e}{p}$ denotes
-that $e$ doesn't match $p$. Notably, we introduce the third possibility
-$\hmaymatch{e}{p}$ --- $e$ may match $p$, which is also the \textit{key
-concept} in pattern matching with holes. Rules \MMEHole and \MMHole specifies
-that any final expression may match a pattern hole, regardless of whether it is
-empty or non-empty. Rules \MMExpEHole and \MMExpHole specifies that an
-expression hole, regardless of whether it is empty or non-empty, may match any
-pattern except variable patterns and wild card patterns. It is because Rules
-\MVar and \MWild specifies any final expression satisfies a variable pattern or
-a wildcard pattern, and it does not make sense to allow
+judgment $\hpatmatch{e}{p}{\theta}$ denotes that $e$ matches $p$, as witness by
+the substitution $\theta$ defined on the variables in $p$, while the judgment
+$\hnotmatch{e}{p}$ denotes that $e$ doesn't match $p$. Notably, we introduce the
+third possibility $\hmaymatch{e}{p}$ --- $e$ may match $p$, which is also the
+\textit{key concept} in pattern matching with holes. Rules \MMEHole and \MMHole
+specifies that any final expression may match a pattern hole, regardless of
+whether it is empty or non-empty. Rules \MMExpEHole and \MMExpHole specifies
+that an expression hole, regardless of whether it is empty or non-empty, may
+match any pattern except variable patterns and wild card patterns. It is because
+Rules \MVar and \MWild specifies any final expression satisfies a variable
+pattern or a wildcard pattern, and it does not make sense to allow
 $\hpatmatch{e}{p}{\theta}$ and $\hmaymatch{e}{p}$ at the same time. Actually,
 the three possible results of pattern matching are mutually exclusive and at
-least one of judgment can be derived, which plays an important role in ensuring
-\theoremname~\ref{thrm:determinism}.
+least one of judgments can be derived under certain assumptions, as shown in the
+following lemma.
 
 \begin{lemma}[Matching Determinism]
   \label{lem:match-determinism}
@@ -322,6 +323,7 @@ least one of judgment can be derived, which plays an important role in ensuring
   \end{enumerate}
 \end{lemma}
 
+The determinism of pattern matching ensures the determinism of dynamic semantics.
 
 \begin{theorem}[Determinism]
   \label{thrm:determinism}
@@ -348,16 +350,15 @@ least one of judgment can be derived, which plays an important role in ensuring
 
 \subsection{Static Semantics}\label{sec:statics}
 
-We have already introduced how pattern matching with holes works in dynamic
-semantics. However, in order to do exhaustiveness checking and redundancy
+We have already introduced how pattern matching with holes works. However, in order to do exhaustiveness checking and redundancy
 checking of match expressions in \listfigurename~\ref{fig:exh-hole},
 \ref{fig:red-hole}, we need to predict the result of pattern matching in static
 semantics. We start by introducing \textit{match constraint language}, which
 extends the idea in \cite{Harper2012}. Then, we build a similar type system to
 \cite{DBLP:journals/pacmpl/OmarVCH19} by defining typing judgments for both
 patterns and expressions. The former generates variable contexts $\Gamma$ and
-hole contexts $\Delta$ (see \figurename~\ref{fig:pattyp}) while the latter one
-take variable contexts $\Gamma$ and hole contexts $\Delta$ as hypothesis (see
+hole contexts $\Delta$ (see \figurename~\ref{fig:pattyp}) while the latter 
+takes variable contexts $\Gamma$ and hole contexts $\Delta$ as hypothesis (see
 \figurename~\ref{fig:exptyp}).
 
 \subsubsection{Match Constraint Language}\label{sec:constraint}
@@ -386,8 +387,27 @@ will see how it is used in \figurename~\ref{fig:satisfy}.
 \subsubsection{Satisfaction Judgments}
 \input{fig-satisfy}
 
-\figurename~\ref{fig:satisfy} defines satisfaction judgments.
-\todo{satisfy and may satisfy}
+\figurename~\ref{fig:satisfy} defines satisfaction judgments. As we only
+consider final expressions and patterns of the same type when talking about
+pattern matching, a constraint only constrains final expressions of the same
+type. And the satisfaction judgments does not make sense when the expression is
+not final or the expression and the constraint is of different type. The
+judgment $\csatisfy{e}{\xi}$ specifies that expression $e$ satisfies $\xi$ while
+the judgment $\cmaysatisfy{e}{\xi}$ specifies that expression $e$ may or may not
+satisfy $\xi$. The judgment $\csatisfyormay{e}{\xi}$ is the combination of the
+previous two cases. It turns out that the remaining case where
+$\csatisfyormay{e}{\xi}$ is not derivable, can be represented by
+$\csatisfy{e}{\cdual{\xi}}$.
+
+\begin{theorem}[Exclusiveness of Constraint Satisfaction]
+  \label{thrm:exclusive-constraint-satisfaction}
+  If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ then exactly one of the following holds
+  \begin{enumerate}
+  \item $\csatisfy{e}{\xi}$
+  \item $\cmaysatisfy{e}{\xi}$
+  \item $\csatisfy{e}{\cdual{\xi}}$
+  \end{enumerate}
+\end{theorem}
 
 \lemmaname~\ref{lem:const-matching-coherence} establishes a correspondence
 between pattern matching results and satisfaction judgments. That makes
@@ -462,19 +482,14 @@ As shown in \definitionname~\ref{defn:nn-entailment}, the premise
 $\csatisfyormay{\ctruth}{\xi}$ ensures that there is at least one rule whose
 pattern does match or may match the final scrutinee and thus the pattern
 matching either results in a successful match (Rule \ITSuccMatch) or an
-indeterminate match expression (Rule \IMatch). Rule \TMatchNZPre corresponds to
-the case where we have already started pattern matching and thus the rule
-pointer is not at the first rule. The premise $\cnotsatisfyormay{e}{\xi_{pre}}$
-ensures that we have already considered the previous rules and none of them
-either match or may match the final scrutinee. These two Rules specifies that
-only when its constituent rules either must be exhaustive or may be exhaustive,
-can the match expression be well-typed.
+indeterminate match expression (Rule \IMatch). Only when the final scrutinee $e$
+cannot match the pattern $p$, \ie, $\hnotmatch{e}{p}$, can we move the rule
+pointer. By \lemmaname~\ref{lem:match-determinism}, for all patterns $p$ in the
+preceding rules, neither $\hpatmatch{e}{p}{\theta}$ nor $\hmaymatch{e}{p}$ is
+derivable. Then by \lemmaname~\ref{lem:const-matching-coherence}, we can derive the
+premise in Rule \TMatchNZPre, $\cnotsatisfyormay{e}{\xi_{pre}}$. And thus, the
+type of the match expression is preserved as we consider rules in order.
 
-\theoremname~\ref{thrm:preservation} states that the typing of a expression is
-preserved as we evaluate the expression. The correspondance between satisfaction
-judgment and pattern matching plays an important role in ensuring the
-preservation theorem.
- 
 \begin{theorem}[Preservation]
   \label{thrm:preservation}
   If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\htrans{e}{e'}$
@@ -483,11 +498,25 @@ preservation theorem.
 
 \input{fig-substyp}
 
-To prove \theoremname~\ref{thrm:progress}, we need the following lemmas.
+\figurename~\ref{fig:substyp} defines the typing of substitution $\theta$.
+
+To prove \theoremname~\ref{thrm:preservation}, we need the following three lemmas.
+When considering Rule \ITAp, \lemmaname~\ref{lem:substitution} is needed.
+When considering Rule \ITSuccMatch, \lemmaname~\ref{lem:subs-typing} is needed
+to show the typing of substitution $\theta$, and we use
+\lemmaname~\ref{lem:simult-substitution} to show that type is preserved when pattern
+matching succeeds.
+
 \begin{lemma}[Substitution]
   \label{lem:substitution}
   If $\hexptyp{\Gamma, x : \tau}{\Delta}{e_0}{\tau_0}$ and $\hexptyp{\Gamma}{\Delta}{e}{\tau}$
   then $\hexptyp{\Gamma}{\Delta}{[e/x]e_0}{\tau_0}$
+\end{lemma}
+
+\begin{lemma}[Substitution Typing]
+  \label{lem:subs-typing}
+  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta'}$
+  then $\hsubstyp{\theta}{\Gamma}$
 \end{lemma}
 
 \begin{lemma}[Simultaneous Substitution]
@@ -496,15 +525,58 @@ To prove \theoremname~\ref{thrm:progress}, we need the following lemmas.
   then $\hexptyp{\Gamma}{\Delta}{[\theta]e}{\tau}$
 \end{lemma}
 
+\section{De-unknown}\label{sec:algorithm}
 
-\begin{lemma}[Substitution Typing]
-  \label{lem:subs-typing}
-  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$
-  then $\hsubstyp{\theta}{\Gamma}$
+We have already shown in Sec.~\ref{sec:statics} how to check redundancy and
+exhaustiveness using \definitionname~\ref{defn:const-entailment} and
+\definitionname~\ref{defn:nn-entailment}, but it remains unclear how to
+determine whether they are true or false.
+
+\input{fig-truify-falsify}
+
+\figurename~\ref{fig:truify-falsify} defines function $truify$ and $falsify$,
+which substitute unknown constraint with truth constraint $\ctruth$ and falsity
+constraint $\cfalsify$ respectively.
+
+\begin{lemma}
+  Assume $\isVal{e}$. Then $\csatisfyormay{e}{\xi}$ iff $\csatisfy{e}{\ctruify{\xi}}$.
 \end{lemma}
 
-\section{Algorithm}\label{sec:algorithm}
+\begin{lemma}
+  $\csatisfy{e}{\xi}$ iff $\csatisfy{e}{\cfalsify{\xi}}$.
+\end{lemma}
 
+\begin{lemma}
+  Assume $\isVal{e}$ and $\ctruify{\xi}=\xi$. Then $\cnotsatisfy{e}{\xi}$ iff $\csatisfy{e}{\cdual{\xi}}$.
+\end{lemma}
+
+\begin{theorem}
+  $\csatisfy{\xi_r}{\xi_{rs}}$ iff $\csatisfy{\ctruth}{\cor{\cdual{\ctruify{\xi_r}}}{\cfalsify{\xi_{rs}}}}$.
+\end{theorem}
+
+\begin{lemma}
+  $\csatisfyormay{e}{\xi}$ iff $\csatisfyormay{e}{\ctruify{\xi}}$.
+\end{lemma}
+
+\begin{lemma}
+  Assume $\ctruify{\xi}=\xi$. Then $\csatisfyormay{\ctruth}{\xi}$ iff $\csatisfy{\ctruth}{\xi}$.
+\end{lemma}
+
+\begin{theorem}
+  $\csatisfyormay{\ctruth}{\xi}$ iff $\csatisfy{\ctruth}{\ctruify{\xi}}$.
+\end{theorem}
+
+Now we use \textit{incon} judgment to further determine $\csatisfy{\ctruth}{\xi}$.
+
+\input{fig-incon}
+
+\begin{theorem}
+  Assume $\ctruify{\xi}=\xi$. It is decidable whether $\cincon{\xi}$.
+\end{theorem}
+
+\begin{theorem}
+  Assume $\ctruify{\xi}=\xi$. Then $\cincon{\cdual{\xi}}$ iff $\csatisfy{\ctruth}{\xi}$.
+\end{theorem}
 \section{Conclusion}
 We can adapt our core calculus to fit in a more expressive setting.
 \clearpage
