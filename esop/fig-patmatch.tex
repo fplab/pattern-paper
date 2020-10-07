@@ -10,7 +10,7 @@
 
 \begin{mathpar}
 \Infer{\MVar}{ }{
-  \hpatmatch{e}{x}{x / e}
+  \hpatmatch{e}{x}{e / x}
 }
 
 \Infer{\MNum}{ }{
@@ -28,6 +28,14 @@
   \hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
 }
 
+\todo{valid to obtain different conclusion given same premises?}
+\Infer{\MPatPair}{
+  \hpatmatch{\hprl{e}}{p_1}{\theta_1} \\
+  \hpatmatch{\hprr{e}}{p_2}{\theta_2}
+}{
+  \hpatmatch{e}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+}
+\\
 \Infer{\MInl}{
   \hpatmatch{e}{p}{\theta}
 }{
@@ -55,17 +63,41 @@
 \Infer{\MMHole}{ }{
   \hmaymatch{e}{\hhole{p}{w}}
 }
-
+\\
 \Infer{\MMExpEHole}{
-  p \neq x, \_
+  \refutable{p}
 }{
   \hmaymatch{\hehole{u}}{p}
 }
 
 \Infer{\MMExpHole}{
-  p \neq x, \_
+  \refutable{p}
 }{
   \hmaymatch{\hhole{e}{u}}{p}
+}
+
+\Infer{\MMAp}{
+  \refutable{p}
+}{
+  \hmaymatch{\hap{e_1}{e_2}}{p}
+}
+
+\Infer{\MMMatch}{
+  \refutable{p}
+}{
+  \hmaymatch{\hmatch{e}{\zrules}}{p}
+}
+
+\Infer{\MMPrl}{
+  \refutable{p}
+}{
+  \hmaymatch{\hprl{e}}{p}
+}
+
+\Infer{\MMPrr}{
+  \refutable{p}
+}{
+  \hmaymatch{\hprr{e}}{p}
 }
 
 \Infer{\MMPairL}{

@@ -2,7 +2,7 @@
 
 \begin{figure}[ht]
 
-\judgbox{e \mapsto e'}{$e$ takes an instruction transition to $e'$}
+\judgbox{e \mapsto e'}{$e$ takes a step to $e'$}
 
 \begin{mathpar}
 \Infer{\ITHole}{
@@ -42,6 +42,18 @@
   \htrans{e_2}{e_2'}
 }{
   \htrans{\hpair{e_1}{e_2}}{\hpair{e_1}{e_2'}}
+}
+
+\Infer{\ITPrl}{
+  \isFinal{\hpair{e_1}{e_2}}
+}{
+  \htrans{\hprl{\hpair{e_1}{e_2}}}{e_1}
+}
+
+\Infer{\ITPrr}{
+  \isFinal{\hpair{e_1}{e_2}}
+}{
+  \htrans{\hprr{\hpair{e_1}{e_2}}}{e_2}
 }
 
 \Infer{\ITInl}{
@@ -89,6 +101,6 @@
 }
 \end{mathpar}
 
-  \caption{Instruction Transitions}
+  \caption{Stepping}
   \label{fig:step}
 \end{figure}

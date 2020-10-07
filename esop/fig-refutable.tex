@@ -1,0 +1,43 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+\judgbox{
+  \refutable{p}
+}{}
+
+\begin{mathpar}
+\Infer{\RNum}{ }{
+  \refutable{\hnum{n}}
+}
+
+\Infer{\REHole}{ }{
+  \refutable{\hehole{w}}
+}
+
+\Infer{\RHole}{ }{
+  \refutable{\hhole{p}{w}}
+}
+
+\Infer{\RInl}{ }{
+  \refutable{\hinlp{p}}
+}
+
+\Infer{\RInr}{ }{
+  \refutable{\hinrp{p}}
+}
+
+\Infer{\RPairL}{
+  \refutable{p_1}
+}{
+  \refutable{\hpair{p_1}{p_2}}
+}
+
+\Infer{\RPairR}{
+  \refutable{p_2}
+}{
+  \refutable{\hpair{p_1}{p_2}}
+}
+\end{mathpar}
+\caption{Refutable Patterns}
+\label{fig:refutable}
+\end{figure}

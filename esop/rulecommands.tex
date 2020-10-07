@@ -1,3 +1,4 @@
+
 % !TEX root = pattern-paper.tex
 %% Statics
 
@@ -7,6 +8,8 @@
 \newrulecommand{TLam}{TLam}
 \newrulecommand{TAp}{TAp}
 \newrulecommand{TPair}{TPair}
+\newrulecommand{TPrl}{TPrl}
+\newrulecommand{TPrr}{TPrr}
 \newrulecommand{TInl}{TInl}
 \newrulecommand{TInr}{TInr}
 \newrulecommand{TMatchZPre}{TMatchZPre}
@@ -35,8 +38,18 @@
 \newrulecommand{STEmpty}{STEmpty}
 \newrulecommand{STExtend}{STExtend}
 
+% refutable pattern
+\newrulecommand{RNum}{RNum}
+\newrulecommand{REHole}{REHole}
+\newrulecommand{RHole}{RHole}
+\newrulecommand{RInl}{RInl}
+\newrulecommand{RInr}{RInr}
+\newrulecommand{RPairL}{RPairL}
+\newrulecommand{RPairR}{RPairR}
+
 % match
 \newrulecommand{MVar}{MVar}
+\newrulecommand{MPatPair}{MPatPair}
 \newrulecommand{MNum}{MNum}
 \newrulecommand{MWild}{MWild}
 \newrulecommand{MPair}{MPair}
@@ -48,6 +61,10 @@
 \newrulecommand{MMHole}{MMHole}
 \newrulecommand{MMExpEHole}{MMExpEHole}
 \newrulecommand{MMExpHole}{MMExpHole}
+\newrulecommand{MMAp}{MMAp}
+\newrulecommand{MMMatch}{MMMatch}
+\newrulecommand{MMPrl}{MMPrl}
+\newrulecommand{MMPrr}{MMPrr}
 \newrulecommand{MMPairL}{MMPairL}
 \newrulecommand{MMPairR}{MMPairR}
 \newrulecommand{MMPair}{MMPair}
@@ -77,6 +94,10 @@
 \newrulecommand{IPairL}{IPairL}
 \newrulecommand{IPairR}{IPairR}
 \newrulecommand{IPair}{IPair}
+\newrulecommand{IPrlEHole}{IPrlEHole}
+\newrulecommand{IPrlHole}{IPrlHole}
+\newrulecommand{IPrrEHole}{IPrrEHole}
+\newrulecommand{IPrrHole}{IPrrHole}
 \newrulecommand{IInl}{IInl}
 \newrulecommand{IInr}{IInr}
 \newrulecommand{IMatch}{IMatch}
@@ -92,6 +113,8 @@
 \newrulecommand{ITAp}{ITAp}
 \newrulecommand{ITPairL}{ITPairL}
 \newrulecommand{ITPairR}{ITPairR}
+\newrulecommand{ITPrl}{ITPrl}
+\newrulecommand{ITPrr}{ITPrr}
 \newrulecommand{ITInl}{ITInl}
 \newrulecommand{ITInr}{ITInr}
 \newrulecommand{ITExpMatch}{ITExpMatch}
@@ -120,6 +143,7 @@
 \newrulecommand{CSInl}{CSInl}
 \newrulecommand{CSInr}{CSInr}
 \newrulecommand{CSPair}{CSPair}
+\newrulecommand{CSConsPair}{CSConsPair}
 
 % maybe satisfaction judgment
 \newrulecommand{CMSUnknown}{CMSUnknown}
@@ -127,6 +151,8 @@
 \newrulecommand{CMSExpHole}{CMSExpHole}
 \newrulecommand{CMSAp}{CMSAp}
 \newrulecommand{CMSMatch}{CMSMatch}
+\newrulecommand{CMSPrl}{CMSPrl}
+\newrulecommand{CMSPrr}{CMSPrr}
 \newrulecommand{CMSAndL}{CMSAndL}
 \newrulecommand{CMSAndR}{CMSAndR}
 \newrulecommand{CMSAnd}{CMSAnd}

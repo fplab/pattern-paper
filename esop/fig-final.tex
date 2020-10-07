@@ -70,6 +70,23 @@
   \isIndet{\hpair{e_1}{e_2}}
 }
 
+\Infer{\IPrlEHole}{}{
+  \isIndet{\hprl{\hehole{u}}}
+}
+
+\Infer{\IPrlHole}{}{
+  \isIndet{\hprl{\hhole{e}{u}}}
+}
+
+
+\Infer{\IPrrEHole}{}{
+  \isIndet{\hprr{\hehole{u}}}
+}
+
+\Infer{\IPrrHole}{}{
+  \isIndet{\hprr{\hhole{e}{u}}}
+}
+
 \Infer{\IInl}{
   \isIndet{e}
 }{

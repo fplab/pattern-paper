@@ -64,6 +64,14 @@
 }{
 \csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
 }
+
+\Infer{\CSConsPair}{
+  \csatisfy{\hprl{e}}{\xi_1} \\
+  \csatisfy{\hprr{e}}{\xi_2}
+}{
+  \csatisfy{e}{\cpair{\xi_1}{\xi_2}}
+}
+
 \end{mathpar}
 
 \judgbox{\cmaysatisfy{e}{\xi}}{$e$ may satisfy $\xi$}
@@ -95,6 +103,18 @@
   \cnotsatisfy{\hmatch{e}{\zrules}}{\xi}
 }{
   \cmaysatisfy{\hmatch{e}{\zrules}}{\xi}
+}
+
+\Infer{\CMSPrl}{
+  \cnotsatisfy{\hprl{e}}{\xi}
+}{
+  \cmaysatisfy{\hprl{e}}{\xi}
+}
+
+\Infer{\CMSPrr}{
+  \cnotsatisfy{\hprr{e}}{\xi}
+}{
+  \cmaysatisfy{\hprr{e}}{\xi}
 }
 
 \Infer{\CMSAndL}{
