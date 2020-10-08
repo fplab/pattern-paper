@@ -123,7 +123,7 @@ p & ::= &
   \chrulstyp{\Gamma}{\Delta}{\cfalsity}{rs_{pre}}{\tau}{\xi_{pre}}{\tau'} \\
   \chrulstyp{\Gamma}{\Delta}{\cor{\cfalsity}{\xi_{pre}}}{\hrules{r}{rs_{post}}}{\tau}{\xi_{rest}}{\tau'} \\
   \cnotsatisfyormay{e}{\xi_{pre}} \\
-  \csatisfyormay{\ctruth}{\cor{\xi_{pre}}{\xi_{post}}}
+  \csatisfyormay{\ctruth}{\cor{\xi_{pre}}{\xi_{rest}}}
 }{
   \hexptyp{\Gamma}{\Delta}{\hmatch{e}{\zruls{rs_{pre}}{r}{rs_{post}}}}{\tau'}
 }
@@ -625,7 +625,7 @@ Proof by induction on the derivation of $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}
 
 \begin{lem}[Substitution Typing]
   \label{lem:subs-typing}
-  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$
+  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta'}$
   then $\hsubstyp{\theta}{\Gamma}$
 \end{lem}
 Proof by induction on the derivation of $\hpatmatch{e}{p}{\theta}$.
