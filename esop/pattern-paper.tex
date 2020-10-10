@@ -7,6 +7,7 @@
 \usepackage{graphicx} % rotatebox
 \usepackage{stmaryrd} % llparenthesis
 \usepackage{anyfontsize} % workaround for font size difference warning
+\usepackage{todonotes}
 \usepackage{listings}
 \usepackage{tikz}
 \usetikzlibrary{calc,fit,tikzmark,plotmarks,arrows.meta,positioning,overlay-beamer-styles}
@@ -245,47 +246,55 @@ This abstract focuses on the formalism of full-fledged pattern matching with typ
   \label{fig:red-hole}
 \end{figure}
 
-\section{The Core Calculus}
-With the intuition developed in the previous section, we can formally specify
-what we mean by pattern matching with holes and also build the type system to
-give eager feedback while the user is programming.
+\section{Peanut: The Core Calculus}
+With the intuition developed in the previous section, we will now formally specify the dynamic semantics and the static semantics, including exhaustiveness and redundancy checking, of a core calculus with support for pattern matching with typed holes in both expression and pattern position. 
 
 \input{fig-syntax}
+\input{fig-pointer-eraser}
 
 \paragraph{Overview.}
-We will first go over the syntax of the core calculus. Then we will describe the dynamic
-semantics including the judgment $\isFinal{e}$ and the stepping judgment
-$\htrans{e}{e'}$. Motivated by the dynamic semantics, we define the static
-semantics, including the typing judgment for
-rules $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{rs}{\tau_1}{\xi_{rs}}{\tau_2}$, a
-single rule $\chrultyp{\Gamma}{\Delta}{\hrulP{p}{e}}{\tau_1}{\xi}{\tau_2}$, and
-pattern $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$. At last, we introduce match constraint
-language and its semantics, which connects the dynamics and the statics.
+We will first go over the syntax of the core calculus in \autoref{sec:Syntax}\todo{change autoref settings to say Sec. 3.1 instead of subsection 3.1}. Then we will define the dynamic semantics as a small-step operational semantics with support for evaluating incomplete programs in \autoref{sec:dynamics}. Next, we define a corresponding static
+semantics in \autoref{sec:statics} as a type assignment system together with a match constraint language
+that we use to reason hypothetically about exhaustiveness and redundancy in the presence of
+holes. Finally, in \autoref{sec:algorithm} we give an algorithmic formulation of the exhaustiveness and redundancy checker and prove it sound with respect to the
+declarative formulation.
 
 \subsection{Syntax}
-The syntax of the core calculus is given in \figurename~\ref{fig:syntax}. To
-balance simplicity and power of pattern matching with holes, we use number as
-the base type and include function type, product type, and sum type in the
-calculus. For each type, there are corresponding expression(s) serving as the
-introduction form and elimination form of the type. Besides, holes, as missing
-parts in a program, can be of any type (see Sec.~\ref{sec:statics}). And the
-most interesting part is the syntax of match expressions. A match expression
-consists of an expression, called scrutinee, and zipper rules \todo{ref}. Zipper
-rules denotes a series of rules with a pointer on the current rule being
-considered in runtime (see Sec.~\ref{sec:dynamics}). As in other ML languages,
-each rule consists of a pattern and an expression \todo{ref}. And just like
-expressions, patterns may also involve holes and are assigned corresponding
-types (see Sec.~\ref{sec:statics}).
+\label{sec:Syntax}
+The syntax of Peanut is given in \figurename~\ref{fig:syntax}. 
+Peanut is based on the internal language of Hazelnut Live, a typed lambda calculus with only expression holes \cite{DBLP:journals/pacmpl/OmarVCH19}.
+We choose numbers as the base type and add binary sums and binary products so that we have interesting
+patterns to consider. We also remove the machinery related to gradual typing (casts and failed casts) to focus our attention on pattern matching in particular. Most forms are standard (we base our formulation on \cite{Harper2012}). We include functions, function application, pairs, explicit projection operators (for reasons we will consider below), and left and right injections, which are the introductory forms for sum types. Functions and injections include type annotations so that we can define a simple type assignment system. The forms of particular interest here are holes and match expressions.
+
+Empty expression holes are written $\hehole{u}$ and non-empty expression holes, which serve as membranes around type inconsistencies, are written $\hhole{e}{u}$. Similarly, empty pattern holes are written $\hehole{w}$ and non-empty pattern holes, which are analogous, are written $\hhole{p}{w}$. Here, $u$ are expression hole identifiers and $w$ are pattern hole identifiers.
+We are modeling an internal language, so we assume that hole identifiers 
+correspond to unique holes in the user's original program, which we do not model here. We do not impose a uniqueness constraint, however, because a hole can 
+appear multiple times during evaluation due to substitution.
+
+A match expression, $\hmatch{e}{\zrules}$, 
+consists of a scrutinee, $e$, and a zipper of rules, $\zrules$, i.e. a sequence of one or more rules with a pointer marking the rule currently being considered during evaluation (we assume that the marker is on the first rule initially). Syntactically, this is a triple, $\zruls{rs_{pre}}{r}{rs_{post}}$, consisting of a prefix rule sequence, $rs_{pre}$, a current rule, $r$, and a suffix rule sequence, $rs_{post}$. We can erase the pointer using the pointer erasure operator, $\rmpointer{\zrules}$, defined in \autoref{fig:pointer-eraser}. 
+Each rule, $r$, consists of a pattern and an expression, which we call the branch expression.
+
+
 
 \subsection{Dynamic Semantics}\label{sec:dynamics}
-Pattern matching happens during runtime and the dynamic semantics motivates the
-design of the static semantics in Sec.~\ref{sec:statics}. And thus, we start by
-taking a step further from the examples shown in
-\listfigurename~\ref{fig:exp-hole-step},\ref{fig:pat-hole-step}, and formalize
-the described heuristic.
+We will now define the dynamic semantics of Peanut. 
+As with Hazelnut Live, and as suggested in \autoref{sec:examples}, it is possible to evaluate well-typed programs with holes. We will define the type system in \autoref{sec:statics}.
 
-\input{fig-pointer-eraser}
 \input{fig-step}
+
+We define the dynamic semantics as a small-step operational semantics with a stepping judgment
+$\htrans{e}{e'}$ defined in \autoref{fig:step} and irreducible states defined by the judgement $\isFinal{e}$ defined in \autoref{fig:final}. 
+
+Most of the rules in \autoref{fig:step} and \autoref{fig:final} are adapted directly from Hazelnut Live \cite{DBLP:journals/pacmpl/OmarVCH19} (which was a contextual small-step semantics, whereas we choose to define a standard small-step semantics.) 
+
+Final expressions are those that cannot be further reduced. These include
+standard values, given by the judgement $\isVal{e}$ in \autoref{fig:final}, 
+and \emph{indeterminate} expressions, which are those that are not values but cannot be further reduced due to one or more holes in a critical position, 
+e.g. as the function position of an application. Indeterminate expressions
+are specified by the judgement $\isIndet{e}$ in \autoref{fig:final}, following Hazelnut Live \cite{DBLP:journals/pacmpl/OmarVCH19}.
+
+We will focus on rules related to match expressions.
 
 In Sec.~\ref{sec:examples}, we use a rule pointer to simulate the process in
 which we consider the rules in order. Correspondingly, in the syntax of the core
@@ -358,7 +367,7 @@ following lemma.
   \end{enumerate}
 \end{lemma}
 
-The determinism of pattern matching ensures the determinism of dynamic semantics.
+The typing judgment $\hexptyp{\cdot}{\Delta}{e}{\tau}$ \todo{exptyp}The following theorem states that determinism of pattern matching ensures the determinism of dynamic semantics.
 
 \begin{theorem}[Determinism]
   \label{thrm:determinism}
@@ -420,7 +429,7 @@ in Rule \TMatchNZPre, $\cnotsatisfyormay{e}{\xi_{pre}}$. And thus, the type of
 the match expression is preserved (\theoremname~\ref{thrm:preservation})as we consider rules in order.
 
 \subsubsection{Typing of Patterns and Rules, and Redundancy Checking}
-
+\label{sec:pattyp}
 \input{fig-pat-rulestyp}
 
 \figurename~\ref{fig:pat-rulestyp} defines the typing judgment for patterns $p$,
@@ -587,7 +596,7 @@ Recall in Rules \TOneRules and \TRules, we use $\cnotsatisfy{\xi_r}{\xi_{pre}}$ 
 
 Recall in Rules \TMatchZPre and \TMatchNZPre, we use $\csatisfyormay{\ctruth}{\xi}$ to ensure that the rules associated with constraint $\xi$ either must or may be exhaustive. When considering the exhaustiveness of a sequence of rules, the programmer only want to be warned when the rules cannot be exhaustive, regardless of how the programmer fills the holes at the end. Then, we just need to ensure that for all values $e$, $e$ either must or may match one of the patterns in the sequence of the rules. For simplicity when proving the progress part of  \theoremname~\ref{thrm:determinism}, we consider all final expressions instead. In this way, even when the match expression is not complete and we may match on an indeterminate expression, we can still be confident that we won't have a match failure error. And actually, as we will later show in Sec.~\ref{sec:algorithm}, it is legitimate to replace values with final expressions in the quantifier.
 
-\section{De-unknown}\label{sec:algorithm}
+\subsection{Decidability}\label{sec:algorithm}
 
 We have already shown in Sec.~\ref{sec:statics} how to check redundancy and
 exhaustiveness using \definitionname~\ref{defn:const-entailment} and
@@ -644,6 +653,47 @@ The reason why we can always find a different pattern is because we have number 
   Assume $\ctruify{\xi}=\xi$. Then $\cincon{\cdual{\xi}}$ iff $\csatisfy{\ctruth}{\xi}$.
 \end{theorem}
 
+\section{Related Work}
+
+
+
+\begin{itemize}
+    \item typed holes
+    \begin{itemize}
+        \item Hazelnut, Hazelnut Live
+        \begin{itemize}
+            \item both include only simple sum types, do not consider holes in patterns
+        \end{itemize}
+        \item Haskell, Agda, neither have support for holes in patterns
+    \end{itemize}
+    \item specifying pattern matching
+    \item Compilng pattern matching
+    \begin{itemize}
+        \item Compiling a functional language, Cardelli 1984
+        \item Compiling pattern matching, Augustsson 1985
+        \item in this work we do not focus on compilation but rather
+        spec/correctness
+        \item probably should say something more about the path toward
+        efficiency
+    \end{itemize}
+    \item Lower Your Guards
+    \begin{itemize}
+        \item compiles a myriad of pattern forms/features into a guard tree
+        \item matching a guard tree may succeed, fail, or diverge
+        \item (draw some comparison with guard trees and our constraints)
+        \item does not account for indeterminate matches
+        \item likely their work could be extended to integrate indeterminate matching
+    \end{itemize}
+    \item other checkers for handling potentially undecidable coverage
+    \begin{itemize}
+        \item GADTs Meet Their Match, Karachalias et al 2015
+        \item SMT solver for handling guards, Kalvoda and Kerckhove 2019
+        \item case trees for dependently typed / refinement type languages
+        \item emphasize that the failure/uncertainty of checking with these
+        other tools is not the same as indeterminate matching in our work
+    \end{itemize}
+\end{itemize}
+
 \section{Conclusion}
 We can adapt our core calculus to fit in a more expressive setting.
 \clearpage
@@ -651,6 +701,5 @@ We can adapt our core calculus to fit in a more expressive setting.
 \bibliographystyle{splncs04}
 \bibliography{references.bib}
 
-\appendix
-\section{Statics}
+\input{esop/appendix/appendix}
 \end{document}

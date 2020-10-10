@@ -70,21 +70,16 @@
   \isIndet{\hpair{e_1}{e_2}}
 }
 
-\Infer{\IPrlEHole}{}{
-  \isIndet{\hprl{\hehole{u}}}
+\Infer{\IPrl}{
+  \isIndet{e}
+}{
+  \isIndet{\hprl{e}}
 }
 
-\Infer{\IPrlHole}{}{
-  \isIndet{\hprl{\hhole{e}{u}}}
-}
-
-
-\Infer{\IPrrEHole}{}{
-  \isIndet{\hprr{\hehole{u}}}
-}
-
-\Infer{\IPrrHole}{}{
-  \isIndet{\hprr{\hhole{e}{u}}}
+\Infer{\IPrr}{
+  \isIndet{e}
+}{
+  \isIndet{\hprr{e}}
 }
 
 \Infer{\IInl}{

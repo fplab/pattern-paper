@@ -15,7 +15,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   \cpair{\xi_1}{\xi_2}
 \end{array}$
 
-\judgbox{\ctyp{\xi}{\tau}}{$\xi$ constrains values of type $\tau$}
+\judgbox{\ctyp{\xi}{\tau}}{$\xi$ constrains final expressions of type $\tau$}
 
 \begin{mathpar}
 \Infer{\CTTruth}{ }{
@@ -70,8 +70,7 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{mathpar}
 
 \judgbox{\cdual{\xi_1} = \xi_2}{dual of $\xi_1$ is $\xi_2$}
-\begin{subequations}\label{defn:dual}
-\begin{align}
+\begin{align*}
   \cdual{\ctruth} &= \cfalsity \\
   \cdual{\cfalsity} &= \ctruth \\
   \cdual{\cunknown} &= \cunknown \\
@@ -89,8 +88,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   }}{
     \cpair{\cdual{\xi_1}}{\cdual{\xi_2}}
   }
-\end{align}
-\end{subequations}
+\end{align*}
   \caption{Match Constraints}
   \label{fig:constraint}
 \end{figure}

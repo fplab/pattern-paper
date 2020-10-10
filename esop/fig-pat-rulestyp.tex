@@ -4,7 +4,7 @@
   \judgbox{
     \chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}
   }{
-    $p$ is of type $\tau$
+    $p$ is assigned type $\tau$ and emits constraint $\xi$
   }
 
   \begin{mathpar}
@@ -12,6 +12,17 @@
     \chpattyp{x}{\tau}{\ctruth}{x : \tau}{\cdot}
   }
 
+  \Infer{\PTEHole}{ }{
+    \chpattyp{\hehole{w}}{\tau}{\cunknown}{\cdot}{w :: \tau}
+  }
+
+  \Infer{\PTHole}{
+    \chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}
+  }{
+    \chpattyp{\hhole{p}{w}}{\tau'}{\cunknown}
+    {\Gamma}{\Delta , w :: \tau'}
+  }
+  
   \Infer{\PTNum}{ }{
     \chpattyp{\hnum{n}}{\tnum}{\cnum{n}}{\cdot}{\cdot}
   }
@@ -40,50 +51,40 @@
     {\cpair{\xi_1}{\xi_2}}{\Gamma_1 \uplus \Gamma_2}{\Delta_1 \uplus \Delta_2}
   }
 
-  \Infer{\PTEHole}{ }{
-    \chpattyp{\hehole{w}}{\tau}{\cunknown}{\cdot}{w :: \tau}
-  }
-
-  \Infer{\PTHole}{
-    \chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}
-  }{
-    \chpattyp{\hhole{p}{w}}{\tau'}{\cunknown}
-    {\Gamma}{\Delta , w :: \tau'}
-  }
   \end{mathpar}
 
   \judgbox{
-    \chrultyp{\Gamma}{\Delta}{\hrulP{p}{e}}{\tau_1}{\xi}{\tau_2}
-  }{}
+    \chrultyp{\Gamma}{\Delta}{\hrulP{p}{e}}{\tau}{\xi}{\tau'}
+  }{$r$ transforms a final expression of type $\tau$ \\ to a final expression of type $\tau'$}
 
   \begin{mathpar}
     \Infer{\TRule}{
-      \chpattyp{p}{\tau_1}{\xi}{\Gamma_p}{\Delta_p} \\
-      \hexptyp{\Gamma \uplus \Gamma_p}{\Delta \uplus \Delta_p}{e}{\tau_2}
+      \chpattyp{p}{\tau}{\xi}{\Gamma_p}{\Delta_p} \\
+      \hexptyp{\Gamma \uplus \Gamma_p}{\Delta \uplus \Delta_p}{e}{\tau'}
     }{
-      \chrultyp{\Gamma}{\Delta}{\hrulP{p}{e}}{\tau_1}{\xi}{\tau_2}
+      \chrultyp{\Gamma}{\Delta}{\hrulP{p}{e}}{\tau}{\xi}{\tau'}
     }
   \end{mathpar}
 
-  \judgbox{\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{rs}{\tau_1}{\xi_{rs}}{\tau_2}}
-  {$rs$ is of type $\trulnp{\tau_1}{\tau_2}$}
+  \judgbox{\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{rs}{\tau}{\xi_{rs}}{\tau'}}
+  {$rs$ transforms a final expression of type $\tau$ \\ to a final expression of type $\tau'$}
 
   \begin{mathpar}
   \Infer{\TOneRules}{
-    \chrultyp{\Gamma}{\Delta}{r}{\tau_1}{\xi_r}{\tau_2} \\
+    \chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi_r}{\tau'} \\
     \cnotsatisfy{\xi_r}{\xi_{pre}}
   }{
-    \chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrulesP{r}{\cdot}}{\tau_1}{\xi_r}{\tau_2}
+    \chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrulesP{r}{\cdot}}{\tau}{\xi_r}{\tau'}
   }
 
   \Infer{\TRules}{
-    \chrultyp{\Gamma}{\Delta}{r}{\tau_1}{\xi_r}{\tau_2} \\
+    \chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi_r}{\tau'} \\
     \chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r}}{rs}
-    {\tau_1}{\xi_{rs}}{\tau_2} \\
+    {\tau}{\xi_{rs}}{\tau'} \\
     \cnotsatisfy{\xi_r}{\xi_{pre}}
   }{
     \chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrules{r}{rs}}
-    {\tau_1}{\cor{\xi_r}{\xi_{rs}}}{\tau_2}
+    {\tau}{\cor{\xi_r}{\xi_{rs}}}{\tau'}
   }
 \end{mathpar}
 \caption{Typing of Patterns, Single Rules, and Series of Rules}

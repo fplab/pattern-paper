@@ -14,10 +14,10 @@
 }
 
 \Infer{\STExtend}{
-  \hsubstyp{\theta}{\Gamma} \\
-  \hexptyp{\cdot}{\Delta}{e}{\tau}
+  \hsubstyp{\theta}{\Gamma_\theta} \\
+  \hexptyp{\Gamma}{\Delta}{e}{\tau}
 }{
-  \hsubstyp{\theta , x / e}{\Gamma , x : \tau}
+  \hsubstyp{\theta , x / e}{\Gamma_\theta , x : \tau}
 }
 \end{mathpar}
 

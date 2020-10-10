@@ -3,8 +3,7 @@
 \begin{figure}[ht]
 \judgbox{\ctruify{\xi_1} = \xi_2}{}
 
-\begin{subequations}\label{defn:truify}
-\begin{align}
+\begin{align*}
   \ctruify{\ctruth} &= \ctruth \\
   \ctruify{\cfalsity} &= \cfalsity \\
   \ctruify{\cunknown} &= \ctruth \\
@@ -15,12 +14,10 @@
   \ctruify{\cinl{\xi}} &= \cinl{\ctruify{\xi}} \\
   \ctruify{\cinr{\xi}} &= \cinr{\ctruify{\xi}} \\
   \ctruify{\cpair{\xi_1}{\xi_2}} &= \cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}
-\end{align}
-\end{subequations}
+\end{align*}
 
 \judgbox{\cfalsify{\xi_1} = \xi_2}{}
-\begin{subequations}\label{defn:falsify}
-\begin{align}
+\begin{align*}
   \cfalsify{\ctruth} &= \ctruth \\
   \cfalsify{\cfalsity} &= \cfalsity \\
   \cfalsify{\cunknown} &= \cfalsity \\
@@ -31,8 +28,7 @@
   \cfalsify{\cinl{\xi}} &= \cinl{\cfalsify{\xi}} \\
   \cfalsify{\cinr{\xi}} &= \cinr{\cfalsify{\xi}} \\
   \cfalsify{\cpair{\xi_1}{\xi_2}} &= \cpair{\cfalsify{\xi_1}}{\cfalsify{\xi_2}}
-\end{align}
-\end{subequations}
+\end{align*}
   \caption{Truify and Falsify Constraints}
   \label{fig:truify-falsify}
 \end{figure}
