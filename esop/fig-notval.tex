@@ -1,0 +1,38 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+\judgbox{
+  \isntVal{e}
+}{
+  $e$ cannot be a value syntactically
+}
+
+\begin{mathpar}
+\Infer{NVEHole}{ }{
+  \isntVal{\hehole{u}}
+}
+
+\Infer{NVHole}{ }{
+  \isntVal{\hhole{e}{u}}
+}
+
+\Infer{NVAp}{ }{
+  \isntVal{\hap{e_1}{e_2}}
+}
+
+\Infer{NVMatch}{ }{
+  \isntVal{\hmatch{e}{\zrules}}
+}
+
+\Infer{NVPrl}{ }{
+  \isntVal{\hprl{e}}
+}
+
+\Infer{NVPrr}{ }{
+  \isntVal{\hprr{e}}
+}
+\end{mathpar}
+
+  \caption{Expressions that are syntactically not values}
+  \label{fig:notval}
+\end{figure}

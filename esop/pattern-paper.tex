@@ -16,6 +16,10 @@
 \usepackage{cancel} % slash over symbol
 \usepackage{hyperref}
 \renewcommand\UrlFont{\color{blue}\rmfamily}
+\let\figureautorefname\figurename
+\def\sectionautorefname{Sec.}
+\let\subsectionautorefname\sectionautorefname
+\let\subsubsectionautorefname\sectionautorefname
 
 \usepackage{xcolor}
 \definecolor{hazelgreen}{RGB}{7,63,36}
@@ -24,8 +28,6 @@
 \definecolor{hazellightyellow}{RGB}{254,254,234}
 
 \newcommand{\highlight}[1]{\colorbox{yellow}{$\displaystyle #1$}}
-
-\newcommand{\todo}[1]{{\color{red} TODO: #1}}
 
 %% Joshua Dunfield macros
 \def\OPTIONConf{1}
@@ -281,6 +283,7 @@ Each rule, $r$, consists of a pattern and an expression, which we call the branc
 We will now define the dynamic semantics of Peanut. 
 As with Hazelnut Live, and as suggested in \autoref{sec:examples}, it is possible to evaluate well-typed programs with holes. We will define the type system in \autoref{sec:statics}.
 
+\input{fig-final}
 \input{fig-step}
 
 We define the dynamic semantics as a small-step operational semantics with a stepping judgment
@@ -309,7 +312,6 @@ to the next rule, we can append the current rule after the preceding rules, and
 regard the initial rule in the remaining rule as the new current rule. The
 conclusion of Rule \ITFailMatch demonstrates how it works.
 
-\input{fig-final}
 
 \figurename~\ref{fig:step} defines the stepping judgment
 $\htrans{e}{e'}$. We will focus on stepping judgments of match expressions.
@@ -336,13 +338,15 @@ the examples shown in \listfigurename~\ref{fig:exp-hole-step},\ref{fig:pat-hole-
     then the match expression is said to be indeterminate (Rule \IMatch)
 \end{itemize}
 
-\input{fig-patmatch}
 \input{fig-refutable}
+\input{fig-notval}
+\input{fig-patmatch}
 
 \figurename~\ref{fig:patmatch} defines three judgments corresponding to the
 three possible results of pattern matching. We consider a final scrutinee $e$
-and a pattern $p$ that are of the same type (see Sec.~\ref{sec:statics}). The
-judgment $\hpatmatch{e}{p}{\theta}$ denotes that $e$ matches $p$, as witness by
+and a pattern $p$ that are of the same type (see Sec.~\ref{sec:statics}). \autoref{fig:notval} defines the judgment for expressions that cannot be values by simply looking at its form. Hence, when some final expression is of such form, they must be indeterminate. Besides, there is not need to recursively consider its inner expression during pattern matching.
+
+The judgment $\hpatmatch{e}{p}{\theta}$ denotes that $e$ matches $p$, as witness by
 the substitution $\theta$ defined on the variables in $p$, while the judgment
 $\hnotmatch{e}{p}$ denotes that $e$ doesn't match $p$. Notably, we introduce the
 third possibility $\hmaymatch{e}{p}$ --- $e$ may match $p$, which is also the
@@ -357,6 +361,7 @@ the three possible results of pattern matching are mutually exclusive and at
 least one of judgments can be derived under certain assumptions, as shown in the
 following lemma.
 
+The judgment $\hexptyp{\Gamma}{\Delta}{e}{\tau}$ specifies that expression $e$ is well-typed. And the judgment $\hpattyp{p}{\tau}{\Gamma}{\Delta}$ specifies that we can assign type $\tau$ to pattern $p$.
 \begin{lemma}[Matching Determinism]
   \label{lem:match-determinism}
   If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$ then exactly one of the following holds
@@ -367,7 +372,7 @@ following lemma.
   \end{enumerate}
 \end{lemma}
 
-The typing judgment $\hexptyp{\cdot}{\Delta}{e}{\tau}$ \todo{exptyp}The following theorem states that determinism of pattern matching ensures the determinism of dynamic semantics.
+The determinism of pattern matching ensures the determinism of dynamic semantics.
 
 \begin{theorem}[Determinism]
   \label{thrm:determinism}
@@ -378,6 +383,7 @@ The typing judgment $\hexptyp{\cdot}{\Delta}{e}{\tau}$ \todo{exptyp}The followin
     \item $\htrans{e}{e'}$ for some unique $e'$
   \end{enumerate}
 \end{theorem}
+\todo{prove unique e'?}
 
 \subsection{Static Semantics}\label{sec:statics}
 
@@ -518,7 +524,7 @@ matching succeeds.
 
 \begin{lemma}[Substitution Typing]
   \label{lem:subs-typing}
-  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta'}$
+  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta_e}{e}{\tau}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$
   then $\hsubstyp{\theta}{\Gamma}$
 \end{lemma}
 
@@ -569,7 +575,7 @@ reasoning pattern matching in type system possible and helps prove
 
 \begin{lemma}[Matching Coherence of Constraint]
   \label{lem:const-matching-coherence}
-  Suppose that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$. Then we have
+  Suppose that $\hexptyp{\cdot}{\Delta_e}{e}{\tau}$ and $\isFinal{e}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$. Then we have
   \begin{enumerate}
   \item $\csatisfy{e}{\xi}$ iff $\hpatmatch{e}{p}{\theta}$
   \item $\csatisfy{e}{\cdual{\xi}}$ iff $\hnotmatch{e}{p}$

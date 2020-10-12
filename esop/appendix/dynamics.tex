@@ -1,0 +1,808 @@
+\section{Dynamic Semantics}
+\judgboxa{\isVal{e}}{$e$ is a value}
+\begin{subequations}\label{rules:Value}
+\begin{equation}
+\inferrule[VNum]{ }{
+  \isVal{\hnum{n}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[VLam]{ }{
+  \isVal{\hlam{x}{\tau}{e}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[VPair]{
+  \isVal{e_1} \\
+  \isVal{e_2}
+}{\isVal{\hpair{e_1}{e_2}}}
+\end{equation}
+\begin{equation}
+\inferrule[VInl]{
+  \isVal{e}
+}{
+  \isVal{\hinl{\tau}{e}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[Vinr]{
+  \isVal{e}
+}{
+  \isVal{\hinr{\tau}{e}}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{\isIndet{e}}{$e$ is indeterminate}
+\begin{subequations}\label{rules:Indet}
+\begin{equation}\label{rule:IEHole}
+\inferrule[IEHole]{ }{
+  \isIndet{\hehole{u}}
+}
+\end{equation}
+\begin{equation}\label{rule:IHole}
+\inferrule[IHole]{
+  \isFinal{e}
+}{
+  \isIndet{\hhole{e}{u}}
+}
+\end{equation}
+\begin{equation}\label{rule:IAp}
+\inferrule[IAp]{
+  \isIndet{e_1} \\ \isFinal{e_2}
+}{
+  \isIndet{\hap{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:IPairL}
+\inferrule[IPairL]{
+  \isIndet{e_1} \\ \isVal{e_2}
+}{
+  \isIndet{\hpair{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:IPairR}
+\inferrule[IPairR]{
+  \isVal{e_1} \\
+  \isIndet{e_2}
+}{
+  \isIndet{\hpair{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[IPair]{
+  \isIndet{e_1} \\ \isIndet{e_2}
+}{
+  \isIndet{\hpair{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[IPrl]{
+  \isIndet{e}
+}{
+  \isIndet{\hprl{e}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[IPrr]{
+  \isIndet{e}
+}{
+  \isIndet{\hprr{e}}
+}
+\end{equation}
+\begin{equation}\label{rule:IInl}
+\inferrule[IInL]{
+  \isIndet{e}
+}{
+  \isIndet{\hinl{\tau}{e}}
+}
+\end{equation}
+\begin{equation}\label{rule:IInR}
+\inferrule[IInR]{
+  \isIndet{e}
+}{
+  \isIndet{\hinr{\tau}{e}}
+}
+\end{equation}
+\begin{equation}\label{rule:IMatch}
+\inferrule[IMatch]{
+  \isFinal{e} \\
+  \hmaymatch{e}{p_r}
+}{
+  \isIndet{
+    \hmatch{e}{\zruls{rs_{pre}}{\hrulP{p_r}{e_r}}{rs_{post}}}
+  }
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{\isFinal{e}}{$e$ is final}
+\begin{subequations}\label{rules:Final}
+  \begin{equation}\label{rule:FVal}
+\inferrule[FVal]{
+  \isVal{e}
+}{
+  \isFinal{e}
+}
+\end{equation}
+\begin{equation}\label{rule:FIndet}
+\inferrule[FIndet]{
+  \isIndet{e}
+}{
+  \isFinal{e}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{
+  \isntVal{e}
+}{
+  $e$ cannot be a value syntactically
+}
+\begin{subequations}
+\begin{equation}
+\inferrule[NVEHole]{ }{
+  \isntVal{\hehole{u}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[NVHole]{ }{
+  \isntVal{\hhole{e}{u}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[NVAp]{ }{
+  \isntVal{\hap{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[NVMatch]{ }{
+  \isntVal{\hmatch{e}{\zrules}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[NVPrl]{ }{
+  \isntVal{\hprl{e}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[NVPrr]{ }{
+  \isntVal{\hprr{e}}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{
+  \hsubstyp{\theta}{\Gamma}
+}{
+  $\theta$ is of type $\Gamma$
+}
+\begin{subequations}
+\begin{equation}
+\inferrule[STEmpty]{ }{
+  \hsubstyp{\emptyset}{\cdot}
+}
+\end{equation}
+\begin{equation}
+\inferrule[STExtend]{
+  \hsubstyp{\theta}{\Gamma_\theta} \\
+  \hexptyp{\Gamma}{\Delta}{e}{\tau}
+}{
+  \hsubstyp{\theta , x / e}{\Gamma_\theta , x : \tau}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{
+  \refutable{p}
+}{$p$ is refutable}
+\begin{subequations}
+\begin{equation}
+\inferrule[RNum]{ }{
+  \refutable{\hnum{n}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[REHole]{ }{
+  \refutable{\hehole{w}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[RHole]{ }{
+  \refutable{\hhole{p}{w}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[RInl]{ }{
+  \refutable{\hinlp{p}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[RInr]{ }{
+  \refutable{\hinrp{p}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[RPairL]{
+  \refutable{p_1}
+}{
+  \refutable{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[RPairR]{
+  \refutable{p_2}
+}{
+  \refutable{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{
+  \hpatmatch{e}{p}{\theta}
+}{
+  $e$ matches $p$, emitting $\theta$
+}
+\begin{subequations}\label{rules:match}
+\begin{equation}\label{rule:MVar}
+\inferrule[MVar]{ }{
+  \hpatmatch{e}{x}{e / x}
+}
+\end{equation}
+\begin{equation}\label{rule:MWild}
+\inferrule[MWild]{ }{
+  \hpatmatch{e}{\_}{\cdot}
+}
+\end{equation}
+\begin{equation}\label{rule:MNum}
+\inferrule[MNum]{ }{
+  \hpatmatch{\hnum{n}}{\hnum{n}}{\cdot}
+}
+\end{equation}
+\begin{equation}\label{rule:MPair}
+\inferrule[MPair]{
+  \hpatmatch{e_1}{p_1}{\theta_1} \\
+  \hpatmatch{e_2}{p_2}{\theta_2}
+}{
+  \hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+}
+\end{equation}
+\begin{equation}\label{rule:MInl}
+\inferrule[MInl]{
+  \hpatmatch{e}{p}{\theta}
+}{
+  \hpatmatch{\hinl{\tau}{e}}{\hinlp{p}}{\theta}
+}
+\end{equation}
+\begin{equation}\label{rule:MInr}
+\inferrule[MInr]{
+  \hpatmatch{e}{p}{\theta}
+}{
+  \hpatmatch{\hinr{\tau}{e}}{\hinrp{p}}{\theta}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MEHolePair]{
+  \hpatmatch{\hprl{\hehole{u}}}{p_1}{\theta_1} \\
+  \hpatmatch{\hprr{\hehole{u}}}{p_2}{\theta_2}
+}{
+  \hpatmatch{\hehole{u}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MHolePair]{
+  \hpatmatch{\hprl{\hhole{e}{u}}}{p_1}{\theta_1} \\
+  \hpatmatch{\hprr{\hhole{e}{u}}}{p_2}{\theta_2}
+}{
+  \hpatmatch{\hhole{e}{u}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MApPair]{
+  \hpatmatch{\hprl{\hap{e_1}{e_2}}}{p_1}{\theta_1} \\
+  \hpatmatch{\hprr{\hap{e_1}{e_2}}}{p_2}{\theta_2}
+}{
+  \hpatmatch{\hap{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMatchPair]{
+  \hpatmatch{\hprl{\hmatch{e}{\zrules}}}{p_1}{\theta_1} \\
+  \hpatmatch{\hprr{\hmatch{e}{\zrules}}}{p_2}{\theta_2}
+}{
+  \hpatmatch{\hmatch{e}{\zrules}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MPrlPair]{
+  \hpatmatch{\hprl{\hprl{e}}}{p_1}{\theta_1} \\
+  \hpatmatch{\hprr{\hprl{e}}}{p_2}{\theta_2}
+}{
+  \hpatmatch{\hprl{e}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MPrrPair]{
+  \hpatmatch{\hprl{\hprr{e}}}{p_1}{\theta_1} \\
+  \hpatmatch{\hprr{\hprr{e}}}{p_2}{\theta_2}
+}{
+  \hpatmatch{\hprr{e}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{
+  \hmaymatch{e}{p}
+}{
+  $e$ may match $p$
+}
+\begin{subequations}\label{rules:maymatch}
+\begin{equation}\label{rule:MMEHole}
+\inferrule[MMEHole]{ }{
+  \hmaymatch{e}{\hehole{w}}
+}
+\end{equation}
+\begin{equation}\label{rule:MMHole}
+\inferrule[MMHole]{ }{
+  \hmaymatch{e}{\hhole{p}{w}}
+}
+\end{equation}
+\begin{equation}\label{rule:MMExpEHole}
+\inferrule[MMExpEHole]{
+  \refutable{p}
+}{
+  \hmaymatch{\hehole{u}}{p}
+}
+\end{equation}
+\begin{equation}\label{rule:MMExpHole}
+\inferrule[MMExpHole]{
+  \refutable{p}
+}{
+  \hmaymatch{\hhole{e}{u}}{p}
+}
+\end{equation}
+\begin{equation}\label{rule:MMAp}
+\inferrule[MMAp]{
+  \refutable{p}
+}{
+  \hmaymatch{\hap{e_1}{e_2}}{p}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMMatch]{
+  \refutable{p}
+}{
+  \hmaymatch{\hmatch{e}{\zrules}}{p}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMPrl]{
+  \refutable{p}
+}{
+  \hmaymatch{\hprl{e}}{p}
+}
+\end{equation}
+\begin{equation}
+\inferrule[MMPrr]{
+  \refutable{p}
+}{
+  \hmaymatch{\hprr{e}}{p}
+}
+\end{equation}
+\begin{equation}\label{rule:MMPairL}
+\inferrule[MMPairL]{
+  \hmaymatch{e_1}{p_1} \\
+  \hpatmatch{e_2}{p_2}{\theta_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:MMPairR}
+\inferrule[MMPairR]{
+  \hpatmatch{e_1}{p_1}{\theta_1} \\
+  \hmaymatch{e_2}{p_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:MMPair}
+\inferrule[MMPair]{
+  \hmaymatch{e_1}{p_1} \\
+  \hmaymatch{e_2}{p_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:MMInl}
+\inferrule[MMInl]{
+  \hmaymatch{e}{p}
+}{
+  \hmaymatch{\hinl{\tau}{e}}{\hinlp{p}}
+}
+\end{equation}
+\begin{equation}\label{rule:MMInr}
+\inferrule[MMInr]{
+  \hmaymatch{e}{p}
+}{
+  \hmaymatch{\hinr{\tau}{e}}{\hinrp{p}}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{
+  \hnotmatch{e}{p}
+}{
+  $e$ does not match $p$
+}
+\begin{subequations}\label{rules:notmatch}
+\begin{equation}
+\inferrule[NMNum]{
+  n_1 \neq n_2
+}{
+  \hnotmatch{\hnum{n_1}}{\hnum{n_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[NMPairL]{
+  \hnotmatch{e_1}{p_1}
+}{
+  \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[NMPairR]{
+  \hnotmatch{e_2}{p_2}
+}{
+  \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[NMConfL]{ }{
+  \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[NMConfR]{ }{
+  \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[NMInl]{
+  \hnotmatch{e}{p}
+}{
+  \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[NMInr]{
+  \hnotmatch{e}{p}
+}{
+  \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{\htrans{e}{e'}}{$e$ takes a step to $e'$}
+\begin{subequations}\label{rules:ITExp}
+\begin{equation}
+\inferrule[ITHole]{
+  \htrans{e}{e'}
+}{
+  \htrans{\hhole{e}{u}}{\hhole{e'}{u}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITApFun]{
+  \htrans{e_1}{e_1'}
+}{
+  \htrans{\hap{e_1}{e_2}}{\hap{e_1'}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITApArg]{
+  \isVal{e_1} \\
+  \htrans{e_2}{e_2'}
+}{
+  \htrans{\hap{e_1}{e_2}}{\hap{e_1}{e_2'}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITAP]{
+  \isVal{e_2}
+}{
+  \hap{\hlam{x}{\tau}{e_1}}{e_2} \mapsto
+    [e_2/x]e_1
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITPairL]{
+  \htrans{e_1}{e_1'}
+}{
+  \htrans{\hpair{e_1}{e_2}}{\hpair{e_1'}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITPairR]{
+  \isVal{e_1} \\
+  \htrans{e_2}{e_2'}
+}{
+  \htrans{\hpair{e_1}{e_2}}{\hpair{e_1}{e_2'}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITPrl]{
+  \isFinal{\hpair{e_1}{e_2}}
+}{
+  \htrans{\hprl{\hpair{e_1}{e_2}}}{e_1}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITPrr]{
+  \isFinal{\hpair{e_1}{e_2}}
+}{
+  \htrans{\hprr{\hpair{e_1}{e_2}}}{e_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITInl]{
+  \htrans{e}{e'}
+}{
+  \htrans{\hinl{\tau}{e}}{\hinl{\tau}{e'}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITInr]{
+  \htrans{e}{e'}
+}{
+  \htrans{\hinr{\tau}{e}}{\hinr{\tau}{e'}}
+}
+\end{equation}
+\begin{equation}\label{rule:ITExpMatch}
+\inferrule[ITExpMatch]{
+  \htrans{e}{e'}
+}{
+  \htrans{\hmatch{e}{\zrules}}{\hmatch{e'}{\zrules}}
+}
+\end{equation}
+\begin{equation}\label{rule:ITSuccMatch}
+\inferrule[ITSuccMatch]{
+  \isFinal{e} \\
+  \hpatmatch{e}{p_r}{\theta}
+}{
+  \htrans{
+    \hmatch{e}{\zruls{rs_{pre}}{\hrulP{p_r}{e_r}}{rs_{post}}}
+  }{
+    [\theta](e_r)
+  }
+}
+\end{equation}
+\begin{equation}\label{rule:ITFailMatch}
+\inferrule[ITFailMatch]{
+  \isFinal{e} \\
+  \hnotmatch{e}{p_r}
+}{
+  \htrans{
+    \hmatch{e}{\zruls{rs}{\hrulP{p_r}{e_r}}{\hrulesP{r'}{rs'}}}
+  }{
+    \hmatch{e}{
+      \zruls{
+        \rmpointer{\zruls{rs}{\hrulP{p_r}{e_r}}{\cdot}}
+      }{r'}{rs'}
+    }
+  }
+}
+\end{equation}
+\end{subequations}
+
+\begin{lemma}[Matching Coherence of Constraint]
+  \label{lem:const-matching-coherence}
+  Suppose that $\hexptyp{\cdot}{\Delta_e}{e}{\tau}$ and $\isFinal{e}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$. Then we have
+  \begin{enumerate}
+  \item $\csatisfy{e}{\xi}$ iff $\hpatmatch{e}{p}{\theta}$
+  \item $\csatisfy{e}{\cdual{\xi}}$ iff $\hnotmatch{e}{p}$
+  \item $\cmaysatisfy{e}{\xi}$ iff $\hmaymatch{e}{p}$
+  \end{enumerate}
+\end{lemma}
+\begin{proof}
+\begin{pfsteps*}
+\item $\hexptyp{\cdot}{\Delta_e}{e}{\tau}$ \BY{assumption} \pflabel{eTyp}
+\item $\isFinal{e}$ \BY{assumption} \pflabel{eFinal}
+\item $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$ \BY{assumption} \pflabel{patTyp}
+\end{pfsteps*}
+By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
+\begin{byCases}
+\savelocalsteps{0}
+\item[\text{(\ref{rule:PTVar})}]
+    \begin{pfsteps*}
+    \item $p=x$ \BY{assumption}
+    \item $\xi=\ctruth$ \BY{assumption}
+    \end{pfsteps*}
+    \begin{enumerate}
+    \savelocalsteps{1}
+    \item Prove $\csatisfy{e}{\ctruth}$ implies $\hpatmatch{e}{x}{\theta}$ for some $\theta$.
+        \begin{pfsteps*}
+        \item $\hpatmatch{e}{x}{e / x}$ \BY{Rule (\ref{rule:MVar})}
+        \end{pfsteps*}
+    \restorelocalsteps{1}
+    \item Prove $\hpatmatch{e}{x}{\theta}$ implies $\csatisfy{e}{\ctruth}$.
+        \begin{pfsteps*}
+        \item $\csatisfy{e}{\ctruth}$ \BY{Rule (\ref{rule:CSTruth})}
+        \end{pfsteps*}
+    \restorelocalsteps{1}
+    \item Prove $\csatisfy{e}{\cdual{\ctruth}}$ implies $\hnotmatch{e}{x}$.
+        \begin{pfsteps*}
+        \item $\cdual{\ctruth}=\cfalsity$ \BY{Definition \ref{defn:dual}}
+        \item $\cnotsatisfy{e}{\cfalsity}$ \BY{\autoref{lem:no-e-satisfy-falsity}}
+        \end{pfsteps*}
+        Vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\hnotmatch{e}{x}$ implies $\csatisfy{e}{\cdual{\ctruth}}$.
+
+        By rule induction over Rules (\ref{rules:notmatch}), we notice that $\hnotmatch{e}{x}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\cmaysatisfy{e}{\ctruth}$ implies $\hmaymatch{e}{x}$.
+        \begin{pfsteps*}
+        \item $\cnotmaysatisfy{e}{\ctruth}$ \BY{\autoref{lem:no-e-may-satisfy-truth}}
+        \end{pfsteps*}
+        Vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\hmaymatch{e}{x}$ implies $\cmaysatisfy{e}{\xi}$.
+    
+        By rule induction over Rules (\ref{rules:maymatch}), we notice that either, $\hmaymatch{e}{x}$ is in syntactic contradiction with all the cases, or the premise $\refutable{x}$ is not derivable. Hence, $\hmaymatch{e}{x}$ are not derivable. And thus vacuously true.
+    \end{enumerate}
+    
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:PTWild})}]
+    \begin{pfsteps*}
+    \item $p=\_$ \BY{assumption}
+    \item $\xi=\ctruth$ \BY{assumption}
+    \end{pfsteps*}
+    \begin{enumerate}
+    \savelocalsteps{1}
+    \item Prove $\csatisfy{e}{\ctruth}$ implies $\hpatmatch{e}{\_}{\theta}$ for some $\theta$.
+        \begin{pfsteps*}
+        \item $\hpatmatch{e}{\_}{\cdot}$ \BY{Rule (\ref{rule:MVar})}
+        \end{pfsteps*}
+    \restorelocalsteps{1}
+    \item Prove $\hpatmatch{e}{\_}{\theta}$ implies $\csatisfy{e}{\ctruth}$.
+        \begin{pfsteps*}
+        \item $\csatisfy{e}{\ctruth}$ \BY{Rule (\ref{rule:CSTruth})}
+        \end{pfsteps*}
+    \restorelocalsteps{1}
+    \item Prove $\csatisfy{e}{\cdual{\ctruth}}$ implies $\hnotmatch{e}{\_}$.
+        \begin{pfsteps*}
+        \item $\cdual{\ctruth}=\cfalsity$ \BY{Definition \ref{defn:dual}}
+        \item $\cnotsatisfy{e}{\cfalsity}$ \BY{\autoref{lem:no-e-satisfy-falsity}}
+        \end{pfsteps*}
+        Vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\hnotmatch{e}{\_}$ implies $\csatisfy{e}{\cdual{\ctruth}}$.
+
+        By rule induction over Rules (\ref{rules:notmatch}), we notice that $\hnotmatch{e}{\_}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\cmaysatisfy{e}{\ctruth}$ implies $\hmaymatch{e}{\_}$.
+        \begin{pfsteps*}
+        \item $\cnotmaysatisfy{e}{\ctruth}$ \BY{\autoref{lem:no-e-may-satisfy-truth}}
+        \end{pfsteps*}
+        Vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\hmaymatch{e}{\_}$ implies $\cmaysatisfy{e}{\xi}$.
+    
+        By rule induction over Rules (\ref{rules:maymatch}), we notice that either, $\hmaymatch{e}{\_}$ is in syntactic contradiction with all the cases, or the premise $\refutable{\_}$ is not derivable. Hence, $\hmaymatch{e}{\_}$ are not derivable. And thus vacuously true.
+    \end{enumerate}
+    
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:PTEHole})}]
+    \begin{pfsteps*}
+    \item $p=\hehole{w}$ \BY{assumption}
+    \item $\xi=\cunknown$ \BY{assumption}
+    \item $\cdual{\xi}=\cunknown$ \BY{Definition \ref{defn:dual}}
+    \end{pfsteps*}
+    \begin{enumerate}
+    \savelocalsteps{1}
+    \item Prove $\csatisfy{e}{\cunknown}$ implies $\hpatmatch{e}{\hehole{w}}{\theta}$ for some $\theta$.
+        \begin{pfsteps*}
+        \item $\cnotsatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:MVar})}
+        \end{pfsteps*}
+        Vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\hpatmatch{e}{\hehole{w}}{\theta}$ implies $\csatisfy{e}{\cunknown}$.\\
+        By rule induction over Rules (\ref{rules:match}), we notice that $\hpatmatch{e}{\hehole{w}}{\theta}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\csatisfy{e}{\cunknown}$ implies $\hnotmatch{e}{\hehole{w}}$.
+        \begin{pfsteps*}
+        \item $\cnotsatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:MVar})}
+        \end{pfsteps*}
+        Vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\hnotmatch{e}{\hehole{w}}$ implies $\csatisfy{e}{\cunknown}$.\\
+        By rule induction over Rules (\ref{rules:notmatch}), we notice that $\hnotmatch{e}{\hehole{w}}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\cmaysatisfy{e}{\cunknown}$ implies $\hmaymatch{e}{\hehole{w}}$.
+        \begin{pfsteps*}
+        \item $\hmaymatch{e}{\hehole{w}}$ \BY{Rule (\ref{rule:MMEHole})}
+        \end{pfsteps*}
+    \restorelocalsteps{1}
+    \item Prove $\hmaymatch{e}{\hehole{w}}$ implies $\cmaysatisfy{e}{\cunknown}$.
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:CMSUnknown})}
+        \end{pfsteps*}
+    \end{enumerate}
+
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:PTHole})}]
+    \begin{pfsteps*}
+    \item $p=\hhole{p_0}{w}$ \BY{assumption}
+    \item $\xi=\cunknown$ \BY{assumption}
+    \item $\cdual{\xi}=\cunknown$ \BY{Definition \ref{defn:dual}}
+    \end{pfsteps*}
+    \begin{enumerate}
+    \savelocalsteps{1}
+    \item Prove $\csatisfy{e}{\cunknown}$ implies $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ for some $\theta$.
+        \begin{pfsteps*}
+        \item $\cnotsatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:MVar})}
+        \end{pfsteps*}
+        Vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ implies $\csatisfy{e}{\cunknown}$.\\
+        By rule induction over Rules (\ref{rules:match}), we notice that $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\csatisfy{e}{\cunknown}$ implies $\hnotmatch{e}{\hhole{p_0}{w}}$.
+        \begin{pfsteps*}
+        \item $\cnotsatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:MVar})}
+        \end{pfsteps*}
+        Vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\hnotmatch{e}{\hhole{p_0}{w}}$ implies $\csatisfy{e}{\cunknown}$.\\
+        By rule induction over Rules (\ref{rules:notmatch}), we notice that $\hnotmatch{e}{\hhole{p_0}{w}}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\cmaysatisfy{e}{\cunknown}$ implies $\hmaymatch{e}{\hhole{p_0}{w}}$.
+        \begin{pfsteps*}
+        \item $\hmaymatch{e}{\hhole{p_0}{w}}$ \BY{Rule (\ref{rule:MMHole})}
+        \end{pfsteps*}
+    \restorelocalsteps{1}
+    \item Prove $\hmaymatch{e}{\hhole{p_0}{w}}$ implies $\cmaysatisfy{e}{\cunknown}$.
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:CMSUnknown})}
+        \end{pfsteps*}
+    \end{enumerate}
+    
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:PTNum})}]
+    \begin{pfsteps*}
+    \item $p=\hhole{p_0}{w}$ \BY{assumption}
+    \item $\xi=\cunknown$ \BY{assumption}
+    \item $\cdual{\xi}=\cunknown$ \BY{Definition \ref{defn:dual}}
+    \end{pfsteps*}
+    \begin{enumerate}
+    \savelocalsteps{1}
+    \item Prove $\csatisfy{e}{\cunknown}$ implies $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ for some $\theta$.
+        \begin{pfsteps*}
+        \item $\cnotsatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:MVar})}
+        \end{pfsteps*}
+        Vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ implies $\csatisfy{e}{\cunknown}$.\\
+        By rule induction over Rules (\ref{rules:match}), we notice that $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\csatisfy{e}{\cunknown}$ implies $\hnotmatch{e}{\hhole{p_0}{w}}$.
+        \begin{pfsteps*}
+        \item $\cnotsatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:MVar})}
+        \end{pfsteps*}
+        Vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\hnotmatch{e}{\hhole{p_0}{w}}$ implies $\csatisfy{e}{\cunknown}$.\\
+        By rule induction over Rules (\ref{rules:notmatch}), we notice that $\hnotmatch{e}{\hhole{p_0}{w}}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
+    \restorelocalsteps{1}
+    \item Prove $\cmaysatisfy{e}{\cunknown}$ implies $\hmaymatch{e}{\hhole{p_0}{w}}$.
+        \begin{pfsteps*}
+        \item $\hmaymatch{e}{\hhole{p_0}{w}}$ \BY{Rule (\ref{rule:MMHole})}
+        \end{pfsteps*}
+    \restorelocalsteps{1}
+    \item Prove $\hmaymatch{e}{\hhole{p_0}{w}}$ implies $\cmaysatisfy{e}{\cunknown}$.
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:CMSUnknown})}
+        \end{pfsteps*}
+    \end{enumerate}
+\end{byCases}
+\end{proof}

@@ -439,6 +439,38 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{equation}
 \end{subequations}
 
+\begin{lemma}
+  \label{lem:no-e-satisfy-falsity}
+  $\cnotsatisfy{e}{\cfalsity}$
+\end{lemma}
+\begin{proof}
+  By rule induction over Rules (\ref{rules:Satisfy}), we notice that $\csatisfy{e}{\cfalsity}$ is in syntactic contradiction with all rules, hence not derivable.
+\end{proof}
+
+\begin{lemma}
+  \label{lem:no-e-may-satisfy-falsity}
+  $\cnotmaysatisfy{e}{\cfalsity}$
+\end{lemma}
+\begin{proof}
+  By rule induction over Rules (\ref{rules:MaySatisfy}), we notice that either $\cmaysatisfy{e}{\cfalsity}$ is in syntactic contradiction with the rule or the premise of the rule contradicts $\csatisfy{e}{\ctruth}$ (by Rule (\ref{rule:CSTruth}), hence not derivable.
+\end{proof}
+
+\begin{lemma}
+  \label{lem:no-e-may-satisfy-truth}
+  $\cnotmaysatisfy{e}{\ctruth}$
+\end{lemma}
+\begin{proof}
+  By rule induction over Rules (\ref{rules:MaySatisfy}), we notice that either $\cmaysatisfy{e}{\ctruth}$ is in syntactic contradiction with the rule or the premise of the rule contradicts $\csatisfy{e}{\ctruth}$ (by Rule (\ref{rule:CSTruth}), hence not derivable.
+\end{proof}
+
+\begin{lemma}
+  \label{lem:no-e-satisfy-unknown}
+  $\cnotsatisfy{e}{\cunknown}$
+\end{lemma}
+\begin{proof}
+  By rule induction over Rules (\ref{rules:Satisfy}), we notice that $\csatisfy{e}{\cunknown}$ is in syntactic contradiction with all the cases, hence not derivable.
+\end{proof}
+
 \begin{theorem}[Exclusiveness of Satisfaction Judgment]
   \label{thrm:exclusive-constraint-satisfaction}
   If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ then exactly one of the following holds
@@ -708,5 +740,6 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
     \restorelocalsteps{1}
     \item[\csatisfy{e}{\cdual{\xi_1}},\csatisfy{e}{\cdual{\xi_2}}]
     \end{byCases}
+    \resetpfcounter
 \end{byCases}
 \end{proof}

@@ -12,6 +12,10 @@
     \chpattyp{x}{\tau}{\ctruth}{x : \tau}{\cdot}
   }
 
+  \Infer{\PTWild}{ }{
+    \chpattyp{\_}{\tau}{\ctruth}{\cdot}{\cdot}
+  }
+
   \Infer{\PTEHole}{ }{
     \chpattyp{\hehole{w}}{\tau}{\cunknown}{\cdot}{w :: \tau}
   }
@@ -25,10 +29,6 @@
   
   \Infer{\PTNum}{ }{
     \chpattyp{\hnum{n}}{\tnum}{\cnum{n}}{\cdot}{\cdot}
-  }
-
-  \Infer{\PTWild}{ }{
-    \chpattyp{\_}{\tau}{\ctruth}{\cdot}{\cdot}
   }
 
   \Infer{\PTInl}{
