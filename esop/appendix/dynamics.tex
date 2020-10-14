@@ -1,31 +1,31 @@
 \section{Dynamic Semantics}
 \judgboxa{\isVal{e}}{$e$ is a value}
 \begin{subequations}\label{rules:Value}
-\begin{equation}
+\begin{equation}\label{rule:VNum}
 \inferrule[VNum]{ }{
   \isVal{\hnum{n}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:VLam}
 \inferrule[VLam]{ }{
   \isVal{\hlam{x}{\tau}{e}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:VPair}
 \inferrule[VPair]{
   \isVal{e_1} \\
   \isVal{e_2}
 }{\isVal{\hpair{e_1}{e_2}}}
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:VInl}
 \inferrule[VInl]{
   \isVal{e}
 }{
   \isVal{\hinl{\tau}{e}}
 }
 \end{equation}
-\begin{equation}
-\inferrule[Vinr]{
+\begin{equation}\label{rule:VInr}
+\inferrule[VInr]{
   \isVal{e}
 }{
   \isVal{\hinr{\tau}{e}}
@@ -69,21 +69,21 @@
   \isIndet{\hpair{e_1}{e_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:IPair}
 \inferrule[IPair]{
   \isIndet{e_1} \\ \isIndet{e_2}
 }{
   \isIndet{\hpair{e_1}{e_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:IPrl}
 \inferrule[IPrl]{
   \isIndet{e}
 }{
   \isIndet{\hprl{e}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:IPrr}
 \inferrule[IPrr]{
   \isIndet{e}
 }{
@@ -139,33 +139,33 @@
 }{
   $e$ cannot be a value syntactically
 }
-\begin{subequations}
-\begin{equation}
+\begin{subequations}\label{rules:notval}
+\begin{equation}\label{rule:NVEHole}
 \inferrule[NVEHole]{ }{
   \isntVal{\hehole{u}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:NVHole}
 \inferrule[NVHole]{ }{
   \isntVal{\hhole{e}{u}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:NVAp}
 \inferrule[NVAp]{ }{
   \isntVal{\hap{e_1}{e_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:NVMatch}
 \inferrule[NVMatch]{ }{
   \isntVal{\hmatch{e}{\zrules}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:NVPrl}
 \inferrule[NVPrl]{ }{
   \isntVal{\hprl{e}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:NVPrr}
 \inferrule[NVPrr]{ }{
   \isntVal{\hprr{e}}
 }
@@ -282,51 +282,12 @@
 }
 \end{equation}
 \begin{equation}
-\inferrule[MEHolePair]{
-  \hpatmatch{\hprl{\hehole{u}}}{p_1}{\theta_1} \\
-  \hpatmatch{\hprr{\hehole{u}}}{p_2}{\theta_2}
+\inferrule[MNotValPair]{
+  \isntVal{e} \\
+  \hpatmatch{\hprl{e}}{p_1}{\theta_1} \\
+  \hpatmatch{\hprr{e}}{p_2}{\theta_2}
 }{
-  \hpatmatch{\hehole{u}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
-}
-\end{equation}
-\begin{equation}
-\inferrule[MHolePair]{
-  \hpatmatch{\hprl{\hhole{e}{u}}}{p_1}{\theta_1} \\
-  \hpatmatch{\hprr{\hhole{e}{u}}}{p_2}{\theta_2}
-}{
-  \hpatmatch{\hhole{e}{u}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
-}
-\end{equation}
-\begin{equation}
-\inferrule[MApPair]{
-  \hpatmatch{\hprl{\hap{e_1}{e_2}}}{p_1}{\theta_1} \\
-  \hpatmatch{\hprr{\hap{e_1}{e_2}}}{p_2}{\theta_2}
-}{
-  \hpatmatch{\hap{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
-}
-\end{equation}
-\begin{equation}
-\inferrule[MMatchPair]{
-  \hpatmatch{\hprl{\hmatch{e}{\zrules}}}{p_1}{\theta_1} \\
-  \hpatmatch{\hprr{\hmatch{e}{\zrules}}}{p_2}{\theta_2}
-}{
-  \hpatmatch{\hmatch{e}{\zrules}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
-}
-\end{equation}
-\begin{equation}
-\inferrule[MPrlPair]{
-  \hpatmatch{\hprl{\hprl{e}}}{p_1}{\theta_1} \\
-  \hpatmatch{\hprr{\hprl{e}}}{p_2}{\theta_2}
-}{
-  \hpatmatch{\hprl{e}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
-}
-\end{equation}
-\begin{equation}
-\inferrule[MPrrPair]{
-  \hpatmatch{\hprl{\hprr{e}}}{p_1}{\theta_1} \\
-  \hpatmatch{\hprr{\hprr{e}}}{p_2}{\theta_2}
-}{
-  \hpatmatch{\hprr{e}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+  \hpatmatch{e}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
 }
 \end{equation}
 \end{subequations}
@@ -347,46 +308,12 @@
   \hmaymatch{e}{\hhole{p}{w}}
 }
 \end{equation}
-\begin{equation}\label{rule:MMExpEHole}
+\begin{equation}\label{rule:MMNotVal}
 \inferrule[MMExpEHole]{
+  \isntVal{e} \\
   \refutable{p}
 }{
-  \hmaymatch{\hehole{u}}{p}
-}
-\end{equation}
-\begin{equation}\label{rule:MMExpHole}
-\inferrule[MMExpHole]{
-  \refutable{p}
-}{
-  \hmaymatch{\hhole{e}{u}}{p}
-}
-\end{equation}
-\begin{equation}\label{rule:MMAp}
-\inferrule[MMAp]{
-  \refutable{p}
-}{
-  \hmaymatch{\hap{e_1}{e_2}}{p}
-}
-\end{equation}
-\begin{equation}
-\inferrule[MMMatch]{
-  \refutable{p}
-}{
-  \hmaymatch{\hmatch{e}{\zrules}}{p}
-}
-\end{equation}
-\begin{equation}
-\inferrule[MMPrl]{
-  \refutable{p}
-}{
-  \hmaymatch{\hprl{e}}{p}
-}
-\end{equation}
-\begin{equation}
-\inferrule[MMPrr]{
-  \refutable{p}
-}{
-  \hmaymatch{\hprr{e}}{p}
+  \hmaymatch{e}{p}
 }
 \end{equation}
 \begin{equation}\label{rule:MMPairL}
@@ -593,6 +520,154 @@
 }
 \end{equation}
 \end{subequations}
+
+\begin{lemma}
+  \label{lem:inl-final}
+  If $\isFinal{\hinl{\tau_2}{e_1}}$ then $\isFinal{e_1}$.
+\end{lemma}
+\begin{proof}
+By rule induction over Rules (\ref{rules:Final}) on $\isFinal{\hinl{\tau_2}{e_1}}$.
+\begin{byCases}
+\savelocalsteps{0}
+\item[\text{(\ref{rule:FVal})}]
+    \begin{pfsteps*}
+    \item $\isVal{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{inl-val}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:Value}) on \pfref{inl-val}, only one case applies.
+    \begin{byCases}
+    \item[\text{(\ref{rule:VInl})}]
+        \begin{pfsteps*}
+        \item $\isVal{e_1}$ \BY{assumption} \pflabel{val}
+        \item $\isFinal{e_1}$ \BY{Rule (\ref{rule:FVal}) on \pfref{val}}
+        \end{pfsteps*}
+    \end{byCases}
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:FIndet})}]
+    \begin{pfsteps*}
+    \item $\isIndet{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{inl-indet}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:Indet}) on \pfref{inl-indet}, only one case applies.
+    \begin{byCases}
+    \item[\text{(\ref{rule:IInl})}]
+        \begin{pfsteps*}
+        \item $\isIndet{e_1}$ \BY{assumption} \pflabel{indet}
+        \item $\isFinal{e_1}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{indet}}
+        \end{pfsteps*}
+    \end{byCases}
+\end{byCases}
+\resetpfcounter
+\end{proof}
+
+\begin{lemma}
+  \label{lem:inr-final}
+  If $\isFinal{\hinr{\tau_1}{e_2}}$ then $\isFinal{e_2}$.
+\end{lemma}
+\begin{proof}
+By rule induction over Rules (\ref{rules:Final}) on $\isFinal{\hinr{\tau_1}{e_2}}$.
+\begin{byCases}
+\savelocalsteps{0}
+\item[\text{(\ref{rule:FVal})}]
+    \begin{pfsteps*}
+    \item $\isVal{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{inr-val}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:Value}) on \pfref{inr-val}, only one case applies.
+    \begin{byCases}
+    \item[\text{(\ref{rule:VInl})}]
+        \begin{pfsteps*}
+        \item $\isVal{e_2}$ \BY{assumption} \pflabel{val}
+        \item $\isFinal{e_2}$ \BY{Rule (\ref{rule:FVal}) on \pfref{val}}
+        \end{pfsteps*}
+    \end{byCases}
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:FIndet})}]
+    \begin{pfsteps*}
+    \item $\isIndet{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{inr-indet}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:Indet}) on \pfref{inr-indet}, only one case applies.
+    \begin{byCases}
+    \item[\text{(\ref{rule:IInl})}]
+        \begin{pfsteps*}
+        \item $\isIndet{e_2}$ \BY{assumption} \pflabel{indet}
+        \item $\isFinal{e_2}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{indet}}
+        \end{pfsteps*}
+    \end{byCases}
+\end{byCases}
+\resetpfcounter
+\end{proof}
+
+\begin{lemma}
+  \label{lem:pair-final}
+  If $\isFinal{\hpair{e_1}{e_2}}$ then $\isFinal{e_1}$ and $\isFinal{e_2}$.
+\end{lemma}
+\begin{proof}
+By rule induction over Rules (\ref{rules:Final}) on $\isFinal{\hpair{e_1}{e_2}}$.
+\begin{byCases}
+\savelocalsteps{0}
+\item[\text{(\ref{rule:FVal})}]
+    \begin{pfsteps*}
+    \item $\isVal{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{pair-val}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:Value}) on \pfref{pair-val}, only one case applies.
+    \begin{byCases}
+    \item[\text{(\ref{rule:VPair})}]
+        \begin{pfsteps*}
+        \item $\isVal{e_1}$ \BY{assumption} \pflabel{e1-val}
+        \item $\isVal{e_2}$ \BY{assumption} \pflabel{e2-val}
+        \item $\isFinal{e_1}$ \BY{Rule (\ref{rule:FVal}) on \pfref{e1-val}}
+        \item $\isFinal{e_2}$ \BY{Rule (\ref{rule:FVal}) on \pfref{e2-val}}
+        \end{pfsteps*}
+    \end{byCases}
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:FIndet})}]
+    \begin{pfsteps*}
+    \item $\isIndet{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{pair-indet}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:Indet}) on \pfref{pair-indet}, only three cases apply.
+    \begin{byCases}
+    \savelocalsteps{1}
+    \item[\text{(\ref{rule:IPairL})}]
+        \begin{pfsteps*}
+        \item $\isIndet{e_1}$ \BY{assumption} \pflabel{[indet1]e1-indet}
+        \item $\isVal{e_2}$ \BY{assumption} \pflabel{[indet1]e2-val}
+        \item $\isFinal{e_1}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[indet1]e1-indet}}
+        \item $\isFinal{e_1}$ \BY{Rule (\ref{rule:FVal}) on \pfref{[indet1]e2-val}}
+        \end{pfsteps*}
+    \restorelocalsteps{1}
+    \item[\text{(\ref{rule:IPairR})}]
+        \begin{pfsteps*}
+        \item $\isVal{e_1}$ \BY{assumption} \pflabel{[indet2]e1-val}
+        \item $\isIndet{e_2}$ \BY{assumption} \pflabel{[indet2]e2-indet}
+        \item $\isFinal{e_1}$ \BY{Rule (\ref{rule:FVal}) on \pfref{[indet2]e1-val}}
+        \item $\isFinal{e_1}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[indet2]e2-indet}}
+        \end{pfsteps*}
+    \restorelocalsteps{1}
+    \item[\text{(\ref{rule:IPair})}]
+        \begin{pfsteps*}
+        \item $\isIndet{e_1}$ \BY{assumption} \pflabel{[indet3]e1-indet}
+        \item $\isIndet{e_2}$ \BY{assumption} \pflabel{[indet3]e2-indet}
+        \item $\isFinal{e_1}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[indet3]e1-indet}}
+        \item $\isFinal{e_1}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[indet3]e2-indet}}
+        \end{pfsteps*}
+    \end{byCases}
+\end{byCases}
+\resetpfcounter
+\end{proof}
+
+\begin{lemma}
+  \label{lem:no-pair-notval}
+  There doesn't exist $\hpair{e_1}{e_2}$ such that $\isntVal{\hpair{e_1}{e_2}}$.
+\end{lemma}
+\begin{proof}
+    By rule induction over Rules (\ref{rules:notval}) $\isntVal{\hpair{e_1}{e_2}}$, no case applies due to syntactic contradiction.
+\end{proof}
+
+\begin{lemma}
+  \label{lem:final-notval-indet}
+  If $\isFinal{e}$ and $\isntVal{e}$ then $\isIndet{e}$.
+\end{lemma}
+\begin{proof}[Proof Sketch]
+By rule induction over Rules (\ref{rules:notval}) on  $\isntVal{e}$, for each case, by rule induction over Rules (\ref{rules:Value}) on $\isVal{e}$ and we notice that $\isVal{e}$ is not derivable. By rule induction over Rules (\ref{rules:Final}) on $\isFinal{e}$, Rule (\ref{rule:FVal}) result in a contradiction with the fact that $\isVal{e}$ is not derivable while Rule (\ref{rule:FIndet}) tells us $\isIndet{e}$.
+\end{proof}
 
 \begin{lemma}[Matching Coherence of Constraint]
   \label{lem:const-matching-coherence}

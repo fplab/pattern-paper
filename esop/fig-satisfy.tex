@@ -65,46 +65,12 @@
 \csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
 }
 
-\Infer{\CSEHolePair}{
-  \csatisfy{\hprl{\hehole{u}}}{\xi_1} \\
-  \csatisfy{\hprr{\hehole{u}}}{\xi_2}
+\Infer{\CSNotValPair}{
+  \isntVal{e} \\
+  \csatisfy{\hprl{e}}{\xi_1} \\
+  \csatisfy{\hprr{e}}{\xi_2}
 }{
-  \csatisfy{\hehole{u}}{\cpair{\xi_1}{\xi_2}}
-}
-
-\Infer{\CSHolePair}{
-  \csatisfy{\hprl{\hhole{e}{u}}}{\xi_1} \\
-  \csatisfy{\hprr{\hhole{e}{u}}}{\xi_2}
-}{
-  \csatisfy{\hhole{e}{u}}{\cpair{\xi_1}{\xi_2}}
-}
-
-\Infer{\CSApPair}{
-  \csatisfy{\hprl{\hap{e_1}{e_2}}}{\xi_1} \\
-  \csatisfy{\hprr{\hap{e_1}{e_2}}}{\xi_2}
-}{
-  \csatisfy{\hap{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
-}
-
-\Infer{\CSMatchPair}{
-  \csatisfy{\hprl{\hmatch{e}{\zrules}}}{\xi_1} \\
-  \csatisfy{\hprr{\hmatch{e}{\zrules}}}{\xi_2}
-}{
-  \csatisfy{\hmatch{e}{\zrules}}{\cpair{\xi_1}{\xi_2}}
-}
-
-\Infer{\CSPrlPair}{
-  \csatisfy{\hprl{\hprl{e}}}{\xi_1} \\
-  \csatisfy{\hprr{\hprl{e}}}{\xi_2}
-}{
-  \csatisfy{\hprl{e}}{\cpair{\xi_1}{\xi_2}}
-}
-
-\Infer{\CSPrrPair}{
-  \csatisfy{\hprl{\hprr{e}}}{\xi_1} \\
-  \csatisfy{\hprr{\hprr{e}}}{\xi_2}
-}{
-  \csatisfy{\hprr{e}}{\cpair{\xi_1}{\xi_2}}
+  \csatisfy{e}{\cpair{\xi_1}{\xi_2}}
 }
 \end{mathpar}
 
@@ -115,40 +81,12 @@
   \cmaysatisfy{e}{\cunknown}
 }
 
-\Infer{\CMSExpEHole}{
-  \cnotsatisfy{\hehole{u}}{\xi}
+\Infer{\CMSNotVal}{
+  \isntVal{e} \\
+  \cnotsatisfy{e}{\xi} \\
+  \cnotsatisfy{e}{\cdual{\xi}}
 }{
-  \cmaysatisfy{\hehole{u}}{\xi}
-}
-
-\Infer{\CMSExpHole}{
-  \cnotsatisfy{\hhole{e}{u}}{\xi}
-}{
-  \cmaysatisfy{\hhole{e}{u}}{\xi}
-}
-
-\Infer{\CMSAp}{
-  \cnotsatisfy{\hap{e_1}{e_2}}{\xi}
-}{
-  \cmaysatisfy{\hap{e_1}{e_2}}{\xi}
-}
-
-\Infer{\CMSMatch}{
-  \cnotsatisfy{\hmatch{e}{\zrules}}{\xi}
-}{
-  \cmaysatisfy{\hmatch{e}{\zrules}}{\xi}
-}
-
-\Infer{\CMSPrl}{
-  \cnotsatisfy{\hprl{e}}{\xi}
-}{
-  \cmaysatisfy{\hprl{e}}{\xi}
-}
-
-\Infer{\CMSPrr}{
-  \cnotsatisfy{\hprr{e}}{\xi}
-}{
-  \cmaysatisfy{\hprr{e}}{\xi}
+  \cmaysatisfy{e}{\xi}
 }
 
 \Infer{\CMSAndL}{

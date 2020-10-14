@@ -40,46 +40,12 @@
   \hpatmatch{\hinr{\tau}{e}}{\hinrp{p}}{\theta}
 }
 
-\Infer{\MEHolePair}{
-  \hpatmatch{\hprl{\hehole{u}}}{p_1}{\theta_1} \\
-  \hpatmatch{\hprr{\hehole{u}}}{p_2}{\theta_2}
+\Infer{\MNotValPair}{
+  \isntVal{e} \\
+  \hpatmatch{\hprl{e}}{p_1}{\theta_1} \\
+  \hpatmatch{\hprr{e}}{p_2}{\theta_2}
 }{
-  \hpatmatch{\hehole{u}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
-}
-
-\Infer{\MHolePair}{
-  \hpatmatch{\hprl{\hhole{e}{u}}}{p_1}{\theta_1} \\
-  \hpatmatch{\hprr{\hhole{e}{u}}}{p_2}{\theta_2}
-}{
-  \hpatmatch{\hhole{e}{u}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
-}
-
-\Infer{\MApPair}{
-  \hpatmatch{\hprl{\hap{e_1}{e_2}}}{p_1}{\theta_1} \\
-  \hpatmatch{\hprr{\hap{e_1}{e_2}}}{p_2}{\theta_2}
-}{
-  \hpatmatch{\hap{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
-}
-
-\Infer{\MMatchPair}{
-  \hpatmatch{\hprl{\hmatch{e}{\zrules}}}{p_1}{\theta_1} \\
-  \hpatmatch{\hprr{\hmatch{e}{\zrules}}}{p_2}{\theta_2}
-}{
-  \hpatmatch{\hmatch{e}{\zrules}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
-}
-
-\Infer{\MPrlPair}{
-  \hpatmatch{\hprl{\hprl{e}}}{p_1}{\theta_1} \\
-  \hpatmatch{\hprr{\hprl{e}}}{p_2}{\theta_2}
-}{
-  \hpatmatch{\hprl{e}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
-}
-
-\Infer{\MPrrPair}{
-  \hpatmatch{\hprl{\hprr{e}}}{p_1}{\theta_1} \\
-  \hpatmatch{\hprr{\hprr{e}}}{p_2}{\theta_2}
-}{
-  \hpatmatch{\hprr{e}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+  \hpatmatch{e}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
 }
 \end{mathpar}
 
@@ -98,40 +64,11 @@
   \hmaymatch{e}{\hhole{p}{w}}
 }
 \\
-\Infer{\MMExpEHole}{
+\Infer{\MMNotVal}{
+  \isntVal{e} \\
   \refutable{p}
 }{
-  \hmaymatch{\hehole{u}}{p}
-}
-
-\Infer{\MMExpHole}{
-  \refutable{p}
-}{
-  \hmaymatch{\hhole{e}{u}}{p}
-}
-
-\Infer{\MMAp}{
-  \refutable{p}
-}{
-  \hmaymatch{\hap{e_1}{e_2}}{p}
-}
-
-\Infer{\MMMatch}{
-  \refutable{p}
-}{
-  \hmaymatch{\hmatch{e}{\zrules}}{p}
-}
-
-\Infer{\MMPrl}{
-  \refutable{p}
-}{
-  \hmaymatch{\hprl{e}}{p}
-}
-
-\Infer{\MMPrr}{
-  \refutable{p}
-}{
-  \hmaymatch{\hprr{e}}{p}
+  \hmaymatch{e}{p}
 }
 
 \Infer{\MMPairL}{

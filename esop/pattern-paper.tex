@@ -346,14 +346,19 @@ the examples shown in \listfigurename~\ref{fig:exp-hole-step},\ref{fig:pat-hole-
 three possible results of pattern matching. We consider a final scrutinee $e$
 and a pattern $p$ that are of the same type (see Sec.~\ref{sec:statics}). \autoref{fig:notval} defines the judgment for expressions that cannot be values by simply looking at its form. Hence, when some final expression is of such form, they must be indeterminate. Besides, there is not need to recursively consider its inner expression during pattern matching.
 
-The judgment $\hpatmatch{e}{p}{\theta}$ denotes that $e$ matches $p$, as witness by
+The judgment $\hpatmatch{e}{p}{\theta}$ denotes that $e$ matches $p$, as witnessed by
 the substitution $\theta$ defined on the variables in $p$, while the judgment
-$\hnotmatch{e}{p}$ denotes that $e$ doesn't match $p$. Notably, we introduce the
+$\hnotmatch{e}{p}$ denotes that $e$ does not match $p$. Notably, we introduce the
 third possibility $\hmaymatch{e}{p}$ --- $e$ may match $p$, which is also the
-\textit{key concept} in pattern matching with holes. Rules \MMEHole and \MMHole
-specifies that any final expression may match a pattern hole, regardless of
-whether it is empty or non-empty. On the other hand, only when pattern $p$ is
-refutable (see \figurename~\ref{fig:refutable}), can we say that an indeterminate
+\textit{key concept}
+\todo{d: if anything, the concept itself should be emphasized, not the phrase ``key concept''}
+in pattern matching with holes. Rules \MMEHole and \MMHole
+specify that any final expression may match a pattern hole, regardless of
+whether it is empty or non-empty. On the other hand, Rule \MMNotVal specifies that
+an indeterminate expression may match a pattern %$$
+
+only when pattern $p$ is
+refutable (see \figurename~\ref{fig:refutable}) can we say that an indeterminate
 expression may or may not match the pattern. It is because any final expressions
 must match an irrefutable pattern of the same type, and it does not make sense to allow
 $\hpatmatch{e}{p}{\theta}$ and $\hmaymatch{e}{p}$ to be derivable at the same time. Actually,
@@ -661,27 +666,41 @@ The reason why we can always find a different pattern is because we have number 
 
 \section{Related Work}
 
+\subsubsection{Typed Holes}
+Peanut is based on Hazelnut Live, a dynamic semantics for incomplete functional programs, i.e., contains expression holes.
+In Hazelnut Live, rather than stopping when evaluation encounters an
+expression hole instance, evaluation proceeds ``around'' it.
+Meanwhile the system augments each hole instance with its closure,
+allowing evaluation to resume from previous evaluation state as
+the programmer fills empty holes or type-corrects the expression
+in a non-empty hole.
+\todo{say more about what this gives you in terms of continuity
+when combined with Hazelnut}
+That calculus did not feature a general pattern language and specified
+the dynamic behavior of typed holes only in expressions.
+\todo{something something simple types}
+\todo{say something about the corresponding extensions to Hazelnut
+being more straightforward, subtleties are in dynamic semantics}
+\todo{mention typed holes in Haskell, Agda}
 
-
+\subsubsection{Pattern Matching}
+Pattern matching has a long history, first appearing in the 1970s in early functional languages
+such as NPL, SASL, and ML.
+All prior work on pattern matching assumes that the patterns and expressions being matched are
+complete, i.e., do not contain any holes.
+Uniquely, the indeterminate matching and exhaustiveness and redundancy checks in Peanut
+take into account how the programmer may fill or correct these holes in a future edit state.
 \begin{itemize}
-    \item typed holes
-    \begin{itemize}
-        \item Hazelnut, Hazelnut Live
-        \begin{itemize}
-            \item both include only simple sum types, do not consider holes in patterns
-        \end{itemize}
-        \item Haskell, Agda, neither have support for holes in patterns
-    \end{itemize}
-    \item specifying pattern matching
-    \item Compilng pattern matching
-    \begin{itemize}
-        \item Compiling a functional language, Cardelli 1984
-        \item Compiling pattern matching, Augustsson 1985
-        \item in this work we do not focus on compilation but rather
-        spec/correctness
-        \item probably should say something more about the path toward
-        efficiency
-    \end{itemize}
+    \item mention Warnings For Pattern Matching by Maranget somewhere
+    \item (assumes non-empty types, do we?)
+\end{itemize}
+
+
+It is straightforward to check for exhaustiveness and redundancy when pattern-matching on
+simple algebraic datatypes.
+Much of the literature on pattern matching focuses on extending these checks in the presence of
+more sophisticated types and pattern matching features.
+\begin{itemize}
     \item Lower Your Guards
     \begin{itemize}
         \item compiles a myriad of pattern forms/features into a guard tree
@@ -693,12 +712,30 @@ The reason why we can always find a different pattern is because we have number 
     \item other checkers for handling potentially undecidable coverage
     \begin{itemize}
         \item GADTs Meet Their Match, Karachalias et al 2015
+        \begin{itemize}
+            \item note: defines redundant clause as one where pattern has no well-typed
+            value that matches (in the context of GADTs)
+        \end{itemize}
         \item SMT solver for handling guards, Kalvoda and Kerckhove 2019
         \item case trees for dependently typed / refinement type languages
         \item emphasize that the failure/uncertainty of checking with these
         other tools is not the same as indeterminate matching in our work
     \end{itemize}
 \end{itemize}
+
+Another body of work on pattern matching focuses on compilation.
+\begin{itemize}
+    \item Compiling a functional language, Cardelli 1984
+    \item Compiling pattern matching, Augustsson 1985
+    \item in this work we do not focus on compilation but rather
+    spec/correctness
+    \item probably should say something more about the path toward
+    efficiency
+\end{itemize}
+More foundational work (as well as motivation) is needed to support compilation of
+incomplete programs before we can consider compiling pattern matching with holes.
+In any case, in this case we focus on specifying the behavior of pattern matching
+with holes and leave optimization to future work.
 
 \section{Conclusion}
 We can adapt our core calculus to fit in a more expressive setting.
