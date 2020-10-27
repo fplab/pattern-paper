@@ -1,6 +1,6 @@
 % !TEX root= pattern-paper.tex
 
-\begin{figure}[ht]
+\begin{figure}[!b]
 
 \judgbox{
   \hpatmatch{e}{p}{\theta}
@@ -50,9 +50,56 @@
 \end{mathpar}
 
 \judgbox{
+  \hnotmatch{e}{p}
+}{
+  $e$ does not match $p$
+}
+
+\begin{mathpar}
+
+\Infer{\NMNum}{
+  n_1 \neq n_2
+}{
+  \hnotmatch{\hnum{n_1}}{\hnum{n_2}}
+}
+
+\Infer{\NMPairL}{
+  \hnotmatch{e_1}{p_1}
+}{
+  \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+
+\Infer{\NMPairR}{
+  \hnotmatch{e_2}{p_2}
+}{
+  \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+
+\Infer{\NMConfL}{ }{
+  \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
+}
+
+\Infer{\NMConfR}{ }{
+  \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
+}
+
+\Infer{\NMInl}{
+  \hnotmatch{e}{p}
+}{
+  \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
+}
+
+\Infer{\NMInr}{
+  \hnotmatch{e}{p}
+}{
+  \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
+}
+\end{mathpar}
+
+\judgbox{
   \hmaymatch{e}{p}
 }{
-  $e$ may match $p$
+  $e$ indeterminately matches $p$
 }
 
 \begin{mathpar}
@@ -105,53 +152,6 @@
 }
 \end{mathpar}
 
-\judgbox{
-  \hnotmatch{e}{p}
-}{
-  $e$ does not match $p$
-}
-
-\begin{mathpar}
-
-\Infer{\NMNum}{
-  n_1 \neq n_2
-}{
-  \hnotmatch{\hnum{n_1}}{\hnum{n_2}}
-}
-
-\Infer{\NMPairL}{
-  \hnotmatch{e_1}{p_1}
-}{
-  \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
-}
-
-\Infer{\NMPairR}{
-  \hnotmatch{e_2}{p_2}
-}{
-  \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
-}
-
-\Infer{\NMConfL}{ }{
-  \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
-}
-
-\Infer{\NMConfR}{ }{
-  \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
-}
-
-\Infer{\NMInl}{
-  \hnotmatch{e}{p}
-}{
-  \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
-}
-
-\Infer{\NMInr}{
-  \hnotmatch{e}{p}
-}{
-  \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
-}
-\end{mathpar}
-
-\caption{Three possibilities of Pattern Matching}
+\caption{Three possible outcomes of pattern matching}
 \label{fig:patmatch}
 \end{figure}

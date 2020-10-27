@@ -196,40 +196,40 @@
 \judgboxa{
   \refutable{p}
 }{$p$ is refutable}
-\begin{subequations}
-\begin{equation}
+\begin{subequations}\label{rules:p-refutable}
+\begin{equation}\label{rule:RNum}
 \inferrule[RNum]{ }{
   \refutable{\hnum{n}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:REHole}
 \inferrule[REHole]{ }{
   \refutable{\hehole{w}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:RHole}
 \inferrule[RHole]{ }{
   \refutable{\hhole{p}{w}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:RInl}
 \inferrule[RInl]{ }{
   \refutable{\hinlp{p}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:RInr}
 \inferrule[RInr]{ }{
   \refutable{\hinrp{p}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:RPairL}
 \inferrule[RPairL]{
   \refutable{p_1}
 }{
   \refutable{\hpair{p_1}{p_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:RPairR}
 \inferrule[RPairR]{
   \refutable{p_2}
 }{
@@ -281,7 +281,7 @@
   \hpatmatch{\hinr{\tau}{e}}{\hinrp{p}}{\theta}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:MNotValPair}
 \inferrule[MNotValPair]{
   \isntVal{e} \\
   \hpatmatch{\hprl{e}}{p_1}{\theta_1} \\
@@ -309,7 +309,7 @@
 }
 \end{equation}
 \begin{equation}\label{rule:MMNotVal}
-\inferrule[MMExpEHole]{
+\inferrule[MMNotVal]{
   \isntVal{e} \\
   \refutable{p}
 }{
@@ -362,45 +362,45 @@
   $e$ does not match $p$
 }
 \begin{subequations}\label{rules:notmatch}
-\begin{equation}
+\begin{equation}\label{rule:NMNum}
 \inferrule[NMNum]{
   n_1 \neq n_2
 }{
   \hnotmatch{\hnum{n_1}}{\hnum{n_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:NMPairL}
 \inferrule[NMPairL]{
   \hnotmatch{e_1}{p_1}
 }{
   \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:NMPairR}
 \inferrule[NMPairR]{
   \hnotmatch{e_2}{p_2}
 }{
   \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:NMConfL}
 \inferrule[NMConfL]{ }{
   \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:NMConfR}
 \inferrule[NMConfR]{ }{
   \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:NMInl}
 \inferrule[NMInl]{
   \hnotmatch{e}{p}
 }{
   \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
 }
 \end{equation}
-\begin{equation}
+\begin{equation}\label{rule:NMInr}
 \inferrule[NMInr]{
   \hnotmatch{e}{p}
 }{
@@ -654,11 +654,35 @@ By rule induction over Rules (\ref{rules:Final}) on $\isFinal{\hpair{e_1}{e_2}}$
 \end{proof}
 
 \begin{lemma}
+  \label{lem:no-num-notval}
+  There doesn't exist $\hnum{n}$ such that $\isntVal{\hnum{n}}$.
+\end{lemma}
+\begin{proof}
+    By rule induction over Rules (\ref{rules:notval}) on $\isntVal{\hnum{n}}$, no case applies due to syntactic contradiction.
+\end{proof}
+
+\begin{lemma}
+  \label{lem:no-inl-notval}
+  There doesn't exist $\hinl{\tau}{e}$ such that $\isntVal{\hinl{\tau}{e}}$.
+\end{lemma}
+\begin{proof}
+    By rule induction over Rules (\ref{rules:notval}) on $\isntVal{\hinl{\tau}{e}}$, no case applies due to syntactic contradiction.
+\end{proof}
+
+\begin{lemma}
+  \label{lem:no-inr-notval}
+  There doesn't exist $\hinr{\tau}{e}$ such that $\isntVal{\hinr{\tau}{e}}$.
+\end{lemma}
+\begin{proof}
+    By rule induction over Rules (\ref{rules:notval}) on $\isntVal{\hinr{\tau}{e}}$, no case applies due to syntactic contradiction.
+\end{proof}
+
+\begin{lemma}
   \label{lem:no-pair-notval}
   There doesn't exist $\hpair{e_1}{e_2}$ such that $\isntVal{\hpair{e_1}{e_2}}$.
 \end{lemma}
 \begin{proof}
-    By rule induction over Rules (\ref{rules:notval}) $\isntVal{\hpair{e_1}{e_2}}$, no case applies due to syntactic contradiction.
+    By rule induction over Rules (\ref{rules:notval}) on $\isntVal{\hpair{e_1}{e_2}}$, no case applies due to syntactic contradiction.
 \end{proof}
 
 \begin{lemma}
@@ -669,13 +693,1187 @@ By rule induction over Rules (\ref{rules:Final}) on $\isFinal{\hpair{e_1}{e_2}}$
 By rule induction over Rules (\ref{rules:notval}) on  $\isntVal{e}$, for each case, by rule induction over Rules (\ref{rules:Value}) on $\isVal{e}$ and we notice that $\isVal{e}$ is not derivable. By rule induction over Rules (\ref{rules:Final}) on $\isFinal{e}$, Rule (\ref{rule:FVal}) result in a contradiction with the fact that $\isVal{e}$ is not derivable while Rule (\ref{rule:FIndet}) tells us $\isIndet{e}$.
 \end{proof}
 
+\begin{lemma}[Finality]
+  \label{lem:finality}
+  There doesn't exist such an expression $e$ such that both $\isFinal{e}$ and $\htrans{e}{e'}$ for some $e'$
+\end{lemma}
+\begin{proof}Assume there exists such an $e$ such that both $\isFinal{e}$ and $\htrans{e}{e'}$ for some $e'$ then proof by contradiction.
+ 
+  By rule induction over Rules (\ref{rules:Final}) and Rules (\ref{rules:ITExp}), \textit{i.e.}, over Rules (\ref{rules:Value}) and Rules (\ref{rules:ITExp}) and over Rules (\ref{rules:Indet}) and Rules (\ref{rules:ITExp}) respectively. The proof can be done by straightforward observation of syntactic contradictions.
+\end{proof}
+
+\begin{lemma}[Matching Determinism]
+  \label{lem:match-determinism}
+  If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta_e}{e}{\tau}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$ then exactly one of the following holds
+  \begin{enumerate}
+    \item $\hpatmatch{e}{p}{\theta}$ for some $\theta$
+    \item $\hmaymatch{e}{p}$
+    \item $\hnotmatch{e}{p}$
+  \end{enumerate}
+\end{lemma}
+\begin{proof}
+\begin{pfsteps*}
+\item $\isFinal{e}$ \BY{assumption} \pflabel{e-final}
+\item $\hexptyp{\cdot}{\Delta_e}{e}{\tau}$ \BY{assumption} \pflabel{e-typ}
+\item $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$ \BY{assumption} \pflabel{p-typ}
+\end{pfsteps*}
+By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{p-typ}, we would show one conclusion is derivable while the other two are not.
+\begin{byCases}
+\savelocalsteps{0}
+\item[\text{(\ref{rule:PTVar})}]
+    \begin{pfsteps*}
+    \item $p=x$ \BY{assumption}
+    \item $\hpatmatch{e}{x}{e / x}$ \BY{\ruleref{rule:MVar}}
+    \end{pfsteps*}
+    Assume $\hmaymatch{e}{x}$. By rule induction over \rulesref{rules:maymatch} on it, only one case applies.
+    \begin{byCases}
+    \item[\text{(\ref{rule:MMNotVal})}]
+        \begin{pfsteps*}
+        \item $\refutable{x}$ \BY{assumption} \pflabel{[var]rft}
+        \end{pfsteps*}
+        By rule induction over \rulesref{rules:p-refutable} on \pfref{[var]rft}, no case applies due to syntactic contradiction.
+    \end{byCases}
+    \begin{pfsteps*}
+    \item $\cancel{\hmaymatch{e}{x}}$ \BY{contradiction}
+    \end{pfsteps*}
+    Assume $\hnotmatch{e}{x}$. By rule induction over \rulesref{rules:notmatch} on it, no case applies due to syntactic contradiction.
+    \begin{pfsteps*}
+    \item $\cancel{\hnotmatch{e}{x}}$ \BY{contradiction}
+    \end{pfsteps*}
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:PTWild})}]
+    \begin{pfsteps*}
+    \item $p=\_$ \BY{assumption}
+    \item $\hpatmatch{e}{\_}{\cdot}$ \BY{\ruleref{rule:MWild}}
+    \end{pfsteps*}
+    Assume $\hmaymatch{e}{\_}$. By rule induction over \rulesref{rules:maymatch} on it, only one case applies.
+    \begin{byCases}
+    \item[\text{(\ref{rule:MMNotVal})}]
+        \begin{pfsteps*}
+        \item $\refutable{\_}$ \BY{assumption} \pflabel{[wild]rft}
+        \end{pfsteps*}
+        By rule induction over \rulesref{rules:p-refutable} on \pfref{[wild]rft}, no case applies due to syntactic contradiction.
+    \end{byCases}
+    \begin{pfsteps*}
+    \item $\cancel{\hmaymatch{e}{\_}}$ \BY{contradiction}
+    \end{pfsteps*}
+    Assume $\hnotmatch{e}{\_}$. By rule induction over \rulesref{rules:notmatch} on it, no case applies due to syntactic contradiction.
+    \begin{pfsteps*}
+    \item $\cancel{\hnotmatch{e}{\_}}$ \BY{contradiction}
+    \end{pfsteps*}
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:PTEHole})}]
+    \begin{pfsteps*}
+    \item $p=\hehole{w}$ \BY{assumption}
+    \item $\hmaymatch{e}{\hehole{w}}$ \BY{\ruleref{rule:MMEHole}}
+    \end{pfsteps*}
+    Assume $\hpatmatch{e}{\hehole{w}}{\theta}$ for some $\theta$. By rule induction over \rulesref{rules:maymatch} on it, no case applies due to syntactic contradiction.
+    \begin{pfsteps*}
+    \item $\cancel{\hpatmatch{e}{\hehole{w}}{\theta}}$ \BY{contradiction}
+    \end{pfsteps*}
+    Assume $\hnotmatch{e}{\hehole{w}}$. By rule induction over \rulesref{rules:notmatch} on it, no case applies due to syntactic contradiction.
+    \begin{pfsteps*}
+    \item $\cancel{\hnotmatch{e}{\hehole{w}}}$ \BY{contradiction}
+    \end{pfsteps*}
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:PTHole})}]
+    \begin{pfsteps*}
+    \item $p=\hhole{p_0}{w}$ \BY{assumption}
+    \item $\hmaymatch{e}{\hhole{p_0}{w}}$ \BY{\ruleref{rule:MMHole}}
+    \end{pfsteps*}
+    Assume $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ for some $\theta$. By rule induction over \rulesref{rules:maymatch} on it, no case applies due to syntactic contradiction.
+    \begin{pfsteps*}
+    \item $\cancel{\hpatmatch{e}{\hhole{p_0}{w}}{\theta}}$ \BY{contradiction}
+    \end{pfsteps*}
+    Assume $\hnotmatch{e}{\hhole{p_0}{w}}$. By rule induction over \rulesref{rules:notmatch} on it, no case applies due to syntactic contradiction.
+    \begin{pfsteps*}
+    \item $\cancel{\hnotmatch{e}{\hhole{p_0}{w}}}$ \BY{contradiction}
+    \end{pfsteps*}
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:PTNum})}]
+    \begin{pfsteps*}
+    \item $p=\hnum{n_2}$ \BY{assumption}
+    \item $\tau=\tnum$ \BY{assumption}
+    \item $\xi=\cnum{n_2}$ \BY{assumption}
+    \item $\refutable{\hnum{n_2}}$ \BY{\ruleref{rule:RNum}} \pflabel{[num]rft}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:TExp}) on \pfref{e-typ}, the following cases apply.
+    \begin{byCases}
+    \savelocalsteps{1}
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+        \begin{pfsteps*}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\isntVal{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[num]notval}
+        \item $\hmaymatch{e}{\hnum{n_2}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[num]rft} and \pfref{[num]notval}}
+        \end{pfsteps*}
+        Assume $\hpatmatch{e}{\hnum{n_2}}{\theta}$ for some $\theta$. By rule induction over it, no case applies due to syntactic contradiction.
+        \begin{pfsteps*}
+        \item $\cancel{\hpatmatch{e}{\hnum{n_2}}{\theta}}$ \BY{contradiction}
+        \end{pfsteps*}
+        Assume $\hnotmatch{e}{\hnum{n_2}}$. By rule induction over it, no case applies due to syntactic contradiction.
+        \begin{pfsteps*}
+        \item $\cancel{\hnotmatch{e}{\hnum{n_2}}}$ \BY{contradiction}
+        \end{pfsteps*}
+    \restorelocalsteps{1}
+    \item[\text{(\ref{rule:TNum})}]
+        \begin{pfsteps*}
+        \item $e=\hnum{n_1}$
+        \end{pfsteps*}
+        Assume $\hmaymatch{\hnum{n_1}}{\hnum{n_2}}$. By rule induction over \rulesref{rules:maymatch} on it, only two cases apply.
+        \begin{byCases}
+        \item[\text{(\ref{rule:MMNotVal})}]
+            \begin{pfsteps*}
+            \item $\isntVal{\hnum{n_1}}$ \BY{assumption}
+            \end{pfsteps*}
+            Contradicts \autoref{lem:no-num-notval}.
+        \end{byCases}
+        \begin{pfsteps*}
+        \item $\cancel{\hmaymatch{\hnum{n_1}}{\hnum{n_2}}}$ \BY{contradiction}
+        \end{pfsteps*}
+        By case analysis on whether $n_1=n_2$.
+        \begin{byCases}
+        \savelocalsteps{2}
+        \item[n_1=n_2]
+            \begin{pfsteps*}
+            \item $n_1=n_2$ \BY{assumption} \pflabel{[num]eq}
+            \item $\hpatmatch{\hnum{n_1}}{\hnum{n_2}}{\cdot}$ \BY{\ruleref{rule:MNum}}
+            \end{pfsteps*}
+            Assume $\hnotmatch{\hnum{n_1}}{\hnum{n_2}}$. By rule induction over \rulesref{rules:notmatch} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:NMNum})}]
+                \begin{pfsteps*}
+                \item $n_1\neq n_2$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[num]eq}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hnotmatch{\hnum{n_1}}{\hnum{n_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item[n_1\neq n_2]
+            \begin{pfsteps*}
+            \item $n_1\neq n_2$ \BY{assumption} \pflabel{[num]neq}
+            \item $\hnotmatch{\hnum{n_1}}{\hnum{n_2}}$ \BY{\ruleref{rule:NMNum} on \pfref{[num]neq}}
+            \end{pfsteps*}
+            Assume $\hpatmatch{\hnum{n_1}}{\hnum{n_2}}{\theta}$ for some $\theta$. By rule induction over \rulesref{rules:match} on it, no case applies due to syntactic contradiction.
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hnum{n_1}}{\hnum{n_2}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \end{byCases}
+    \end{byCases}
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:PTInl})}]
+    \begin{pfsteps*}
+    \item $p=\hinlp{p_1}$ \BY{assumption}
+    \item $\tau=\tsum{\tau_1}{\tau_2}$ \BY{assumption}
+    \item $\xi=\cinl{\xi_1}$ \BY{assumption}
+    \item $\chpattyp{p_1}{\tau_1}{\xi_1}{\Gamma}{\Delta}$ \BY{assumption} \pflabel{[inl]p1-typ}
+    \item $\refutable{\hinlp{p_1}}$ \BY{\ruleref{rule:RInl}} \pflabel{[inl]rft}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:TExp}) on \pfref{e-typ}, the following cases apply.
+    \begin{byCases}
+    \savelocalsteps{1}
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+        \begin{pfsteps*}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\isntVal{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[inl]notval}
+        \item $\hmaymatch{e}{\hinlp{p_1}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[inl]rft} and \pfref{[inl]notval}}
+        \end{pfsteps*}
+        Assume $\hpatmatch{e}{\hinlp{p_1}}{\theta_1}$ for some $\theta_1$. By rule induction over it, no case applies due to syntactic contradiction.
+        \begin{pfsteps*}
+        \item $\cancel{\hpatmatch{e}{\hinlp{p_1}}{\theta_1}}$ \BY{contradiction}
+        \end{pfsteps*}
+        Assume $\hnotmatch{e}{\hinlp{p_1}}$. By rule induction over it, no case applies due to syntactic contradiction.
+        \begin{pfsteps*}
+        \item $\cancel{\hnotmatch{e}{\hinlp{p_1}}}$ \BY{contradiction}
+        \end{pfsteps*}
+    \restorelocalsteps{1}
+    \item[\text{(\ref{rule:TInl})}]
+        \begin{pfsteps*}
+        \item $e=\hinl{\tau_2}{e_1}$ \BY{assumption}
+        \item $\hexptyp{\cdot}{\Delta_e}{e_1}{\tau_1}$ \BY{assumption} \pflabel{[inl]e1-typ}
+        \item $\isFinal{e_1}$ \BY{\autoref{lem:inl-final} on \pfref{e-final}} \pflabel{[inl]e1-final}
+        \end{pfsteps*}
+        By inductive hypothesis on \pfref{[inl]e1-typ} and \pfref{[inl]e1-final} and \pfref{[inl]p1-typ}, exactly one of $\hpatmatch{e_1}{p_1}{\theta_1}$ for some $\theta_1$, $\hmaymatch{e_1}{p_1}$, and $\hnotmatch{e_1}{p_1}$ holds.\\
+        By case analysis on which one holds.
+        \begin{byCases}
+        \savelocalsteps{2}
+        \item[\hpatmatch{e_1}{p_1}{\theta_1}]
+            \begin{pfsteps*}
+            \item $\hpatmatch{e_1}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[inl1]match}
+            \item $\cancel{\hmaymatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[inl1]not-maymatch}
+            \item $\cancel{\hnotmatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[inl1]not-notmatch}
+            \item $\hpatmatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}{\theta_1}$ \BY{\ruleref{rule:MInl} on \pfref{[inl1]match}}
+            \end{pfsteps*}
+            Assume $\hmaymatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}$. By rule induction over \rulesref{rules:maymatch} on it, only two cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hinl{\tau_2}{e_1}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-inl-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMInl})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[inl1]not-maymatch}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hmaymatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hnotmatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}$. By rule induction over \rulesref{rules:notmatch} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:NMInl})}]
+                \begin{pfsteps*}
+                \item $\hnotmatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[inl1]not-notmatch}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hnotmatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item[\hmaymatch{e_1}{p_1}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{e_1}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[inl2]not-match}
+            \item $\hmaymatch{e_1}{p_1}$ \BY{assumption} \pflabel{[inl2]maymatch}
+            \item $\cancel{\hnotmatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[inl2]not-notmatch}
+            \item $\hmaymatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}$ \BY{\ruleref{rule:MMInl} on \pfref{[inl2]maymatch}}
+            \end{pfsteps*}
+            Assume $\hpatmatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}{\theta}$ for some $\theta$. By rule induction over \rulesref{rules:match} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MInl})}]
+                \begin{pfsteps*}
+                \item $\hpatmatch{e_1}{p_1}{\theta}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[inl2]not-match}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hnotmatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}$. By rule induction over \rulesref{rules:notmatch} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:NMInl})}]
+                \begin{pfsteps*}
+                \item $\hnotmatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[inl2]not-notmatch}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hnotmatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item[\hnotmatch{e_1}{p_1}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{e_1}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[inl3]not-match}
+            \item $\cancel{\hmaymatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[inl3]not-maymatch}
+            \item $\hnotmatch{e_1}{p_1}$ \BY{assumption} \pflabel{[inl3]notmatch}
+            \item $\hnotmatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}$ \BY{\ruleref{rule:NMInl} on \pfref{[inl3]notmatch}}
+            \end{pfsteps*}
+            Assume $\hpatmatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}{\theta}$ for some $\theta$. By rule induction over \rulesref{rules:match} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MInl})}]
+                \begin{pfsteps*}
+                \item $\hpatmatch{e_1}{p_1}{\theta}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[inl3]not-match}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hmaymatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}$. By rule induction over \rulesref{rules:maymatch} on it, only two cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hinl{\tau_2}{e_1}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-inl-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMInl})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[inl3]not-maymatch}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hmaymatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \end{byCases}
+    \end{byCases}
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:PTInr})}]
+    \begin{pfsteps*}
+    \item $p=\hinrp{p_2}$ \BY{assumption}
+    \item $\tau=\tsum{\tau_1}{\tau_2}$ \BY{assumption}
+    \item $\xi=\cinr{\xi_2}$ \BY{assumption}
+    \item $\chpattyp{p_2}{\tau_2}{\xi_2}{\Gamma}{\Delta}$ \BY{assumption} \pflabel{[inr]p2-typ}
+    \item $\refutable{\hinrp{p_2}}$ \BY{\ruleref{rule:RInr}} \pflabel{[inr]rft}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:TExp}) on \pfref{e-typ}, the following cases apply.
+    \begin{byCases}
+    \savelocalsteps{1}
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+        \begin{pfsteps*}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\isntVal{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[inr]notval}
+        \item $\hmaymatch{e}{\hinrp{p_2}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[inr]rft} and \pfref{[inr]notval}}
+        \end{pfsteps*}
+        Assume $\hpatmatch{e}{\hinrp{p_2}}{\theta_2}$ for some $\theta_2$. By rule induction over it, no case applies due to syntactic contradiction.
+        \begin{pfsteps*}
+        \item $\cancel{\hpatmatch{e}{\hinrp{p_2}}{\theta_2}}$ \BY{contradiction}
+        \end{pfsteps*}
+        Assume $\hnotmatch{e}{\hinrp{p_2}}$. By rule induction over it, no case applies due to syntactic contradiction.
+        \begin{pfsteps*}
+        \item $\cancel{\hnotmatch{e}{\hinrp{p_2}}}$ \BY{contradiction}
+        \end{pfsteps*}
+    \restorelocalsteps{1}
+    \item[\text{(\ref{rule:TInr})}]
+        \begin{pfsteps*}
+        \item $e=\hinr{\tau_1}{e_2}$ \BY{assumption}
+        \item $\hexptyp{\cdot}{\Delta_e}{e_2}{\tau_2}$ \BY{assumption} \pflabel{[inr]e2-typ}
+        \item $\isFinal{e_2}$ \BY{\autoref{lem:inr-final} on \pfref{e-final}} \pflabel{[inr]e2-final}
+        \end{pfsteps*}
+        By inductive hypothesis on \pfref{[inr]e2-typ} and \pfref{[inr]e2-final} and \pfref{[inr]p2-typ}, exactly one of $\hpatmatch{e_2}{p_2}{\theta_2}$ for some $\theta_2$, $\hmaymatch{e_2}{p_2}$, and $\hnotmatch{e_2}{p_2}$ holds.\\
+        By case analysis on which one holds.
+        \begin{byCases}
+        \savelocalsteps{2}
+        \item[\hpatmatch{e_2}{p_2}{\theta_2}]
+            \begin{pfsteps*}
+            \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[inr1]match}
+            \item $\cancel{\hmaymatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[inr1]not-maymatch}
+            \item $\cancel{\hnotmatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[inr1]not-notmatch}
+            \item $\hpatmatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}{\theta_2}$ \BY{\ruleref{rule:MInr} on \pfref{[inr1]match}}
+            \end{pfsteps*}
+            Assume $\hmaymatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}$. By rule induction over \rulesref{rules:maymatch} on it, only two cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hinr{\tau_1}{e_2}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-inr-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMInr})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_2}{p_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[inr1]not-maymatch}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hmaymatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hnotmatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}$. By rule induction over \rulesref{rules:notmatch} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:NMInr})}]
+                \begin{pfsteps*}
+                \item $\hnotmatch{e_2}{p_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[inr1]not-notmatch}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hnotmatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item[\hmaymatch{e_2}{p_2}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{e_2}{p_2}{\theta}}$ \BY{assumption} \pflabel{[inr2]not-match}
+            \item $\hmaymatch{e_2}{p_2}$ \BY{assumption} \pflabel{[inr2]maymatch}
+            \item $\cancel{\hnotmatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[inr2]not-notmatch}
+            \item $\hmaymatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}$ \BY{\ruleref{rule:MMInr} on \pfref{[inr2]maymatch}}
+            \end{pfsteps*}
+            Assume $\hpatmatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}{\theta}$ for some $\theta$. By rule induction over \rulesref{rules:match} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MInr})}]
+                \begin{pfsteps*}
+                \item $\hpatmatch{e_2}{p_2}{\theta}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[inr2]not-match}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hnotmatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}$. By rule induction over \rulesref{rules:notmatch} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:NMInr})}]
+                \begin{pfsteps*}
+                \item $\hnotmatch{e_2}{p_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[inr2]not-notmatch}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hnotmatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item[\hnotmatch{e_2}{p_2}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{e_2}{p_2}{\theta}}$ \BY{assumption} \pflabel{[inr3]not-match}
+            \item $\cancel{\hmaymatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[inr3]not-maymatch}
+            \item $\hnotmatch{e_2}{p_2}$ \BY{assumption} \pflabel{[inr3]notmatch}
+            \item $\hnotmatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}$ \BY{\ruleref{rule:NMInr} on \pfref{[inr3]notmatch}}
+            \end{pfsteps*}
+            Assume $\hpatmatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}{\theta}$ for some $\theta$. By rule induction over \rulesref{rules:match} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MInr})}]
+                \begin{pfsteps*}
+                \item $\hpatmatch{e_2}{p_2}{\theta}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[inr3]not-match}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hmaymatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}$. By rule induction over \rulesref{rules:maymatch} on it, only two cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hinr{\tau_1}{e_2}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-inr-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMInr})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_2}{p_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[inr3]not-maymatch}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hmaymatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \end{byCases}
+    \end{byCases}
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:PTPair})}]
+    \begin{pfsteps*}
+    \item $p=\hpair{p_1}{p_2}$ \BY{assumption}
+    \item $\tau=\tprod{\tau_1}{\tau_2}$ \BY{assumption}
+    \item $\xi=\cpair{\xi_1}{\xi_2}$ \BY{assumption}
+    \item $\Gamma=\Gamma_1 \uplus \Gamma_2$ \BY{assumption}
+    \item $\Delta=\Delta_1 \uplus \Delta_2$ \BY{assumption}
+    \item $\chpattyp{p_1}{\tau_1}{\xi_1}{\Gamma_1}{\Delta_1}$ \BY{assumption} \pflabel{[pair]p1-typ}
+    \item $\chpattyp{p_2}{\tau_2}{\xi_2}{\Gamma_2}{\Delta_2}$ \BY{assumption} \pflabel{[pair]p2-typ}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:TExp}) on \pfref{e-typ}, the following cases apply.
+    \begin{byCases}
+    \savelocalsteps{1}
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+        \begin{pfsteps*}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\isntVal{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[epair]notval}
+        \item $\isIndet{e}$ \BY{\autoref{lem:final-notval-indet} on \pfref{e-final} and \pfref{[epair]notval}} \pflabel{[epair]indet}
+        \item $\isIndet{\hprl{e}}$ \BY{Rule (\ref{rule:IPrl}) on \pfref{[epair]indet}} \pflabel{[epair]prl-indet}
+        \item $\isFinal{\hprl{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[epair]prl-indet}} \pflabel{[epair]prl-final}
+        \item $\isIndet{\hprr{e}}$ \BY{Rule (\ref{rule:IPrr}) on \pfref{[epair]indet}} \pflabel{[epair]prr-indet}
+        \item $\isFinal{\hprr{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[epair]prr-indet}} \pflabel{[epair]prr-final}
+        \item $\hexptyp{\cdot}{\Delta}{\hprl{e}}{\tau_1}$ \BY{Rule (\ref{rule:TPrl}) on \pfref{e-typ}} \pflabel{[epair]prl-typ}
+        \item $\hexptyp{\cdot}{\Delta}{\hprr{e}}{\tau_2}$ \BY{Rule (\ref{rule:TPrr}) on \pfref{e-typ}} \pflabel{[epair]prr-typ}
+        \end{pfsteps*}
+        Assume $\hnotmatch{e}{\hpair{p_1}{p_2}}$. By rule induction on it, no case applies due to syntactic contradiction.
+        \begin{pfsteps*}
+        \item $\cancel{\hnotmatch{e}{\hpair{p_1}{p_2}}}$ \BY{contradiction}
+        \end{pfsteps*}
+        By inductive hypothesis on \pfref{[epair]prl-final} and \pfref{[epair]prl-typ} and \pfref{[pair]p1-typ}, exactly one of $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$, $\hmaymatch{\hprl{e}}{p_1}$, and $\hnotmatch{\hprl{e}}{p_1}$ holds. \\
+        By inductive hypothesis on \pfref{[epair]prr-final} and \pfref{[epair]prr-typ} and \pfref{[pair]p2-typ}, exactly one of $\hpatmatch{\hprr{e}}{p_2}{\theta_2}$, $\hmaymatch{\hprr{e}}{p_2}$, and $\hnotmatch{\hprr{e}}{p_2}$ holds. \\
+        By case analysis on which conclusion holds for $p_1$ and $p_2$. Note that we have already shown $\cancel{\hnotmatch{e}{\hpair{p_1}{p_2}}}$.
+        \begin{byCases}
+        \savelocalsteps{2}
+        \item[\hpatmatch{\hprl{e}}{p_1}{\theta_1},\hpatmatch{\hprr{e}}{p_2}{\theta_2}]
+            \begin{pfsteps*}
+            \item $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair1]match1}
+            \item $\cancel{\hmaymatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair1]not-maymatch1}
+            \item $\cancel{\hnotmatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair1]not-notmatch1}
+            \item $\hpatmatch{\hprr{e}}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[epair1]match2}
+            \item $\cancel{\hmaymatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair1]not-maymatch2}
+            \item $\cancel{\hnotmatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair1]not-notmatch2}
+            \item $\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}$ \BY{\ruleref{rule:MNotValPair} on \pfref{[epair]notval} and \pfref{[epair1]match1} and \pfref{[epair1]match2}}
+            \end{pfsteps*}
+            Assume $\hmaymatch{e}{\hpair{p_1}{p_2}}$. By rule induction over \rulesref{rules:maymatch} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\refutable{\hpair{p_1}{p_2}}$ \BY{assumption} \pflabel{[epair1]rft-pair}
+                \end{pfsteps*}
+                By rule induction over \rulesref{rules:p-refutable}, only two cases apply.
+                \begin{byCases}
+                \savelocalsteps{3}
+                \item[\text{(\ref{rule:RPairL})}]
+                    \begin{pfsteps*}
+                    \item $\refutable{p_1}$ \BY{assumption} \pflabel{[epair1]rft-p1}
+                    \item $\isntVal{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[epair1]notval-prl}
+                    \item $\hmaymatch{\hprl{e}}{p_1}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[epair1]rft-p1} and \pfref{[epair1]notval-prl}}
+                    \end{pfsteps*}
+                    Contradicts \pfref{[epair1]not-maymatch1}.
+                \restorelocalsteps{3}
+                \item[\text{(\ref{rule:RPairR})}]
+                    \begin{pfsteps*}
+                    \item $\refutable{p_2}$ \BY{assumption} \pflabel{[epair1]rft-p2}
+                    \item $\isntVal{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[epair1]notval-prr}
+                    \item $\hmaymatch{\hprl{e}}{p_1}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[epair1]rft-p2} and \pfref{[epair1]notval-prr}}
+                    \end{pfsteps*}
+                    Contradicts \pfref{[epair1]not-maymatch1}.
+                \end{byCases}
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hmaymatch{e}{\hpair{p_1}{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item[\hpatmatch{\hprl{e}}{p_1}{\theta_1},\hmaymatch{\hprr{e}}{p_2}]
+            \begin{pfsteps*}
+            \item $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair2]match1}
+            \item $\cancel{\hmaymatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair2]not-maymatch1}
+            \item $\cancel{\hnotmatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair2]not-notmatch1}
+            \item $\cancel{\hpatmatch{\hprr{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair2]not-match2}
+            \item $\hmaymatch{\hprr{e}}{p_2}$ \BY{assumption} \pflabel{[epair2]maymatch2}
+            \item $\cancel{\hnotmatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair2]not-notmatch2}
+            \end{pfsteps*}
+            Assume $\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta}$. By rule induction over \rulesref{rules:match}, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MNotValPair})}]
+                \begin{pfsteps*}
+                \item $\theta=\theta_1\uplus\theta_2$ \BY{assumption}
+                \item $\hpatmatch{\hprr{e}}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[epair2]match2}
+                \end{pfsteps*}
+                Contradicts \pfref{[epair2]not-match2}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:maymatch} on \pfref{[epair2]maymatch2}, the following cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMEHole}),(\ref{rule:MMHole})}]
+                \begin{pfsteps*}
+                \item $p_2=\hehole{w},\hhole{p}{w}$ \BY{assumption}
+                \item $\refutable{p_2}$ \BY{\ruleref{rule:REHole} and \ruleref{rule:RHole}} \pflabel{[epair2]rft-p2}
+                \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairR} on \pfref{[epair2]rft-p2}} \pflabel{[epair2]rft-pair}
+                \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[epair]notval} and \pfref{[epair2]rft-pair}}
+                \end{pfsteps*}
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\refutable{p_2}$ \BY{assumption} \pflabel{[epair2]rft-p2'}
+                \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairR} on \pfref{[epair2]rft-p2'}} \pflabel{[epair2]rft-pair'}
+                \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[epair]notval} and \pfref{[epair2]rft-pair'}}
+                \end{pfsteps*}
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item[\hpatmatch{\hprl{e}}{p_1}{\theta_1},\hnotmatch{\hprr{e}}{p_2}]
+            \begin{pfsteps*}
+            \item $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair3]match1}
+            \item $\cancel{\hmaymatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair3]not-maymatch1}
+            \item $\cancel{\hnotmatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair3]not-notmatch1}
+            \item $\cancel{\hpatmatch{\hprr{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair3]not-match2}
+            \item $\cancel{\hmaymatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair3]not-maymatch2}
+            \item $\hnotmatch{\hprr{e}}{p_2}$ \BY{assumption} \pflabel{[epair3]notmatch2}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:notmatch} on \pfref{[epair3]notmatch2}, no case applies due to syntactic contradiction.\\
+            Therefore, vacuously true.
+        \restorelocalsteps{2}
+        \item[\hmaymatch{\hprl{e}}{p_1},\hpatmatch{\hprr{e}}{p_2}{\theta_2}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hprl{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair4]not-match1}
+            \item $\hmaymatch{\hprl{e}}{p_1}$ \BY{assumption} \pflabel{[epair4]maymatch1}
+            \item $\cancel{\hnotmatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair4]not-notmatch1}
+            \item $\hpatmatch{\hprr{e}}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[epair4]match2}
+            \item $\cancel{\hmaymatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair4]not-maymatch2}
+            \item $\cancel{\hnotmatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair4]not-notmatch2}
+            \end{pfsteps*}
+            Assume $\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta}$. By rule induction over \rulesref{rules:match}, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MNotValPair})}]
+                \begin{pfsteps*}
+                \item $\theta=\theta_1\uplus\theta_2$ \BY{assumption}
+                \item $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair4]match1}
+                \end{pfsteps*}
+                Contradicts \pfref{[epair4]not-match1}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:maymatch} on \pfref{[epair4]maymatch1}, the following cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMEHole}),(\ref{rule:MMHole})}]
+                \begin{pfsteps*}
+                \item $p_1=\hehole{w},\hhole{p}{w}$ \BY{assumption}
+                \item $\refutable{p_1}$ \BY{\ruleref{rule:REHole} and \ruleref{rule:RHole}} \pflabel{[epair4]rft-p1}
+                \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairR} on \pfref{[epair4]rft-p1}} \pflabel{[epair4]rft-pair}
+                \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[epair]notval} and \pfref{[epair4]rft-pair}}
+                \end{pfsteps*}
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\refutable{p_1}$ \BY{assumption} \pflabel{[epair4]rft-p1'}
+                \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairR} on \pfref{[epair4]rft-p1'}} \pflabel{[epair4]rft-pair'}
+                \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[epair]notval} and \pfref{[epair4]rft-pair'}}
+                \end{pfsteps*}
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item[\hmaymatch{\hprl{e}}{p_1},\hmaymatch{\hprr{e}}{p_2}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hprl{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair5]not-match1}
+            \item $\hmaymatch{\hprl{e}}{p_1}$ \BY{assumption} \pflabel{[epair5]maymatch1}
+            \item $\cancel{\hnotmatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair5]not-notmatch1}
+            \item $\cancel{\hpatmatch{\hprr{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair5]not-match2}
+            \item $\hmaymatch{\hprr{e}}{p_2}$ \BY{assumption} \pflabel{[epair5]maymatch2}
+            \item $\cancel{\hnotmatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair5]not-notmatch2}
+            \end{pfsteps*}
+            Assume $\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta}$. By rule induction over \rulesref{rules:match}, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MNotValPair})}]
+                \begin{pfsteps*}
+                \item $\theta=\theta_1\uplus\theta_2$ \BY{assumption}
+                \item $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair5]match1}
+                \end{pfsteps*}
+                Contradicts \pfref{[epair5]not-match1}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:maymatch} on \pfref{[epair5]maymatch1}, the following cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMEHole}),(\ref{rule:MMHole})}]
+                \begin{pfsteps*}
+                \item $p_1=\hehole{w},\hhole{p}{w}$ \BY{assumption}
+                \item $\refutable{p_1}$ \BY{\ruleref{rule:REHole} and \ruleref{rule:RHole}} \pflabel{[epair5]rft-p1}
+                \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairR} on \pfref{[epair5]rft-p1}} \pflabel{[epair5]rft-pair}
+                \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[epair]notval} and \pfref{[epair5]rft-pair}}
+                \end{pfsteps*}
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\refutable{p_1}$ \BY{assumption} \pflabel{[epair5]rft-p1'}
+                \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairR} on \pfref{[epair5]rft-p1'}} \pflabel{[epair5]rft-pair'}
+                \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[epair]notval} and \pfref{[epair5]rft-pair'}}
+                \end{pfsteps*}
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item[\hmaymatch{\hprl{e}}{p_1},\hnotmatch{\hprr{e}}{p_2}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hprl{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair6]not-match1}
+            \item $\hmaymatch{\hprl{e}}{p_1}$ \BY{assumption} \pflabel{[epair6]maymatch1}
+            \item $\cancel{\hnotmatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair6]not-notmatch1}
+            \item $\cancel{\hpatmatch{\hprr{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair6]not-match2}
+            \item $\cancel{\hmaymatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair6]not-maymatch2}
+            \item $\hnotmatch{\hprr{e}}{p_2}$ \BY{assumption} \pflabel{[epair6]notmatch2}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:notmatch} on \pfref{[epair6]notmatch2}, no case applies due to syntactic contradiction.\\
+            Therefore, vacuously true.
+        \restorelocalsteps{2}
+        \item[\hnotmatch{\hprl{e}}{p_1},\hpatmatch{\hprr{e}}{p_2}{\theta_2}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hprl{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair7]not-match1}
+            \item $\cancel{\hmaymatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair7]not-maymatch1}
+            \item $\hnotmatch{\hprl{e}}{p_1}$ \BY{assumption} \pflabel{[epair7]notmatch1}
+            \item $\hpatmatch{\hprr{e}}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[epair7]match2}
+            \item $\cancel{\hmaymatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair7]not-maymatch2}
+            \item $\cancel{\hnotmatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair7]not-notmatch2}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:notmatch} on \pfref{[epair7]notmatch1}, no case applies due to syntactic contradiction.\\
+            Therefore, vacuously true.
+        \restorelocalsteps{2}
+        \item[\hnotmatch{\hprl{e}}{p_1},\hmaymatch{\hprr{e}}{p_2}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hprl{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair8]not-match1}
+            \item $\cancel{\hmaymatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair8]not-maymatch1}
+            \item $\hnotmatch{\hprl{e}}{p_1}$ \BY{assumption} \pflabel{[epair8]notmatch1}
+            \item $\cancel{\hpatmatch{\hprr{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair8]not-match2}
+            \item $\hmaymatch{\hprr{e}}{p_2}$ \BY{assumption} \pflabel{[epair8]maymatch2}
+            \item $\cancel{\hnotmatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair8]not-notmatch2}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:notmatch} on \pfref{[epair8]notmatch1}, no case applies due to syntactic contradiction.\\
+            Therefore, vacuously true.
+        \restorelocalsteps{2}
+        \item[\hnotmatch{\hprl{e}}{p_1},\hnotmatch{\hprr{e}}{p_2}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hprl{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair9]not-match1}
+            \item $\cancel{\hmaymatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair9]not-maymatch1}
+            \item $\hnotmatch{\hprl{e}}{p_1}$ \BY{assumption} \pflabel{[epair9]notmatch1}
+            \item $\cancel{\hpatmatch{\hprr{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair9]not-match2}
+            \item $\hmaymatch{\hprr{e}}{p_2}$ \BY{assumption} \pflabel{[epair9]maymatch2}
+            \item $\cancel{\hnotmatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair9]not-notmatch2}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:notmatch} on \pfref{[epair9]notmatch1}, no case applies due to syntactic contradiction.\\
+            Therefore, vacuously true.
+        \end{byCases}
+    \restorelocalsteps{1}
+    \item[\text{(\ref{rule:TPair})}]
+        \begin{pfsteps*}
+        \item $e=\hpair{e_1}{e_2}$ \BY{assumption}
+        \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{[pair]e1-typ}
+        \item $\hexptyp{\cdot}{\Delta}{e_2}{\tau_2}$ \BY{assumption} \pflabel{[pair]e2-typ}
+        \item $\isFinal{e_1}$ \BY{\autoref{lem:pair-final} on \pfref{e-final}} \pflabel{[pair]e1-final}
+        \item $\isFinal{e_2}$ \BY{\autoref{lem:pair-final} on \pfref{e-final}} \pflabel{[pair]e2-final}
+        \end{pfsteps*}
+        By inductive hypothesis on \pfref{[pair]p1-typ} and \pfref{[pair]e1-typ} and \pfref{[pair]e1-final}, exactly one of $\hpatmatch{e_1}{p_1}{\theta_1}$, $\hmaymatch{e_1}{p_1}$, and $\hnotmatch{e_1}{p_1}$ holds. \\
+        By inductive hypothesis on \pfref{[pair]p2-typ} and \pfref{[pair]e2-typ} and \pfref{[pair]e2-final}, exactly one of $\hpatmatch{e_2}{p_2}{\theta_2}$, $\hmaymatch{e_2}{p_2}$, and $\hnotmatch{e_2}{p_2}$ holds. \\
+        By case analysis on which conclusion holds for $p_1$ and $p_2$.
+        \begin{byCases}
+        \savelocalsteps{2}
+        \item[\hpatmatch{e_1}{p_1}{\theta_1},\hpatmatch{e_2}{p_2}{\theta_2}]
+            \begin{pfsteps*}
+            \item $\hpatmatch{e_1}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[pair1]match1}
+            \item $\cancel{\hmaymatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[pair1]not-maymatch1}
+            \item $\cancel{\hnotmatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[pair1]not-notmatch1}
+            \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[pair1]match2}
+            \item $\cancel{\hmaymatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[pair1]not-maymatch2}
+            \item $\cancel{\hnotmatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[pair1]not-notmatch2}
+            \item $\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}$ \BY{\ruleref{rule:MPair} on \pfref{[pair1]match1} and \pfref{[pair1]match2}}
+            \end{pfsteps*}
+            Assume $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$. By rule induction over \rulesref{rules:maymatch} on it, only four cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-pair-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPairL})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair1]not-maymatch1}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPairR})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_2}{p_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair1]not-maymatch2}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPair})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair1]not-maymatch1}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$. By rule induction over \rulesref{rules:notmatch} on it, only two cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:NMPairL})}]
+                \begin{pfsteps*}
+                \item $\hnotmatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair1]not-notmatch1}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:NMPairR})}]
+                \begin{pfsteps*}
+                \item $\hnotmatch{e_2}{p_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair1]not-notmatch2}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item[\hpatmatch{e_1}{p_1}{\theta_1},\hmaymatch{e_2}{p_2}]
+            \begin{pfsteps*}
+            \item $\hpatmatch{e_1}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[pair2]match1}
+            \item $\cancel{\hmaymatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[pair2]not-maymatch1}
+            \item $\cancel{\hnotmatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[pair2]not-notmatch1}
+            \item $\cancel{\hpatmatch{e_2}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[pair2]not-match2}
+            \item $\hmaymatch{e_2}{p_2}$ \BY{assumption} \pflabel{[pair2]maymatch2}
+            \item $\cancel{\hnotmatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[pair2]not-notmatch2}
+            \item $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMPairR} on \pfref{[pair2]match1} and \pfref{[pair2]maymatch2}}
+            \end{pfsteps*}
+            Assume $\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}$. By rule induction over \rulesref{rules:match} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MPair})}]
+                \begin{pfsteps*}
+                \item $\theta=\theta_1\uplus\theta_2$
+                \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair2]not-match2}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$. By rule induction over \rulesref{rules:notmatch} on it, only two cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:NMPairL})}]
+                \begin{pfsteps*}
+                \item $\hnotmatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair2]not-notmatch1}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:NMPairR})}]
+                \begin{pfsteps*}
+                \item $\hnotmatch{e_2}{p_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair2]not-notmatch2}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item[\hpatmatch{e_1}{p_1}{\theta_1},\hnotmatch{e_2}{p_2}]
+            \begin{pfsteps*}
+            \item $\hpatmatch{e_1}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[pair3]match1}
+            \item $\cancel{\hmaymatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[pair3]not-maymatch1}
+            \item $\cancel{\hnotmatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[pair3]not-notmatch1}
+            \item $\cancel{\hpatmatch{e_2}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[pair3]not-match2}
+            \item $\cancel{\hmaymatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[pair3]not-maymatch2}
+            \item $\hnotmatch{e_2}{p_2}$ \BY{assumption} \pflabel{[pair3]notmatch2}
+            \item $\hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:NMPairR} on \pfref{[pair3]notmatch2}}
+            \end{pfsteps*}
+            Assume $\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}$. By rule induction over \rulesref{rules:match} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MPair})}]
+                \begin{pfsteps*}
+                \item $\theta=\theta_1\uplus\theta_2$
+                \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair3]not-match2}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$. By rule induction over \rulesref{rules:maymatch} on it, only four cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-pair-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPairL})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair3]not-maymatch1}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPairR})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_2}{p_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair3]not-maymatch2}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPair})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair3]not-maymatch1}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item[\hmaymatch{e_1}{p_1},\hpatmatch{e_2}{p_2}{\theta_2}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{e_1}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[pair4]not-match1}
+            \item $\hmaymatch{e_1}{p_1}$ \BY{assumption} \pflabel{[pair4]maymatch1}
+            \item $\cancel{\hnotmatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[pair4]not-notmatch1}
+            \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[pair4]match2}
+            \item $\cancel{\hmaymatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[pair4]not-maymatch2}
+            \item $\cancel{\hnotmatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[pair4]not-notmatch2}
+            \item $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMPairL} on \pfref{[pair4]maymatch1} and \pfref{[pair4]match2}}
+            \end{pfsteps*}
+            Assume $\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}$. By rule induction over \rulesref{rules:match} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MPair})}]
+                \begin{pfsteps*}
+                \item $\theta=\theta_1\uplus\theta_2$
+                \item $\hpatmatch{e_1}{p_1}{\theta_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair4]not-match1}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$. By rule induction over \rulesref{rules:notmatch} on it, only two cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:NMPairL})}]
+                \begin{pfsteps*}
+                \item $\hnotmatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair4]not-notmatch1}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:NMPairR})}]
+                \begin{pfsteps*}
+                \item $\hnotmatch{e_2}{p_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair4]not-notmatch2}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item[\hmaymatch{e_1}{p_1},\hmaymatch{e_2}{p_2}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{e_1}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[pair5]not-match1}
+            \item $\hmaymatch{e_1}{p_1}$ \BY{assumption} \pflabel{[pair5]maymatch1}
+            \item $\cancel{\hnotmatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[pair5]not-notmatch1}
+            \item $\cancel{\hpatmatch{e_2}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[pair5]not-match2}
+            \item $\hmaymatch{e_2}{p_2}$ \BY{assumption} \pflabel{[pair5]maymatch2}
+            \item $\cancel{\hnotmatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[pair5]not-notmatch2}
+            \item $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMPair} on \pfref{[pair5]maymatch1} and \pfref{[pair5]maymatch2}}
+            \end{pfsteps*}
+            Assume $\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}$. By rule induction over \rulesref{rules:match} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MPair})}]
+                \begin{pfsteps*}
+                \item $\theta=\theta_1\uplus\theta_2$
+                \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair5]not-match2}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$. By rule induction over \rulesref{rules:notmatch} on it, only two cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:NMPairL})}]
+                \begin{pfsteps*}
+                \item $\hnotmatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair5]not-notmatch1}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:NMPairR})}]
+                \begin{pfsteps*}
+                \item $\hnotmatch{e_2}{p_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair5]not-notmatch2}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item[\hmaymatch{e_1}{p_1},\hnotmatch{e_2}{p_2}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{e_1}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[pair6]not-match1}
+            \item $\hmaymatch{e_1}{p_1}$ \BY{assumption} \pflabel{[pair6]maymatch1}
+            \item $\cancel{\hnotmatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[pair6]not-notmatch1}
+            \item $\cancel{\hpatmatch{e_2}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[pair6]not-match2}
+            \item $\cancel{\hmaymatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[pair6]not-maymatch2}
+            \item $\hnotmatch{e_2}{p_2}$ \BY{assumption} \pflabel{[pair6]notmatch2}
+            \item $\hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:NMPairR} on \pfref{[pair6]notmatch2}}
+            \end{pfsteps*}
+            Assume $\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}$. By rule induction over \rulesref{rules:match} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MPair})}]
+                \begin{pfsteps*}
+                \item $\theta=\theta_1\uplus\theta_2$
+                \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair6]not-match2}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$. By rule induction over \rulesref{rules:maymatch} on it, only four cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-pair-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPairL})}]
+                \begin{pfsteps*}
+                \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair6]not-match2}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPairR})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_2}{p_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair6]not-maymatch2}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPair})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_2}{p_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair6]not-maymatch2}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item[\hnotmatch{e_1}{p_1},\hpatmatch{e_2}{p_2}{\theta_2}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{e_1}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[pair7]not-match1}
+            \item $\cancel{\hmaymatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[pair7]not-maymatch1}
+            \item $\hnotmatch{e_1}{p_1}$ \BY{assumption} \pflabel{[pair7]notmatch1}
+            \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[pair7]match2}
+            \item $\cancel{\hmaymatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[pair7]not-maymatch2}
+            \item $\cancel{\hnotmatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[pair7]not-notmatch2}
+            \item $\hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:NMPairL} on \pfref{[pair7]notmatch1}}
+            \end{pfsteps*}
+            Assume $\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}$. By rule induction over \rulesref{rules:match} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MPair})}]
+                \begin{pfsteps*}
+                \item $\theta=\theta_1\uplus\theta_2$
+                \item $\hpatmatch{e_1}{p_1}{\theta_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair7]not-match1}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$. By rule induction over \rulesref{rules:maymatch} on it, only four cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-pair-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPairL})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair7]not-maymatch1}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPairR})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_2}{p_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair7]not-maymatch2}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPair})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair7]not-maymatch1}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item[\hnotmatch{e_1}{p_1},\hmaymatch{e_2}{p_2}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{e_1}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[pair8]not-match1}
+            \item $\cancel{\hmaymatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[pair8]not-maymatch1}
+            \item $\hnotmatch{e_1}{p_1}$ \BY{assumption} \pflabel{[pair8]notmatch1}
+            \item $\cancel{\hpatmatch{e_2}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[pair8]not-match2}
+            \item $\hmaymatch{e_2}{p_2}$ \BY{assumption} \pflabel{[pair8]maymatch2}
+            \item $\cancel{\hnotmatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[pair8]not-notmatch2}
+            \item $\hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:NMPairL} on \pfref{[pair8]notmatch1}}
+            \end{pfsteps*}
+            Assume $\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}$. By rule induction over \rulesref{rules:match} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MPair})}]
+                \begin{pfsteps*}
+                \item $\theta=\theta_1\uplus\theta_2$
+                \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair8]not-match2}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$. By rule induction over \rulesref{rules:maymatch} on it, only four cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-pair-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPairL})}]
+                \begin{pfsteps*}
+                \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair8]not-match2}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPairR})}]
+                \begin{pfsteps*}
+                \item $\hpatmatch{e_1}{p_1}{\theta_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair8]not-match1}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPair})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair8]not-maymatch1}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item[\hnotmatch{e_1}{p_1},\hnotmatch{e_2}{p_2}]
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{e_1}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[pair9]not-match1}
+            \item $\cancel{\hmaymatch{e_1}{p_1}}$ \BY{assumption} \pflabel{[pair9]not-maymatch1}
+            \item $\hnotmatch{e_1}{p_1}$ \BY{assumption} \pflabel{[pair9]notmatch1}
+            \item $\cancel{\hpatmatch{e_2}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[pair9]not-match2}
+            \item $\hmaymatch{e_2}{p_2}$ \BY{assumption} \pflabel{[pair9]maymatch2}
+            \item $\cancel{\hnotmatch{e_2}{p_2}}$ \BY{assumption} \pflabel{[pair9]not-notmatch2}
+            \item $\hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:NMPairL} on \pfref{[pair9]notmatch1}}
+            \end{pfsteps*}
+            Assume $\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}$. By rule induction over \rulesref{rules:match} on it, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MPair})}]
+                \begin{pfsteps*}
+                \item $\theta=\theta_1\uplus\theta_2$
+                \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair9]not-match2}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}}$ \BY{contradiction}
+            \end{pfsteps*}
+            Assume $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$. By rule induction over \rulesref{rules:maymatch} on it, only four cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-pair-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPairL})}]
+                \begin{pfsteps*}
+                \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair9]not-match2}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPairR})}]
+                \begin{pfsteps*}
+                \item $\hpatmatch{e_1}{p_1}{\theta_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair9]not-match1}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPair})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \pfref{[pair9]not-maymatch1}.
+            \end{byCases}
+            \begin{pfsteps*}
+            \item $\cancel{\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}}$ \BY{contradiction}
+            \end{pfsteps*}
+        \end{byCases}
+    \end{byCases}
+    
+\end{byCases}
+\resetpfcounter
+\end{proof}
+
 \begin{lemma}[Matching Coherence of Constraint]
   \label{lem:const-matching-coherence}
   Suppose that $\hexptyp{\cdot}{\Delta_e}{e}{\tau}$ and $\isFinal{e}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$. Then we have
   \begin{enumerate}
   \item $\csatisfy{e}{\xi}$ iff $\hpatmatch{e}{p}{\theta}$
-  \item $\csatisfy{e}{\cdual{\xi}}$ iff $\hnotmatch{e}{p}$
   \item $\cmaysatisfy{e}{\xi}$ iff $\hmaymatch{e}{p}$
+  \item $\cnotsatisfyormay{e}{\xi}$ iff $\hnotmatch{e}{p}$
   \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -684,6 +1882,11 @@ By rule induction over Rules (\ref{rules:notval}) on  $\isntVal{e}$, for each ca
 \item $\isFinal{e}$ \BY{assumption} \pflabel{eFinal}
 \item $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$ \BY{assumption} \pflabel{patTyp}
 \end{pfsteps*}
+Given \autoref{lem:pat-xi-type}, \autoref{thrm:exclusive-constraint-satisfaction}, and \autoref{lem:match-determinism}, it is sufficient to prove
+\begin{enumerate}
+  \item $\csatisfy{e}{\xi}$ iff $\hpatmatch{e}{p}{\theta}$
+  \item $\cmaysatisfy{e}{\xi}$ iff $\hmaymatch{e}{p}$
+\end{enumerate}
 By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
 \begin{byCases}
 \savelocalsteps{0}
@@ -704,24 +1907,13 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
         \item $\csatisfy{e}{\ctruth}$ \BY{Rule (\ref{rule:CSTruth})}
         \end{pfsteps*}
     \restorelocalsteps{1}
-    \item Prove $\csatisfy{e}{\cdual{\ctruth}}$ implies $\hnotmatch{e}{x}$.
-        \begin{pfsteps*}
-        \item $\cdual{\ctruth}=\cfalsity$ \BY{Definition \ref{defn:dual}}
-        \item $\cnotsatisfy{e}{\cfalsity}$ \BY{\autoref{lem:no-e-satisfy-falsity}}
-        \end{pfsteps*}
-        Vacuously true.
-    \restorelocalsteps{1}
-    \item Prove $\hnotmatch{e}{x}$ implies $\csatisfy{e}{\cdual{\ctruth}}$.
-
-        By rule induction over Rules (\ref{rules:notmatch}), we notice that $\hnotmatch{e}{x}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
-    \restorelocalsteps{1}
     \item Prove $\cmaysatisfy{e}{\ctruth}$ implies $\hmaymatch{e}{x}$.
         \begin{pfsteps*}
         \item $\cnotmaysatisfy{e}{\ctruth}$ \BY{\autoref{lem:no-e-may-satisfy-truth}}
         \end{pfsteps*}
         Vacuously true.
     \restorelocalsteps{1}
-    \item Prove $\hmaymatch{e}{x}$ implies $\cmaysatisfy{e}{\xi}$.
+    \item Prove $\hmaymatch{e}{x}$ implies $\cmaysatisfy{e}{\ctruth}$.
     
         By rule induction over Rules (\ref{rules:maymatch}), we notice that either, $\hmaymatch{e}{x}$ is in syntactic contradiction with all the cases, or the premise $\refutable{x}$ is not derivable. Hence, $\hmaymatch{e}{x}$ are not derivable. And thus vacuously true.
     \end{enumerate}
@@ -743,17 +1935,6 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
         \begin{pfsteps*}
         \item $\csatisfy{e}{\ctruth}$ \BY{Rule (\ref{rule:CSTruth})}
         \end{pfsteps*}
-    \restorelocalsteps{1}
-    \item Prove $\csatisfy{e}{\cdual{\ctruth}}$ implies $\hnotmatch{e}{\_}$.
-        \begin{pfsteps*}
-        \item $\cdual{\ctruth}=\cfalsity$ \BY{Definition \ref{defn:dual}}
-        \item $\cnotsatisfy{e}{\cfalsity}$ \BY{\autoref{lem:no-e-satisfy-falsity}}
-        \end{pfsteps*}
-        Vacuously true.
-    \restorelocalsteps{1}
-    \item Prove $\hnotmatch{e}{\_}$ implies $\csatisfy{e}{\cdual{\ctruth}}$.
-
-        By rule induction over Rules (\ref{rules:notmatch}), we notice that $\hnotmatch{e}{\_}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
     \restorelocalsteps{1}
     \item Prove $\cmaysatisfy{e}{\ctruth}$ implies $\hmaymatch{e}{\_}$.
         \begin{pfsteps*}
@@ -784,15 +1965,6 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
     \item Prove $\hpatmatch{e}{\hehole{w}}{\theta}$ implies $\csatisfy{e}{\cunknown}$.\\
         By rule induction over Rules (\ref{rules:match}), we notice that $\hpatmatch{e}{\hehole{w}}{\theta}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
     \restorelocalsteps{1}
-    \item Prove $\csatisfy{e}{\cunknown}$ implies $\hnotmatch{e}{\hehole{w}}$.
-        \begin{pfsteps*}
-        \item $\cnotsatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:MVar})}
-        \end{pfsteps*}
-        Vacuously true.
-    \restorelocalsteps{1}
-    \item Prove $\hnotmatch{e}{\hehole{w}}$ implies $\csatisfy{e}{\cunknown}$.\\
-        By rule induction over Rules (\ref{rules:notmatch}), we notice that $\hnotmatch{e}{\hehole{w}}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
-    \restorelocalsteps{1}
     \item Prove $\cmaysatisfy{e}{\cunknown}$ implies $\hmaymatch{e}{\hehole{w}}$.
         \begin{pfsteps*}
         \item $\hmaymatch{e}{\hehole{w}}$ \BY{Rule (\ref{rule:MMEHole})}
@@ -809,7 +1981,6 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
     \begin{pfsteps*}
     \item $p=\hhole{p_0}{w}$ \BY{assumption}
     \item $\xi=\cunknown$ \BY{assumption}
-    \item $\cdual{\xi}=\cunknown$ \BY{Definition \ref{defn:dual}}
     \end{pfsteps*}
     \begin{enumerate}
     \savelocalsteps{1}
@@ -821,15 +1992,6 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
     \restorelocalsteps{1}
     \item Prove $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ implies $\csatisfy{e}{\cunknown}$.\\
         By rule induction over Rules (\ref{rules:match}), we notice that $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
-    \restorelocalsteps{1}
-    \item Prove $\csatisfy{e}{\cunknown}$ implies $\hnotmatch{e}{\hhole{p_0}{w}}$.
-        \begin{pfsteps*}
-        \item $\cnotsatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:MVar})}
-        \end{pfsteps*}
-        Vacuously true.
-    \restorelocalsteps{1}
-    \item Prove $\hnotmatch{e}{\hhole{p_0}{w}}$ implies $\csatisfy{e}{\cunknown}$.\\
-        By rule induction over Rules (\ref{rules:notmatch}), we notice that $\hnotmatch{e}{\hhole{p_0}{w}}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
     \restorelocalsteps{1}
     \item Prove $\cmaysatisfy{e}{\cunknown}$ implies $\hmaymatch{e}{\hhole{p_0}{w}}$.
         \begin{pfsteps*}
@@ -845,39 +2007,658 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
 \restorelocalsteps{0}
 \item[\text{(\ref{rule:PTNum})}]
     \begin{pfsteps*}
-    \item $p=\hhole{p_0}{w}$ \BY{assumption}
-    \item $\xi=\cunknown$ \BY{assumption}
-    \item $\cdual{\xi}=\cunknown$ \BY{Definition \ref{defn:dual}}
+    \item $p=\hnum{n}$ \BY{assumption}
+    \item $\xi=\cnum{n}$ \BY{assumption}
     \end{pfsteps*}
     \begin{enumerate}
     \savelocalsteps{1}
-    \item Prove $\csatisfy{e}{\cunknown}$ implies $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ for some $\theta$.
+    \item Prove $\csatisfy{e}{\cnum{n}}$ implies $\hpatmatch{e}{\hnum{n}}{\theta}$ for some $\theta$.
         \begin{pfsteps*}
-        \item $\cnotsatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:MVar})}
+        \item $\csatisfy{e}{\cnum{n}}$ \BY{assumption} \pflabel{[num]satisfy}
         \end{pfsteps*}
-        Vacuously true.
+        By rule induction over \rulesref{rules:Satisfy} on \pfref{[num]satisfy}, only one case applies.
+        \begin{byCases}
+        \item[\text{(\ref{rule:CSNum})}]
+            \begin{pfsteps*}
+            \item $e=\hnum{n}$ \BY{assumption}
+            \item $\hpatmatch{\hnum{n}}{\hnum{n}}{\cdot}$ \BY{\ruleref{rule:MNum}}
+            \end{pfsteps*}
+        \end{byCases}
     \restorelocalsteps{1}
-    \item Prove $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ implies $\csatisfy{e}{\cunknown}$.\\
-        By rule induction over Rules (\ref{rules:match}), we notice that $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
-    \restorelocalsteps{1}
-    \item Prove $\csatisfy{e}{\cunknown}$ implies $\hnotmatch{e}{\hhole{p_0}{w}}$.
+    \item Prove $\hpatmatch{e}{\hnum{n}}{\theta}$ implies $\csatisfy{e}{\cnum{n}}$.
         \begin{pfsteps*}
-        \item $\cnotsatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:MVar})}
+        \item $\hpatmatch{e}{\hnum{n}}{\theta}$ \BY{assumption} \pflabel{[num]match}
         \end{pfsteps*}
-        Vacuously true.
+        By rule induction over Rules (\ref{rules:match}) on \pfref{[num]match}, only one case applies.
+        \begin{byCases}
+        \item[\text{(\ref{rule:MNum})}]
+            \begin{pfsteps*}
+            \item $e=\hnum{n}$ \BY{assumption}
+            \item $\theta=\cdot$ \BY{assumption}
+            \item $\csatisfy{\hnum{n}}{\cnum{n}}$ \BY{\ruleref{rule:CSNum}}
+            \end{pfsteps*}
+        \end{byCases}
     \restorelocalsteps{1}
-    \item Prove $\hnotmatch{e}{\hhole{p_0}{w}}$ implies $\csatisfy{e}{\cunknown}$.\\
-        By rule induction over Rules (\ref{rules:notmatch}), we notice that $\hnotmatch{e}{\hhole{p_0}{w}}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
-    \restorelocalsteps{1}
-    \item Prove $\cmaysatisfy{e}{\cunknown}$ implies $\hmaymatch{e}{\hhole{p_0}{w}}$.
+    \item Prove $\cmaysatisfy{e}{\cnum{n}}$ implies $\hmaymatch{e}{\hnum{n}}$.
         \begin{pfsteps*}
-        \item $\hmaymatch{e}{\hhole{p_0}{w}}$ \BY{Rule (\ref{rule:MMHole})}
+        \item $\cmaysatisfy{e}{\cnum{n}}$ \BY{assumption} \pflabel{[num]maysat}
         \end{pfsteps*}
+        By rule induction over \rulesref{rules:MaySatisfy} on \pfref{[num]maysat}, only one case applies.
+        \begin{byCases}
+        \item[\text{(\ref{rule:CMSNotVal})}]
+            \begin{pfsteps*}
+            \item $\isntVal{e}$ \BY{assumption} \pflabel{[num]notnum}
+            \item $\refutable{\hnum{n}}$ \BY{\ruleref{rule:RNum}} \pflabel{[num]rft}
+            \item $\hmaymatch{e}{\hnum{n}}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[num]notnum} and \pfref{[num]rft}}
+            \end{pfsteps*}
+        \end{byCases}
     \restorelocalsteps{1}
-    \item Prove $\hmaymatch{e}{\hhole{p_0}{w}}$ implies $\cmaysatisfy{e}{\cunknown}$.
+    \item Prove $\hmaymatch{e}{\hnum{n}}$ implies $\cmaysatisfy{e}{\cnum{n}}$.
         \begin{pfsteps*}
-        \item $\cmaysatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:CMSUnknown})}
+        \item $\hmaymatch{e}{\hnum{n}}$ \BY{assumption} \pflabel{[num]maymatch}
         \end{pfsteps*}
+        By rule induction over \rulesref{rules:maymatch} on \pfref{[num]maymatch}, only one case applies.
+        \begin{byCases}
+        \item[\text{(\ref{rule:MMNotVal})}]
+            \begin{pfsteps*}
+            \item $\isntVal{e}$ \BY{assumption} \pflabel{[num]notnum'}
+            \item $\refutable{\cnum{n}}$ \BY{\ruleref{rule:RXNum}} \pflabel{[num]xi-rft}
+            \item $\cmaysatisfy{e}{\cnum{n}}$ \BY{\ruleref{rules:MaySatisfy} on \pfref{[num]notnum'} and \pfref{[num]xi-rft}}
+            \end{pfsteps*}
+        \end{byCases}
     \end{enumerate}
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:PTInl})}]
+    \begin{pfsteps*}
+    \item $p=\hinlp{p_1}$ \BY{assumption}
+    \item $\xi=\cinl{\xi_1}$ \BY{assumption}
+    \item $\tau=\tsum{\tau_1}{\tau_2}$ \BY{assumption}
+    \item $\chpattyp{p_1}{\tau_1}{\xi_1}{\Gamma}{\Delta}$ \BY{assumption} \pflabel{[inl]p1-typ}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:TExp}) on \pfref{eTyp}, the following cases apply.
+    \begin{byCases}
+    \savelocalsteps{1}
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+        \begin{pfsteps*}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\isntVal{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[inl]notval}
+        \end{pfsteps*}
+        \begin{enumerate}
+        \savelocalsteps{2}
+        \item Prove $\csatisfy{e}{\cinl{\xi_1}}$ implies $\hpatmatch{e}{\hinlp{p_1}}{\theta}$ for some $\theta$.
+        By rule induction over \rulesref{rules:Satisfy} on $\csatisfy{e}{\cinl{\xi_1}}$, no case applies due to syntactic contradiction. \\ Therefore, vacuously true.
+        \restorelocalsteps{2}
+        \item Prove $\hpatmatch{e}{\hinlp{p_1}}{\theta}$ implies $\csatisfy{e}{\cinl{\xi_1}}$.
+        By rule induction over \rulesref{rules:match} on $\hpatmatch{e}{\hinlp{p_1}}{\theta}$, no case applies due to syntactic contradiction. \\ Therefore, vacuously true.
+        \restorelocalsteps{2}
+        \item Prove $\cmaysatisfy{e}{\cinl{\xi_1}}$ implies $\hmaymatch{e}{\hinlp{p_1}}$.
+            \begin{pfsteps*}
+            \item $\refutable{\hinlp{p_1}}$ \BY{\ruleref{rule:RInl}} \pflabel{[inl]rft}
+            \item $\hmaymatch{e}{\hinlp{p_1}}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[inl]notval} and \pfref{[inl]rft}}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item Prove $\hmaymatch{e}{\hinlp{p_1}}$ implies $\cmaysatisfy{e}{\cinl{\xi_1}}$.
+            \begin{pfsteps*}
+            \item $\refutable{\hinlp{\xi_1}}$ \BY{\ruleref{rule:RXInl}} \pflabel{[inl]xi-rft}
+            \item $\cmaysatisfy{e}{\cinl{\xi_1}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[inl]notval} and \pfref{[inl]xi-rft}}
+            \end{pfsteps*}
+        \end{enumerate}
+    \restorelocalsteps{1}
+    \item[\text{(\ref{rule:TInl})}]
+        \begin{pfsteps*}
+        \item $e=\hinl{\tau_2}{e_1}$ \BY{assumption}
+        \item $\hexptyp{\cdot}{\Delta_e}{e_1}{\tau_1}$ \BY{assumption} \pflabel{[inl]e1-typ}
+        \item $\isFinal{e_1}$ \BY{\autoref{lem:inl-final} on \pfref{eFinal}} \pflabel{[inl]e1-final}
+        \end{pfsteps*}
+        By inductive hypothesis on \pfref{[inl]e1-final} and \pfref{[inl]e1-typ} and \pfref{[inl]p1-typ}.
+        \begin{pfsteps*}
+        \item $\csatisfy{e_1}{\xi_1}$ iff $\hpatmatch{e_1}{p_1}{\theta}$ for some $\theta$ \pflabel{[inl]true-equiv}
+        \item $\cmaysatisfy{e_1}{\xi_1}$ iff $\hmaymatch{e_1}{p_1}$ \pflabel{[inl]may-equiv}
+        \end{pfsteps*}
+        \begin{enumerate}
+        \savelocalsteps{2}
+        \item Prove $\csatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ implies $\hpatmatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}{\theta}$ for some $\theta$.
+            \begin{pfsteps*}
+            \item $\csatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ \BY{assumption} \pflabel{[inl1]satisfy}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:Satisfy} on \pfref{[inl1]satisfy}, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:CSInl})}]
+                \begin{pfsteps*}
+                \item $\csatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[inl1]satisfy1}
+                \item $\hpatmatch{e_1}{p_1}{\theta_1}$ for some $\theta_1$ \BY{\pfref{[inl]true-equiv} on \pfref{[inl1]satisfy1}} \pflabel{[inl1]match1}
+                \item $\hpatmatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}{\theta_1}$ \BY{\ruleref{rule:MInl} on \pfref{[inl1]match1}}
+                \end{pfsteps*}
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item Prove $\hpatmatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}{\theta}$ implies $\csatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$.
+            \begin{pfsteps*}
+            \item $\hpatmatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}{\theta}$ \BY{assumption} \pflabel{[inl2]match}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:match} on \pfref{[inl2]match}, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MInl})}]
+                \begin{pfsteps*}
+                \item $\hpatmatch{e_1}{p_1}{\theta}$ \BY{assumption} \pflabel{[inl2]match1}
+                \item $\csatisfy{e_1}{\xi_1}$ \BY{\pfref{[inl]true-equiv} on \pfref{[inl2]match1}} \pflabel{[inl2]satisfy1}
+                \item $\csatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ \BY{\ruleref{rule:CSInl} on \pfref{[inl2]satisfy1}}
+                \end{pfsteps*}
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item Prove $\cmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ implies $\hmaymatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}$.
+            \begin{pfsteps*}
+            \item $\cmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ \BY{assumption} \pflabel{[inl3]maysat}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:MaySatisfy} on \pfref{[inl3]maysat}, only two cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:CMSNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hinl{\tau_2}{e_1}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-inl-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:CMSInl})}]
+                \begin{pfsteps*}
+                \item $\cmaysatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[inl3]maysat1}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{\pfref{[inl]may-equiv} on \pfref{[inl3]maysat1}} \pflabel{[inl3]maymatch1}
+                \item $\hmaymatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}$ \BY{\ruleref{rule:MMInl} on \pfref{[inl3]maymatch1}}
+                \end{pfsteps*}
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item Prove $\hmaymatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}$ implies $\cmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$.
+            \begin{pfsteps*}
+            \item $\hmaymatch{\hinl{\tau_2}{e_1}}{\hinlp{p_1}}$ \BY{assumption} \pflabel{[inl4]maymatch}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:maymatch} on \pfref{[inl4]maymatch}, only two cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hinl{\tau_2}{e_1}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-inl-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMInl})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{assumption} \pflabel{[inl4]maymatch1}
+                \item $\cmaysatisfy{e_1}{\xi_1}$ \BY{\pfref{[inl]may-equiv} on \pfref{[inl4]maymatch1}} \pflabel{[inl4]maysat1}
+                \item $\cmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ \BY{\ruleref{rule:CMSInl} on \pfref{[inl4]maysat1}}
+                \end{pfsteps*}
+            \end{byCases}
+        \end{enumerate}
+    \end{byCases}
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:PTInr})}]
+    \begin{pfsteps*}
+    \item $p=\hinrp{p_2}$ \BY{assumption}
+    \item $\xi=\cinr{\xi_2}$ \BY{assumption}
+    \item $\tau=\tsum{\tau_1}{\tau_2}$ \BY{assumption}
+    \item $\chpattyp{p_2}{\tau_2}{\xi_2}{\Gamma}{\Delta}$ \BY{assumption} \pflabel{[inr]p1-typ}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:TExp}) on \pfref{eTyp}, the following cases apply.
+    \begin{byCases}
+    \savelocalsteps{1}
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+        \begin{pfsteps*}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\isntVal{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[inr]notval}
+        \end{pfsteps*}
+        \begin{enumerate}
+        \savelocalsteps{2}
+        \item Prove $\csatisfy{e}{\cinr{\xi_2}}$ implies $\hpatmatch{e}{\hinrp{p_2}}{\theta}$ for some $\theta$.
+        By rule induction over \rulesref{rules:Satisfy} on $\csatisfy{e}{\cinr{\xi_2}}$, no case applies due to syntactic contradiction. \\ Therefore, vacuously true.
+        \restorelocalsteps{2}
+        \item Prove $\hpatmatch{e}{\hinrp{p_2}}{\theta}$ implies $\csatisfy{e}{\cinr{\xi_2}}$.
+        By rule induction over \rulesref{rules:match} on $\hpatmatch{e}{\hinrp{p_2}}{\theta}$, no case applies due to syntactic contradiction. \\ Therefore, vacuously true.
+        \restorelocalsteps{2}
+        \item Prove $\cmaysatisfy{e}{\cinr{\xi_2}}$ implies $\hmaymatch{e}{\hinrp{p_2}}$.
+            \begin{pfsteps*}
+            \item $\refutable{\hinrp{p_2}}$ \BY{\ruleref{rule:RInr}} \pflabel{[inr]rft}
+            \item $\hmaymatch{e}{\hinrp{p_2}}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[inr]notval} and \pfref{[inr]rft}}
+            \end{pfsteps*}
+        \restorelocalsteps{2}
+        \item Prove $\hmaymatch{e}{\hinrp{p_2}}$ implies $\cmaysatisfy{e}{\cinr{\xi_2}}$.
+            \begin{pfsteps*}
+            \item $\refutable{\hinrp{\xi_2}}$ \BY{\ruleref{rule:RXInr}} \pflabel{[inr]xi-rft}
+            \item $\cmaysatisfy{e}{\cinr{\xi_2}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[inr]notval} and \pfref{[inr]xi-rft}}
+            \end{pfsteps*}
+        \end{enumerate}
+    \restorelocalsteps{1}
+    \item[\text{(\ref{rule:TInr})}]
+        \begin{pfsteps*}
+        \item $e=\hinr{\tau_1}{e_2}$ \BY{assumption}
+        \item $\hexptyp{\cdot}{\Delta_e}{e_2}{\tau_2}$ \BY{assumption} \pflabel{[inr]e1-typ}
+        \item $\isFinal{e_2}$ \BY{\autoref{lem:inl-final} on \pfref{eFinal}} \pflabel{[inr]e1-final}
+        \end{pfsteps*}
+        By inductive hypothesis on \pfref{[inr]e1-final} and \pfref{[inr]e1-typ} and \pfref{[inr]p1-typ}.
+        \begin{pfsteps*}
+        \item $\csatisfy{e_2}{\xi_2}$ iff $\hpatmatch{e_2}{p_2}{\theta}$ for some $\theta$ \pflabel{[inr]true-equiv}
+        \item $\cmaysatisfy{e_2}{\xi_2}$ iff $\hmaymatch{e_2}{p_2}$ \pflabel{[inr]may-equiv}
+        \end{pfsteps*}
+        \begin{enumerate}
+        \savelocalsteps{2}
+        \item Prove $\csatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$ implies $\hpatmatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}{\theta}$ for some $\theta$.
+            \begin{pfsteps*}
+            \item $\csatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$ \BY{assumption} \pflabel{[inr1]satisfy}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:Satisfy} on \pfref{[inr1]satisfy}, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:CSInl})}]
+                \begin{pfsteps*}
+                \item $\csatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{[inr1]satisfy1}
+                \item $\hpatmatch{e_2}{p_2}{\theta_1}$ for some $\theta_1$ \BY{\pfref{[inr]true-equiv} on \pfref{[inr1]satisfy1}} \pflabel{[inr1]match1}
+                \item $\hpatmatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}{\theta_1}$ \BY{\ruleref{rule:MInl} on \pfref{[inr1]match1}}
+                \end{pfsteps*}
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item Prove $\hpatmatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}{\theta}$ implies $\csatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$.
+            \begin{pfsteps*}
+            \item $\hpatmatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}{\theta}$ \BY{assumption} \pflabel{[inr2]match}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:match} on \pfref{[inr2]match}, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MInl})}]
+                \begin{pfsteps*}
+                \item $\hpatmatch{e_2}{p_2}{\theta}$ \BY{assumption} \pflabel{[inr2]match1}
+                \item $\csatisfy{e_2}{\xi_2}$ \BY{\pfref{[inr]true-equiv} on \pfref{[inr2]match1}} \pflabel{[inr2]satisfy1}
+                \item $\csatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$ \BY{\ruleref{rule:CSInl} on \pfref{[inr2]satisfy1}}
+                \end{pfsteps*}
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item Prove $\cmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$ implies $\hmaymatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}$.
+            \begin{pfsteps*}
+            \item $\cmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$ \BY{assumption} \pflabel{[inr3]maysat}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:MaySatisfy} on \pfref{[inr3]maysat}, only two cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:CMSNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hinr{\tau_1}{e_2}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-inl-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:CMSInl})}]
+                \begin{pfsteps*}
+                \item $\cmaysatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{[inr3]maysat1}
+                \item $\hmaymatch{e_2}{p_2}$ \BY{\pfref{[inr]may-equiv} on \pfref{[inr3]maysat1}} \pflabel{[inr3]maymatch1}
+                \item $\hmaymatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}$ \BY{\ruleref{rule:MMInl} on \pfref{[inr3]maymatch1}}
+                \end{pfsteps*}
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item Prove $\hmaymatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}$ implies $\cmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$.
+            \begin{pfsteps*}
+            \item $\hmaymatch{\hinr{\tau_1}{e_2}}{\hinrp{p_2}}$ \BY{assumption} \pflabel{[inr4]maymatch}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:maymatch} on \pfref{[inr4]maymatch}, only two cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hinr{\tau_1}{e_2}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-inl-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMInl})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_2}{p_2}$ \BY{assumption} \pflabel{[inr4]maymatch1}
+                \item $\cmaysatisfy{e_2}{\xi_2}$ \BY{\pfref{[inr]may-equiv} on \pfref{[inr4]maymatch1}} \pflabel{[inr4]maysat1}
+                \item $\cmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$ \BY{\ruleref{rule:CMSInl} on \pfref{[inr4]maysat1}}
+                \end{pfsteps*}
+            \end{byCases}
+        \end{enumerate}
+    \end{byCases}
+\restorelocalsteps{0}
+\item[\text{(\ref{rule:PTPair})}]
+    \begin{pfsteps*}
+    \item $p=\hpair{p_1}{p_2}$ \BY{assumption}
+    \item $\xi=\cpair{\xi_1}{\xi_2}$ \BY{assumption}
+    \item $\tau=\tprod{\tau_1}{\tau_2}$ \BY{assumption}
+    \item $\Gamma=\Gamma_1\uplus \Gamma_2$ \BY{assumption}
+    \item $\Delta=\Delta_1\uplus \Delta_2$ \BY{assumption}
+    \item $\chpattyp{p_1}{\tau_1}{\xi_1}{\Gamma_1}{\Delta_1}$ \BY{assumption} \pflabel{[pair]p1-typ}
+    \item $\chpattyp{p_2}{\tau_2}{\xi_2}{\Gamma_2}{\Delta_2}$ \BY{assumption} \pflabel{[pair]p2-typ}
+    \end{pfsteps*}
+    By rule induction over Rules (\ref{rules:TExp}) on \pfref{eTyp}, the following cases apply.
+    \begin{byCases}
+    \savelocalsteps{1}
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+        \begin{pfsteps*}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\isntVal{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[epair]notval}
+        \item $\isIndet{e}$ \BY{\autoref{lem:final-notval-indet} on \pfref{eFinal} and \pfref{[epair]notval}} \pflabel{[epair]indet}
+        \item $\isIndet{\hprl{e}}$ \BY{Rule (\ref{rule:IPrl}) on \pfref{[epair]indet}} \pflabel{[epair]prl-indet}
+        \item $\isFinal{\hprl{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[epair]prl-indet}} \pflabel{[epair]prl-final}
+        \item $\isIndet{\hprr{e}}$ \BY{Rule (\ref{rule:IPrr}) on \pfref{[epair]indet}} \pflabel{[epair]prr-indet}
+        \item $\isFinal{\hprr{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[epair]prr-indet}} \pflabel{[epair]prr-final}
+        \item $\hexptyp{\cdot}{\Delta}{\hprl{e}}{\tau_1}$ \BY{Rule (\ref{rule:TPrl}) on \pfref{eTyp}} \pflabel{[epair]prl-typ}
+        \item $\hexptyp{\cdot}{\Delta}{\hprr{e}}{\tau_2}$ \BY{Rule (\ref{rule:TPrr}) on \pfref{eTyp}} \pflabel{[epair]prr-typ}
+        \end{pfsteps*}
+        By inductive hypothesis on \pfref{[pair]p1-typ} and \pfref{[epair]prl-typ} and \pfref{[epair]prl-final} and by inductive hypothesis on \pfref{[pair]p2-typ} and \pfref{[epair]prr-typ} and \pfref{[epair]prr-final}.
+        \begin{pfsteps*}
+        \item $\csatisfy{\hprl{e}}{\xi_1}$ iff $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$ for some $\theta_1$ \pflabel{[epair]true-equiv1}
+        \item $\cmaysatisfy{\hprl{e}}{\xi_1}$ iff $\hmaymatch{\hprl{e}}{p_1}$ \pflabel{[epair]may-equiv1}
+        \item $\csatisfy{\hprr{e}}{\xi_2}$ iff $\hpatmatch{\hprr{e}}{p_2}{\theta_2}$ for some $\theta_2$ \pflabel{[epair]true-equiv2}
+        \item $\cmaysatisfy{\hprr{e}}{\xi_2}$ iff $\hmaymatch{\hprr{e}}{p_2}$ \pflabel{[epair]may-equiv2}
+        \end{pfsteps*}
+        \begin{enumerate}
+        \savelocalsteps{2}
+        \item Prove $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$ implies $\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta}$ for some $\theta$.
+            \begin{pfsteps*}
+            \item $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{assumption} \pflabel{[epair1]satisfy}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:Satisfy} on \pfref{[epair1]satisfy}, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:CSNotValPair})}]
+                \begin{pfsteps*}
+                \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{assumption} \pflabel{[epair1]satisfy1}
+                \item $\csatisfy{\hprr{e}}{\xi_2}$ \BY{assumption} \pflabel{[epair1]satisfy2}
+                \item $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$ \BY{\pfref{[epair]true-equiv1} on \pfref{[epair1]satisfy1}} \pflabel{[epair1]match1}
+                \item $\hpatmatch{\hprr{e}}{p_2}{\theta_2}$ \BY{\pfref{[epair]true-equiv2} on \pfref{[epair1]satisfy2}} \pflabel{[epair1]match2}
+                \item $\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta_1\uplus\theta_2}$ \BY{\ruleref{rule:MNotValPair} on \pfref{[epair]notval} and \pfref{[epair1]match1} and \pfref{[epair1]match2}}
+                \end{pfsteps*}
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item Prove $\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta}$ implies $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$.
+            \begin{pfsteps*}
+            \item $\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta}$ \BY{assumption} \pflabel{[epair2]match}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:match} on \pfref{[epair2]match}, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MNotValPair})}]
+                \begin{pfsteps*}
+                \item $\theta=\theta_1\uplus\theta_2$ \BY{assumption}
+                \item $\hpatmatch{\hprl{e}}{\xi_1}{\theta_1}$ \BY{assumption} \pflabel{[epair2]match1}
+                \item $\hpatmatch{\hprr{e}}{\xi_2}{\theta_2}$ \BY{assumption} \pflabel{[epair2]match2}
+                \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{\pfref{[epair]true-equiv1} on \pfref{[epair2]match1}} \pflabel{[epair2]satisfy1}
+                \item $\csatisfy{\hprr{e}}{\xi_2}$ \BY{\pfref{[epair]true-equiv2} on \pfref{[epair2]match2}} \pflabel{[epair2]satisfy2}
+                \item $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CSNotValPair} on \pfref{[epair]notval} and \pfref{[epair2]satisfy1} and \pfref{[epair2]satisfy2}}
+                \end{pfsteps*}
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item Prove $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ implies $\hmaymatch{e}{\hpair{p_1}{p_2}}$.
+            \begin{pfsteps*}
+            \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{assumption} \pflabel{[epair2]satisfy}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:MaySatisfy} on \pfref{[epair2]satisfy}, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:CMSNotVal})}]
+                \begin{pfsteps*}
+                \item $\refutable{\cpair{\xi_1}{\xi_2}}$ \BY{assumption} \pflabel{[epair3]rft}
+                \end{pfsteps*}
+                By rule induction over \rulesref{rules:xi-refutable} on \pfref{[epair3]rft}, only two cases apply.
+                \begin{byCases}
+                \savelocalsteps{3}
+                \item[\text{(\ref{rule:RXPairL})}]
+                    \begin{pfsteps*}
+                    \item $\refutable{\xi_1}$ \BY{assumption} \pflabel{[epair3]rft1}
+                    \item $\isntVal{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[epair3]notval1}
+                    \item $\cmaysatisfy{\hprl{e}}{\xi_1}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[epair3]rft1} and \pfref{[epair3]notval1}} \pflabel{[epair3]satisfy1}
+                    \item $\hmaymatch{\hprl{e}}{p_1}$ \BY{\pfref{[epair]may-equiv1} on \pfref{[epair3]satisfy1}} \pflabel{[epair3]match1}
+                    \end{pfsteps*}
+                    By rule induction over \rulesref{rules:maymatch} on \pfref{[epair3]match1}, only three cases apply.
+                    \begin{byCases}
+                    \savelocalsteps{4}
+                    \item[\text{(\ref{rule:MMEHole}),(\ref{rule:MMHole})}]
+                        \begin{pfsteps*}
+                        \item $p_1=\hehole{w},\hhole{p_0}{w}$ \BY{assumption}
+                        \item $\refutable{p_1}$ \BY{\ruleref{rule:REHole} and \ruleref{rule:RHole}} \pflabel{[epair3]p-rft1}
+                        \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairL} on \pfref{[epair3]p-rft1}} \pflabel{[epair3]p-rft}
+                        \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[epair]notval} and \pfref{[epair3]p-rft}}
+                        \end{pfsteps*}
+                    \restorelocalsteps{4}
+                    \item[\text{(\ref{rule:MMNotVal})}]
+                        \begin{pfsteps*}
+                        \item $\refutable{p_1}$ \BY{assumption} \pflabel{[epair3]p-rft1'}
+                        \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairL} on \pfref{[epair3]p-rft1'}} \pflabel{[epair3]p-rft'}
+                        \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[epair]notval} and \pfref{[epair3]p-rft'}}
+                        \end{pfsteps*}
+                    \end{byCases}
+                \restorelocalsteps{3}
+                \item[\text{(\ref{rule:RXPairR})}]
+                    \begin{pfsteps*}
+                    \item $\refutable{\xi_2}$ \BY{assumption} \pflabel{[epair3']rft1}
+                    \item $\isntVal{\hprr{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[epair3']notval1}
+                    \item $\cmaysatisfy{\hprr{e}}{\xi_2}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[epair3']rft1} and \pfref{[epair3']notval1}} \pflabel{[epair3']satisfy1}
+                    \item $\hmaymatch{\hprr{e}}{p_2}$ \BY{\pfref{[epair]may-equiv2} on \pfref{[epair3']satisfy1}} \pflabel{[epair3']match1}
+                    \end{pfsteps*}
+                    By rule induction over \rulesref{rules:maymatch} on \pfref{[epair3']match1}, only three cases apply.
+                    \begin{byCases}
+                    \savelocalsteps{4}
+                    \item[\text{(\ref{rule:MMEHole}),(\ref{rule:MMHole})}]
+                        \begin{pfsteps*}
+                        \item $p_2=\hehole{w},\hhole{p_0}{w}$ \BY{assumption}
+                        \item $\refutable{p_2}$ \BY{\ruleref{rule:REHole} and \ruleref{rule:RHole}} \pflabel{[epair3']p-rft1}
+                        \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairR} on \pfref{[epair3']p-rft1}} \pflabel{[epair3']p-rft}
+                        \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[epair]notval} and \pfref{[epair3']p-rft}}
+                        \end{pfsteps*}
+                    \restorelocalsteps{4}
+                    \item[\text{(\ref{rule:MMNotVal})}]
+                        \begin{pfsteps*}
+                        \item $\refutable{p_2}$ \BY{assumption} \pflabel{[epair3']p-rft1'}
+                        \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairR} on \pfref{[epair3']p-rft1'}} \pflabel{[epair3']p-rft'}
+                        \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[epair]notval} and \pfref{[epair3']p-rft'}}
+                        \end{pfsteps*}
+                    \end{byCases}
+                \end{byCases}
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item Prove $\hmaymatch{e}{\hpair{p_1}{p_2}}$ implies $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$.
+            \begin{pfsteps*}
+            \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{assumption} \pflabel{[epair4]match}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:maymatch} on \pfref{[epair4]match}, only one case applies.
+            \begin{byCases}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\refutable{\hpair{p_1}{p_2}}$ \BY{assumption} \pflabel{[epair4]rft}
+                \end{pfsteps*}
+                By rule induction over \rulesref{rules:p-refutable} on \pfref{[epair4]rft}, only two cases apply.
+                \begin{byCases}
+                \savelocalsteps{3}
+                \item[\text{(\ref{rule:RPairL})}]
+                    \begin{pfsteps*}
+                    \item $\refutable{p_1}$ \BY{assumption} \pflabel{[epair4]rft1}
+                    \item $\isntVal{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[epair4]notval1}
+                    \item $\hmaymatch{\hprl{e}}{p_1}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[epair4]rft1} and \pfref{[epair4]notval1}} \pflabel{[epair4]match1}
+                    \item $\cmaysatisfy{\hprl{e}}{\xi_1}$ \BY{\pfref{[epair]may-equiv1} on \pfref{[epair4]match1}} \pflabel{[epair4]satisfy1}
+                    \end{pfsteps*}
+                    By rule induction over \rulesref{rules:MaySatisfy} on \pfref{[epair4]satisfy1}, only three cases apply.
+                    \begin{byCases}
+                    \savelocalsteps{4}
+                    \item[\text{(\ref{rule:CMSUnknown})}]
+                        \begin{pfsteps*}
+                        \item $\xi_1=\cunknown$ \BY{assumption}
+                        \item $\refutable{\xi_1}$ \BY{\ruleref{rule:RXUnknown}} \pflabel{[epair4]p-rft1}
+                        \item $\refutable{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:RXPairL} on \pfref{[epair4]p-rft1}} \pflabel{[epair4]p-rft}
+                        \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[epair]notval} and \pfref{[epair4]p-rft}}
+                        \end{pfsteps*}
+                    \restorelocalsteps{4}
+                    \item[\text{(\ref{rule:CMSNotVal})}]
+                        \begin{pfsteps*}
+                        \item $\refutable{\xi_1}$ \BY{assumption} \pflabel{[epair4]p-rft1'}
+                        \item $\refutable{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:RXPairL} on \pfref{[epair4]p-rft1'}} \pflabel{[epair4]p-rft'}
+                        \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[epair]notval} and \pfref{[epair4]p-rft'}}
+                        \end{pfsteps*}
+                    \end{byCases}
+                \restorelocalsteps{3}
+                \item[\text{(\ref{rule:RPairR})}]
+                    \begin{pfsteps*}
+                    \item $\refutable{p_2}$ \BY{assumption} \pflabel{[epair4']rft1}
+                    \item $\isntVal{\hprr{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[epair4']notval1}
+                    \item $\hmaymatch{\hprr{e}}{p_2}$ \BY{\ruleref{rule:MMNotVal} on \pfref{[epair4']rft1} and \pfref{[epair4']notval1}} \pflabel{[epair4']satisfy1}
+                    \item $\cmaysatisfy{\hprr{e}}{\xi_2}$ \BY{\pfref{[epair]may-equiv2} on \pfref{[epair4']satisfy1}} \pflabel{[epair4']match1}
+                    \end{pfsteps*}
+                    By rule induction over \rulesref{rules:MaySatisfy} on \pfref{[epair4']match1}, only three cases apply.
+                    \begin{byCases}
+                    \savelocalsteps{4}
+                    \item[\text{(\ref{rule:CMSUnknown})}]
+                        \begin{pfsteps*}
+                        \item $\xi_2=\cunknown$ \BY{assumption}
+                        \item $\refutable{\xi_2}$ \BY{\ruleref{rule:RXUnknown}} \pflabel{[epair4']p-rft1}
+                        \item $\refutable{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:RXPairR} on \pfref{[epair4']p-rft1}} \pflabel{[epair4']p-rft}
+                        \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[epair]notval} and \pfref{[epair4']p-rft}}
+                        \end{pfsteps*}
+                    \restorelocalsteps{4}
+                    \item[\text{(\ref{rule:CMSNotVal})}]
+                        \begin{pfsteps*}
+                        \item $\refutable{\xi_2}$ \BY{assumption} \pflabel{[epair4']p-rft1'}
+                        \item $\refutable{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:RXPairR} on \pfref{[epair4']p-rft1'}} \pflabel{[epair4']p-rft'}
+                        \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[epair]notval} and \pfref{[epair4']p-rft'}}
+                        \end{pfsteps*}
+                    \end{byCases}
+                \end{byCases}
+            \end{byCases}
+        \end{enumerate}
+    \restorelocalsteps{1}
+    \item[\text{(\ref{rule:TPair})}]
+        \begin{pfsteps*}
+        \item $e=\hpair{e_1}{e_2}$ \BY{assumption}
+        \item $\hexptyp{\cdot}{\Delta_e}{e_1}{\tau_1}$ \BY{assumption} \pflabel{[pair]e1-typ}
+        \item $\hexptyp{\cdot}{\Delta_e}{e_2}{\tau_2}$ \BY{assumption} \pflabel{[pair]e2-typ}
+        \item $\isFinal{e_1}$ \BY{\autoref{lem:pair-final} on \pfref{eFinal}} \pflabel{[pair]e1-final}
+        \item $\isFinal{e_2}$ \BY{\autoref{lem:pair-final} on \pfref{eFinal}} \pflabel{[pair]e2-final}
+        \end{pfsteps*}
+        By inductive hypothesis on \pfref{[pair]e1-final} and \pfref{[pair]e1-typ} and \pfref{[pair]p1-typ} and by inductive hypothesis on \pfref{[pair]e2-final} and \pfref{[pair]e2-typ} and \pfref{[pair]p2-typ}.
+        \begin{pfsteps*}
+        \item $\csatisfy{e_1}{\xi_1}$ iff $\hpatmatch{e_1}{p_1}{\theta_1}$ for some $\theta_1$ \pflabel{[pair]true-equiv1}
+        \item $\cmaysatisfy{e_1}{\xi_1}$ iff $\hmaymatch{e_1}{p_1}$ \pflabel{[pair]may-equiv1}
+        \item $\csatisfy{e_2}{\xi_2}$ iff $\hpatmatch{e_2}{p_2}{\theta_2}$ for some $\theta_2$ \pflabel{[pair]true-equiv2}
+        \item $\cmaysatisfy{e_2}{\xi_2}$ iff $\hmaymatch{e_2}{p_2}$ \pflabel{[pair]may-equiv2}
+        \end{pfsteps*}
+        
+        \begin{enumerate}
+        \savelocalsteps{2}
+        \item Prove $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ implies $\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}$ for some $\theta$.
+            \begin{pfsteps*}
+            \item $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ \BY{assumption} \pflabel{[pair1]satisfy}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:Satisfy} on \pfref{[pair1]satisfy}, only two cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:CSPair})}]
+                \begin{pfsteps*}
+                \item $\csatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[pair1]satisfy1}
+                \item $\csatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{[pair1]satisfy2}
+                \item $\hpatmatch{e_1}{p_1}{\theta_1}$ for some $\theta_1$ \BY{\pfref{[pair]true-equiv1} on \pfref{[pair1]satisfy1}} \pflabel{[pair1]match1}
+                \item $\hpatmatch{e_2}{p_2}{\theta_2}$ for some $\theta_2$ \BY{\pfref{[pair]true-equiv2} on \pfref{[pair1]satisfy2}} \pflabel{[pair1]match2}
+                \item $\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta_1\uplus\theta_2}$ \BY{\ruleref{rule:MPair} on \pfref{[pair1]match1} and \pfref{[pair1]match2}}
+                \end{pfsteps*}
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:CSNotValPair})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-pair-notval}.
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item Prove $\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}$ implies $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$.
+            \begin{pfsteps*}
+            \item $\hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta}$ \BY{assumption} \pflabel{[pair2]match}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:match} on \pfref{[pair2]match}, only two cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MPair})}]
+                \begin{pfsteps*}
+                \item $\hpatmatch{e_1}{p_1}{\theta_1}$ for some $\theta_1$ \BY{assumption}  \pflabel{[pair2]match1}
+                \item $\hpatmatch{e_2}{p_2}{\theta_2}$ for some $\theta_2$ \BY{assumption} \pflabel{[pair2]match2}
+                \item $\csatisfy{e_1}{\xi_1}$ \BY{\pfref{[pair]true-equiv1} on \pfref{[pair2]match1}} \pflabel{[pair2]satisfy1}
+                \item $\csatisfy{e_2}{\xi_2}$ \BY{\pfref{[pair]true-equiv2} on \pfref{[pair2]match2}} \pflabel{[pair2]satisfy2}
+                \item $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CSPair} on \pfref{[pair2]satisfy1} and \pfref{[pair2]satisfy2}}
+                \end{pfsteps*}
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MNotValPair})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-pair-notval}.
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item Prove $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ implies $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$.
+            \begin{pfsteps*}
+            \item $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ \BY{assumption} \pflabel{[pair3]maysat}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:MaySatisfy} on \pfref{[pair3]maysat}, only four cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:CMSNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-pair-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:CMSPair1})}]
+                \begin{pfsteps*}
+                \item $\cmaysatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[pair3]maysat1}
+                \item $\csatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{[pair3]satisfy2}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{\pfref{[pair]may-equiv1} on \pfref{[pair3]maysat1}} \pflabel{[pair3]maymatch1}
+                \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{\pfref{[pair]true-equiv2} on \pfref{[pair3]satisfy2}} \pflabel{[pair3]match2}
+                \item $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMPairL} on \pfref{[pair3]maymatch1} and \pfref{[pair3]match2}}
+                \end{pfsteps*}
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:CMSPair2})}]
+                \begin{pfsteps*}
+                \item $\csatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[pair3]satisfy1}
+                \item $\cmaysatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{[pair3]maysat2}
+                \item $\hpatmatch{e_1}{p_1}{\theta_1}$ \BY{\pfref{[pair]true-equiv1} on \pfref{[pair3]satisfy1}} \pflabel{[pair3]match1}
+                \item $\hmaymatch{e_2}{p_2}$ \BY{\pfref{[pair]may-equiv2} on \pfref{[pair3]maysat2}} \pflabel{[pair3]maymatch2}
+                \item $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMPairR} on \pfref{[pair3]match1} and \pfref{[pair3]maymatch2}}
+                \end{pfsteps*}
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:CMSPair3})}]
+                \begin{pfsteps*}
+                \item $\cmaysatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[pair3]maysat1'}
+                \item $\cmaysatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{[pair3]maysat2'}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{\pfref{[pair]may-equiv1} on \pfref{[pair3]maysat1'}} \pflabel{[pair3]maymatch1'}
+                \item $\hmaymatch{e_2}{p_2}$ \BY{\pfref{[pair]may-equiv2} on \pfref{[pair3]maysat2'}} \pflabel{[pair3]maymatch2'}
+                \item $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMPair} on \pfref{[pair3]maymatch1'} and \pfref{[pair3]maymatch2'}}
+                \end{pfsteps*}
+            \end{byCases}
+        \restorelocalsteps{2}
+        \item Prove $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ implies $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$.
+            \begin{pfsteps*}
+            \item $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{assumption} \pflabel{[pair4]maymatch}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:maymatch} on \pfref{[pair4]maymatch}, only four cases apply.
+            \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:MMNotVal})}]
+                \begin{pfsteps*}
+                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \end{pfsteps*}
+                Contradicts \autoref{lem:no-pair-notval}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPairL})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{assumption} \pflabel{[pair4]maymatch1}
+                \item $\hpatmatch{e_2}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[pair4]match2}
+                \item $\cmaysatisfy{e_1}{\xi_1}$ \BY{\pfref{[pair]may-equiv1} on \pfref{[pair4]maymatch1}} \pflabel{[pair4]maysat1}
+                \item $\csatisfy{e_2}{\xi_2}$ \BY{\pfref{[pair]true-equiv2} on \pfref{[pair4]match2}} \pflabel{[pair4]satisfy2}
+                \item $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:CMSPair1} on \pfref{[pair4]maysat1} and \pfref{[pair4]satisfy2}}
+                \end{pfsteps*}
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPairR})}]
+                \begin{pfsteps*}
+                \item $\hpatmatch{e_1}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[pair4]match1}
+                \item $\hmaymatch{e_2}{p_2}$ \BY{assumption} \pflabel{[pair4]maymatch2}
+                \item $\csatisfy{e_1}{\xi_1}$ \BY{\pfref{[pair]true-equiv1} on \pfref{[pair4]match1}} \pflabel{[pair4]satisfy1}
+                \item $\cmaysatisfy{e_2}{\xi_2}$ \BY{\pfref{[pair]may-equiv2} on \pfref{[pair4]maymatch2}} \pflabel{[pair4]maysat2}
+                \item $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:CMSPair2} on \pfref{[pair4]satisfy1} and \pfref{[pair4]maysat2}}
+                \end{pfsteps*}
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:MMPair})}]
+                \begin{pfsteps*}
+                \item $\hmaymatch{e_1}{p_1}$ \BY{assumption} \pflabel{[pair4]maymatch1'}
+                \item $\hmaymatch{e_2}{p_2}$ \BY{assumption} \pflabel{[pair4]maymatch2'}
+                \item $\cmaysatisfy{e_1}{\xi_1}$ \BY{\pfref{[pair]may-equiv1} on \pfref{[pair4]maymatch1'}} \pflabel{[pair4]maysat1'}
+                \item $\cmaysatisfy{e_2}{\xi_2}$ \BY{\pfref{[pair]may-equiv2} on \pfref{[pair4]maymatch2'}} \pflabel{[pair4]maysat2'}
+                \item $\hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:CMSPair3} on \pfref{[pair4]maysat1'} and \pfref{[pair4]maysat2'}}
+                \end{pfsteps*}
+            \end{byCases}
+        \end{enumerate}
+    \end{byCases}
 \end{byCases}
+\resetpfcounter
 \end{proof}

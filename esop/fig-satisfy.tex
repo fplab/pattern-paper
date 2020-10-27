@@ -1,6 +1,6 @@
 % !TEX root= pattern-paper.tex
 
-\begin{figure}[ht]
+\begin{figure}[!ht]
 
 \judgbox{\csatisfy{e}{\xi}}{$e$ satisfies $\xi$}
 
@@ -83,8 +83,7 @@
 
 \Infer{\CMSNotVal}{
   \isntVal{e} \\
-  \cnotsatisfy{e}{\xi} \\
-  \cnotsatisfy{e}{\cdual{\xi}}
+  \refutable{\xi}
 }{
   \cmaysatisfy{e}{\xi}
 }

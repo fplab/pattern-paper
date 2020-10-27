@@ -210,6 +210,7 @@ p & ::= &
 \judgboxa{
 \chrultyp{\Gamma}{\Delta}{\hrulP{p}{e}}{\tau}{\xi}{\tau'}
 }{$r$ transforms a final expression of type $\tau$ \\ to a final expression of type $\tau'$}
+\begin{subequations}\label{rules:CTRule}
 \begin{equation}\label{rule:CTRule}
 \inferrule[CTRule]{
     \chpattyp{p}{\tau}{\xi}{\Gamma_p}{\Delta_p} \\
@@ -218,6 +219,7 @@ p & ::= &
   \chrultyp{\Gamma}{\Delta}{\hrul{p}{e}}{\tau}{\xi}{\tau'}
 }
 \end{equation}
+\end{subequations}
 
 \judgboxa{\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{rs}{\tau}{\xi_{rs}}{\tau'}}
 {$rs$ transforms a final expression of type $\tau$ \\ to a final expression of type $\tau'$}
@@ -243,6 +245,70 @@ p & ::= &
 \end{equation}
 \end{subequations}
 
+\begin{lemma}
+  \label{lem:pat-xi-type}
+  If $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$ then $\ctyp{\xi}{\tau}$.
+\end{lemma}
+\begin{proof}
+By rule induction over \rulesref{rules:PatTyp}.
+\end{proof}
+
+\begin{lemma}
+  \label{lem:rule-constraint-typ}
+  If $\chrultyp{\cdot}{\Delta}{r}{\tau_1}{\xi_r}{\tau}$ then $\ctyp{\xi_r}{\tau_1}$.
+\end{lemma}
+\begin{proof}
+By rule induction over \rulesref{rules:CTRule}.
+\end{proof}
+
+\begin{lemma}
+  \label{lem:rules-constraint-typ}
+  If $\chrulstyp{\cdot}{\Delta}{\xi_{pre}}{rs}{\tau_1}{\xi_{rs}}{\tau}$ then $\ctyp{\xi_{rs}}{\tau_1}$.
+\end{lemma}
+\begin{proof}
+By rule induction over \rulesref{rules:CTRules}.
+\end{proof}
+
+\begin{lemma}
+  \label{lem:rule-append}
+  If $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{rs}{\tau}{\xi_{rs}}{\tau'}$ and $\chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi_r}{\tau'}$ and $\cnotsatisfy{\xi_r}{\cor{\xi_{pre}}{\xi_{rs}}}$ then $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\rmpointer{\zruls{rs}{r}{\cdot}}}{\tau}{\cor{\xi_{rs}}{\xi_r}}{\tau'}$
+\end{lemma}
+\begin{proof}
+  \begin{pfsteps*}
+  \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{rs}{\tau}{\xi_{rs}}{\tau'}$ \BY{assumption} \pflabel{rsType}
+  \item $\chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi_r}{\tau'}$ \BY{assumption} \pflabel{rType}
+  \item $\cnotsatisfy{\xi_r}{\cor{\xi_{pre}}{\xi_{rs}}}$ \BY{assumption} \pflabel{r|/=pre+rs}
+  \end{pfsteps*}
+  By rule induction over Rules (\ref{rules:CTRules}) on \pfref{rsType}.
+  \begin{byCases}
+    
+  \savelocalsteps{lem:rule-append-1}
+  \item[\text{(\ref{rule:CTOneRules})}]
+    \begin{pfsteps*}
+    \item $rs = \hrules{r'}{\cdot}$ \BY{assumption}
+    \item $\xi_{rs} = \xi_r'$ \BY{assumption}
+    \item $\chrultyp{\Gamma}{\Delta}{r'}{\tau}{\xi_r'}{\tau'}$ \BY{assumption} \pflabel{[one]r'Type}
+    \item $\cnotsatisfy{\xi_r'}{\xi_{pre}}$ \BY{assumption} \pflabel{r'|/=pre}
+    \item $\chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r'}}{\hrules{r}{\cdot}}{\tau}{\xi_r}{\tau'}$ \BY{Rule (\ref{rule:CTOneRules}) on \pfref{rType} and \pfref{r|/=pre+rs}} \pflabel{r+dotType}
+    \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrulesP{r'}{\hrules{r}{\cdot}}}{\tau}{\cor{\xi_r'}{\xi_r}}{\tau'}$ \BY{Rule (\ref{rule:CTRules}) on \pfref{r'Type} and \pfref{r+dotType} and \pfref{r'|/=pre}} \pflabel{[one]conc}
+    \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\rmpointer{\zruls{\hrulesP{r'}{\cdot}}{r}{\cdot}}}{\tau}{\cor{\xi_r'}{\xi_r}}{\tau'}$ \BY{Definition \ref{defn:rmpointer} on \pfref{[one]conc}}
+    \end{pfsteps*}
+
+  \restorelocalsteps{lem:rule-append-1}
+  \item[\text{(\ref{rule:CTRules})}]
+    \begin{pfsteps*}
+    \item $rs = \hrules{r'}{rs'}$ \BY{assumption}
+    \item $\xi_{rs} = \cor{\xi_r'}{\xi_{rs}'}$ \BY{assumption}
+    \item $\chrultyp{\Gamma}{\Delta}{r'}{\tau}{\xi_r'}{\tau'}$ \BY{assumption} \pflabel{r'Type}
+    \item $\chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r'}}{rs'}{\tau}{\xi_{rs}'}{\tau'}$ \BY{assumption} \pflabel{rs'Type}
+    \item $\cnotsatisfy{\xi_r'}{\xi_{pre}}$ \BY{assumption} \pflabel{prenotredundant}
+    \item $\chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r'}}{\rmpointer{\zruls{rs'}{r}{\cdot}}}{\tau}{\cor{\xi_{rs}'}{\xi_r}}{\tau'}$ \BY{IH on \pfref{rs'Type} and \pfref{rType} and \pfref{r|/=pre+rs}} \pflabel{rs'+rType}
+    \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrulesP{r'}{\rmpointer{\zruls{rs'}{r}{\cdot}}}}{\tau}{\cor{\xi_r'}{\cor{\xi_{rs}'}{\xi_r}}}{\tau'}$ \BY{Rule (\ref{rule:CTRules}) on \pfref{r'Type} and \pfref{rs'+rType} and \pfref{prenotredundant}} \pflabel{conc}
+    \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\rmpointer{\zruls{\hrulesP{r'}{rs'}}{r}{\cdot}}}{\tau}{\cor{\xi_r'}{\cor{\xi_{rs}'}{\xi_r}}}{\tau'}$ \BY{Definition \ref{defn:rmpointer} on \pfref{conc}}
+    \end{pfsteps*}
+  \resetpfcounter
+  \end{byCases}
+\end{proof}
 
 \begin{lemma}[Substitution]
   \label{lem:substitution}
@@ -255,7 +321,6 @@ p & ::= &
   If $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau}$ and $\hsubstyp{\theta}{\Gamma'}$
   then $\hexptyp{\Gamma}{\Delta}{[\theta]e}{\tau}$
 \end{lemma}
-Proof by induction on the derivation of $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau}$.
 
 \begin{lemma}[Substitution Typing]
   \label{lem:subs-typing}
@@ -263,20 +328,6 @@ Proof by induction on the derivation of $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}
   then $\hsubstyp{\theta}{\Gamma}$
 \end{lemma}
 Proof by induction on the derivation of $\hpatmatch{e}{p}{\theta}$.
-
-To apply this lemma in ITSuccMatch case, first apply inversion lemma on premise of preservation theorem,
-
-\begin{lemma}[Matching Progress]
-  \label{lem:match-progress}
-  If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta'}$
-  then $\hnotmatch{e}{p}$ or $\hmaymatch{e}{p}$ or $\hpatmatch{e}{p}{\theta}$ for some $\theta$
-\end{lemma}
-Proof by induction on two premises.
-
-\begin{theorem}[Stepping Determinism]
-  \label{thrm:step-determinism}
-  If $\htrans{e}{e'}$ and $\htrans{e}{e''}$ then $e' = e''$
-\end{theorem}
 
 \begin{theorem}[Determinism]
   \label{thrm:determinism}
@@ -287,13 +338,3 @@ Proof by induction on two premises.
     \item $\htrans{e}{e'}$ for some unique $e'$
   \end{enumerate}
 \end{theorem}
-
-\begin{lemma}[Matching Determinism]
-  \label{lem:match-determinism}
-  If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$ then exactly one of the following holds
-  \begin{enumerate}
-    \item $\hpatmatch{e}{p}{\theta}$ for some $\theta$
-    \item $\hmaymatch{e}{p}$
-    \item $\hnotmatch{e}{p}$
-  \end{enumerate}
-\end{lemma}

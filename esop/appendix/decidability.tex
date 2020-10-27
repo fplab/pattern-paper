@@ -1,463 +1,6 @@
-% !TEX root = ./pattern-paper.tex
-\section{Redundancy and Exhaustiveness}
-$\arraycolsep=4pt\begin{array}{lll}
-\xi & ::= &
-  \ctruth ~\vert~
-  \cfalsity ~\vert~
-  \cunknown ~\vert~
-  \cnum{n} ~\vert~
-  \cnotnum{n} ~\vert~
-  \cand{\xi_1}{\xi_2} ~\vert~
-  \cor{\xi_1}{\xi_2} ~\vert~
-  \cinl{\xi} ~\vert~
-  \cinr{\xi} ~\vert~
-  \cpair{\xi_1}{\xi_2}
-\end{array}$
+\section{Decidability}
 
-\fbox{$\ctyp{\xi}{\tau}$}~~\text{Constraint $\xi$ constrains values of type $\tau$}
-\begin{subequations}
-\begin{equation}\label{rule:CTTruth}
-\inferrule[CTTruth]{ }{
-  \ctyp{\ctruth}{\tau}
-}
-\end{equation}
-\begin{equation}\label{rule:CTFalsity}
-\inferrule[CTFalsity]{ }{
-  \ctyp{\cfalsity}{\tau}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTUnknown]{ }{
-  \ctyp{\cunknown}{\tau}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTNum]{ }{
-  \ctyp{\cnum{n}}{\tnum}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTNotNum]{ }{
-  \ctyp{\cnotnum{n}}{\tnum}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTAnd]{
-  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
-}{
-  \ctyp{\cand{\xi_1}{\xi_2}}{\tau}
-}
-\end{equation}
-\begin{equation}\label{rule:CTOr}
-\inferrule[CTOr]{
-  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
-}{
-  \ctyp{\cor{\xi_1}{\xi_2}}{\tau}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTInl]{
-  \ctyp{\xi_1}{\tau_1}
-}{
-  \ctyp{\cinl{\xi_1}}{\tsum{\tau_1}{\tau_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTInr]{
-  \ctyp{\xi_2}{\tau_2}
-}{
-  \ctyp{\cinr{\xi_2}}{\tsum{\tau_1}{\tau_2}}
-}
-\end{equation}
-\begin{equation}
-\inferrule[CTPair]{
-  \ctyp{\xi_1}{\tau_1} \\ \ctyp{\xi_2}{\tau_2}
-}{
-  \ctyp{\cpair{\xi_1}{\xi_2}}{\tprod{\tau_1}{\tau_2}}
-}
-\end{equation}
-\end{subequations}
-
-\fbox{$\cdual{\xi_1} = \xi_2$}~~\text{The dual of a match constraint $\xi_1$ is $\xi_2$}
-\begin{subequations}\label{defn:dual}
-\begin{align}
-  \cdual{\ctruth} &= \cfalsity \\
-  \cdual{\cfalsity} &= \ctruth \\
-  \cdual{\cunknown} &= \cunknown \\
-  \cdual{\cnum{n}} &= \cnotnum{n} \\
-  \cdual{\cnotnum{n}} &= \cnum{n} \\
-  \cdual{\cand{\xi_1}{\xi_2}} &= \cor{\cdual{\xi_1}}{\cdual{\xi_2}} \\
-  \cdual{\cor{\xi_1}{\xi_2}} &= \cand{\cdual{\xi_1}}{\cdual{\xi_2}} \\
-  \cdual{\cinl{\xi_1}} &= \cor{ \cinl{\cdual{\xi_1}} }{ \cinr{\ctruth} } \\
-  \cdual{\cinr{\xi_2}} &= \cor{ \cinr{\cdual{\xi_2}} }{ \cinl{\ctruth} } \\
-  \cdual{\cpair{\xi_1}{\xi_2}} &=
-  \cor{ \cor{ 
-    \cpair{\xi_1}{\cdual{\xi_2}}
-  }{
-    \cpair{\cdual{\xi_1}}{\xi_2}
-  }}{
-    \cpair{\cdual{\xi_1}}{\cdual{\xi_2}}
-  }
-\end{align}
-\end{subequations}
-
-\newpage
-
-\fbox{$\ctruify{\xi_1} = \xi_2$}~~\text{$\xi_2$ is obtained by substituting Unknown for Truth in $\xi_1$}
-\begin{subequations}\label{defn:truify}
-\begin{align}
-  \ctruify{\ctruth} &= \ctruth \\
-  \ctruify{\cfalsity} &= \cfalsity \\
-  \ctruify{\cunknown} &= \ctruth \\
-  \ctruify{\cnum{n}} &= \cnum{n} \\
-  \ctruify{\cnotnum{n}} &= \cnotnum{n} \\
-  \ctruify{\cand{\xi_1}{\xi_2}} &= \cand{\ctruify{\xi_1}}{\ctruify{\xi_2}} \\
-  \ctruify{\cor{\xi_1}{\xi_2}} &= \cor{\ctruify{\xi_1}}{\ctruify{\xi_2}} \\
-  \ctruify{\cinl{\xi}} &= \cinl{\ctruify{\xi}} \\
-  \ctruify{\cinr{\xi}} &= \cinr{\ctruify{\xi}} \\
-  \ctruify{\cpair{\xi_1}{\xi_2}} &= \cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}
-\end{align}
-\end{subequations}
-
-\fbox{$\cfalsify{\xi_1} = \xi_2$}~~\text{$\xi_2$ is obtained by substituting Unknown for Falsity in $\xi_1$}
-\begin{subequations}\label{defn:falsify}
-\begin{align}
-  \cfalsify{\ctruth} &= \ctruth \\
-  \cfalsify{\cfalsity} &= \cfalsity \\
-  \cfalsify{\cunknown} &= \cfalsity \\
-  \cfalsify{\cnum{n}} &= \cnum{n} \\
-  \cfalsify{\cnotnum{n}} &= \cnotnum{n} \\
-  \cfalsify{\cand{\xi_1}{\xi_2}} &= \cand{\cfalsify{\xi_1}}{\cfalsify{\xi_2}} \\
-  \cfalsify{\cor{\xi_1}{\xi_2}} &= \cor{\cfalsify{\xi_1}}{\cfalsify{\xi_2}} \\
-  \cfalsify{\cinl{\xi}} &= \cinl{\cfalsify{\xi}} \\
-  \cfalsify{\cinr{\xi}} &= \cinr{\cfalsify{\xi}} \\
-  \cfalsify{\cpair{\xi_1}{\xi_2}} &= \cpair{\cfalsify{\xi_1}}{\cfalsify{\xi_2}}
-\end{align}
-\end{subequations}
-
-\newpage
-
-\fbox{$\fsatisfy{e}{\xi}$}
-\begin{subequations}\label{defn:satisfy}
-\begin{align}
-  \fsatisfy{e}{\ctruth} &= \true \label{defn:satisfy-truth}\\
-  \fsatisfy{\hnum{n_1}}{\cnum{n_2}} &= (n_1 = n_2) \label{defn:num-satisfy-num}\\
-  \fsatisfy{\hnum{n_1}}{\cnotnum{n_2}} &= (n_1 \neq n_2) \label{defn:num-satisfy-notnum}\\
-  \fsatisfy{e}{\cand{\xi_1}{\xi_2}} &= \fsatisfy{e}{\xi_1} \text{ and } \fsatisfy{e}{\xi_2} \label{defn:satisfy-and}\\
-  \fsatisfy{e}{\cor{\xi_1}{\xi_2}} &= \fsatisfy{e}{\xi_1} \text{ or } \fsatisfy{e}{\xi_2} \label{defn:satisfy-or}\\
-  \fsatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}} &= \fsatisfy{e_1}{\xi_1} \label{defn:inl-satisfy-inl}\\
-  \fsatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}} &= \fsatisfy{e_2}{\xi_2} \label{defn:inr-satisfy-inr}\\
-  \fsatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}} &= \fsatisfy{e_1}{\xi_1} \text{ and } \fsatisfy{e_2}{\xi_2} \label{defn:pair-satisfy-pair}\\
-  \text{Otherwise}\quad \fsatisfy{e}{\xi} &= \false \label{defn:not-satisfy}
-  \todo{\text{simply put otherwise?}} \\
-  \fsatisfy{e}{\cfalsity} &= \false \label{defn:satisfy-falsity}\\
-  \fsatisfy{\hnum{n}}{\cinl{\xi}} &= \false \\
-  \fsatisfy{\hnum{n}}{\cinr{\xi}} &= \false \\
-  \fsatisfy{\hnum{n}}{\cpair{\xi_1}{\xi_2}} &= \false \\
-  \fsatisfy{\hinl{\tau}{e}}{\cnum{n}} &= \false \\
-  \fsatisfy{\hinl{\tau}{e}}{\cnotnum{n}} &= \false \\
-  \fsatisfy{\hinl{\tau}{e}}{\cinr{\xi}} &= \false \\
-  \fsatisfy{\hinl{\tau}{e}}{\cpair{\xi_1}{\xi_2}} &= \false \\
-  \fsatisfy{\hinr{\tau}{e}}{\cnum{n}} &= \false \\
-  \fsatisfy{\hinr{\tau}{e}}{\cnotnum{n}} &= \false \\
-  \fsatisfy{\hinr{\tau}{e}}{\cinl{\xi}} &= \false \\
-  \fsatisfy{\hinr{\tau}{e}}{\cpair{\xi_1}{\xi_2}} &= \false \\
-  \fsatisfy{\hpair{e_1}{e_2}}{\cnum{n}} &= \false \\
-  \fsatisfy{\hpair{e_1}{e_2}}{\cnotnum{n}} &= \false \\
-  \fsatisfy{\hpair{e_1}{e_2}}{\cinl{\xi}} &= \false \\
-  \fsatisfy{\hpair{e_1}{e_2}}{\cinr{\xi}} &= \false
-\end{align}
-\end{subequations}
-\fbox{$\csatisfy{e}{\xi}$}~~\text{Value $e$ satisfies constraint $\xi$}
-\begin{subequations}\label{rules:Satisfy}
-\begin{equation}\label{rule:CSTruth}
-\inferrule[CSTruth]{ }{
-  \csatisfy{e}{\ctruth}
-}
-\end{equation}
-\begin{equation}\label{rule:CSNum}
-\inferrule[CSNum]{ }{
-  \csatisfy{\hnum{n}}{\cnum{n}}
-}
-\end{equation}
-\begin{equation}\label{rule:CSNotNum}
-\inferrule[CSNotNum]{
-  n_1 \neq n_2
-}{
-  \csatisfy{\hnum{n_1}}{\cnotnum{n_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CSAnd}
-\inferrule[CSAnd]{
-  \csatisfy{e}{\xi_1} \\
-  \csatisfy{e}{\xi_2}
-}{
-  \csatisfy{e}{\cand{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CSOr1}
-\inferrule[CSOr1]{
-  \csatisfy{e}{\xi_1}
-}{
-  \csatisfy{e}{\cor{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CSOr2}
-\inferrule[CSOr2]{
-  \csatisfy{e}{\xi_2}
-}{
-  \csatisfy{e}{\cor{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CSInl}
-\inferrule[CSInl]{
-  \csatisfy{e_1}{\xi_1}
-}{
-  \csatisfy{
-    \hinl{\tau_2}{e_1}
-  }{
-    \cinl{\xi_1}
-  }
-}
-\end{equation}
-\begin{equation}\label{rule:CSInr}
-\inferrule[CSInr]{
-  \csatisfy{e_2}{\xi_2}
-}{
-  \csatisfy{
-    \hinr{\tau_1}{e_2}
-  }{
-    \cinr{\xi_2}
-  }
-}
-\end{equation}
-\begin{equation}\label{rule:CSPair}
-\inferrule[CSPair]{
-  \csatisfy{e_1}{\xi_1} \\
-  \csatisfy{e_2}{\xi_2}
-}{
-\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
-}
-\end{equation}
-\end{subequations}
-
-\fbox{$\cmaysatisfy{e}{\xi}$}~~\text{Final $e$ may satisfies constraint $\xi$}
-\begin{subequations}\label{rules:MaySatisfy}
-\begin{equation}\label{rule:CMSUnknown}
-\inferrule[CMSUnknown]{ }{
-  \cmaysatisfy{e}{\cunknown}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSExpEHole}
-\inferrule[CMSExpEHole]{
-  \cnotsatisfy{\hehole{u}}{\xi}
-}{
-  \cmaysatisfy{\hehole{u}}{\xi}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSExpHole}
-\inferrule[CMSExpHole]{
-  \cnotsatisfy{\hhole{e}{u}}{\xi}
-}{
-  \cmaysatisfy{\hhole{e}{u}}{\xi}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSAp}
-\inferrule[CMSAp]{
-  \cnotsatisfy{\hap{e_1}{e_2}}{\xi}
-}{
-  \cmaysatisfy{\hap{e_1}{e_2}}{\xi}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSMatch}
-\inferrule[CMSMatch]{
-  \cnotsatisfy{\hmatch{e}{\zrules}}{\xi}
-}{
-  \cmaysatisfy{\hmatch{e}{\zrules}}{\xi}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSAnd1}
-\inferrule[CMSAnd1]{
-  \cmaysatisfy{e}{\xi_1} \\
-  \csatisfy{e}{\xi_2}
-}{
-  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSAnd2}
-\inferrule[CMSAnd2]{
-  \csatisfy{e}{\xi_1} \\
-  \cmaysatisfy{e}{\xi_2}
-}{
-  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSAnd3}
-\inferrule[CMSAnd3]{
-  \cmaysatisfy{e}{\xi_1} \\
-  \cmaysatisfy{e}{\xi_2}
-}{
-  \cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSOr1}
-\inferrule[CMSOr1]{
-  \cmaysatisfy{e}{\xi_1} \\
-  \cnotsatisfy{e}{\xi_2}
-}{
-  \cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSOr2}
-\inferrule[CMSOr2]{
-  \cnotsatisfy{e}{\xi_1} \\
-  \cmaysatisfy{e}{\xi_2}
-}{
-  \cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSInl}
-\inferrule[CMSInl]{
-  \cmaysatisfy{e_1}{\xi_1}
-}{
-  \cmaysatisfy{
-    \hinl{\tau_2}{e_1}
-  }{
-    \cinl{\xi_1}
-  }
-}
-\end{equation}
-\begin{equation}\label{rule:CMSInr}
-\inferrule[CMSInr]{
-  \cmaysatisfy{e_2}{\xi_2}
-}{
-  \cmaysatisfy{
-    \hinr{\tau_1}{e_2}
-  }{
-    \cinr{\xi_2}
-  }
-}
-\end{equation}
-\begin{equation}\label{rule:CMSPair1}
-\inferrule[CMSPair1]{
-  \cmaysatisfy{e_1}{\xi_1} \\
-  \csatisfy{e_2}{\xi_2}
-}{
-  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSPair2}
-\inferrule[CMSPair2]{
-  \csatisfy{e_1}{\xi_1} \\
-  \cmaysatisfy{e_2}{\xi_2}
-}{
-  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
-}
-\end{equation}
-\begin{equation}\label{rule:CMSPair3}
-\inferrule[CMSPair3]{
-  \cmaysatisfy{e_1}{\xi_1} \\
-  \cmaysatisfy{e_2}{\xi_2}
-}{
-  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
-}
-\end{equation}
-\end{subequations}
-
-\fbox{$\csatisfyormay{e}{\xi}$}
-\begin{subequations}\label{rules:satormay}
-\begin{equation}\label{rule:CSMSMay}
-\inferrule[CSMSMay]{
-  \cmaysatisfy{e}{\xi}
-}{
-  \csatisfyormay{e}{\xi}
-}
-\end{equation}
-\begin{equation}\label{rule:CSMSSat}
-\inferrule[CSMSSat]{
-  \csatisfy{e}{\xi}
-}{
-  \csatisfyormay{e}{\xi}
-}
-\end{equation}
-\end{subequations}
-
-\begin{thm}[Exclusiveness of Constraint Satisfaction]
-  \label{thrm:exclusive-constraint-satisfaction}
-  If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ then exactly one of the following holds
-  \begin{enumerate}
-    \item $\csatisfy{e}{\xi}$
-    \item $\cmaysatisfy{e}{\xi}$
-    \item $\csatisfy{e}{\cdual{\xi}}$
-  \end{enumerate}
-\end{thm}
-
-\begin{lem}[Negation of Satisfaction]
-  \label{lem:neg-satisfy}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$. Then $\cnotsatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
-\end{lem}
-\begin{lem}[Negation of Possible Satisfaction]
-  \label{lem:neg-possible-satisfy}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$. Then $\cnotmaysatisfy{e}{\xi}$ iff $\csatisfy{e}{\xi}$ or $\cnotsatisfy{e}{\cdual{\xi}}$
-\end{lem}
-\begin{lem}[Negation of Dual Satisfaction]
-  \label{lem:neg-dual-satisfy}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$. Then $\cnotsatisfy{e}{\cdual{\xi}}$ iff $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\xi}$ \textit{i.e.} $\csatisfyormay{e}{\xi}$
-\end{lem}
-\begin{lem}[Coverage of Constraint Satisfaction]
-  \label{lem:coverage-constraint-satisfy}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$. Then either $\csatisfy{e}{\xi}$ or $\cmaysatisfy{e}{\xi}$ or $\csatisfy{e}{\cdual{\xi}}$
-\end{lem}
-
-\begin{corol}[Possible Satisfaction of Dual Constraint]
-  \label{corol:possible-satisfy-dual}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$. Then $\cmaysatisfy{e}{\xi}$ iff $\cmaysatisfy{e}{\cdual{\xi}}$
-\end{corol}
-
-\begin{defn}[Not Not Entailment of Constraints]
-  \label{defn:nn-entailment}
-  Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$. Then $\csatisfyormay{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfyormay{e}{\xi_2}$ 
-\end{defn}
-
-\begin{corol}
-  \label{corol:nn-exhaust}
-  Suppose that $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$. Then $\csatisfyormay{\ctruth}{\xi}$ implies $\csatisfyormay{e}{\xi}$
-\end{corol}
-\begin{proof}
-  \begin{pfsteps*}
-  \item $\ctyp{\xi}{\tau}$ \BY{assumption} \pflabel{CTyp}
-  \item $\hexptyp{\cdot}{\Gamma}{e}{\tau}$ \BY{assumption} \pflabel{eTyp}
-  \item $\isFinal{e}$ \BY{assumption} \pflabel{eFinal}
-  \item $\csatisfyormay{\ctruth}{\xi}$ \BY{assumption} \pflabel{entailormay}
-  \item $\csatisfy{e_1}{\ctruth}$ \BY{Rule (\ref{rule:CSTruth})} \pflabel{satisfytop}
-  \item $\csatisfyormay{e_1}{\ctruth}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfytop}} \pflabel{satisfyormaytop}
-  \item $\ctyp{\ctruth}{\tau}$ \BY{Rule (\ref{rule:CTTruth})} \pflabel{topCTyp}
-  \item $\csatisfyormay{e_1}{\xi_r}$ \BY{Definition \ref{defn:nn-entailment} of \pfref{entailormay} on \pfref{topCTyp} and \pfref{CTyp} and \pfref{eTyp} and \pfref{eFinal} and \pfref{satisfyormaytop}}
-  \end{pfsteps*}
-  \resetpfcounter
-\end{proof}
-
-\begin{defn}[Entailment of Constraints]
-  \label{defn:const-entailment}
-  Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$.
-  Then $\csatisfy{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$
-\end{defn}
-\begin{corol}[Material Entailment of Constraints]
-  \label{lem:material-entailment}
-  Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$. Then $\csatisfy{\xi_1}{\xi_2}$ iff $\csatisfy{\ctruth}{\cor{\cdual{\xi_1}}{\xi_2}}$
-\end{corol}
-
-\begin{lem}[Matching Coherence of Constraint]
-  \label{lem:const-matching-coherence}
-  Suppose that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$. Then we have
-  \begin{enumerate}
-    \item $\csatisfy{e}{\xi}$ iff $\hpatmatch{e}{p}{\theta}$
-    \item $\csatisfy{e}{\cdual{\xi}}$ iff $\hnotmatch{e}{p}$
-    \item $\cmaysatisfy{e}{\xi}$ iff $\hmaymatch{e}{p}$
-  \end{enumerate}
-\end{lem}
-
-\fbox{$\cincon{\Xi}$}~~\text{A finite set $\Xi$ of constraints is inconsistent}
+\judgboxa{\cincon{\Xi}}{A finite set of constraints, $\Xi$, is inconsistent}
 \begin{subequations}
 \begin{equation}
 \inferrule[CINCTruth]{
@@ -518,14 +61,14 @@ $\arraycolsep=4pt\begin{array}{lll}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CINCPair1]{
+\inferrule[CINCPairL]{
   \cincon{\Xi_1}
 }{
   \cincon{\cpair{\Xi_1}{\Xi_2}}
 }
 \end{equation}
 \begin{equation}
-\inferrule[CINCPair2]{
+\inferrule[CINCPairR]{
   \cincon{\Xi_2}
 }{
   \cincon{\cpair{\Xi_1}{\Xi_2}}
@@ -533,296 +76,28 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{equation}
 \end{subequations}
 
-\begin{lem}[Decidability Inconsistency]
+\begin{lemma}[Decidability of Inconsistency]
   \label{lem:inconsistency-decidability}
-  It is decidable whether $\cincon{\Xi}$
-\end{lem}
+  Suppose $\ctruify{\xi}=\xi$. It is decidable whether $\cincon{\xi}$.
+\end{lemma}
 
-\begin{lem}[Inconsistency and Entailment of Constraint]
+\begin{lemma}[Inconsistency and Entailment of Constraint]
   \label{lem:inconsistency-and-entailment}
   Suppose that $\ctruify{\xi} = \xi$. Then $\cincon{\cdual{\xi}}$ iff $\csatisfy{\ctruth}{\xi}$
-\end{lem}
+\end{lemma}
 
-\begin{lem}[Soundness and Completeness of Satisfaction Judgment]
-  \label{lem:sound-complete-satisfy}
-  $\csatisfy{e}{\xi}$ iff $\fsatisfy{e}{\xi} = \true$.
-\end{lem}
-\begin{proof}
-  We prove soundness and completeness separately.
-  \begin{enumerate}
-    \item Soundness:
-      \begin{pfsteps*}
-      \item $\csatisfy{e}{\xi}$ \BY{assumption} \pflabel{satisfy}
-      \end{pfsteps*}
-      By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfy}.
-      \begin{byCases}
-
-      \savelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\text{(\ref{rule:CSTruth})}]
-        \begin{pfsteps*}
-        \item $\xi = \ctruth$ \BY{assumption}
-        \item $\fsatisfy{e}{\ctruth} = \true$ \BY{Definition \ref{defn:satisfy-truth}}
-        \end{pfsteps*}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\text{(\ref{rule:CSNum})}]
-        \begin{pfsteps*}
-        \item $e = \hnum{n}$ \BY{assumption}
-        \item $\xi = \cnum{n}$ \BY{assumption}
-        \item $\fsatisfy{\hnum{n}}{\cnum{n}} = (n = n) = \true$ \BY{Definition \ref{defn:num-satisfy-num}}
-        \end{pfsteps*}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\text{(\ref{rule:CSNotNum})}]
-        \begin{pfsteps*}
-        \item $e = \hnum{n_1}$ \BY{assumption}
-        \item $\xi = \cnotnum{n_2}$ \BY{assumption}
-        \item $n_1 \neq n_2$ \BY{assumption} \pflabel{numnotequal}
-        \item $\fsatisfy{\hnum{n_1}}{\cnotnum{n_2}} = (n_1 \neq n_2) = \true$ \BY{Definition \ref{defn:num-satisfy-notnum} on \pfref{numnotequal}}
-        \end{pfsteps*}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\text{(\ref{rule:CSAnd})}]
-        \begin{pfsteps*}
-        \item $\xi = \cand{\xi_1}{\xi_2}$ \BY{assumption}
-        \item $\csatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[and]csatisfy1}
-        \item $\csatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[and]csatisfy2}
-        \item $\fsatisfy{e}{\xi_1} = \true$ \BY{IH on \pfref{[and]csatisfy1}} \pflabel{[and]fsatisfy1}
-        \item $\fsatisfy{e}{\xi_2} = \true$ \BY{IH on \pfref{[and]csatisfy2}} \pflabel{[and]fsatisfy2}
-        \item $\fsatisfy{e}{\cand{\xi_1}{\xi_2}} = \fsatisfy{e}{\xi_1} \text{ and } \fsatisfy{e}{\xi_2} = \true$ \BY{Definition \ref{defn:satisfy-and} on \pfref{[and]fsatisfy1} and \pfref{[and]fsatisfy2}}
-        \end{pfsteps*}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\text{(\ref{rule:CSOr1})}]
-        \begin{pfsteps*}
-        \item $\xi = \cor{\xi_1}{\xi_2}$ \BY{assumption}
-        \item $\csatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[or1]csatisfy1}
-        \item $\fsatisfy{e}{\xi_1} = \true$ \BY{IH on \pfref{[or1]csatisfy1}} \pflabel{[or1]fsatisfy1}
-        \item $\fsatisfy{e}{\cor{\xi_1}{\xi_2}} = \fsatisfy{e}{\xi_1} \text{ or } \fsatisfy{e}{\xi_2} = \true$ \BY{Definition \ref{defn:satisfy-or} on \pfref{[or1]fsatisfy1}}
-        \end{pfsteps*}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\text{(\ref{rule:CSOr2})}]
-        \begin{pfsteps*}
-        \item $\xi = \cor{\xi_1}{\xi_2}$ \BY{assumption}
-        \item $\csatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[or2]csatisfy2}
-        \item $\fsatisfy{e}{\xi_2} = \true$ \BY{IH on \pfref{[or2]csatisfy2}} \pflabel{[or2]fsatisfy2}
-        \item $\fsatisfy{e}{\cor{\xi_1}{\xi_2}} = \fsatisfy{e}{\xi_1} \text{ or } \fsatisfy{e}{\xi_2} = \true$ \BY{Definition \ref{defn:satisfy-or} on \pfref{[or2]fsatisfy2}}
-        \end{pfsteps*}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\text{(\ref{rule:CSInl})}]
-        \begin{pfsteps*}
-        \item $e = \hinl{\tau_2}{e_1}$ \BY{assumption}
-        \item $\xi = \cinl{\xi_1}$ \BY{assumption}
-        \item $\csatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[inl]csatisfy1}
-        \item $\fsatisfy{e_1}{\xi_1} = \true$ \BY{IH on \pfref{[inl]csatisfy1}} \pflabel{[inl]fsatisfy1}
-        \item $\fsatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}} = \fsatisfy{e_1}{\xi_1} = \true$ \BY{Definition \ref{defn:inl-satisfy-inl} on \pfref{[inl]fsatisfy1}}
-        \end{pfsteps*}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\text{(\ref{rule:CSInr})}]
-        \begin{pfsteps*}
-        \item $e = \hinr{\tau_1}{e_2}$ \BY{assumption}
-        \item $\xi = \cinl{\xi_2}$ \BY{assumption}
-        \item $\csatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{[inr]csatisfy2}
-        \item $\fsatisfy{e_2}{\xi_2} = \true$ \BY{IH on \pfref{[inr]csatisfy2}} \pflabel{[inr]fsatisfy2}
-        \item $\fsatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}} = \fsatisfy{e_2}{\xi_2} = \true$ \BY{Definition \ref{defn:inr-satisfy-inr} on \pfref{[inr]fsatisfy2}}
-        \end{pfsteps*}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\text{(\ref{rule:CSPair})}]
-        \begin{pfsteps*}
-        \item $e = \hpair{e_1}{e_2}$ \BY{assumption}
-        \item $\xi = \cpair{\xi_1}{\xi_2}$ \BY{assumption}
-        \item $\csatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[pair]csatisfy1}
-        \item $\csatisfy{e_1}{\xi_2}$ \BY{assumption} \pflabel{[pair]csatisfy2}
-        \item $\fsatisfy{e_1}{\xi_1} = \true$ \BY{IH on \pfref{[pair]csatisfy1}} \pflabel{[pair]fsatisfy1}
-        \item $\fsatisfy{e_2}{\xi_2} = \true$ \BY{IH on \pfref{[pair]csatisfy2}} \pflabel{[pair]fsatisfy2}
-        \item $\fsatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}} = \fsatisfy{e_1}{\xi_1} \text{ and } \fsatisfy{e_2}{\xi_2} = \true$ \BY{Definition \ref{defn:pair-satisfy-pair} on \pfref{[pair]fsatisfy1} and \pfref{[pair]fsatisfy2}}
-        \end{pfsteps*}
-      \end{byCases}
-
-    \resetpfcounter
-    
-    \item Completeness:
-      \begin{pfsteps*}
-      \item $\fsatisfy{e}{\xi} = \true$ \BY{assumption} \pflabel{fsatisfy}
-      \end{pfsteps*}
-      By structural induction on $\xi$.
-      \begin{byCases}
-
-      \savelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\xi=\ctruth]
-        \begin{pfsteps*}
-        \item $\csatisfy{e}{\ctruth}$ \BY{Rule (\ref{rule:CSTruth})}
-        \end{pfsteps*}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\xi=\cfalsity, \cunknown]
-        \begin{pfsteps*}
-        \item $\fsatisfy{e}{\xi} = \false$ \BY{Definition \ref{defn:not-satisfy}} \pflabel{fsatisfy-unknown}
-        \end{pfsteps*}
-        \pfref{fsatisfy-unknown} contradicts \pfref{fsatisfy} and thus vacuously true.
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\xi=\cnum{n}]\ \\
-        By structural induction on $e$.
-        \begin{byCases}
-
-          \savelocalsteps{lem:sound-complete-satisfy-2}
-          \item[e=\hnum{n'}]
-            \begin{pfsteps*}
-              \item $n' = n$ \BY{Definition \ref{defn:num-satisfy-num} on \pfref{fsatisfy}} \pflabel{numequal}
-              \item $\csatisfy{\hnum{n'}}{\cnum{n}}$ \BY{Rule (\ref{rule:CSNum}) on \pfref{numequal}}
-            \end{pfsteps*}
-
-          \restorelocalsteps{lem:sound-complete-satisfy-2}
-          \item
-            \begin{pfsteps*}
-            \item $\fsatisfy{e}{\cnum{n}} = \false$ \BY{Definition \ref{defn:not-satisfy}} \pflabel{[cnum]fsatisfy}
-            \end{pfsteps*}
-            \pfref{[cnum]fsatisfy} contradicts \pfref{fsatisfy} and thus vacuously true. 
-        \end{byCases}
-        
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\xi=\cnotnum{n}]\ \\
-        By structural induction on $e$.
-        \begin{byCases}
-
-          \savelocalsteps{lem:sound-complete-satisfy-2}
-          \item[e=\hnum{n'}]
-            \begin{pfsteps*}
-            \item $n' \neq n$ \BY{Definition \ref{defn:num-satisfy-notnum} on \pfref{fsatisfy}} \pflabel{numnotequal}
-            \item $\csatisfy{\hnum{n'}}{\cnotnum{n}}$ \BY{Rule (\ref{rule:CSNotNum}) on \pfref{numnotequal}}
-            \end{pfsteps*}
-            
-          \restorelocalsteps{lem:sound-complete-satisfy-2}
-          \item
-            \begin{pfsteps*}
-            \item $\fsatisfy{e}{\cnotnum{n}} = \false$ \BY{Definition \ref{defn:not-satisfy}} \pflabel{[cnotnum]fsatisfy}
-            \end{pfsteps*}
-            \pfref{[cnotnum]fsatisfy} contradicts \pfref{fsatisfy} and thus vacuously true. 
-        \end{byCases}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\xi=\cand{\xi_1}{\xi_2}]
-        \begin{pfsteps*}
-        \item $\fsatisfy{e}{\xi_1} = \true$ \BY{Definition \ref{defn:satisfy-and} on \pfref{fsatisfy}} \pflabel{[and]fsatisfy1}
-        \item $\fsatisfy{e}{\xi_2} = \true$ \BY{Definition \ref{defn:satisfy-and} on \pfref{fsatisfy}} \pflabel{[and]fsatisfy2}
-        \item $\csatisfy{e}{\xi_1}$ \BY{IH on \pfref{[and]fsatisfy1}} \pflabel{[and]csatisfy1}
-        \item $\csatisfy{e}{\xi_2}$ \BY{IH on \pfref{[and]fsatisfy2}} \pflabel{[and]csatisfy2}
-        \item $\csatisfy{e}{\cand{\xi_1}{\xi_2}}$ \BY{Rule (\ref{rule:CSAnd}) on \pfref{[and]csatisfy1} and \pfref{[and]csatisfy2}}
-        \end{pfsteps*}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\xi=\cor{\xi_1}{\xi_2}]
-        \begin{pfsteps*}
-        \item $\fsatisfy{e}{\xi_1} \text{ or } \fsatisfy{e}{\xi_2} = \true$ \BY{Definition \ref{defn:satisfy-or} on \pfref{fsatisfy}} \pflabel{[or]fsatisfy}
-        \end{pfsteps*}
-        By case analysis on \pfref{[or]fsatisfy}.
-        \begin{byCases}
-
-          \savelocalsteps{lem:sound-complete-satisfy-2}
-          \item[\fsatisfy{e}{\xi_1}=\true]
-          \begin{pfsteps*}
-          \item $\fsatisfy{e}{\xi_1} = \true$ \BY{assumption} \pflabel{[or]fsatisfy1}
-          \item $\csatisfy{e}{\xi_1}$ \BY{IH on \pfref{[or]fsatisfy1}} \pflabel{[or]csatisfy1}
-          \item $\csatisfy{e}{\cor{\xi_1}{\xi_2}}$ \BY{Rule (\ref{rule:CSOr1}) on \pfref{[or]csatisfy1}}
-          \end{pfsteps*}
-
-          \restorelocalsteps{lem:sound-complete-satisfy-2}
-          \item[\fsatisfy{e}{\xi_2}=\true]
-          \begin{pfsteps*}
-          \item $\fsatisfy{e}{\xi_2} = \true$ \BY{assumption} \pflabel{[or]fsatisfy2}
-          \item $\csatisfy{e}{\xi_2}$ \BY{IH on \pfref{[or]fsatisfy2}} \pflabel{[or]csatisfy2}
-          \item $\csatisfy{e}{\cor{\xi_1}{\xi_2}}$ \BY{Rule (\ref{rule:CSOr2}) on \pfref{[or]csatisfy2}}
-          \end{pfsteps*}
-        \end{byCases}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\xi=\cinl{\xi_1}]\ \\
-        By structural induction on $e$.
-        \begin{byCases}
-
-          \savelocalsteps{lem:sound-complete-satisfy-2}
-          \item[e=\hinl{\tau_2}{e_1}]
-            \begin{pfsteps*}
-              \item $\fsatisfy{e_1}{\xi_1}=\true$ \BY{Definition \ref{defn:inl-satisfy-inl} on \pfref{fsatisfy}} \pflabel{[inl]fsatisfy1}
-              \item $\csatisfy{e_1}{\xi_1}$ \BY{IH on \pfref{[inl]fsatisfy1}} \pflabel{[inl]csatisfy1}
-              \item $\csatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ \BY{Rule (\ref{rule:CSInl}) on \pfref{[inl]csatisfy1}}
-            \end{pfsteps*}
-
-            \restorelocalsteps{lem:sound-complete-satisfy-2}
-          \item
-            \begin{pfsteps*}
-            \item $\fsatisfy{e}{\cinl{\xi_1}} = \false$ \BY{Definition \ref{defn:not-satisfy}} \pflabel{[inl]fnotsatisfy}
-            \end{pfsteps*}
-            \pfref{[inl]fnotsatisfy} contradicts \pfref{fsatisfy} and thus vacuously true. 
-        \end{byCases}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\xi=\cinr{\xi_2}]\ \\
-        By structural induction on $e$.
-        \begin{byCases}
-
-          \savelocalsteps{lem:sound-complete-satisfy-2}
-          \item[e=\hinr{\tau_1}{e_2}]
-            \begin{pfsteps*}
-              \item $\fsatisfy{e_2}{\xi_2}=\true$ \BY{Definition \ref{defn:inr-satisfy-inr} on \pfref{fsatisfy}} \pflabel{[inr]fsatisfy2}
-              \item $\csatisfy{e_2}{\xi_2}$ \BY{IH on \pfref{[inr]fsatisfy2}} \pflabel{[inr]csatisfy2}
-              \item $\csatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$ \BY{Rule (\ref{rule:CSInr}) on \pfref{[inr]csatisfy2}}
-            \end{pfsteps*}
-
-          \restorelocalsteps{lem:sound-complete-satisfy-2}
-          \item
-            \begin{pfsteps*}
-            \item $\fsatisfy{e}{\cinr{\xi_2}} = \false$ \BY{Definition \ref{defn:not-satisfy}} \pflabel{[inr]fnotsatisfy}
-            \end{pfsteps*}
-            \pfref{[inr]fnotsatisfy} contradicts \pfref{fsatisfy} and thus vacuously true. 
-        \end{byCases}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\xi=\cpair{\xi_1}{\xi_2}]\ \\
-        By structural induction on $e$.
-        \begin{byCases}
-
-          \savelocalsteps{lem:sound-complete-satisfy-2}
-          \item[e=\hpair{e_1}{e_2}]
-            \begin{pfsteps*}
-            \item $\fsatisfy{e_1}{\xi_1} = \true$ \BY{Definition \ref{defn:pair-satisfy-pair} on \pfref{fsatisfy}} \pflabel{[pair]fsatisfy1}
-            \item $\fsatisfy{e_1}{\xi_2} = \true$ \BY{Definition \ref{defn:pair-satisfy-pair} on \pfref{fsatisfy}} \pflabel{[pair]fsatisfy2}
-            \item $\csatisfy{e_1}{\xi_1}$ \BY{IH on \pfref{[pair]fsatisfy1}} \pflabel{[pair]csatisfy1}
-            \item $\csatisfy{e_1}{\xi_2}$ \BY{IH on \pfref{[pair]fsatisfy2}} \pflabel{[pair]csatisfy2}
-            \item $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ \BY{Rule (\ref{rule:CSPair}) on \pfref{[pair]csatisfy1} and \pfref{[pair]csatisfy2}}
-            \end{pfsteps*}
-
-          \savelocalsteps{lem:sound-complete-satisfy-2}
-          \item
-            \begin{pfsteps*}
-            \item $\fsatisfy{e}{\cpair{\xi_1}{\xi_2}} = \false$ \BY{Definition \ref{defn:not-satisfy}} \pflabel{[pair]fnotsatisfy}
-            \end{pfsteps*}
-            \pfref{[pair]fnotsatisfy} contradicts \pfref{fsatisfy} and thus vacuously true. 
-        \end{byCases}
-      \end{byCases}
-  \end{enumerate}
-  \resetpfcounter
-\end{proof}
-
-
-
-\begin{lem}
+\begin{lemma}
   \label{lem:satisfy-truify}
   If $\csatisfy{e}{\xi}$ then $\csatisfy{e}{\ctruify{\xi}}$
-\end{lem}
+\end{lemma}
 \begin{proof}
   By rule induction over Rules (\ref{rules:Satisfy}), it is obvious to see that $\ctruify{\xi} = \xi$.
 \end{proof}
 
-\begin{lem}
+\begin{lemma}
   \label{lem:maysat-satormay-truify}
   If $\cmaysatisfy{e}{\xi}$ then $\csatisfyormay{e}{\ctruify{\xi}}$.
-\end{lem}
+\end{lemma}
 \begin{proof}
   \begin{pfsteps*}
   \item $\cmaysatisfy{e}{\xi}$ \BY{assumption} \pflabel{maysat}
@@ -839,107 +114,26 @@ $\arraycolsep=4pt\begin{array}{lll}
       \end{pfsteps*}
       
   \restorelocalsteps{lem:maysat-satormay-truify-1}
-  \item[\text{(\ref{rule:CMSExpEHole})}]
+  \item[\text{(\ref{rule:CMSNotVal})}]
     \begin{pfsteps*}
-    \item $e = \hehole{u}$ \BY{assumption} \pflabel{eholeSatisfy}
+    \item $\isntVal{e}$ \BY{assumption} \pflabel{notval}
+    \item $\refutable{\xi}$ \BY{assumption} \pflabel{rft}
     \end{pfsteps*}
-
-    By case analysis on the result of $\fsatisfy{\hehole{u}}{\ctruify{\xi}}$.
+    By \autoref{lem:notval-refutable} on \pfref{notval} and \pfref{rft} and case analysis on its conclusion.
+    By rule induction over \rulesref{rules:xi-refutable}.
     \begin{byCases}
-
     \savelocalsteps{lem:maysat-satormay-truify-2}
-    \item[\true]
+    \item[\refutable{\ctruify{\xi}}]
       \begin{pfsteps*}
-      \item $\fsatisfy{\hehole{u}}{\ctruify{\xi}}=\true$ \BY{assumption} \pflabel{fsatisfyTruify}
-      \item $\csatisfy{\hehole{u}}{\ctruify{\xi}}$ \BY{Lemma \ref{lem:sound-complete-satisfy} on \pfref{fsatisfyTruify}} \pflabel{satisfyTruify}
-      \item $\csatisfyormay{\hehole{u}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{satisfyTruify}}
+      \item $\refutable{\ctruify{\xi}}$ \BY{assumption} \pflabel{rft-truify}
+      \item $\cmaysatisfy{e}{\ctruify{\xi}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{notval} and \pfref{rft-truify}} \pflabel{[notval]maysat}
+      \item $\csatisfyormay{e}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[notval]maysat}}
       \end{pfsteps*}
-
     \restorelocalsteps{lem:maysat-satormay-truify-2}
-    \item[\false]
+    \item[\csatisfy{e}{\ctruify{\xi}}]
       \begin{pfsteps*}
-      \item $\fsatisfy{\hehole{u}}{\ctruify{\xi}}=\false$ \BY{assumption} \pflabel{fnotsatisfyTruify}
-      \item $\cnotsatisfy{\hehole{u}}{\ctruify{\xi}}$ \BY{Lemma \ref{lem:sound-complete-satisfy} on \pfref{fnotsatisfyTruify}} \pflabel{notsatisfyTruify}
-      \item $\cmaysatisfy{\hehole{u}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CMSExpEHole}) on \pfref{notsatisfyTruify}} \pflabel{maysatTruify}
-      \item $\csatisfyormay{\hehole{u}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatTruify}}
-      \end{pfsteps*}
-    \end{byCases}
-
-  \restorelocalsteps{lem:maysat-satormay-truify-1}
-  \item[\text{(\ref{rule:CMSExpHole})}]
-    \begin{pfsteps*}
-    \item $e = \hhole{e}{u}$ \BY{assumption} \pflabel{holeSatisfy}
-    \end{pfsteps*}
-    By case analysis on the result of $\fsatisfy{\hhole{e}{u}}{\ctruify{\xi}}$.
-    \begin{byCases}
-
-    \savelocalsteps{lem:maysat-satormay-truify-2}
-    \item[\true]
-      \begin{pfsteps*}
-      \item $\fsatisfy{\hhole{e}{u}}{\ctruify{\xi}} = \true$ \BY{assumption} \pflabel{holeFSatisfyTruify}
-      \item $\csatisfy{\hhole{e}{u}}{\ctruify{\xi}}$ \BY{Lemma \ref{lem:sound-complete-satisfy} on \pfref{holeFSatisfyTruify}} \pflabel{holeSatisfyTruify}
-      \item $\csatisfyormay{\hhole{e}{u}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{holeSatisfyTruify}}
-      \end{pfsteps*}
-
-    \restorelocalsteps{lem:maysat-satormay-truify-2}
-    \item[\false]
-      \begin{pfsteps*}
-      \item $\fsatisfy{\hhole{e}{u}}{\ctruify{\xi}} = \false$ \BY{assumption} \pflabel{holeFnotSatisfyTruify}
-      \item $\cnotsatisfy{\hhole{e}{u}}{\ctruify{\xi}}$ \BY{Lemma \ref{lem:sound-complete-satisfy} on \pfref{holeFnotSatisfyTruify}} \pflabel{HoleNotsatisfyTruify}
-      \item $\cmaysatisfy{\hhole{e}{u}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CMSExpHole}) on \pfref{HoleNotsatisfyTruify}} \pflabel{HoleMaysatTruify}
-      \item $\csatisfyormay{\hhole{e}{u}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{HoleMaysatTruify}}
-      \end{pfsteps*}
-    \end{byCases}
-
-  \restorelocalsteps{lem:maysat-satormay-truify-1}
-  \item[\text{(\ref{rule:CMSAp})}]
-    \begin{pfsteps*}
-    \item $e = \hap{e_1}{e_2}$ \BY{assumption} \pflabel{apSatisfy}
-    \end{pfsteps*}
-    By case analysis on the result of $\fsatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$.
-    \begin{byCases}
-
-    \savelocalsteps{lem:maysat-satormay-truify-2}
-    \item[\true]
-      \begin{pfsteps*}
-      \item $\fsatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}} = \true$ \BY{assumption} \pflabel{apFSatisfyTruify}
-      \item $\csatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$ \BY{Lemma \ref{lem:sound-complete-satisfy} on \pfref{apFSatisfyTruify}} \pflabel{apSatisfyTruify}
-      \item $\csatisfyormay{\hap{e_1}{e_2}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{apSatisfyTruify}}
-      \end{pfsteps*}
-
-    \restorelocalsteps{lem:maysat-satormay-truify-2}
-    \item[\false]
-      \begin{pfsteps*}
-      \item $\fsatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}} = \false$ \BY{assumption} \pflabel{apFnotSatisfyTruify}
-      \item $\cnotsatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$ \BY{Lemma \ref{lem:sound-complete-satisfy} on \pfref{apFnotSatisfyTruify}} \pflabel{apNotsatisfyTruify}
-      \item $\cmaysatisfy{\hap{e_1}{e_2}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CMSAp}) on \pfref{apNotsatisfyTruify}} \pflabel{apMaysatTruify}
-      \item $\csatisfyormay{\hap{e_1}{e_2}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{apMaysatTruify}}
-      \end{pfsteps*}
-    \end{byCases}
-
-  \restorelocalsteps{lem:maysat-satormay-truify-1}
-  \item[\text{(\ref{rule:CMSMatch})}]
-    \begin{pfsteps*}
-    \item $e = \hmatch{e}{\zrules}$ \BY{assumption}
-    \end{pfsteps*}
-    By case analysis on the result of $\fsatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$.
-    \begin{byCases}
-
-    \savelocalsteps{lem:maysat-satormay-truify-2}
-    \item[\true]
-      \begin{pfsteps*}
-      \item $\fsatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}} = \true$ \BY{assumption} \pflabel{MatchFSatisfyTruify}
-      \item $\csatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{Lemma \ref{lem:sound-complete-satisfy} on \pfref{MatchFSatisfyTruify}} \pflabel{MatchSatisfyTruify}
-      \item $\csatisfyormay{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{MatchSatisfyTruify}}
-      \end{pfsteps*}
-
-    \restorelocalsteps{lem:maysat-satormay-truify-2}
-    \item[\false]
-      \begin{pfsteps*}
-      \item $\fsatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}} = \false$ \BY{assumption} \pflabel{MatchFnotSatisfyTruify}
-      \item $\cnotsatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{Lemma \ref{lem:sound-complete-satisfy} on \pfref{MatchFnotSatisfyTruify}} \pflabel{MatchNotsatisfyTruify}
-      \item $\cmaysatisfy{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CMSMatch}) on \pfref{MatchNotsatisfyTruify}} \pflabel{MatchMaysatTruify}
-      \item $\csatisfyormay{\hmatch{e}{\zrules}}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{MatchMaysatTruify}}
+      \item $\csatisfy{e}{\ctruify{\xi}}$ \BY{assumption} \pflabel{[notval]satisfy}
+      \item $\csatisfyormay{e}{\ctruth}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[notval]satisfy}}
       \end{pfsteps*}
     \end{byCases}
 
@@ -1059,10 +253,10 @@ $\arraycolsep=4pt\begin{array}{lll}
   \resetpfcounter
 \end{proof}
 
-\begin{lem}
+\begin{lemma}
   \label{lem:satormay-truify}
   $\csatisfyormay{e}{\xi}$ iff $\csatisfyormay{e}{\ctruify{\xi}}$
-\end{lem}
+\end{lemma}
 \begin{proof}
   \begin{enumerate}
     \item Sufficiency:
@@ -1413,10 +607,29 @@ $\arraycolsep=4pt\begin{array}{lll}
   \end{enumerate}
 \end{proof}
 
-\begin{lem}
+\begin{lemma}
+\label{lem:truify-satormay-satisfy}
+  Assume $\ctruify{\xi}=\xi$. Then $\csatisfyormay{\ctruth}{\xi}$ iff $\csatisfy{\ctruth}{\xi}$.
+\end{lemma}
+\begin{proof}
+We prove sufficiency and necessity separately.
+\begin{enumerate}
+\item Sufficiency:
+    
+\item Necessity:
+    
+\end{enumerate}
+\end{proof}
+
+\begin{theorem}
+\label{thrm:exhaustive-truify}
+  $\csatisfyormay{\ctruth}{\xi}$ iff $\csatisfy{\ctruth}{\ctruify{\xi}}$.
+\end{theorem}
+
+\begin{lemma}
   \label{lem:val-satisfy-truify}
   Assume that $\isVal{e}$. Then $\csatisfyormay{e}{\xi}$ iff $\csatisfy{e}{\ctruify{\xi}}$
-\end{lem}
+\end{lemma}
 \begin{proof}
   \begin{pfsteps*}
   \item $\isVal{e}$ \BY{assumption} \pflabel{val}
@@ -1455,105 +668,268 @@ $\arraycolsep=4pt\begin{array}{lll}
           \end{pfsteps*}
           
         \restorelocalsteps{2} 
-        \item[\text{(\ref{rule:CMSExpEHole})}] 
+        \item[\text{(\ref{rule:CMSNotVal})}] 
           \begin{pfsteps*}
-          \item $e=\hehole{u}$ \BY{assumption}
+          \item $\isntVal{e}$ \BY{assumption} \pflabel{notval}
           \end{pfsteps*}
-          By rule induction over Rules (\ref{rules:Value}) on \pfref{val}, no cases apply due to syntactic contradiction.
-        
-        \restorelocalsteps{2} 
-        \item[\text{(\ref{rule:CMSExpHole})}] 
-          \begin{pfsteps*}
-          \item $e=\hhole{e}{u}$ \BY{assumption}
-          \end{pfsteps*}
-          By rule induction over Rules (\ref{rules:Value}) on \pfref{val}, no cases apply due to syntactic contradiction.
-          
-        \restorelocalsteps{2} 
-        \item[\text{(\ref{rule:CMSAp})}] 
-          \begin{pfsteps*}
-          \item $e=\hap{e_1}{e_2}$ \BY{assumption}
-          \end{pfsteps*}
-          By rule induction over Rules (\ref{rules:Value}) on \pfref{val}, no cases apply due to syntactic contradiction.
-        
-        \restorelocalsteps{2} 
-        \item[\text{(\ref{rule:CMSMatch})}] 
-          \begin{pfsteps*}
-          \item $e=\hmatch{e}{\zrules}$ \BY{assumption}
-          \end{pfsteps*}
-          By rule induction over Rules (\ref{rules:Value}) on \pfref{val}, no cases apply due to syntactic contradiction.
+          By rule induction over \rulesref{rules:notval} on \pfref{notval}, for each case,
+          by rule induction over Rules (\ref{rules:Value}) on \pfref{val}, no case applies due to syntactic contradiction.
           
         \restorelocalsteps{2} 
         \item[\text{(\ref{rule:CMSAnd1})}] 
           \begin{pfsteps*}
-          \item 
+          \item $\xi=\cand{\xi_1}{\xi_2}$ \BY{assumption}
+          \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[and1]maysat1}
+          \item $\csatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[and1]satisfy2}
+          \item $\ctruify{\xi}=\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
+          \item $\csatisfyormay{e}{\xi_1}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[and1]maysat1}} \pflabel{[and1]satormay1}
+          \item $\csatisfyormay{e}{\xi_2}$ \BY{\ruleref{rule:CSMSSat} on \pfref{[and1]satisfy2}} \pflabel{[and1]satormay2}
+          \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[and1]satormay1}} \pflabel{[and1]sat-truify1}
+          \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[and1]satormay2}} \pflabel{[and1]sat-truify2}
+          \item $\csatisfy{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{\ruleref{rule:CSAnd} on \pfref{[and1]sat-truify1} and \pfref{[and1]sat-truify2}}
           \end{pfsteps*}
         
         \restorelocalsteps{2} 
         \item[\text{(\ref{rule:CMSAnd2})}] 
           \begin{pfsteps*}
-          \item 
+          \item $\xi=\cand{\xi_1}{\xi_2}$ \BY{assumption}
+          \item $\csatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[and2]satisfy1}
+          \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[and2]maysat2}
+          \item $\ctruify{\xi}=\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
+          \item $\csatisfyormay{e}{\xi_1}$ \BY{\ruleref{rule:CSMSSat} on \pfref{[and2]satisfy1}} \pflabel{[and2]satormay1}
+          \item $\csatisfyormay{e}{\xi_2}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[and2]maysat2}} \pflabel{[and2]satormay2}
+          \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[and2]satormay1}} \pflabel{[and2]sat-truify1}
+          \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[and2]satormay2}} \pflabel{[and2]sat-truify2}
+          \item $\csatisfy{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{\ruleref{rule:CSAnd} on \pfref{[and2]sat-truify1} and \pfref{[and2]sat-truify2}}
           \end{pfsteps*}
         
         \restorelocalsteps{2} 
         \item[\text{(\ref{rule:CMSAnd3})}] 
           \begin{pfsteps*}
-          \item 
+          \item $\xi=\cand{\xi_1}{\xi_2}$ \BY{assumption}
+          \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[and3]maysat1}
+          \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[and3]maysat2}
+          \item $\ctruify{\xi}=\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
+          \item $\csatisfyormay{e}{\xi_1}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[and3]maysat1}} \pflabel{[and3]satormay1}
+          \item $\csatisfyormay{e}{\xi_2}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[and3]maysat2}} \pflabel{[and3]satormay2}
+          \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[and3]satormay1}} \pflabel{[and3]sat-truify1}
+          \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[and3]satormay2}} \pflabel{[and3]sat-truify2}
+          \item $\csatisfy{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{\ruleref{rule:CSAnd} on \pfref{[and3]sat-truify1} and \pfref{[and3]sat-truify2}}
           \end{pfsteps*}
         
         \restorelocalsteps{2} 
         \item[\text{(\ref{rule:CMSOr1})}] 
           \begin{pfsteps*}
-          \item 
+          \item $\xi=\cor{\xi_1}{\xi_2}$ \BY{assumption}
+          \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[or1]maysat}
+          \item $\ctruify{\xi}=\cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
+          \item $\csatisfyormay{e}{\xi_1}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[or1]maysat}} \pflabel{[or1]satormay}
+          \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[or1]satormay}} \pflabel{[or1]sat-truify}
+          \item $\csatisfy{e}{\cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{\ruleref{rule:CSOr1} on \pfref{[or1]sat-truify}}
           \end{pfsteps*}
         
         \restorelocalsteps{2} 
         \item[\text{(\ref{rule:CMSOr2})}] 
           \begin{pfsteps*}
-          \item 
+          \item $\xi=\cor{\xi_1}{\xi_2}$ \BY{assumption}
+          \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[or2]maysat}
+          \item $\ctruify{\xi}=\cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
+          \item $\csatisfyormay{e}{\xi_2}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[or2]maysat}} \pflabel{[or2]satormay}
+          \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[or2]satormay}} \pflabel{[or2]sat-truify}
+          \item $\csatisfy{e}{\cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{\ruleref{rule:CSOr2} on \pfref{[or2]sat-truify}}
           \end{pfsteps*}
         
         \restorelocalsteps{2} 
         \item[\text{(\ref{rule:CMSInl})}] 
           \begin{pfsteps*}
-          \item 
+          \item $\xi=\cinl{\xi_1}$ \BY{assumption}
+          \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[inl1]maysat}
+          \item $\ctruify{\xi}=\cinl{\ctruify{\xi_1}}$ \BY{\autoref{defn:truify}}
+          \item $\csatisfyormay{e}{\xi_1}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[inl1]maysat}} \pflabel{[inl1]satormay}
+          \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[inl1]satormay}} \pflabel{[inl1]sat-truify}
+          \item $\csatisfy{e}{\cinl{\ctruify{\xi_1}}}$ \BY{\ruleref{rule:CSInl} on \pfref{[inl1]sat-truify}}
           \end{pfsteps*}
         
         \restorelocalsteps{2} 
         \item[\text{(\ref{rule:CMSInr})}] 
           \begin{pfsteps*}
-          \item 
+          \item $\xi=\cinr{\xi_2}$ \BY{assumption}
+          \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[inr]maysat}
+          \item $\ctruify{\xi}=\cinr{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
+          \item $\csatisfyormay{e}{\xi_2}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[inr]maysat}} \pflabel{[inr]satormay}
+          \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[inr]satormay}} \pflabel{[inr]sat-truify}
+          \item $\csatisfy{e}{\cinr{\ctruify{\xi_2}}}$ \BY{\ruleref{rule:CSInr} on \pfref{[inr]sat-truify}}
           \end{pfsteps*}
         
         \restorelocalsteps{2} 
         \item[\text{(\ref{rule:CMSPair1})}] 
           \begin{pfsteps*}
-          \item 
+          \item $e=\hpair{e_1}{e_2}$ \BY{assumption}
+          \item $\xi=\cpair{\xi_1}{\xi_2}$ \BY{assumption}
+          \item $\cmaysatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[pair1]maysat1}
+          \item $\csatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{[pair1]satisfy2}
+          \item $\ctruify{\xi}=\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
+          \item $\csatisfyormay{e_1}{\xi_1}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair1]maysat1}} \pflabel{[pair1]satormay1}
+          \item $\csatisfyormay{e_2}{\xi_2}$ \BY{\ruleref{rule:CSMSSat} on \pfref{[pair1]satisfy2}} \pflabel{[pair1]satormay2}
+          \item $\csatisfy{e_1}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[pair1]satormay1}} \pflabel{[pair1]sat-truify1}
+          \item $\csatisfy{e_2}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[pair1]satormay2}} \pflabel{[pair1]sat-truify2}
+          \item $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{\ruleref{rule:CSPair} on \pfref{[pair1]sat-truify1} and \pfref{[pair1]sat-truify2}}
           \end{pfsteps*}
         
         \restorelocalsteps{2} 
         \item[\text{(\ref{rule:CMSPair2})}] 
           \begin{pfsteps*}
-          \item 
+          \item $e=\hpair{e_1}{e_2}$ \BY{assumption}
+          \item $\xi=\cpair{\xi_1}{\xi_2}$ \BY{assumption}
+          \item $\csatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[pair2]satisfy1}
+          \item $\cmaysatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{[pair2]maysat2}
+          \item $\ctruify{\xi}=\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
+          \item $\csatisfyormay{e_1}{\xi_1}$ \BY{\ruleref{rule:CSMSSat} on \pfref{[pair2]satisfy1}} \pflabel{[pair2]satormay1}
+          \item $\csatisfyormay{e_2}{\xi_2}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair2]maysat2}} \pflabel{[pair2]satormay2}
+          \item $\csatisfy{e_1}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[pair2]satormay1}} \pflabel{[pair2]sat-truify1}
+          \item $\csatisfy{e_2}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[pair2]satormay2}} \pflabel{[pair2]sat-truify2}
+          \item $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{\ruleref{rule:CSPair} on \pfref{[pair2]sat-truify1} and \pfref{[pair2]sat-truify2}}
           \end{pfsteps*}
         
         \restorelocalsteps{2} 
         \item[\text{(\ref{rule:CMSPair3})}] 
           \begin{pfsteps*}
-          \item 
+          \item $e=\hpair{e_1}{e_2}$ \BY{assumption}
+          \item $\xi=\cpair{\xi_1}{\xi_2}$ \BY{assumption}
+          \item $\cmaysatisfy{e_1}{\xi_1}$ \BY{assumption} \pflabel{[pair3]maysat1}
+          \item $\cmaysatisfy{e_2}{\xi_2}$ \BY{assumption} \pflabel{[pair3]maysat2}
+          \item $\ctruify{\xi}=\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
+          \item $\csatisfyormay{e_1}{\xi_1}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair3]maysat1}} \pflabel{[pair3]satormay1}
+          \item $\csatisfyormay{e_2}{\xi_2}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair3]maysat2}} \pflabel{[pair3]satormay2}
+          \item $\csatisfy{e_1}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[pair3]satormay1}} \pflabel{[pair3]sat-truify1}
+          \item $\csatisfy{e_2}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[pair3]satormay2}} \pflabel{[pair3]sat-truify2}
+          \item $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{\ruleref{rule:CSPair} on \pfref{[pair3]sat-truify1} and \pfref{[pair3]sat-truify2}}
           \end{pfsteps*}
         
         \end{byCases}
       \end{byCases}
     \restorelocalsteps{0}
     \item Necessity:
+    \begin{pfsteps*}
+    \item $\csatisfy{e}{\ctruify{\xi}}$ \BY{assumption} \pflabel{satisfy-truify}
+    \end{pfsteps*}
+    By structural induction on $\xi$.
+    \begin{byCases}
+
+      \savelocalsteps{1}
+      \item[\xi=\ctruth, \cfalsity, \cnum{n}, \cnotnum{n}]
+        \begin{pfsteps*}
+        \item $\xi=\ctruify{\xi}$ \BY{\autoref{defn:truify}}
+        \item $\csatisfyormay{e}{\xi}$ \BY{\ruleref{rule:CSMSSat} on \pfref{satisfy-truify}}
+        \end{pfsteps*}
+
+      \restorelocalsteps{1}
+      \item[\xi=\cunknown]
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{e}{\cunknown}$ \BY{\ruleref{rule:CMSUnknown}} \pflabel{[unknown]maysat}
+        \item $\csatisfyormay{e}{\cunknown}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[unknown]maysat}}
+        \end{pfsteps*}
+
+      \restorelocalsteps{1}
+      \item[\xi=\cand{\xi_1}{\xi_2}]
+        \begin{pfsteps*}
+        \item $\ctruify{\xi}=\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfy-truify}, only one case applies.
+        \begin{byCases}
+          \item[\text{(\ref{rule:CSAnd})}]
+            \begin{pfsteps*}
+            \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[and]satisfy-falsify1}
+            \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[and]satisfy-falsify2}
+            \item $\csatisfyormay{e}{\xi_1}$ \BY{IH on \pfref{[and]satisfy-falsify1}} \pflabel{[and]satisfy1}
+            \item $\csatisfyormay{e}{\xi_2}$ \BY{IH on \pfref{[and]satisfy-falsify2}} \pflabel{[and]satisfy2}
+            \item $\csatisfy{e}{\cand{\xi_1}{\xi_2}}$ \BY{\autoref{lem:satormay-and} on \pfref{[and]satisfy1} and \pfref{[and]satisfy2}}
+            \end{pfsteps*}
+        \end{byCases}
+
+      \restorelocalsteps{1}
+      \item[\xi = \cor{\xi_1}{\xi_2}]
+        \begin{pfsteps*}
+        \item $\ctruify{\xi}=\cor{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfy-truify} and only two cases apply.
+        \begin{byCases}
+
+          \savelocalsteps{2}
+          \item[\text{(\ref{rule:CSOr1})}]
+            \begin{pfsteps*}
+            \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[or]satisfy-falsify1}
+            \item $\csatisfyormay{e}{\xi_1}$ \BY{IH on \pfref{[or]satisfy-falsify1}} \pflabel{[or]satisfy1}
+            \item $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$ \BY{\autoref{lem:satormay-or} on \pfref{[or]satisfy1}}
+            \end{pfsteps*}
+
+          \restorelocalsteps{2}
+          \item[\text{(\ref{rule:CSOr2})}]
+            \begin{pfsteps*}
+            \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[or]satisfy-falsify2}
+            \item $\csatisfyormay{e}{\xi_2}$ \BY{IH on \pfref{[or]satisfy-falsify2}} \pflabel{[or]satisfy2}
+            \item $\csatisfyormay{e}{\cor{\xi_1}{\xi_2}}$ \BY{\autoref{lem:satormay-or} on \pfref{[or]satisfy2}}
+            \end{pfsteps*}
+        \end{byCases}
+      
+      \restorelocalsteps{1}
+      \item[\xi=\cinl{\xi_1}]
+        \begin{pfsteps*}
+        \item $\ctruify{\xi}=\cinl{\ctruify{\xi_1}}$ \BY{\autoref{defn:truify}}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfy-truify} and only one case applies.
+        \begin{byCases}
+          \item[\text{(\ref{rule:CSInl})}]
+            \begin{pfsteps*}
+            \item $e = \hinl{\tau_2}{e_1}$ \BY{assumption}
+            \item $\csatisfy{e_1}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[inl]satisfy-falsify1}
+            \item $\csatisfyormay{e_1}{\xi_1}$ \BY{IH on \pfref{[inl]satisfy-falsify1}} \pflabel{[inl]satisfy1}
+            \item $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$ \BY{\autoref{lem:satormay-inl} on \pfref{[inl]satisfy1}}
+            \end{pfsteps*} 
+        \end{byCases}
+
+      \restorelocalsteps{1}
+      \item[\xi=\cinr{\xi_2}]
+        \begin{pfsteps*}
+        \item $\ctruify{\xi}=\cinr{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfy-truify} and only one case applies.
+        \begin{byCases}
+          \item[\text{(\ref{rule:CSInr})}]
+            \begin{pfsteps*}
+            \item $e = \hinr{\tau_1}{e_2}$ \BY{assumption}
+            \item $\csatisfy{e_2}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[inr]satisfy-falsify2}
+            \item $\csatisfyormay{e_2}{\xi_2}$ \BY{IH on \pfref{[inr]satisfy-falsify2}} \pflabel{[inr]satisfy2}
+            \item $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$ \BY{\autoref{lem:satormay-inr} on \pfref{[inr]satisfy2}}
+            \end{pfsteps*} 
+        \end{byCases}
+      
+      \restorelocalsteps{1}
+      \item[\xi=\cpair{\xi_1}{\xi_2}]
+        \begin{pfsteps*}
+        \item $\ctruify{\xi}=\cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
+        \end{pfsteps*}
+        By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfy-truify} and only one case applies.
+        \begin{byCases}
+          \item[\text{(\ref{rule:CSPair})}]
+            \begin{pfsteps*}
+            \item $e=\hpair{e_1}{e_2}$ \BY{assumption}
+            \item $\csatisfy{e_1}{\cfalsify{\xi_1}}$ \BY{assumption} \pflabel{[pair]satisfy-falsify1}
+            \item $\csatisfy{e_2}{\cfalsify{\xi_2}}$ \BY{assumption} \pflabel{[pair]satisfy-falsify2}
+            \item $\csatisfyormay{e_1}{\xi_1}$ \BY{IH on \pfref{[pair]satisfy-falsify1}} \pflabel{[pair]satisfy1}
+            \item $\csatisfyormay{e_2}{\xi_2}$ \BY{IH on \pfref{[pair]satisfy-falsify2}} \pflabel{[pair]satisfy2}
+            \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair]satisfy1} and \pfref{[pair]satisfy2}}
+            \end{pfsteps*}
+        \end{byCases}
+    \end{byCases}
   \end{enumerate}
   \resetpfcounter
 \end{proof}
 
-\begin{lem}
+\begin{lemma}
   \label{lem:satisfy-falsify}
   $\csatisfy{e}{\xi}$ iff $\csatisfy{e}{\cfalsify{\xi}}$
-\end{lem}
+\end{lemma}
 \begin{proof}
   We prove sufficiency and necessity separately.
   \begin{enumerate}
@@ -1772,25 +1148,11 @@ $\arraycolsep=4pt\begin{array}{lll}
   \end{enumerate}
 \end{proof}
 
-\begin{thm}[Inconsistency and Redundancy]
-  \label{lem:inconsistency-and-redundancy}
-  $\cincon{\cand{\ctruify{\xi_r}}{\cdual{\cfalsify{\xi_{rs}}}}}$ iff $\csatisfy{\xi_r}{\xi_{rs}}$
-\end{thm}
-\begin{proof}
-  According to Lemma \ref{lem:satormay-truify}, $\csatisfyormay{e}{\xi_r}$
-\end{proof}
+\begin{lemma}
+  Assume $\isVal{e}$ and $\ctruify{\xi}=\xi$. Then $\cnotsatisfy{e}{\xi}$ iff $\csatisfy{e}{\cdual{\xi}}$.
+\end{lemma}
 
-\begin{thm}[Inconsistency and Exhaustiveness or Maybe Exhaustiveness]
-  \label{lem:inconsistency-and-exhaustiveness}
-  $\cincon{\cdual{\ctruify{\xi}}}$ iff $\csatisfyormay{\ctruth}{\xi}$
-\end{thm}
-
-\begin{thm}[Decidability of Redundancy]
-  \label{lem:redundancy-decidability}
-  It is decidable whether $\csatisfy{\xi_r}{\xi_{rs}}$, i.e., $\xi_r$ is redundant with respect to $\xi_{rs}$
-\end{thm}
-
-\begin{thm}[Decidability of Exhaustiveness or Maybe Exhaustiveness]
-  \label{lem:exhaustiveness-decidability}
-  It is decidable whether $\csatisfyormay{\ctruth}{\xi}$, i.e., $\xi$ is exhaustive or $\xi$ is possibly exhaustive
-\end{thm}
+\begin{theorem}
+\label{thrm:redundant-truify-falsify}
+  $\csatisfy{\xi_r}{\xi_{rs}}$ iff $\csatisfy{\ctruth}{\cor{\cdual{\ctruify{\xi_r}}}{\cfalsify{\xi_{rs}}}}$.
+\end{theorem}
