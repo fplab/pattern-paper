@@ -1,6 +1,69 @@
-\appendix
+\RequirePackage{etex}
+\documentclass{article}
+
+\usepackage[T1]{fontenc} % fix missing font cmtt
+\usepackage{amsmath}
+\usepackage{amssymb} % Vdash
+\usepackage{amsthm} % proof
+\usepackage{graphicx} % rotatebox
+\usepackage{stmaryrd} % llparenthesis
+\usepackage{anyfontsize} % workaround for font size difference warning
+\usepackage{todonotes}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{calc,fit,tikzmark,plotmarks,arrows.meta,positioning,overlay-beamer-styles}
+\usepackage[caption=false]{subfig}
+
+\usepackage{cancel} % slash over symbol
+\usepackage{hyperref}
+\renewcommand\UrlFont{\color{blue}\rmfamily}
+\let\figureautorefname\figurename
+\def\sectionautorefname{Sec.}
+\def\lemmaautorefname{Lemma}
+\def\definitionautorefname{Definition}
+\def\theoremautorefname{Theorem}
+\def\corollaryautorefname{Corollary}
+\let\subsectionautorefname\sectionautorefname
+\let\subsubsectionautorefname\sectionautorefname
+\newcommand{\rulesref}[1]{Rules (\ref{#1})}
+\newcommand{\ruleref}[1]{Rule (\ref{#1})}
+
+\usepackage{xcolor}
+\definecolor{hazelgreen}{RGB}{7,63,36}
+\definecolor{hazellightgreen}{RGB}{103,138,97}
+\definecolor{hazelyellow}{RGB}{245,222,179}
+\definecolor{hazellightyellow}{RGB}{254,254,234}
+
+\newcommand{\highlight}[1]{\colorbox{yellow}{$\displaystyle #1$}}
+
+%% Joshua Dunfield macros
+\def\OPTIONConf{1}
+\usepackage{jdunfield}
+\usepackage{pfsteps}
+\makeatletter
+\newcommand{\savelocalsteps}[1]{
+  \@ifundefined{c@#1}
+    {% the counter doesn't exist
+     \newcounter{#1}
+   }{}
+  \setcounter{#1}{\value{pfsteps@pfc@local}}
+}
+\makeatother
+\newcommand{\restorelocalsteps}[1]{\setcounter{pfsteps@pfc@local}{\value{#1}}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}{Lemma}[theorem]
+\newtheorem{definition}{Definition}[theorem]
+
+\input{../macros.tex}
+
+\begin{document}
+
 \input{esop/appendix/constraint}
 \input{esop/appendix/statics}
 \input{esop/appendix/dynamics}
 \input{esop/appendix/type-safety}
 \input{esop/appendix/decidability}
+
+\end{document}
