@@ -85,13 +85,13 @@ First, the judgment $\hpatmatch{e}{p}{\theta}$ denotes a successful match as wit
 \todo{recall how we saw how successful/failed matches contextualize within stepping judgment, note how indeterminate match appears in indet judgment}
 % \figurename~\ref{fig:patmatch} defines three judgments corresponding to the
 % three possible results of pattern matching. We consider a final scrutinee $e$
-% and a pattern $p$ that are of the same type (see \autoref{sec:statics}). \autoref{fig:notval} defines the judgment for expressions that cannot be values by simply looking at its form. Hence, when some final expression is of such form, they must be indeterminate. Besides, there is not need to recursively consider its inner expression during pattern matching.
+% and a pattern $p$ that are of the same type (see \autoref{sec:statics}). \autoref{fig:notintro} defines the judgment for expressions that cannot be values by simply looking at its form. Hence, when some final expression is of such form, they must be indeterminate. Besides, there is not need to recursively consider its inner expression during pattern matching.
 
 
 \todo{add paragraph opener here bridging to going into some detail regarding specifics of matching}
 
 \input{fig-refutable}
-\input{fig-notval}
+\input{fig-notintro}
 
 \todo{this paragraph below is floating content, needs to be worked into its surroundings}
 The judgment $\hpatmatch{e}{p}{\theta}$ denotes that $e$ matches $p$, as witnessed by
@@ -102,7 +102,7 @@ third possibility $\hmaymatch{e}{p}$ --- $e$ may match $p$, which is also the
 \todo{d: the concept itself should be emphasized (if at all), not the phrase ``key concept''}
 in pattern matching with holes. Rules \MMEHole and \MMHole
 specify that any final expression may match a pattern hole, regardless of
-whether it is empty or non-empty. On the other hand, Rule \MMNotVal specifies that
+whether it is empty or non-empty. On the other hand, Rule \MMNotIntro specifies that
 an indeterminate expression may match a pattern $p$ only when $p$ is refutable
 (see \figurename~\ref{fig:refutable}).
 It is because any final expressions

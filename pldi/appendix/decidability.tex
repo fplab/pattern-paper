@@ -114,26 +114,26 @@
       \end{pfsteps*}
       
   \restorelocalsteps{lem:maysat-satormay-truify-1}
-  \item[\text{(\ref{rule:CMSNotVal})}]
+  \item[\text{(\ref{rule:CMSNotIntro})}]
     \begin{pfsteps*}
-    \item $\isntVal{e}$ \BY{assumption} \pflabel{notval}
+    \item $\notIntro{e}$ \BY{assumption} \pflabel{notintro}
     \item $\refutable{\xi}$ \BY{assumption} \pflabel{rft}
     \end{pfsteps*}
-    By \autoref{lem:notval-refutable} on \pfref{notval} and \pfref{rft} and case analysis on its conclusion.
+    By \autoref{lem:notintro-refutable} on \pfref{notintro} and \pfref{rft} and case analysis on its conclusion.
     By rule induction over \rulesref{rules:xi-refutable}.
     \begin{byCases}
     \savelocalsteps{lem:maysat-satormay-truify-2}
     \item[\refutable{\ctruify{\xi}}]
       \begin{pfsteps*}
       \item $\refutable{\ctruify{\xi}}$ \BY{assumption} \pflabel{rft-truify}
-      \item $\cmaysatisfy{e}{\ctruify{\xi}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{notval} and \pfref{rft-truify}} \pflabel{[notval]maysat}
-      \item $\csatisfyormay{e}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[notval]maysat}}
+      \item $\cmaysatisfy{e}{\ctruify{\xi}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{notintro} and \pfref{rft-truify}} \pflabel{[notintro]maysat}
+      \item $\csatisfyormay{e}{\ctruify{\xi}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[notintro]maysat}}
       \end{pfsteps*}
     \restorelocalsteps{lem:maysat-satormay-truify-2}
     \item[\csatisfy{e}{\ctruify{\xi}}]
       \begin{pfsteps*}
-      \item $\csatisfy{e}{\ctruify{\xi}}$ \BY{assumption} \pflabel{[notval]satisfy}
-      \item $\csatisfyormay{e}{\ctruth}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[notval]satisfy}}
+      \item $\csatisfy{e}{\ctruify{\xi}}$ \BY{assumption} \pflabel{[notintro]satisfy}
+      \item $\csatisfyormay{e}{\ctruth}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[notintro]satisfy}}
       \end{pfsteps*}
     \end{byCases}
 
@@ -668,11 +668,11 @@ We prove sufficiency and necessity separately.
           \end{pfsteps*}
           
         \restorelocalsteps{2} 
-        \item[\text{(\ref{rule:CMSNotVal})}] 
+        \item[\text{(\ref{rule:CMSNotIntro})}] 
           \begin{pfsteps*}
-          \item $\isntVal{e}$ \BY{assumption} \pflabel{notval}
+          \item $\notIntro{e}$ \BY{assumption} \pflabel{notintro}
           \end{pfsteps*}
-          By rule induction over \rulesref{rules:notval} on \pfref{notval}, for each case,
+          By rule induction over \rulesref{rules:notintro} on \pfref{notintro}, for each case,
           by rule induction over Rules (\ref{rules:Value}) on \pfref{val}, no case applies due to syntactic contradiction.
           
         \restorelocalsteps{2} 

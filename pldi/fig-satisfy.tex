@@ -65,8 +65,8 @@
 \csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
 }
 
-\Infer{\CSNotValPair}{
-  \isntVal{e} \\
+\Infer{\CSNotIntroPair}{
+  \notIntro{e} \\
   \csatisfy{\hprl{e}}{\xi_1} \\
   \csatisfy{\hprr{e}}{\xi_2}
 }{
@@ -81,8 +81,8 @@
   \cmaysatisfy{e}{\cunknown}
 }
 
-\Infer{\CMSNotVal}{
-  \isntVal{e} \\
+\Infer{\CMSNotIntro}{
+  \notIntro{e} \\
   \refutable{\xi}
 }{
   \cmaysatisfy{e}{\xi}

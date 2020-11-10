@@ -263,9 +263,9 @@ $\arraycolsep=4pt\begin{array}{lll}
 \csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
 }
 \end{equation}
-\begin{equation}\label{rule:CSNotValPair}
-\inferrule[CSNotValPair]{
-  \isntVal{e} \\
+\begin{equation}\label{rule:CSNotIntroPair}
+\inferrule[CSNotIntroPair]{
+  \notIntro{e} \\
   \csatisfy{\hprl{e}}{\xi_1} \\
   \csatisfy{\hprr{e}}{\xi_2}
 }{
@@ -312,9 +312,9 @@ $\arraycolsep=4pt\begin{array}{lll}
   \cmaysatisfy{e}{\cunknown}
 }
 \end{equation}
-\begin{equation}\label{rule:CMSNotVal}
-\inferrule[CMSNotVal]{
-  \isntVal{e} \\
+\begin{equation}\label{rule:CMSNotIntro}
+\inferrule[CMSNotIntro]{
+  \notIntro{e} \\
   \refutable{\xi}
 }{
   \cmaysatisfy{e}{\xi}
@@ -442,7 +442,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   Assume $\cmaysatisfy{e}{\cfalsity}$.
   By rule induction over Rules (\ref{rules:MaySatisfy}) on $\cmaysatisfy{e}{\cfalsity}$, only one case applies.
   \begin{byCases}
-  \item[\text{(\ref{rule:CMSNotVal})}]
+  \item[\text{(\ref{rule:CMSNotIntro})}]
     \begin{pfsteps*}
     \item $\refutable{\cfalsity}$ \BY{assumption} \pflabel{refutable}
     \end{pfsteps*}
@@ -460,7 +460,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   Assume $\cmaysatisfy{e}{\ctruth}$.
   By rule induction over Rules (\ref{rules:MaySatisfy}) on $\cmaysatisfy{e}{\ctruth}$, only one case applies.
   \begin{byCases}
-  \item[\text{(\ref{rule:CMSNotVal})}]
+  \item[\text{(\ref{rule:CMSNotIntro})}]
     \begin{pfsteps*}
     \item $\refutable{\ctruth}$ \BY{assumption} \pflabel{refutable}
     \end{pfsteps*}
@@ -926,8 +926,8 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
 \end{lemma}
 
 \begin{lemma}
-\label{lem:notval-refutable}
-If $\isntVal{e}$ and $\refutable{\xi}$ then either $\refutable{\ctruify{\xi}}$ or $\csatisfy{e}{\ctruify{\xi}}$.
+\label{lem:notintro-refutable}
+If $\notIntro{e}$ and $\refutable{\xi}$ then either $\refutable{\ctruify{\xi}}$ or $\csatisfy{e}{\ctruify{\xi}}$.
 \end{lemma}
 \begin{proof}
   By structural induction on $\xi$.
@@ -951,11 +951,11 @@ By rule induction over Rules (\ref{rules:xi-refutable}), we notice that $\refuta
 
 \begin{lemma}
 \label{lem:satisfy-not-refutable}
-If $\isntVal{e}$ and $\csatisfy{e}{\xi}$ then $\cancel{\refutable{\xi}}$.
+If $\notIntro{e}$ and $\csatisfy{e}{\xi}$ then $\cancel{\refutable{\xi}}$.
 \end{lemma}
 \begin{proof}
 \begin{pfsteps*}
-\item $\isntVal{e}$ \BY{assumption} \pflabel{e-notval}
+\item $\notIntro{e}$ \BY{assumption} \pflabel{e-notintro}
 \item $\csatisfy{e}{\xi}$ \BY{assumption} \pflabel{satisfy}
 \end{pfsteps*}
 By rule induction over \rulesref{rules:Satisfy} on \pfref{satisfy}.
@@ -980,15 +980,15 @@ By rule induction over \rulesref{rules:Satisfy} on \pfref{satisfy}.
     \item $\cancel{\refutable{\cand{\xi_1}{\xi_2}}}$ \BY{\autoref{lem:no-and-refutable}}
     \end{pfsteps*}
 \restorelocalsteps{0}
-\item[\text{(\ref{rule:CSNotValPair})}]
+\item[\text{(\ref{rule:CSNotIntroPair})}]
     \begin{pfsteps*}
     \item $\xi=\cpair{\xi_1}{\xi_2}$ \BY{assumption}
     \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{assumption} \pflabel{prl-satisfy}
     \item $\csatisfy{\hprr{e}}{\xi_2}$ \BY{assumption} \pflabel{prr-satisfy}
-    \item $\isntVal{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{prl-notval}
-    \item $\isntVal{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{prr-notval}
-    \item $\cancel{\refutable{\xi_1}}$ \BY{IH on \pfref{prl-notval} and \pfref{prl-satisfy}} \pflabel{not-rft1}
-    \item $\cancel{\refutable{\xi_2}}$ \BY{IH on \pfref{prr-notval} and \pfref{prr-satisfy}} \pflabel{not-rft2}
+    \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{prl-notintro}
+    \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{prr-notintro}
+    \item $\cancel{\refutable{\xi_1}}$ \BY{IH on \pfref{prl-notintro} and \pfref{prl-satisfy}} \pflabel{not-rft1}
+    \item $\cancel{\refutable{\xi_2}}$ \BY{IH on \pfref{prr-notintro} and \pfref{prr-satisfy}} \pflabel{not-rft2}
     \end{pfsteps*}
     Assume $\refutable{\cpair{\xi_1}{\xi_2}}$. By rule induction over \rulesref{rules:xi-refutable} on it, only two cases apply.
     \begin{byCases}
@@ -1011,7 +1011,7 @@ By rule induction over \rulesref{rules:Satisfy} on \pfref{satisfy}.
     \begin{pfsteps*}
     \item $e=\hnum{n},\hinl{\tau_2}{e_1},\hinr{\tau_1}{e_2},\hpair{e_1}{e_2}$ \BY{assumption}
     \end{pfsteps*}
-    By rule induction over \rulesref{rules:notval} on \pfref{e-notval}, no case applies due to syntactic contradiction.
+    By rule induction over \rulesref{rules:notintro} on \pfref{e-notintro}, no case applies due to syntactic contradiction.
 \end{byCases}
 \resetpfcounter
 \end{proof}
@@ -1116,21 +1116,21 @@ By rule induction over \rulesref{rules:Satisfy} on \pfref{satisfy}.
         \end{pfsteps*}
       
       \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\text{(\ref{rule:CSNotValPair})}]
+      \item[\text{(\ref{rule:CSNotIntroPair})}]
         \begin{pfsteps*}
         \item $\xi = \cpair{\xi_1}{\xi_2}$ \BY{assumption}
-        \item $\isntVal{e}$ \BY{assumption} \pflabel{[notval]notval}
-        \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{assumption} \pflabel{[notval]csatisfy1}
-        \item $\csatisfy{\hprr{e}}{\xi_2}$ \BY{assumption} \pflabel{[notval]csatisfy2}
-        \item $\fsatisfy{\hprl{e}}{\xi_1} = \true$ \BY{IH on \pfref{[notval]csatisfy1}} \pflabel{[notval]fsatisfy1}
-        \item $\fsatisfy{\hprr{e}}{\xi_2} = \true$ \BY{IH on \pfref{[notval]csatisfy2}} \pflabel{[notval]fsatisfy2}
+        \item $\notIntro{e}$ \BY{assumption} \pflabel{[notintro]notintro}
+        \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{assumption} \pflabel{[notintro]csatisfy1}
+        \item $\csatisfy{\hprr{e}}{\xi_2}$ \BY{assumption} \pflabel{[notintro]csatisfy2}
+        \item $\fsatisfy{\hprl{e}}{\xi_1} = \true$ \BY{IH on \pfref{[notintro]csatisfy1}} \pflabel{[notintro]fsatisfy1}
+        \item $\fsatisfy{\hprr{e}}{\xi_2} = \true$ \BY{IH on \pfref{[notintro]csatisfy2}} \pflabel{[notintro]fsatisfy2}
         \end{pfsteps*}
-        By rule induction over \rulesref{rules:notval} on \pfref{[notval]notval}.
+        By rule induction over \rulesref{rules:notintro} on \pfref{[notintro]notintro}.
         \begin{byCases}
         \item
           \begin{pfsteps*}
           \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-          \item $\fsatisfy{e}{\cpair{\xi_1}{\xi_2}} = \fsatisfy{\hprl{e}}{\xi_1} \text{ and } \fsatisfy{\hprr{e}}{\xi_2} = \true$ \BY{Definition \ref{defn:satisfy} on \pfref{[notval]fsatisfy1} and \pfref{[notval]fsatisfy2}}
+          \item $\fsatisfy{e}{\cpair{\xi_1}{\xi_2}} = \fsatisfy{\hprl{e}}{\xi_1} \text{ and } \fsatisfy{\hprr{e}}{\xi_2} = \true$ \BY{Definition \ref{defn:satisfy} on \pfref{[notintro]fsatisfy1} and \pfref{[notintro]fsatisfy2}}
           \end{pfsteps*}
         \end{byCases}
       \end{byCases}
@@ -1292,12 +1292,12 @@ By rule induction over \rulesref{rules:Satisfy} on \pfref{satisfy}.
           \restorelocalsteps{lem:sound-complete-satisfy-2}
           \item[e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}]
             \begin{pfsteps*}
-            \item $\fsatisfy{\hprl{e}}{\xi_1} = \true$ \BY{Definition \ref{defn:pair-satisfy-pair} on \pfref{fsatisfy}} \pflabel{[notval]fsatisfy1}
-            \item $\fsatisfy{\hprr{e}}{\xi_2} = \true$ \BY{Definition \ref{defn:pair-satisfy-pair} on \pfref{fsatisfy}} \pflabel{[notval]fsatisfy2}
-            \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{IH on \pfref{[notval]fsatisfy1}} \pflabel{[notval]csatisfy1}
-            \item $\csatisfy{\hprr{e}}{\xi_2}$ \BY{IH on \pfref{[notval]fsatisfy2}} \pflabel{[notval]csatisfy2}
-            \item $\isntVal{e}$ \BY{each rule in \rulesref{rules:notval}} \pflabel{[notval]notval}
-            \item $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ \BY{Rule (\ref{rule:CSNotValPair}) on \pfref{[notval]notval} and \pfref{[notval]csatisfy1} and \pfref{[notval]csatisfy2}}
+            \item $\fsatisfy{\hprl{e}}{\xi_1} = \true$ \BY{Definition \ref{defn:pair-satisfy-pair} on \pfref{fsatisfy}} \pflabel{[notintro]fsatisfy1}
+            \item $\fsatisfy{\hprr{e}}{\xi_2} = \true$ \BY{Definition \ref{defn:pair-satisfy-pair} on \pfref{fsatisfy}} \pflabel{[notintro]fsatisfy2}
+            \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{IH on \pfref{[notintro]fsatisfy1}} \pflabel{[notintro]csatisfy1}
+            \item $\csatisfy{\hprr{e}}{\xi_2}$ \BY{IH on \pfref{[notintro]fsatisfy2}} \pflabel{[notintro]csatisfy2}
+            \item $\notIntro{e}$ \BY{each rule in \rulesref{rules:notintro}} \pflabel{[notintro]notintro}
+            \item $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$ \BY{Rule (\ref{rule:CSNotIntroPair}) on \pfref{[notintro]notintro} and \pfref{[notintro]csatisfy1} and \pfref{[notintro]csatisfy2}}
             \end{pfsteps*}
           \restorelocalsteps{lem:sound-complete-satisfy-2}
           \item
@@ -1414,13 +1414,13 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
     \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
         \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\isntVal{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[num]notval}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[num]notintro}
         \end{pfsteps*}
         Assume $\csatisfy{e}{\cnum{n_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, no case applies due to syntactic contradiction on $\xi$.\\
         \begin{pfsteps*}
         \item $\cnotsatisfy{e}{\cnum{n_2}}$ \BY{contradiction}
         \item $\refutable{\cnum{n_2}}$ \BY{\ruleref{rule:RXNum}} \pflabel{[num]rft}
-        \item $\cmaysatisfy{e}{\cnum{n_2}}$ \BY{Rule (\ref{rule:CMSNotVal}) on \pfref{[num]notval} and \pfref{[num]rft}} \pflabel{[num]maysat}
+        \item $\cmaysatisfy{e}{\cnum{n_2}}$ \BY{Rule (\ref{rule:CMSNotIntro}) on \pfref{[num]notintro} and \pfref{[num]rft}} \pflabel{[num]maysat}
         \item $\csatisfyormay{e}{\cnum{n_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[num]maysat}} 
         \end{pfsteps*}
     \restorelocalsteps{1}
@@ -1430,11 +1430,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         \end{pfsteps*}
         Assume $\cmaysatisfy{\hnum{n_1}}{\cnum{n_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}), only one case applies.
         \begin{byCases}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
-            \item $\isntVal{\hnum{n_1}}$ \BY{assumption}
+            \item $\notIntro{\hnum{n_1}}$ \BY{assumption}
             \end{pfsteps*}
-            Contradicts \autoref{lem:no-num-notval}.
+            Contradicts \autoref{lem:no-num-notintro}.
         \end{byCases}
         \begin{pfsteps*}
         \item $\cnotmaysatisfy{\hnum{n_1}}{\cnum{n_2}}$ \BY{contradiction} \pflabel{[num]num-notmaysat}
@@ -1470,13 +1470,13 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
     \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
         \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-         \item $\isntVal{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[notnum]notval}
+         \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[notnum]notintro}
         \end{pfsteps*}
         Assume $\csatisfy{e}{\cnotnum{n_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, no case applies due to syntactic contradiction on $\xi$.
         \begin{pfsteps*}
         \item $\cnotsatisfy{e}{\cnotnum{n_2}}$ \BY{contradiction}
         \item $\refutable{\cnotnum{n_2}}$ \BY{\ruleref{rule:RXNotNum}} \pflabel{[notnum]rft}
-        \item $\cmaysatisfy{e}{\cnum{n_2}}$ \BY{Rule (\ref{rule:CMSNotVal}) on \pfref{[notnum]notval} and \pfref{[notnum]rft}} \pflabel{[notnum]maysat}
+        \item $\cmaysatisfy{e}{\cnum{n_2}}$ \BY{Rule (\ref{rule:CMSNotIntro}) on \pfref{[notnum]notintro} and \pfref{[notnum]rft}} \pflabel{[notnum]maysat}
         \item $\csatisfyormay{e}{\cnum{n_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[notnum]maysat}} 
         \end{pfsteps*}
     \restorelocalsteps{1}
@@ -1486,11 +1486,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         \end{pfsteps*}
         Assume $\cmaysatisfy{\hnum{n_1}}{\cnotnum{n_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}), only one case applies.
         \begin{byCases}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
-            \item $\isntVal{\hnum{n_1}}$ \BY{assumption}
+            \item $\notIntro{\hnum{n_1}}$ \BY{assumption}
             \end{pfsteps*}
-            Contradicts \autoref{lem:no-num-notval}.
+            Contradicts \autoref{lem:no-num-notintro}.
         \end{byCases}
         \begin{pfsteps*}
         \item $\cnotmaysatisfy{\hnum{n_1}}{\cnotnum{n_2}}$ \BY{contradiction} \pflabel{[notnum]num-notmaysat}
@@ -1535,7 +1535,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         Assume $\cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
         \begin{byCases}
         \savelocalsteps{2}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
             \item $\refutable{\cand{\xi_1}{\xi_2}}$ \BY{assumption}
             \end{pfsteps*}
@@ -1604,7 +1604,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         Assume $\cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
         \begin{byCases}
         \savelocalsteps{2}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
             \item $\refutable{\cand{\xi_1}{\xi_2}}$ \BY{assumption}
             \end{pfsteps*}
@@ -1698,7 +1698,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         Assume $\cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
         \begin{byCases}
         \savelocalsteps{2}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
             \item $\refutable{\cand{\xi_1}{\xi_2}}$ \BY{assumption}
             \end{pfsteps*}
@@ -1748,7 +1748,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         Assume $\cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
         \begin{byCases}
         \savelocalsteps{2}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
             \item $\refutable{\cand{\xi_1}{\xi_2}}$ \BY{assumption}
             \end{pfsteps*}
@@ -1798,7 +1798,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         Assume $\cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
         \begin{byCases}
         \savelocalsteps{2}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
             \item $\refutable{\cand{\xi_1}{\xi_2}}$ \BY{assumption}
             \end{pfsteps*}
@@ -1848,7 +1848,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         Assume $\cmaysatisfy{e}{\cand{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
         \begin{byCases}
         \savelocalsteps{2}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
             \item $\refutable{\cand{\xi_1}{\xi_2}}$ \BY{assumption}
             \end{pfsteps*}
@@ -1898,7 +1898,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         Assume $\cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
         \begin{byCases}
         \savelocalsteps{2}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
             \item $\refutable{\cor{\xi_1}{\xi_2}}$ \BY{assumption}
             \end{pfsteps*}
@@ -1933,7 +1933,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         Assume $\cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
         \begin{byCases}
         \savelocalsteps{2}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
             \item $\refutable{\cor{\xi_1}{\xi_2}}$ \BY{assumption}
             \end{pfsteps*}
@@ -1967,7 +1967,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         Assume $\cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
         \begin{byCases}
         \savelocalsteps{2}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
             \item $\refutable{\cor{\xi_1}{\xi_2}}$ \BY{assumption}
             \end{pfsteps*}
@@ -2001,7 +2001,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         Assume $\cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
         \begin{byCases}
         \savelocalsteps{2}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
             \item $\refutable{\cor{\xi_1}{\xi_2}}$ \BY{assumption}
             \end{pfsteps*}
@@ -2092,7 +2092,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         Assume $\cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
         \begin{byCases}
         \savelocalsteps{2}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
             \item $\refutable{\cor{\xi_1}{\xi_2}}$ \BY{assumption}
             \end{pfsteps*}
@@ -2171,7 +2171,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         Assume $\cmaysatisfy{e}{\cor{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
         \begin{byCases}
         \savelocalsteps{2}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
             \item $\refutable{\cor{\xi_1}{\xi_2}}$ \BY{assumption}
             \end{pfsteps*}
@@ -2209,7 +2209,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
     \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
         \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\isntVal{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[inl]notval}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[inl]notintro}
         \end{pfsteps*}
         Assume $\csatisfy{e}{\cinl{\xi_1}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, no case applies due to syntactic contradiction.
         \begin{pfsteps*}
@@ -2222,7 +2222,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \begin{pfsteps*}
             \item $\frefutable{\cinl{\xi_1}}=\true$ \BY{assumption} \pflabel{[inl]frft-true}
             \item $\refutable{\cinl{\xi_1}}$ \BY{\autoref{lem:sound-complete-xi-refutable} on \pfref{[inl]frft-true}} \pflabel{[inl]rft-true}
-            \item $\cmaysatisfy{e}{\cinl{\xi_1}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[inl]notval} and \pfref{[inl]rft-true}} \pflabel{[inl]maysat}
+            \item $\cmaysatisfy{e}{\cinl{\xi_1}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[inl]notintro} and \pfref{[inl]rft-true}} \pflabel{[inl]maysat}
             \item $\csatisfyormay{e}{\cinl{\xi_1}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[inl]maysat}}
             \end{pfsteps*}
         \restorelocalsteps{2}
@@ -2233,7 +2233,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             Assume $\cmaysatisfy{e}{\cinl{\xi_1}}$. By rule induction over \rulesref{rules:MaySatisfy} on it, only one case applies.
             \begin{byCases}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
                 \item $\refutable{\cinl{\xi_1}}$ \BY{assumption}
                 \end{pfsteps*}
@@ -2264,11 +2264,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\cmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, only two cases apply.
             \begin{byCases}
             \savelocalsteps{3}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{[inl1]notval-inl}
+                \item $\notIntro{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{[inl1]notintro-inl}
                 \end{pfsteps*}
-                By rule induction over Rules (\ref{rules:notval}) on \pfref{[inl1]notval-inl}, no case applies due to syntactic contradiction.
+                By rule induction over Rules (\ref{rules:notintro}) on \pfref{[inl1]notintro-inl}, no case applies due to syntactic contradiction.
             \restorelocalsteps{3}
             \item[\text{(\ref{rule:CMSInl})}]
                 \begin{pfsteps*}
@@ -2320,11 +2320,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\cmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\xi_1}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, only one case applies.
             \begin{byCases}
             \savelocalsteps{3}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{[inl3]notval-inl}
+                \item $\notIntro{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{[inl3]notintro-inl}
                 \end{pfsteps*}
-                By rule induction over Rules (\ref{rules:notval}) on \pfref{[inl3]notval-inl}, no case applies due to syntactic contradiction.
+                By rule induction over Rules (\ref{rules:notintro}) on \pfref{[inl3]notintro-inl}, no case applies due to syntactic contradiction.
             \restorelocalsteps{3}
             \item[\text{(\ref{rule:CMSInl})}]
                 \begin{pfsteps*}
@@ -2348,11 +2348,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         \end{pfsteps*}
         Assume $\cmaysatisfy{\hinr{\tau_1}{e_2}}{\cinl{\xi_1}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, only one case applies.
         \begin{byCases}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
-            \item $\isntVal{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{[inl]notval-inr}
+            \item $\notIntro{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{[inl]notintro-inr}
             \end{pfsteps*}
-            By rule induction over Rules (\ref{rules:notval}) on \pfref{[inl]notval-inr}, no case applies due to syntactic contradiction.
+            By rule induction over Rules (\ref{rules:notintro}) on \pfref{[inl]notintro-inr}, no case applies due to syntactic contradiction.
         \end{byCases}
         \begin{pfsteps*}
         \item $\cnotmaysatisfy{\hinr{\tau_1}{e_2}}{\cinl{\xi_1}}$ \BY{contradiction} \pflabel{[inl]notmaysat-conf}
@@ -2372,7 +2372,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
     \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
         \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\isntVal{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[inr]notval}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[inr]notintro}
         \end{pfsteps*}
         Assume $\csatisfy{e}{\cinr{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, no case applies due to syntactic contradiction.
         \begin{pfsteps*}
@@ -2385,7 +2385,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \begin{pfsteps*}
             \item $\frefutable{\cinr{\xi_2}}=\true$ \BY{assumption} \pflabel{[inr]frft-true}
             \item $\refutable{\cinr{\xi_2}}$ \BY{\autoref{lem:sound-complete-xi-refutable} on \pfref{[inr]frft-true}} \pflabel{[inr]rft-true}
-            \item $\cmaysatisfy{e}{\cinr{\xi_2}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[inr]notval} and \pfref{[inr]rft-true}} \pflabel{[inr]maysat}
+            \item $\cmaysatisfy{e}{\cinr{\xi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[inr]notintro} and \pfref{[inr]rft-true}} \pflabel{[inr]maysat}
             \item $\csatisfyormay{e}{\cinr{\xi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[inr]maysat}}
             \end{pfsteps*}
         \restorelocalsteps{2}
@@ -2396,7 +2396,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             Assume $\cmaysatisfy{e}{\cinr{\xi_2}}$. By rule induction over \rulesref{rules:MaySatisfy} on it, only one case applies.
             \begin{byCases}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
                 \item $\refutable{\cinr{\xi_2}}$ \BY{assumption}
                 \end{pfsteps*}
@@ -2418,11 +2418,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         \end{pfsteps*}
         Assume $\cmaysatisfy{\hinl{\tau_2}{e_1}}{\cinr{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, only one case applies.
         \begin{byCases}
-        \item[\text{(\ref{rule:CMSNotVal})}]
+        \item[\text{(\ref{rule:CMSNotIntro})}]
             \begin{pfsteps*}
-            \item $\isntVal{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{[inr]notval-inl}
+            \item $\notIntro{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{[inr]notintro-inl}
             \end{pfsteps*}
-            By rule induction over Rules (\ref{rules:notval}) on \pfref{[inr]notval-inl}, no case applies due to syntactic contradiction.
+            By rule induction over Rules (\ref{rules:notintro}) on \pfref{[inr]notintro-inl}, no case applies due to syntactic contradiction.
         \end{byCases}
         \begin{pfsteps*}
         \item $\cnotmaysatisfy{\hinl{\tau_2}{e_1}}{\cinr{\xi_2}}$ \BY{contradiction} \pflabel{[inr]notmaysat-conf}
@@ -2449,11 +2449,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\cmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, only two cases apply.
             \begin{byCases}
             \savelocalsteps{3}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{[inr1]notval-inr}
+                \item $\notIntro{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{[inr1]notintro-inr}
                 \end{pfsteps*}
-                By rule induction over Rules (\ref{rules:notval}) on \pfref{[inr1]notval-inr}, no case applies due to syntactic contradiction.
+                By rule induction over Rules (\ref{rules:notintro}) on \pfref{[inr1]notintro-inr}, no case applies due to syntactic contradiction.
             \restorelocalsteps{3}
             \item[\text{(\ref{rule:CMSInr})}]
                 \begin{pfsteps*}
@@ -2503,11 +2503,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\cmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, only one case applies.
             \begin{byCases}
             \savelocalsteps{3}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{[inr3]notval-inr}
+                \item $\notIntro{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{[inr3]notintro-inr}
                 \end{pfsteps*}
-                By rule induction over Rules (\ref{rules:notval}) on \pfref{[inr3]notval-inr}, no case applies due to syntactic contradiction.
+                By rule induction over Rules (\ref{rules:notintro}) on \pfref{[inr3]notintro-inr}, no case applies due to syntactic contradiction.
             \restorelocalsteps{3}
             \item[\text{(\ref{rule:CMSInr})}]
                 \begin{pfsteps*}
@@ -2536,8 +2536,8 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
     \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
         \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\isntVal{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[pair]notval}
-        \item $\isIndet{e}$ \BY{\autoref{lem:final-notval-indet} on \pfref{eFinal} and \pfref{[pair]notval}} \pflabel{[pair]indet}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[pair]notintro}
+        \item $\isIndet{e}$ \BY{\autoref{lem:final-notintro-indet} on \pfref{eFinal} and \pfref{[pair]notintro}} \pflabel{[pair]indet}
         \item $\isIndet{\hprl{e}}$ \BY{Rule (\ref{rule:IPrl}) on \pfref{[pair]indet}} \pflabel{[pair]prl-indet}
         \item $\isFinal{\hprl{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[pair]prl-indet}} \pflabel{[pair]prl-final}
         \item $\isIndet{\hprr{e}}$ \BY{Rule (\ref{rule:IPrr}) on \pfref{[pair]indet}} \pflabel{[pair]prr-indet}
@@ -2556,13 +2556,13 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \item $\cnotmaysatisfy{\hprl{e}}{\xi_1}$ \BY{assumption} \pflabel{[pair1]notmaysat1}
             \item $\csatisfy{\hprr{e}}{\xi_2}$ \BY{assumption} \pflabel{[pair1]satisfy2}
             \item $\cnotmaysatisfy{\hprr{e}}{\xi_2}$ \BY{assumption} \pflabel{[pair1]notmaysat2}
-            \item $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{Rule (\ref{rule:CSNotValPair}) on \pfref{[pair]notval} and \pfref{[pair1]satisfy1} and \pfref{[pair1]satisfy2}} \pflabel{[pair1]satisfy-pair}
+            \item $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{Rule (\ref{rule:CSNotIntroPair}) on \pfref{[pair]notintro} and \pfref{[pair1]satisfy1} and \pfref{[pair1]satisfy2}} \pflabel{[pair1]satisfy-pair}
             \item $\csatisfyormay{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CSMSSat} on \pfref{[pair1]satisfy-pair}}
-            \item $\cancel{\refutable{\cpair{\xi_1}{\xi_2}}}$ \BY{\autoref{lem:satisfy-not-refutable} on \pfref{[pair]notval} and \pfref{[pair1]satisfy-pair}} \pflabel{[pair1]not-rft-pair}
+            \item $\cancel{\refutable{\cpair{\xi_1}{\xi_2}}}$ \BY{\autoref{lem:satisfy-not-refutable} on \pfref{[pair]notintro} and \pfref{[pair1]satisfy-pair}} \pflabel{[pair1]not-rft-pair}
             \end{pfsteps*}
             Assume $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, only one case applies.
             \begin{byCases}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
                 \item $\refutable{\cpair{\xi_1}{\xi_2}}$ \BY{assumption}
                 \end{pfsteps*}
@@ -2582,7 +2582,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             Assume $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}), only one case applies.
             \begin{byCases}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
                 \item $\csatisfy{\hprr{e}}{\xi_2}$ \BY{assumption}
                 \end{pfsteps*}
@@ -2593,11 +2593,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{[pair2]maysat2}, only one case applies. \todo{assume no "or" and "and" in pair}
             \begin{byCases}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
                 \item $\refutable{\xi_2}$ \BY{assumption} \pflabel{[pair2]rft2}
                 \item $\refutable{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:RXPairR} on \pfref{[pair2]rft2}} \pflabel{[pair2]rft-pair}
-                \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[pair]notval} and \pfref{[pair2]rft-pair}} \pflabel{[pair2]maysat-pair}
+                \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair2]rft-pair}} \pflabel{[pair2]maysat-pair}
                 \item $\csatisfyormay{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair2]maysat-pair}}
                 \end{pfsteps*}
             \end{byCases}
@@ -2612,7 +2612,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             Assume $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, only one case applies.
             \begin{byCases}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
                 \item $\csatisfy{\hprr{e}}{\xi_2}$ \BY{assumption}
                 \end{pfsteps*}
@@ -2623,7 +2623,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             Assume $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, only one case applies.
             \begin{byCases}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
                 \item $\refutable{\cpair{\xi_1}{\xi_2}}$ \BY{assumption} \pflabel{[pair3]rft-pair}
                 \end{pfsteps*}
@@ -2633,16 +2633,16 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
                 \item[\text{(\ref{rule:RXPairL})}]
                     \begin{pfsteps*}
                     \item $\refutable{\xi_1}$ \BY{assumption} \pflabel{[pair3]rft1}
-                    \item $\isntVal{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[pair3]prl-notval}
-                    \item $\cmaysatisfy{\hprl{e}}{\xi_1}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[pair3]prl-notval} and \pfref{[pair3]rft1}}
+                    \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[pair3]prl-notintro}
+                    \item $\cmaysatisfy{\hprl{e}}{\xi_1}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair3]prl-notintro} and \pfref{[pair3]rft1}}
                     \end{pfsteps*}
                     Contradicts \pfref{[pair3]notmaysat1}.
                 \restorelocalsteps{2}
                 \item[\text{(\ref{rule:RXPairR})}]
                     \begin{pfsteps*}
                     \item $\refutable{\xi_2}$ \BY{assumption} \pflabel{[pair3]rft2}
-                    \item $\isntVal{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[pair3]prr-notval}
-                    \item $\cmaysatisfy{\hprr{e}}{\xi_2}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[pair3]prr-notval} and \pfref{[pair3]rft2}}
+                    \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[pair3]prr-notintro}
+                    \item $\cmaysatisfy{\hprr{e}}{\xi_2}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair3]prr-notintro} and \pfref{[pair3]rft2}}
                     \end{pfsteps*}
                     Contradicts \pfref{[pair3]notmaysat2}.
                 \end{byCases}
@@ -2662,7 +2662,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             Assume $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}), only one case applies.
             \begin{byCases}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
                 \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{assumption}
                 \end{pfsteps*}
@@ -2673,11 +2673,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{[pair4]maysat1}, only one case applies. \todo{assume no "or" and "and" in pair}
             \begin{byCases}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
                 \item $\refutable{\xi_1}$ \BY{assumption} \pflabel{[pair4]rft1}
                 \item $\refutable{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:RXPairR} on \pfref{[pair4]rft1}} \pflabel{[pair4]rft-pair}
-                \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[pair]notval} and \pfref{[pair4]rft-pair}} \pflabel{[pair4]maysat-pair}
+                \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair4]rft-pair}} \pflabel{[pair4]maysat-pair}
                 \item $\csatisfyormay{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair4]maysat-pair}}
                 \end{pfsteps*}
             \end{byCases}
@@ -2692,7 +2692,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             Assume $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}), only one case applies.
             \begin{byCases}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
                 \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{assumption}
                 \end{pfsteps*}
@@ -2703,11 +2703,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{[pair5]maysat2}, only one case applies. \todo{assume no "or" and "and" in pair}
             \begin{byCases}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
                 \item $\refutable{\xi_2}$ \BY{assumption} \pflabel{[pair5]rft2}
                 \item $\refutable{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:RXPairR} on \pfref{[pair5]rft2}} \pflabel{[pair5]rft-pair}
-                \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[pair]notval} and \pfref{[pair5]rft-pair}} \pflabel{[pair5]maysat-pair}
+                \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair5]rft-pair}} \pflabel{[pair5]maysat-pair}
                 \item $\csatisfyormay{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair5]maysat-pair}}
                 \end{pfsteps*}
             \end{byCases}
@@ -2721,7 +2721,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             Assume $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}), only one case applies.
             \begin{byCases}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
                 \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{assumption}
                 \end{pfsteps*}
@@ -2732,11 +2732,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{[pair6]maysat1}, only one case applies. \todo{assume no "or" and "and" in pair}
             \begin{byCases}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
                 \item $\refutable{\xi_1}$ \BY{assumption} \pflabel{[pair6]rft1}
                 \item $\refutable{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:RXPairR} on \pfref{[pair6]rft1}} \pflabel{[pair6]rft-pair}
-                \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[pair]notval} and \pfref{[pair6]rft-pair}} \pflabel{[pair6]maysat-pair}
+                \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair6]rft-pair}} \pflabel{[pair6]maysat-pair}
                 \item $\csatisfyormay{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair6]maysat-pair}}
                 \end{pfsteps*}
             \end{byCases}
@@ -2750,7 +2750,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             Assume $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, only one case applies.
             \begin{byCases}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
                 \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{assumption}
                 \end{pfsteps*}
@@ -2761,7 +2761,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             Assume $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, only one case applies.
             \begin{byCases}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
                 \item $\refutable{\cpair{\xi_1}{\xi_2}}$ \BY{assumption} \pflabel{[pair7]rft-pair}
                 \end{pfsteps*}
@@ -2771,16 +2771,16 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
                 \item[\text{(\ref{rule:RXPairL})}]
                     \begin{pfsteps*}
                     \item $\refutable{\xi_1}$ \BY{assumption} \pflabel{[pair7]rft1}
-                    \item $\isntVal{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[pair7]prl-notval}
-                    \item $\cmaysatisfy{\hprl{e}}{\xi_1}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[pair7]prl-notval} and \pfref{[pair7]rft1}}
+                    \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[pair7]prl-notintro}
+                    \item $\cmaysatisfy{\hprl{e}}{\xi_1}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair7]prl-notintro} and \pfref{[pair7]rft1}}
                     \end{pfsteps*}
                     Contradicts \pfref{[pair3]notmaysat1}.
                 \restorelocalsteps{2}
                 \item[\text{(\ref{rule:RXPairR})}]
                     \begin{pfsteps*}
                     \item $\refutable{\xi_2}$ \BY{assumption} \pflabel{[pair7]rft2}
-                    \item $\isntVal{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[pair7]prr-notval}
-                    \item $\cmaysatisfy{\hprr{e}}{\xi_2}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[pair7]prr-notval} and \pfref{[pair7]rft2}}
+                    \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[pair7]prr-notintro}
+                    \item $\cmaysatisfy{\hprr{e}}{\xi_2}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair7]prr-notintro} and \pfref{[pair7]rft2}}
                     \end{pfsteps*}
                     Contradicts \pfref{[pair7]notmaysat2}.
                 \end{byCases}
@@ -2800,7 +2800,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             Assume $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}), only one case applies.
             \begin{byCases}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
                 \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{assumption}
                 \end{pfsteps*}
@@ -2811,11 +2811,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{[pair8]maysat2}, only one case applies. \todo{assume no "or" and "and" in pair}
             \begin{byCases}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
                 \item $\refutable{\xi_2}$ \BY{assumption} \pflabel{[pair8]rft2}
                 \item $\refutable{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:RXPairR} on \pfref{[pair8]rft2}} \pflabel{[pair8]rft-pair}
-                \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[pair]notval} and \pfref{[pair8]rft-pair}} \pflabel{[pair8]maysat-pair}
+                \item $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair8]rft-pair}} \pflabel{[pair8]maysat-pair}
                 \item $\csatisfyormay{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair8]maysat-pair}}
                 \end{pfsteps*}
             \end{byCases}
@@ -2829,7 +2829,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             Assume $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, only one case applies.
             \begin{byCases}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
                 \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{assumption}
                 \end{pfsteps*}
@@ -2840,7 +2840,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             Assume $\cmaysatisfy{e}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, only one case applies.
             \begin{byCases}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
                 \item $\refutable{\cpair{\xi_1}{\xi_2}}$ \BY{assumption} \pflabel{[pair9]rft-pair}
                 \end{pfsteps*}
@@ -2850,16 +2850,16 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
                 \item[\text{(\ref{rule:RXPairL})}]
                     \begin{pfsteps*}
                     \item $\refutable{\xi_1}$ \BY{assumption} \pflabel{[pair9]rft1}
-                    \item $\isntVal{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[pair9]prl-notval}
-                    \item $\cmaysatisfy{\hprl{e}}{\xi_1}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[pair9]prl-notval} and \pfref{[pair9]rft1}}
+                    \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[pair9]prl-notintro}
+                    \item $\cmaysatisfy{\hprl{e}}{\xi_1}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair9]prl-notintro} and \pfref{[pair9]rft1}}
                     \end{pfsteps*}
                     Contradicts \pfref{[pair9]notmaysat1}.
                 \restorelocalsteps{2}
                 \item[\text{(\ref{rule:RXPairR})}]
                     \begin{pfsteps*}
                     \item $\refutable{\xi_2}$ \BY{assumption} \pflabel{[pair9]rft2}
-                    \item $\isntVal{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[pair9]prr-notval}
-                    \item $\cmaysatisfy{\hprr{e}}{\xi_2}$ \BY{\ruleref{rule:CMSNotVal} on \pfref{[pair9]prr-notval} and \pfref{[pair9]rft2}}
+                    \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[pair9]prr-notintro}
+                    \item $\cmaysatisfy{\hprr{e}}{\xi_2}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair9]prr-notintro} and \pfref{[pair9]rft2}}
                     \end{pfsteps*}
                     Contradicts \pfref{[pair9]notmaysat2}.
                 \end{byCases}
@@ -2896,11 +2896,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
             \begin{byCases}
             \savelocalsteps{2}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
                 \end{pfsteps*}
-                Contradicts \autoref{lem:no-pair-notval}.
+                Contradicts \autoref{lem:no-pair-notintro}.
             \restorelocalsteps{2}
             \item[\text{(\ref{rule:CMSPair1})}]
                 \begin{pfsteps*}
@@ -2937,11 +2937,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, only two cases apply. 
            \begin{byCases}
             \savelocalsteps{2}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
                 \end{pfsteps*}
-                Contradicts \autoref{lem:no-pair-notval}.
+                Contradicts \autoref{lem:no-pair-notintro}.
             \restorelocalsteps{2}
             \item[\text{(\ref{rule:CSPair})}]
                 \begin{pfsteps*}
@@ -2964,11 +2964,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, only two cases apply. 
            \begin{byCases}
             \savelocalsteps{2}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
                 \end{pfsteps*}
-                Contradicts \autoref{lem:no-pair-notval}.
+                Contradicts \autoref{lem:no-pair-notintro}.
             \restorelocalsteps{2}
             \item[\text{(\ref{rule:CSPair})}]
                 \begin{pfsteps*}
@@ -2982,11 +2982,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
             \begin{byCases}
             \savelocalsteps{2}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
                 \end{pfsteps*}
-                Contradicts \autoref{lem:no-pair-notval}.
+                Contradicts \autoref{lem:no-pair-notintro}.
             \restorelocalsteps{2}
             \item[\text{(\ref{rule:CMSPair1})}]
                 \begin{pfsteps*}
@@ -3023,11 +3023,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, only two cases apply. 
            \begin{byCases}
             \savelocalsteps{2}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
                 \end{pfsteps*}
-                Contradicts \autoref{lem:no-pair-notval}.
+                Contradicts \autoref{lem:no-pair-notintro}.
             \restorelocalsteps{2}
             \item[\text{(\ref{rule:CSPair})}]
                 \begin{pfsteps*}
@@ -3052,11 +3052,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, only two cases apply. 
            \begin{byCases}
             \savelocalsteps{2}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
                 \end{pfsteps*}
-                Contradicts \autoref{lem:no-pair-notval}.
+                Contradicts \autoref{lem:no-pair-notintro}.
             \restorelocalsteps{2}
             \item[\text{(\ref{rule:CSPair})}]
                 \begin{pfsteps*}
@@ -3079,11 +3079,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, only two cases apply. 
            \begin{byCases}
             \savelocalsteps{2}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
                 \end{pfsteps*}
-                Contradicts \autoref{lem:no-pair-notval}.
+                Contradicts \autoref{lem:no-pair-notintro}.
             \restorelocalsteps{2}
             \item[\text{(\ref{rule:CSPair})}]
                 \begin{pfsteps*}
@@ -3097,11 +3097,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
             \begin{byCases}
             \savelocalsteps{2}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
                 \end{pfsteps*}
-                Contradicts \autoref{lem:no-pair-notval}.
+                Contradicts \autoref{lem:no-pair-notintro}.
             \restorelocalsteps{2}
             \item[\text{(\ref{rule:CMSPair1})}]
                 \begin{pfsteps*}
@@ -3137,11 +3137,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, only two cases apply. 
            \begin{byCases}
             \savelocalsteps{2}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
                 \end{pfsteps*}
-                Contradicts \autoref{lem:no-pair-notval}.
+                Contradicts \autoref{lem:no-pair-notintro}.
             \restorelocalsteps{2}
             \item[\text{(\ref{rule:CSPair})}]
                 \begin{pfsteps*}
@@ -3155,11 +3155,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
             \begin{byCases}
             \savelocalsteps{2}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
                 \end{pfsteps*}
-                Contradicts \autoref{lem:no-pair-notval}.
+                Contradicts \autoref{lem:no-pair-notintro}.
             \restorelocalsteps{2}
             \item[\text{(\ref{rule:CMSPair1})}]
                 \begin{pfsteps*}
@@ -3195,11 +3195,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, only two cases apply. 
            \begin{byCases}
             \savelocalsteps{2}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
                 \end{pfsteps*}
-                Contradicts \autoref{lem:no-pair-notval}.
+                Contradicts \autoref{lem:no-pair-notintro}.
             \restorelocalsteps{2}
             \item[\text{(\ref{rule:CSPair})}]
                 \begin{pfsteps*}
@@ -3213,11 +3213,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
             \begin{byCases}
             \savelocalsteps{2}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
                 \end{pfsteps*}
-                Contradicts \autoref{lem:no-pair-notval}.
+                Contradicts \autoref{lem:no-pair-notintro}.
             \restorelocalsteps{2}
             \item[\text{(\ref{rule:CMSPair1})}]
                 \begin{pfsteps*}
@@ -3253,11 +3253,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, only two cases apply. 
            \begin{byCases}
             \savelocalsteps{2}
-            \item[\text{(\ref{rule:CSNotValPair})}]
+            \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
                 \end{pfsteps*}
-                Contradicts \autoref{lem:no-pair-notval}.
+                Contradicts \autoref{lem:no-pair-notintro}.
             \restorelocalsteps{2}
             \item[\text{(\ref{rule:CSPair})}]
                 \begin{pfsteps*}
@@ -3271,11 +3271,11 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             Assume $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}$. By rule induction over Rules (\ref{rules:MaySatisfy}) on it, the following cases apply.
             \begin{byCases}
             \savelocalsteps{2}
-            \item[\text{(\ref{rule:CMSNotVal})}]
+            \item[\text{(\ref{rule:CMSNotIntro})}]
                 \begin{pfsteps*}
-                \item $\isntVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+                \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
                 \end{pfsteps*}
-                Contradicts \autoref{lem:no-pair-notval}.
+                Contradicts \autoref{lem:no-pair-notintro}.
             \restorelocalsteps{2}
             \item[\text{(\ref{rule:CMSPair1})}]
                 \begin{pfsteps*}

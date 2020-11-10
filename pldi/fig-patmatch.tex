@@ -40,8 +40,8 @@
   \hpatmatch{\hinr{\tau}{e}}{\hinrp{p}}{\theta}
 }
 
-\Infer{\MNotValPair}{
-  \isntVal{e} \\
+\Infer{\MNotIntroPair}{
+  \notIntro{e} \\
   \hpatmatch{\hprl{e}}{p_1}{\theta_1} \\
   \hpatmatch{\hprr{e}}{p_2}{\theta_2}
 }{
@@ -111,8 +111,8 @@
   \hmaymatch{e}{\hhole{p}{w}}
 }
 \\
-\Infer{\MMNotVal}{
-  \isntVal{e} \\
+\Infer{\MMNotIntro}{
+  \notIntro{e} \\
   \refutable{p}
 }{
   \hmaymatch{e}{p}

@@ -2,37 +2,37 @@
 
 \begin{figure}[ht]
 \judgbox{
-  \isntVal{e}
+  \notIntro{e}
 }{
   $e$ cannot be a value syntactically
 }
 
 \begin{mathpar}
 \Infer{NVEHole}{ }{
-  \isntVal{\hehole{u}}
+  \notIntro{\hehole{u}}
 }
 
 \Infer{NVHole}{ }{
-  \isntVal{\hhole{e}{u}}
+  \notIntro{\hhole{e}{u}}
 }
 
 \Infer{NVAp}{ }{
-  \isntVal{\hap{e_1}{e_2}}
+  \notIntro{\hap{e_1}{e_2}}
 }
 
 \Infer{NVMatch}{ }{
-  \isntVal{\hmatch{e}{\zrules}}
+  \notIntro{\hmatch{e}{\zrules}}
 }
 
 \Infer{NVPrl}{ }{
-  \isntVal{\hprl{e}}
+  \notIntro{\hprl{e}}
 }
 
 \Infer{NVPrr}{ }{
-  \isntVal{\hprr{e}}
+  \notIntro{\hprr{e}}
 }
 \end{mathpar}
 
   \caption{Expressions that are syntactically not values}
-  \label{fig:notval}
+  \label{fig:notintro}
 \end{figure}
