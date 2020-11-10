@@ -19,7 +19,7 @@ The addition of pattern holes does not interfere with this mechanism. Pattern ho
 rather than consume, variables. (In a language where patterns contain expressions, e.g. when guards are integrated into patterns\todo{cite ML workshop paper by Reppy}, closures on pattern holes would be necessary to support resumption.) It would not be possible to resume evaluation after filling a pattern hole because doing so can, in general, change the binding structure of the program by introducing shadowing. We leave to future work consideration of 
 conditional resumption when pattern hole filling happens not to cause shadowing.
 
-In Hazel, holes are inserted automatically during editing. Formally, Hazel is a type-aware structure editor governed by an edit action semantics derived from Hazelnut, a type-aware structure editor calculus\todo{cite}{} 
+In Hazel, holes are inserted automatically during editing. Formally, Hazel is a type-aware structure editor governed by an edit action semantics derived from Hazelnut \cite{DBLP:conf/popl/OmarVHAH17}, a type-aware structure editor calculus 
 for the same language as Hazelnut Live. 
 Hazel, by combining machinery from Hazelnut and Hazelnut Live, maintains a powerful continuity invariant: every edit state has a well-defined type
 and a well-defined result, both possibly containing holes.
@@ -44,14 +44,14 @@ Uniquely, the indeterminate matching and exhaustiveness and redundancy checks in
 take into account how the programmer may fill or correct these holes in a future edit state.
 
 Much of the early work on pattern matching focused on efficient compilation. Some methods construct decision trees encoding the matching procedure, the goal being to minimize the sizes of the constructed trees, meanwhile obtaining exhaustiveness and redundancy checks as easy by-products \cite{Aitken92smlnj,Baudinet85treepattern,Sestoft96mlpattern}.
-Other methods compile pattern matching to backtracking automata \cite{DBLP:journals/jfp/Maranget07}(cite Maranget 1994);
-while these methods avoid potential exponential behavior exhibited by decision trees, they are less directly amenable to pattern match analyses and require separate methods for reporting inexhaustive and redundant patterns (cite Maranget 2007).
+Other methods compile pattern matching to backtracking automata \cite{Maranget94lazybacktracking,DBLP:journals/jfp/Maranget07};
+while these methods avoid potential exponential behavior exhibited by decision trees, they are less directly amenable to pattern match analyses and require separate methods for reporting inexhaustive and redundant patterns \cite{DBLP:journals/jfp/Maranget07}.
 In our setting of incomplete programs, the question of compilation is not (yet) relevant. Our goal in this paper is to provide a complete semantics of pattern matching with holes that extends the incomplete program evaluation of Hazelnut Live; in so doing, we integrate exhaustiveness and redundancy checks into the type system.
 We leave questions of optimization to future work.
 
-Contemporary work focuses on extending pattern match analyses to settings with more sophisticated types and pattern matching features (cite Vaozou et al 2017, Cockx and Abel 2018, Sozeau 2010, GMTM, LYG).
+Contemporary work focuses on extending pattern match analyses to settings with more sophisticated types and pattern matching features \cite{DBLP:conf/icfp/VazouSJVJ14,DBLP:journals/pacmpl/CockxA18,DBLP:conf/itp/Sozeau10,DBLP:conf/icfp/KarachaliasSVJ15,DBLP:journals/pacmpl/GrafJS20}.
 In a similar spirit, our work extends pattern matching to the previously unexplored setting of gradually typed patterns and expressions with holes.
-Whereas prior work of this sort concerns itself with analyzing increasingly sophisticated predicates delineating a match from a failure (or divergence in the lazy setting), our work introduces a new pattern matching \emph{outcome}---the indeterminate match---and specifies its static and dynamic semantic underpinnings.
+However, whereas prior work of this sort concerns itself with analyzing increasingly sophisticated predicates delineating a match from a failure (or divergence in the lazy setting), our work introduces a new pattern matching \emph{outcome}---the indeterminate match---and specifies its static and dynamic semantic underpinnings.
 To that end, we narrow our focus to the novel aspects of our system and leave integration with existing, richer pattern matching features and checkers to future work.
 
 % The current state of the art is Lower Your Guards by Graf et al., which can handle GADTs and the wide variety of pattern matching features in Haskell, e.g., guards, view patterns, pattern synonyms, etc.

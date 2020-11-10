@@ -2378,7 +2378,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
         \begin{pfsteps*}
         \item $\cnotsatisfy{e}{\cinr{\xi_2}}$ \BY{contradiction} \pflabel{[inr]notsat-inr}
         \end{pfsteps*}
-        By case analysis on the value of $\frefutable{\cinr{\xi_2}}$.
+        By case analysis on the value of $\frefutable{\cinr{\xi_2}}$. \todo{inr is refutable}
         \begin{byCases}
         \savelocalsteps{2}
         \item[\frefutable{\cinr{\xi_2}}=\true]

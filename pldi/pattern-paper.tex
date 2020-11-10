@@ -1,5 +1,5 @@
 %% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
-\documentclass[sigplan,10pt,review,anonymous]{acmart}
+\documentclass[sigplan,10pt,review,anonymous,nonacm]{acmart}
 \settopmatter{printfolios=true,printccs=false,printacmref=false}
 %% For double-blind review submission, w/ CCS and ACM Reference
 %\documentclass[sigplan,review,anonymous]{acmart}\settopmatter{printfolios=true}
@@ -76,6 +76,7 @@
 \usepackage{hyperref}
 \renewcommand\UrlFont{\color{blue}\rmfamily}
 \def\figureautorefname{Fig.}
+\def\lemmaautorefname{Lemma}
 \let\subsectionautorefname\sectionautorefname
 \let\subsubsectionautorefname\sectionautorefname
 \newcommand{\rulesref}[1]{Rules (\ref{#1})}
@@ -209,7 +210,7 @@
 
 %% Keywords
 %% comma separated list
-\keywords{keyword1, keyword2, keyword3}  %% \keywords are mandatory in final camera-ready submission
+% \keywords{keyword1, keyword2, keyword3}  %% \keywords are mandatory in final camera-ready submission
 
 
 %% \maketitle
