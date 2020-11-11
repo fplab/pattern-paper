@@ -3,7 +3,6 @@ $\arraycolsep=4pt\begin{array}{lll}
 \xi & ::= &
   \ctruth ~\vert~
   \cfalsity ~\vert~
-  \cunknown ~\vert~
   \cnum{n} ~\vert~
   \cnotnum{n} ~\vert~
   \cand{\xi_1}{\xi_2} ~\vert~
@@ -23,11 +22,6 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{equation}\label{rule:CTFalsity}
 \inferrule[CTFalsity]{ }{
   \ctyp{\cfalsity}{\tau}
-}
-\end{equation}
-\begin{equation}\label{rule:CTUnknown}
-\inferrule[CTUnknown]{ }{
-  \ctyp{\cunknown}{\tau}
 }
 \end{equation}
 \begin{equation}\label{rule:CTNum}
@@ -82,7 +76,6 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{align}
   \cdual{\ctruth} &= \cfalsity \\
   \cdual{\cfalsity} &= \ctruth \\
-  \cdual{\cunknown} &= \cunknown \\
   \cdual{\cnum{n}} &= \cnotnum{n} \\
   \cdual{\cnotnum{n}} &= \cnum{n} \\
   \cdual{\cand{\xi_1}{\xi_2}} &= \cor{\cdual{\xi_1}}{\cdual{\xi_2}} \\
@@ -108,11 +101,6 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{equation}\label{rule:RXNum}
 \inferrule[RXNum]{ }{
   \refutable{\cnum{n}}
-}
-\end{equation}
-\begin{equation}\label{rule:RXUnknown}
-\inferrule[RXUnknown]{ }{
-  \refutable{\cunknown}
 }
 \end{equation}
 \begin{equation}\label{rule:RXInl}
