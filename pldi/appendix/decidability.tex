@@ -138,41 +138,6 @@
     \end{byCases}
 
   \restorelocalsteps{lem:maysat-satormay-truify-1}
-  \item[\text{(\ref{rule:CMSAnd1})}]
-    \begin{pfsteps*}
-    \item $\xi = \cand{\xi_1}{\xi_2}$ \BY{assumption}
-    \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[and1]maysat1}
-    \item $\csatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[and1]satisfy2}
-    \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[and1]maysat1}} \pflabel{[and1]satormay1}
-    \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{Lemma \ref{lem:satisfy-truify} on \pfref{[and1]satisfy2}} \pflabel{[and1]satisfy-truify2}
-    \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[and1]satisfy-truify2}} \pflabel{[and1]satormay2}
-    \item $\csatisfyormay{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and1]satormay1} and \pfref{[and1]satormay2}}
-    \end{pfsteps*}
-
-  \restorelocalsteps{lem:maysat-satormay-truify-1}
-  \item[\text{(\ref{rule:CMSAnd2})}]
-    \begin{pfsteps*}
-    \item $\xi = \cand{\xi_1}{\xi_2}$ \BY{assumption}
-    \item $\csatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[and2]satisfy1}
-    \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[and2]maysat2}
-    \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{Lemma \ref{lem:satisfy-truify} on \pfref{[and2]satisfy1}} \pflabel{[and2]satisfy-truify1}
-    \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[and2]satisfy-truify1}} \pflabel{[and2]satormay1}
-    \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[and2]maysat2}} \pflabel{[and2]satormay2}
-    \item $\csatisfyormay{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and2]satormay1} and \pfref{[and2]satormay2}}
-    \end{pfsteps*}
-
-  \restorelocalsteps{lem:maysat-satormay-truify-1}
-  \item[\text{(\ref{rule:CMSAnd3})}]
-    \begin{pfsteps*}
-    \item $\xi = \cand{\xi_1}{\xi_2}$ \BY{assumption}
-    \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[and3]maysat1}
-    \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[and3]maysat2}
-    \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[and3]maysat1}} \pflabel{[and3]satormay1}
-    \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[and3]maysat2}} \pflabel{[and3]satormay2}
-    \item $\csatisfyormay{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and3]satormay1} and \pfref{[and3]satormay2}}
-    \end{pfsteps*}
-
-  \restorelocalsteps{lem:maysat-satormay-truify-1}
   \item[\text{(\ref{rule:CMSOr1})}]
     \begin{pfsteps*}
     \item $\xi = \cor{\xi_1}{\xi_2}$ \BY{assumption}
@@ -305,79 +270,6 @@
       \item $\csatisfyormay{e}{\cunknown}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[unknown]maysatUnknown}}
       \end{pfsteps*}
     
-    \restorelocalsteps{lem:satormay-truify-necs-1}
-    \item[\xi=\cand{\xi_1}{\xi_2}]
-      \begin{pfsteps*}
-      \item $\ctruify{\xi} = \cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{Definition \ref{defn:truify}}
-      \end{pfsteps*}
-      By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayTruify},
-      \savelocalsteps{lem:satormay-truify-necs-2}
-      \begin{byCases}
-
-      \item[\text{(\ref{rule:CSMSSat})}]
-        \begin{pfsteps*}
-        \item $\csatisfy{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{satisfyAndTruify}
-        \end{pfsteps*}
-        By rule induction over Rules (\ref{rules:Satisfy}) on \pfref{satisfyAndTruify} and only one case applies,
-        \begin{byCases}
-        \item[\text{(\ref{rule:CSAnd})}]
-          \begin{pfsteps*}
-          \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[and]satisfyTruify1}
-          \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[and]satisfyTruify2}
-          \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[and]satisfyTruify1}} \pflabel{[and]satormayTruify1}
-          \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[and]satisfyTruify2}} \pflabel{[and]satormayTruify2}
-          \item $\csatisfyormay{e}{\xi_1}$ \BY{IH on \pfref{[and]satormayTruify1}} \pflabel{[and]satormay1}
-          \item $\csatisfyormay{e}{\xi_2}$ \BY{IH on \pfref{[and]satormayTruify2}} \pflabel{[and]satormay2}
-          \item $\csatisfyormay{e}{\cand{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and]satormay1} and \pfref{[and]satormay2}}
-          \end{pfsteps*}
-        \end{byCases}
-
-      \restorelocalsteps{lem:satormay-truify-necs-2}
-      \item[\text{(\ref{rule:CSMSMay})}]
-        \begin{pfsteps*}
-        \item $\cmaysatisfy{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{assumption} \pflabel{maysatAndTruify}
-        \end{pfsteps*}
-        By rule induction over Rules (\ref{rules:MaySatisfy}) on \pfref{maysatAndTruify} and three cases apply,
-        \savelocalsteps{lem:satormay-truify-necs-3}
-        \begin{byCases}
-
-        \item[\text{(\ref{rule:CMSAnd1})}]
-          \begin{pfsteps*}
-          \item $\cmaysatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[and1]maysatTruify1}
-          \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[and1]satisfyTruify2}
-          \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[and1]maysatTruify1}} \pflabel{[and1]satormayTruify1}
-          \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[and1]satisfyTruify2}} \pflabel{[and1]satormayTruify2}
-          \item $\csatisfyormay{e}{\xi_1}$ \BY{IH on \pfref{[and1]satormayTruify1}} \pflabel{[and1]satormay1}
-          \item $\csatisfyormay{e}{\xi_2}$ \BY{IH on \pfref{[and1]satormayTruify2}} \pflabel{[and1]satormay2}
-          \item $\csatisfyormay{e}{\cand{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and1]satormay1} and \pfref{[and1]satormay2}}
-          \end{pfsteps*}
-
-        \restorelocalsteps{lem:satormay-truify-necs-3}
-        \item[\text{(\ref{rule:CMSAnd2})}]
-          \begin{pfsteps*}
-          \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[and2]satisfyTruify1}
-          \item $\cmaysatisfy{e}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[and2]maysatTruify2}
-          \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSSat}) on \pfref{[and2]satisfyTruify1}} \pflabel{[and2]satormayTruify1}
-          \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[and2]maysatTruify2}} \pflabel{[and2]satormayTruify2}
-          \item $\csatisfyormay{e}{\xi_1}$ \BY{IH on \pfref{[and2]satormayTruify1}} \pflabel{[and2]satormay1}
-          \item $\csatisfyormay{e}{\xi_2}$ \BY{IH on \pfref{[and2]satormayTruify2}} \pflabel{[and2]satormay2}
-          \item $\csatisfyormay{e}{\cand{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and2]satormay1} and \pfref{[and2]satormay2}}
-          \end{pfsteps*}
-
-        \restorelocalsteps{lem:satormay-truify-necs-3}
-        \item[\text{(\ref{rule:CMSAnd3})}]
-          \begin{pfsteps*}
-          \item $\cmaysatisfy{e}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[and3]maysatTruify1}
-          \item $\cmaysatisfy{e}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[and3]maysatTruify2}
-          \item $\csatisfyormay{e}{\ctruify{\xi_1}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[and3]maysatTruify1}} \pflabel{[and3]satormayTruify1}
-          \item $\csatisfyormay{e}{\ctruify{\xi_2}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{[and3]maysatTruify2}} \pflabel{[and3]satormayTruify2}
-          \item $\csatisfyormay{e}{\xi_1}$ \BY{IH on \pfref{[and3]satormayTruify1}} \pflabel{[and3]satormay1}
-          \item $\csatisfyormay{e}{\xi_2}$ \BY{IH on \pfref{[and3]satormayTruify2}} \pflabel{[and3]satormay2}
-          \item $\csatisfyormay{e}{\cand{\xi_1}{\xi_2}}$ \BY{Lemma \ref{lem:satormay-and} on \pfref{[and3]satormay1} and \pfref{[and3]satormay2}}
-          \end{pfsteps*}
-        \end{byCases}
-      \end{byCases}
-
     \restorelocalsteps{lem:satormay-truify-necs-1}
     \item[\xi=\cor{\xi_1}{\xi_2}]
       \begin{pfsteps*}
@@ -588,7 +480,7 @@
           \end{pfsteps*}
 
         \restorelocalsteps{lem:satormay-truify-necs-3}
-        \item[\text{(\ref{rule:CMSAnd3})}]
+        \item[\text{(\ref{rule:CMSPair3})}]
           \begin{pfsteps*}
           \item $\cmaysatisfy{e_1}{\ctruify{\xi_1}}$ \BY{assumption} \pflabel{[pair3]maysatTruify1}
           \item $\cmaysatisfy{e_2}{\ctruify{\xi_2}}$ \BY{assumption} \pflabel{[pair3]maysatTruify2}
@@ -674,48 +566,6 @@ We prove sufficiency and necessity separately.
           \end{pfsteps*}
           By rule induction over \rulesref{rules:notintro} on \pfref{notintro}, for each case,
           by rule induction over Rules (\ref{rules:Value}) on \pfref{val}, no case applies due to syntactic contradiction.
-          
-        \restorelocalsteps{2} 
-        \item[\text{(\ref{rule:CMSAnd1})}] 
-          \begin{pfsteps*}
-          \item $\xi=\cand{\xi_1}{\xi_2}$ \BY{assumption}
-          \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[and1]maysat1}
-          \item $\csatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[and1]satisfy2}
-          \item $\ctruify{\xi}=\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
-          \item $\csatisfyormay{e}{\xi_1}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[and1]maysat1}} \pflabel{[and1]satormay1}
-          \item $\csatisfyormay{e}{\xi_2}$ \BY{\ruleref{rule:CSMSSat} on \pfref{[and1]satisfy2}} \pflabel{[and1]satormay2}
-          \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[and1]satormay1}} \pflabel{[and1]sat-truify1}
-          \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[and1]satormay2}} \pflabel{[and1]sat-truify2}
-          \item $\csatisfy{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{\ruleref{rule:CSAnd} on \pfref{[and1]sat-truify1} and \pfref{[and1]sat-truify2}}
-          \end{pfsteps*}
-        
-        \restorelocalsteps{2} 
-        \item[\text{(\ref{rule:CMSAnd2})}] 
-          \begin{pfsteps*}
-          \item $\xi=\cand{\xi_1}{\xi_2}$ \BY{assumption}
-          \item $\csatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[and2]satisfy1}
-          \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[and2]maysat2}
-          \item $\ctruify{\xi}=\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
-          \item $\csatisfyormay{e}{\xi_1}$ \BY{\ruleref{rule:CSMSSat} on \pfref{[and2]satisfy1}} \pflabel{[and2]satormay1}
-          \item $\csatisfyormay{e}{\xi_2}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[and2]maysat2}} \pflabel{[and2]satormay2}
-          \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[and2]satormay1}} \pflabel{[and2]sat-truify1}
-          \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[and2]satormay2}} \pflabel{[and2]sat-truify2}
-          \item $\csatisfy{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{\ruleref{rule:CSAnd} on \pfref{[and2]sat-truify1} and \pfref{[and2]sat-truify2}}
-          \end{pfsteps*}
-        
-        \restorelocalsteps{2} 
-        \item[\text{(\ref{rule:CMSAnd3})}] 
-          \begin{pfsteps*}
-          \item $\xi=\cand{\xi_1}{\xi_2}$ \BY{assumption}
-          \item $\cmaysatisfy{e}{\xi_1}$ \BY{assumption} \pflabel{[and3]maysat1}
-          \item $\cmaysatisfy{e}{\xi_2}$ \BY{assumption} \pflabel{[and3]maysat2}
-          \item $\ctruify{\xi}=\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}$ \BY{\autoref{defn:truify}}
-          \item $\csatisfyormay{e}{\xi_1}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[and3]maysat1}} \pflabel{[and3]satormay1}
-          \item $\csatisfyormay{e}{\xi_2}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[and3]maysat2}} \pflabel{[and3]satormay2}
-          \item $\csatisfy{e}{\ctruify{\xi_1}}$ \BY{IH on \pfref{[and3]satormay1}} \pflabel{[and3]sat-truify1}
-          \item $\csatisfy{e}{\ctruify{\xi_2}}$ \BY{IH on \pfref{[and3]satormay2}} \pflabel{[and3]sat-truify2}
-          \item $\csatisfy{e}{\cand{\ctruify{\xi_1}}{\ctruify{\xi_2}}}$ \BY{\ruleref{rule:CSAnd} on \pfref{[and3]sat-truify1} and \pfref{[and3]sat-truify2}}
-          \end{pfsteps*}
         
         \restorelocalsteps{2} 
         \item[\text{(\ref{rule:CMSOr1})}] 
