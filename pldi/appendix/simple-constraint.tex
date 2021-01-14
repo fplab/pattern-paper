@@ -548,10 +548,14 @@ $\arraycolsep=4pt\begin{array}{lll}
 
 \begin{lemma}
   \label{lem:or-nn-satisfy}
-  If $\cnotsatisfyormay{e}{\hxi_1}$ and $\cnotsatisfyormay{e}{\hxi_2}$ then $\cnotsatisfyormay{e}{\cor{\hxi_1}{\hxi_2}}$
+  $\cnotsatisfyormay{e}{\hxi_1}$ and $\cnotsatisfyormay{e}{\hxi_2}$ iff $\cnotsatisfyormay{e}{\cor{\hxi_1}{\hxi_2}}$
 \end{lemma}
 \begin{proof}
-  Assume, for the sake of contradiction, that $\csatisfyormay{e}{\cor{\hxi_1}{\hxi_2}}$.
+  We prove sufficiency and necessity separately.
+\begin{enumerate}
+
+\item Sufficiency: to show $\cnotsatisfyormay{e}{\cor{\hxi_1}{\hxi_2}}$, we assume $\csatisfyormay{e}{\cor{\hxi_1}{\hxi_2}}$.
+
 \begin{pfsteps*}
 \item $\csatisfyormay{e}{\cor{\hxi_1}{\hxi_2}}$ \BY{assumption} \pflabel{satormay1+2}
 \item $\cnotsatisfyormay{e}{\hxi_1}$ \BY{assumption} \pflabel{notsatormay1}
@@ -617,6 +621,30 @@ The conclusion holds as follows:
   \item $\cnotsatisfyormay{e}{\cor{\hxi_1}{\hxi_2}}$
 \end{enumerate}
 \resetpfcounter
+
+\item Necessity:
+\begin{pfsteps*}
+\item $\cnotsatisfyormay{e}{\cor{\hxi_1}{\hxi_2}}$ \BY{assumption} \pflabel{notsatormay}
+\end{pfsteps*}
+We show $\cnotsatisfyormay{e}{\hxi_1}$ and $\cnotsatisfyormay{e}{\hxi_2}$ separately.
+\begin{enumerate}
+  \savelocalsteps{1}
+  \item To show $\cnotsatisfyormay{e}{\hxi_1}$, we assume $\csatisfyormay{e}{\hxi_1}$.
+  \begin{pfsteps*}
+  \item $\csatisfyormay{e}{\hxi_1}$ \BY{assumption} \pflabel{satormay1}
+  \item $\csatisfyormay{e}{\cor{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-or} on \pfref{satormay1}}
+  \end{pfsteps*}
+  Contradicts \pfref{notsatormay}.
+  \restorelocalsteps{1}
+  \item To show $\cnotsatisfyormay{e}{\hxi_2}$, we assume $\csatisfyormay{e}{\hxi_2}$.
+  \begin{pfsteps*}
+  \item $\csatisfyormay{e}{\hxi_2}$ \BY{assumption} \pflabel{satormay2}
+  \item $\csatisfyormay{e}{\cor{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-or} on \pfref{satormay2}}
+  \end{pfsteps*}
+  Contradicts \pfref{notsatormay}.
+\end{enumerate}
+In conclusion, $\cnotsatisfyormay{e}{\hxi_1}$ and $\cnotsatisfyormay{e}{\hxi_2}$.
+\end{enumerate}
 \end{proof}
 
 \begin{lemma}
@@ -683,11 +711,6 @@ The conclusion holds as follows:
 \end{proof}
 
 \begin{lemma}
-  \label{lem:satormay-and}
-  If $\csatisfyormay{e}{\hxi_1}$ and $\csatisfyormay{e}{\hxi_2}$ then $\csatisfyormay{e}{\cand{\hxi_1}{\hxi_2}}$
-\end{lemma}
-
-\begin{lemma}
   \label{lem:satormay-or}
   If $\csatisfyormay{e}{\hxi_1}$ then $\csatisfyormay{e}{\cor{\hxi_1}{\hxi_2}}$ and
 $\csatisfyormay{e}{\cor{\hxi_2}{\hxi_1}}$
@@ -745,9 +768,13 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
 
 \begin{lemma}
   \label{lem:satormay-inl}
-  If $\csatisfyormay{e_1}{\hxi_1}$ then $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinl{\hxi_1}}$
+  $\csatisfyormay{e_1}{\hxi_1}$ iff $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinl{\hxi_1}}$
 \end{lemma}
 \begin{proof}
+We prove sufficiency and necessity separately.
+\begin{enumerate}
+  
+\item Sufficiency:
   \begin{pfsteps*}
   \item $\csatisfyormay{e_1}{\hxi_1}$ \BY{assumption} \pflabel{satormay1}
   \end{pfsteps*}
@@ -770,14 +797,61 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
     \item $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinl{\hxi_1}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatInl}}
     \end{pfsteps*}
   \end{byCases}
-  \resetpfcounter
+\resetpfcounter
+
+\item Necessity:
+  \begin{pfsteps*}
+  \item $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinl{\hxi_1}}$ \BY{assumption} \pflabel{satormay-inl}
+  \end{pfsteps*}
+  By rule induction over \rulesref{rules:satormay} on \pfref{satormay-inl}.
+  \begin{byCases}
+    \savelocalsteps{0}
+    \item[\text{(\ref{rule:CSMSSat})}]
+    \begin{pfsteps*}
+    \item $\csatisfy{\hinl{\tau_2}{e_1}}{\cinl{\hxi_1}}$ \BY{assumption} \pflabel{satisfy-inl}
+    \end{pfsteps*} 
+    By rule induction over \rulesref{rules:Satisfy} on \pfref{satisfy-inl}, only one rule applies.
+    \begin{byCases}
+      \item[\text{(\ref{rule:CSInl})}]
+      \begin{pfsteps*}
+      \item $\csatisfy{e_1}{\hxi_1}$ \BY{assumption} \pflabel{satisfy1}
+      \item $\csatisfyormay{e_1}{\hxi_1}$ \BY{\ruleref{rule:CSMSSat} on \pfref{satisfy1}}
+      \end{pfsteps*} 
+    \end{byCases}
+    \restorelocalsteps{0} 
+    \item[\text{(\ref{rule:CSMSMay})}] 
+    \begin{pfsteps*}
+    \item $\cmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\hxi_1}}$ \BY{assumption} \pflabel{maysat-inl}
+    \end{pfsteps*}
+    By rule induction over \rulesref{rules:MaySatisfy} on \pfref{maysat-inl}, only two rules apply.
+    \begin{byCases}
+      \savelocalsteps{1}
+      \item[\text{(\ref{rule:CMSInl})}]
+      \begin{pfsteps*}
+      \item $\cmaysatisfy{e_1}{\hxi_1}$ \BY{assumption} \pflabel{maysat1}
+      \item $\csatisfyormay{e_1}{\hxi_1}$ \BY{\ruleref{rule:CSMSMay} on \pfref{maysat1}}
+      \end{pfsteps*} 
+      \restorelocalsteps{1} 
+      \item[\text{(\ref{rule:CMSNotIntro})}] 
+      \begin{pfsteps*}
+      \item $\notIntro{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{notintro-inl}
+      \end{pfsteps*} 
+      By rule induction over \rulesref{rules:notintro} on \pfref{notintro-inl}, no rule applies due to syntactic contradiction.
+    \end{byCases}
+  \end{byCases}
+\resetpfcounter
+\end{enumerate}
 \end{proof}
 
 \begin{lemma}
   \label{lem:satormay-inr}
-  If $\csatisfyormay{e_2}{\hxi_2}$ then $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinr{\hxi_2}}$
+  $\csatisfyormay{e_2}{\hxi_2}$ iff $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinr{\hxi_2}}$
 \end{lemma}
 \begin{proof}
+We prove sufficiency and necessity separately.
+\begin{enumerate}
+
+\item Sufficiency:
   \begin{pfsteps*}
   \item $\csatisfyormay{e_2}{\hxi_2}$ \BY{assumption} \pflabel{satormay2}
   \end{pfsteps*}
@@ -796,17 +870,173 @@ By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormay1},
   \item[\text{(\ref{rule:CSMSMay})}]
     \begin{pfsteps*}
     \item $\cmaysatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{maysat2}
-    \item $\cmaysatisfy{\hinl{\tau_1}{e_2}}{\cinr{\hxi_2}}$ \BY{Rule (\ref{rule:CMSInr}) on \pfref{maysat2}} \pflabel{maysatInr}
-    \item $\csatisfyormay{\hinl{\tau_1}{e_2}}{\cinr{\hxi_2}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatInr}}
+    \item $\cmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\hxi_2}}$ \BY{Rule (\ref{rule:CMSInr}) on \pfref{maysat2}} \pflabel{maysatInr}
+    \item $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinr{\hxi_2}}$ \BY{Rule (\ref{rule:CSMSMay}) on \pfref{maysatInr}}
     \end{pfsteps*}
   \end{byCases}
+\resetpfcounter
+
+\item Necessity:
+  \begin{pfsteps*}
+  \item $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinr{\hxi_2}}$ \BY{assumption} \pflabel{satormay-inr}
+  \end{pfsteps*}
+  By rule induction over \rulesref{rules:satormay} on \pfref{satormay-inr}.
+  \begin{byCases}
+    \savelocalsteps{0}
+    \item[\text{(\ref{rule:CSMSSat})}]
+    \begin{pfsteps*}
+    \item $\csatisfy{\hinr{\tau_1}{e_2}}{\cinr{\hxi_2}}$ \BY{assumption} \pflabel{satisfy-inr}
+    \end{pfsteps*} 
+    By rule induction over \rulesref{rules:Satisfy} on \pfref{satisfy-inr}, only one rule applies.
+    \begin{byCases}
+      \item[\text{(\ref{rule:CSInr})}]
+      \begin{pfsteps*}
+      \item $\csatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{satisfy2}
+      \item $\csatisfyormay{e_2}{\hxi_2}$ \BY{\ruleref{rule:CSMSSat} on \pfref{satisfy2}}
+      \end{pfsteps*} 
+    \end{byCases}
+    \restorelocalsteps{0} 
+    \item[\text{(\ref{rule:CSMSMay})}] 
+    \begin{pfsteps*}
+    \item $\cmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\hxi_2}}$ \BY{assumption} \pflabel{maysat-inr}
+    \end{pfsteps*}
+    By rule induction over \rulesref{rules:MaySatisfy} on \pfref{maysat-inr}, only two rules apply.
+    \begin{byCases}
+      \savelocalsteps{1}
+      \item[\text{(\ref{rule:CMSInr})}]
+      \begin{pfsteps*}
+      \item $\cmaysatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{maysat2}
+      \item $\csatisfyormay{e_2}{\hxi_2}$ \BY{\ruleref{rule:CSMSMay} on \pfref{maysat2}}
+      \end{pfsteps*} 
+      \restorelocalsteps{1} 
+      \item[\text{(\ref{rule:CMSNotIntro})}] 
+      \begin{pfsteps*}
+      \item $\notIntro{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{notintro-inr}
+      \end{pfsteps*} 
+      By rule induction over \rulesref{rules:notintro} on \pfref{notintro-inr}, no rule applies due to syntactic contradiction.
+    \end{byCases}
+  \end{byCases}
   \resetpfcounter
+\end{enumerate}
 \end{proof}
 
 \begin{lemma}
   \label{lem:satormay-pair}
-  If $\csatisfyormay{e_1}{\hxi_1}$ and $\csatisfyormay{e_2}{\hxi_2}$ then $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$
+  $\csatisfyormay{e_1}{\hxi_1}$ and $\csatisfyormay{e_2}{\hxi_2}$ iff $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$
 \end{lemma}
+\begin{proof}
+  We prove sufficiency and necessity separately.
+  \begin{enumerate}
+    \item Sufficiency:
+    \begin{pfsteps*}
+    \item $\csatisfyormay{e_1}{\hxi_1}$ \BY{assumption} \pflabel{satormay1}
+    \item $\csatisfyormay{e_2}{\hxi_2}$ \BY{assumption} \pflabel{satormay2}
+    \end{pfsteps*}
+    By rule induction over \rulesref{rules:satormay} on \pfref{satormay1}.
+    \begin{byCases}
+      \savelocalsteps{0}
+      \item[\text{(\ref{rule:CSMSSat})}]
+      \begin{pfsteps*}
+      \item $\csatisfy{e_1}{\hxi_1}$ \BY{assumption} \pflabel{satisfy1}
+      \end{pfsteps*} 
+      By rule induction over \rulesref{rules:satormay} on \pfref{satormay2}.
+      \begin{byCases}
+        \savelocalsteps{0}
+        \item[\text{(\ref{rule:CSMSSat})}] 
+        \begin{pfsteps*}
+        \item $\csatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[sat]satisfy2}
+        \item $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSPair} on \pfref{satisfy1} and \pfref{[sat]satisfy2}} \pflabel{[sat]satisfy}
+        \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSSat} on \pfref{[sat]satisfy}}
+        \end{pfsteps*} 
+        \restorelocalsteps{0} 
+        \item[\text{(\ref{rule:CSMSMay})}] 
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[sat]maysat2}
+        \item $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSPair2} on \pfref{satisfy1} and \pfref{[sat]maysat2}} \pflabel{[sat]maysat}
+        \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[sat]maysat}}
+        \end{pfsteps*} 
+      \end{byCases} 
+      \restorelocalsteps{0} 
+      \item[\text{(\ref{rule:CSMSMay})}]
+      \begin{pfsteps*}
+      \item $\cmaysatisfy{e_1}{\hxi_1}$ \BY{assumption} \pflabel{maysat1}
+      \end{pfsteps*} 
+      By rule induction over \rulesref{rules:satormay} on \pfref{satormay2}.
+      \begin{byCases}
+        \savelocalsteps{0}
+        \item[\text{(\ref{rule:CSMSSat})}] 
+        \begin{pfsteps*}
+        \item $\csatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[may]satisfy2}
+        \item $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSPair1} on \pfref{maysat1} and \pfref{[may]satisfy2}} \pflabel{[may]maysat}
+        \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[may]maysat}}
+        \end{pfsteps*} 
+        \restorelocalsteps{0} 
+        \item[\text{(\ref{rule:CSMSMay})}] 
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[may]maysat2}
+        \item $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSPair2} on \pfref{maysat1} and \pfref{[may]maysat2}} \pflabel{[may]maysat'}
+        \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[may]maysat'}}
+        \end{pfsteps*} 
+      \end{byCases}  
+    \end{byCases}
+    \resetpfcounter
+    \item Necessity:
+    \begin{pfsteps*}
+    \item $\csatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{assumption} \pflabel{satormay}
+    \end{pfsteps*}
+    By rule induction over \rulesref{rules:satormay} on \pfref{satormay}.
+    \begin{byCases}
+      \savelocalsteps{0}
+      \item[\text{(\ref{rule:CSMSSat})}]
+      \begin{pfsteps*}
+      \item $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{assumption} \pflabel{satisfy}
+      \end{pfsteps*} 
+      By rule induction over \rulesref{rules:Satisfy} on \pfref{satisfy}, only one rule applies.
+      \begin{byCases}
+        \item[\text{(\ref{rule:CSPair})}]
+        \begin{pfsteps*}
+        \item $\csatisfy{e_1}{\hxi_1}$ \BY{assumption} \pflabel{1-satisfy1}
+        \item $\csatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{1-satisfy2}
+        \item $\csatisfyormay{e_1}{\hxi_1}$ \BY{\ruleref{rule:CSMSSat} on \pfref{1-satisfy1}}
+        \item $\csatisfyormay{e_2}{\hxi_2}$ \BY{\ruleref{rule:CSMSSat} on \pfref{1-satisfy2}}
+        \end{pfsteps*}
+      \end{byCases}
+      \restorelocalsteps{0}
+      \item[\text{(\ref{rule:CSMSMay})}]
+      \begin{pfsteps*}
+      \item $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{assumption} \pflabel{maysat}
+      \end{pfsteps*} 
+      By rule induction over \rulesref{rules:MaySatisfy} on \pfref{maysat}, only three rules apply.
+      \begin{byCases}
+        \savelocalsteps{1}
+        \item[\text{(\ref{rule:CMSPair1})}]
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{e_1}{\hxi_1}$ \BY{assumption} \pflabel{2-maysat1}
+        \item $\csatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{2-satisfy2}
+        \item $\csatisfyormay{e_1}{\hxi_1}$ \BY{\ruleref{rule:CSMSMay} on \pfref{2-maysat1}}
+        \item $\csatisfyormay{e_2}{\hxi_2}$ \BY{\ruleref{rule:CSMSSat} on \pfref{2-satisfy2}}
+        \end{pfsteps*} 
+        \restorelocalsteps{1} 
+        \item[\text{(\ref{rule:CMSPair2})}]
+        \begin{pfsteps*}
+        \item $\csatisfy{e_1}{\hxi_1}$ \BY{assumption} \pflabel{3-satisfy1}
+        \item $\cmaysatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{3-maysat2}
+        \item $\csatisfyormay{e_1}{\hxi_1}$ \BY{\ruleref{rule:CSMSSat} on \pfref{3-satisfy1}}
+        \item $\csatisfyormay{e_2}{\hxi_2}$ \BY{\ruleref{rule:CSMSMay} on \pfref{3-maysat2}}
+        \end{pfsteps*} 
+        \restorelocalsteps{1} 
+        \item[\text{(\ref{rule:CMSPair3})}] 
+        \begin{pfsteps*}
+        \item $\cmaysatisfy{e_1}{\hxi_1}$ \BY{assumption} \pflabel{4-maysat1}
+        \item $\cmaysatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{4-maysat2}
+        \item $\csatisfyormay{e_1}{\hxi_1}$ \BY{\ruleref{rule:CSMSMay} on \pfref{4-maysat1}}
+        \item $\csatisfyormay{e_2}{\hxi_2}$ \BY{\ruleref{rule:CSMSMay} on \pfref{4-maysat2}}
+        \end{pfsteps*} 
+      \end{byCases}
+    \end{byCases}
+    \resetpfcounter
+  \end{enumerate}
+\end{proof}
 
 \begin{lemma}[Soundness and Completeness of Refutable Constraints]
   \label{lem:sound-complete-xi-refutable}
@@ -894,6 +1124,74 @@ By rule induction over \rulesref{rules:Satisfy} on \pfref{satisfy}.
     By rule induction over \rulesref{rules:notintro} on \pfref{e-notintro}, no case applies due to syntactic contradiction.
 \end{byCases}
 \resetpfcounter
+\end{proof}
+
+\begin{lemma}
+  \label{lem:inl-notsatormay-inr}
+  $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinr{\hxi_2}}$ is not derivable.
+\end{lemma}
+\begin{proof}
+  We prove by assuming $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinr{\hxi_2}}$ and obtaining a contradiction.
+  \begin{pfsteps*}
+  \item $\csatisfyormay{\hinl{\tau_2}{e_1}}{\cinr{\hxi_2}}$ \BY{assumption} \pflabel{satormay}
+  \end{pfsteps*}
+  By rule induction over \rulesref{rules:satormay} on \pfref{satormay}.
+  \begin{byCases}
+    \savelocalsteps{0}
+    \item[\text{(\ref{rule:CSMSSat})}]
+    \begin{pfsteps*}
+    \item $\csatisfy{\hinl{\tau_2}{e_1}}{\cinr{\hxi_2}}$ \BY{assumption} \pflabel{satisfy}
+    \end{pfsteps*} 
+    By rule induction over \rulesref{rules:Satisfy} on \pfref{satisfy}, no rule applies due to syntactic contradiction.
+    \restorelocalsteps{0} 
+    \item[\text{(\ref{rule:CSMSMay})}] 
+    \begin{pfsteps*}
+    \item $\cmaysatisfy{\hinl{\tau_2}{e_1}}{\cinr{\hxi_2}}$ \BY{assumption} \pflabel{maysat}
+    \end{pfsteps*} 
+    By rule induction over \rulesref{rules:MaySatisfy} on \pfref{maysat}, only one rule applies.
+    \begin{byCases}
+      \item[\text{(\ref{rule:CMSNotIntro})}]
+      \begin{pfsteps*}
+      \item $\notIntro{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{notintro}
+      \end{pfsteps*} 
+      By rule induction over \rulesref{rules:notintro} on \pfref{notintro}, no rule applies due to syntactic contradiction.
+    \end{byCases}
+  \end{byCases}
+  \resetpfcounter
+\end{proof}
+
+\begin{lemma}
+  \label{lem:inr-notsatormay-inl}
+  $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinl{\hxi_1}}$ is not derivable.
+\end{lemma}
+\begin{proof}
+  We prove by assuming $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinl{\hxi_1}}$ and obtaining a contradiction.
+  \begin{pfsteps*}
+  \item $\csatisfyormay{\hinr{\tau_1}{e_2}}{\cinl{\hxi_1}}$ \BY{assumption} \pflabel{satormay}
+  \end{pfsteps*}
+  By rule induction over \rulesref{rules:satormay} on \pfref{satormay}.
+  \begin{byCases}
+    \savelocalsteps{0}
+    \item[\text{(\ref{rule:CSMSSat})}]
+    \begin{pfsteps*}
+    \item $\csatisfy{\hinr{\tau_1}{e_2}}{\cinl{\hxi_1}}$ \BY{assumption} \pflabel{satisfy}
+    \end{pfsteps*} 
+    By rule induction over \rulesref{rules:Satisfy} on \pfref{satisfy}, no rule applies due to syntactic contradiction.
+    \restorelocalsteps{0} 
+    \item[\text{(\ref{rule:CSMSMay})}] 
+    \begin{pfsteps*}
+    \item $\cmaysatisfy{\hinr{\tau_1}{e_2}}{\cinl{\hxi_1}}$ \BY{assumption} \pflabel{maysat}
+    \end{pfsteps*} 
+    By rule induction over \rulesref{rules:MaySatisfy} on \pfref{maysat}, only one rule applies.
+    \begin{byCases}
+      \item[\text{(\ref{rule:CMSNotIntro})}]
+      \begin{pfsteps*}
+      \item $\notIntro{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{notintro}
+      \end{pfsteps*} 
+      By rule induction over \rulesref{rules:notintro} on \pfref{notintro}, no rule applies due to syntactic contradiction.
+    \end{byCases}
+  \end{byCases}
+  \resetpfcounter
 \end{proof}
 
 \begin{lemma}[Soundness and Completeness of Satisfaction Judgment]
@@ -1191,6 +1489,10 @@ By rule induction over \rulesref{rules:Satisfy} on \pfref{satisfy}.
   \resetpfcounter
 \end{proof}
 
+\begin{lemma}
+  \label{lem:sound-complete-satormay}
+  \todo{satormay soundness and completeness}
+\end{lemma}
 
 \begin{lemma}
   \label{lem:not-satormay}

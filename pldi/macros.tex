@@ -55,6 +55,8 @@
 \newcommand{\refutable}[1]{#1 ~\mathtt{refutable}_?}
 \newcommand{\frefutable}[1]{\textit{refutable}_?\inparens{#1}}
 
+\newcommand{\expcomplete}[1]{\mathtt{complete}\inparens{#1}}
+
 \newcommand{\hGamma}{\dot{\Gamma}}
 \newcommand{\domof}[1]{\text{dom}(#1)}
 \newcommand{\hsyn}[3]{#1 \vdash #2 \Rightarrow #3}
@@ -116,7 +118,6 @@
 \newcommand{\cinr}[1]{\mathtt{inr}(#1)}
 \newcommand{\cpair}[2]{(#1 , #2)}
 \newcommand{\csatisfy}[2]{#1 \models #2}
-\newcommand{\fsatisfy}[2]{\textit{satisfy}\inparens{#1, #2}}
 \newcommand{\cnotsatisfy}[2]{#1 \not\models #2}
 \newcommand{\cmaysatisfy}[2]{#1 \models_{?} #2}
 \newcommand{\cnotmaysatisfy}[2]{#1 \not\models_{?} #2}
@@ -124,6 +125,9 @@
 \newcommand{\cnotsatisfyormay}[2]{#1 \not\models_{?}^{\dag} #2}
 \newcommand{\cincon}[1]{#1 ~\mathtt{incon}}
 \newcommand{\cmayincon}[1]{#1 ~\cancel{\mathtt{not~incon}}}
+
+\newcommand{\fsatisfy}[2]{\textit{satisfy}\inparens{#1, #2}}
+\newcommand{\fsatisfyormay}[2]{\textit{satisfyormay}\inparens{#1, #2}}
 
 \newcommand{\cpattyp}[4]{#1 : #2 [#3] \dashV #4}
 \newcommand{\chpattyp}[5]{#1 : #2 [#3] \dashV #4 \mathbin{;} #5}
@@ -201,6 +205,9 @@
 \newcommand{\inparens}[1]{{\color{gray}(}#1{\color{gray})}}
 \newcommand{\true}{\text{true}}
 \newcommand{\false}{\text{false}}
+
+\newcommand{\textand}{\text{ and }}
+\newcommand{\textif}{\quad\text{if }}
 
 %% rule names for appendix
 \newcommand{\rname}[1]{\textsc{#1}}
