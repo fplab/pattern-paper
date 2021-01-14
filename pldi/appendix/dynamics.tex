@@ -180,11 +180,65 @@
 \begin{subequations}\label{defn:complete}
   \begin{align}
     \expcomplete{e} ={}& \{e\} \textif \isVal{e} \\
-    \expcomplete{e} ={}& \{e' ~\vert~ e : \tau \textand \isVal{e}\} \textif \notIntro{e} \\
+    \expcomplete{e} ={}& \{e' ~\vert~ e' : \tau \textand \isVal{e}\} \textif \notIntro{e} \\
     \expcomplete{\hinl{\tau_2}{e_1}} ={}& \{\hinl{\tau_2}{e_1'} ~\vert~ e_1' \in \expcomplete{e_1}\} \\
     \expcomplete{\hinr{\tau_1}{e_2}} ={}& \{\hinr{\tau_1}{e_2'} ~\vert~ e_2' \in \expcomplete{e_2}\} \\
     \expcomplete{\hpair{e_1}{e_2}} ={}& \{\hpair{e_1'}{e_2'} ~\vert~ e_1' \in \expcomplete{e_1} \textand e_2' \in \expcomplete{e_2}\}
   \end{align}
+\end{subequations}
+
+\judgboxa{
+  \inValues{e'}{e}
+}{
+  $e'$ is one of the possible values of $e$
+}
+\begin{subequations}\label{rules:inValues}
+  \begin{equation}\label{rule:IVVal}
+    \inferrule[IVVal]{
+      \isVal{e} \\
+      \hexptyp{\cdot}{\Delta}{e}{\tau}
+    }{
+      \inValues{e}{e}
+    }
+  \end{equation}
+  \begin{equation}\label{rule:IVIndet}
+    \inferrule[IVIndet]{
+      \notIntro{e} \\
+      \hexptyp{\cdot}{\Delta}{e}{\tau} \\
+      \isVal{e'} \\
+      \hexptyp{\cdot}{\Delta}{e'}{\tau}
+    }{
+      \inValues{e'}{e}
+    }
+  \end{equation}
+  \begin{equation}\label{rule:IVInl}
+    \inferrule[IVInl]{
+      \isIndet{\hinl{\tau_2}{e_1}} \\
+      \hexptyp{\cdot}{\Delta}{\hinl{\tau_2}{e_1}}{\tau} \\
+      \inValues{e_1'}{e_1} \\
+    }{ 
+      \inValues{\hinl{\tau_2}{e_1'}}{\hinl{\tau_2}{e_1}}
+    }
+  \end{equation}
+  \begin{equation}\label{rule:IVInr}
+    \inferrule[IVInr]{
+      \isIndet{\hinr{\tau_1}{e_2}} \\
+      \hexptyp{\cdot}{\Delta}{\hinr{\tau_1}{e_2}}{\tau} \\
+      \inValues{e_2'}{e_2} \\
+    }{ 
+      \inValues{\hinr{\tau_1}{e_2'}}{\hinr{\tau_1}{e_2}}
+    }
+  \end{equation}
+  \begin{equation}
+    \inferrule[IVPair]{
+      \isIndet{\hpair{e_1}{e_2}} \\
+      \hexptyp{\cdot}{\Delta}{\hpair{e_1}{e_2}}{\tau} \\
+      \inValues{e_1'}{e_1} \\
+      \inValues{e_2'}{e_2}
+    }{
+      \inValues{\hpair{e_1'}{e_2'}}{\hpair{e_1}{e_2}}
+    }
+  \end{equation}
 \end{subequations}
 
 \begin{lemma}
@@ -234,6 +288,7 @@
       \item $\cmaysatisfy{\hehole{u}}{\cnum{n}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[ehole]notintro} and \pfref{[num]refutable}} \pflabel{[ehole][num]maysat}
       \item $\csatisfyormay{\hehole{u}}{\cnum{n}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[ehole][num]maysat}}
       \end{pfsteps*}
+      Contradicts \pfref{not-satormay}.
       \restorelocalsteps{1}
       \item[\text{(\ref{rule:IHole})}]
       \begin{pfsteps*}
@@ -242,6 +297,7 @@
       \item $\cmaysatisfy{\hhole{e_1}{u}}{\cnum{n}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[hole]notintro} and \pfref{[num]refutable}} \pflabel{[hole][num]maysat}
       \item $\csatisfyormay{\hhole{e_1}{u}}{\cnum{n}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[hole][num]maysat}}
       \end{pfsteps*} 
+      Contradicts \pfref{not-satormay}.
       \restorelocalsteps{1}
       \item[\text{(\ref{rule:IAp})}]
       \begin{pfsteps*}
@@ -250,6 +306,7 @@
       \item $\cmaysatisfy{\hap{e_1}{e_2}}{\cnum{n}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[ap]notintro} and \pfref{[num]refutable}} \pflabel{[ap][num]maysat}
       \item $\csatisfyormay{\hap{e_1}{e_2}}{\cnum{n}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[ap][num]maysat}}
       \end{pfsteps*} 
+      Contradicts \pfref{not-satormay}.
       \restorelocalsteps{1}
       \item[\text{(\ref{rule:IPrl})}]
       \begin{pfsteps*}
@@ -258,6 +315,7 @@
       \item $\cmaysatisfy{\hprl{e_1}}{\cnum{n}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[prl]notintro} and \pfref{[num]refutable}} \pflabel{[prl][num]maysat}
       \item $\csatisfyormay{\hprl{e_1}}{\cnum{n}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[prl][num]maysat}}
       \end{pfsteps*} 
+      Contradicts \pfref{not-satormay}.
       \restorelocalsteps{1}
       \item[\text{(\ref{rule:IPrr})}]
       \begin{pfsteps*}
@@ -266,6 +324,7 @@
       \item $\cmaysatisfy{\hprr{e_1}}{\cnum{n}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[prr]notintro} and \pfref{[num]refutable}} \pflabel{[prr][num]maysat}
       \item $\csatisfyormay{\hprr{e_1}}{\cnum{n}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[prr][num]maysat}}
       \end{pfsteps*} 
+      Contradicts \pfref{not-satormay}.
       \restorelocalsteps{1}
       \item[\text{(\ref{rule:IMatch})}]
       \begin{pfsteps*}
@@ -274,6 +333,7 @@
       \item $\cmaysatisfy{\hmatch{e_1}{\zrules}}{\cnum{n}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[match]notintro} and \pfref{[num]refutable}} \pflabel{[match][num]maysat}
       \item $\csatisfyormay{\hmatch{e_1}{\zrules}}{\cnum{n}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[match][num]maysat}}
       \end{pfsteps*} 
+      Contradicts \pfref{not-satormay}.
       \restorelocalsteps{1}
       \item[\text{(\ref{rule:IPairL}), (\ref{rule:IPairR}), (\ref{rule:IPair})}] 
       \begin{pfsteps*}
@@ -311,6 +371,7 @@
         \item $\cmaysatisfy{\hehole{u}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[ehole][inl]notintro} and \pfref{[inl]refutable}} \pflabel{[ehole][inl]maysat}
         \item $\csatisfyormay{\hehole{u}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[ehole][inl]maysat}}
         \end{pfsteps*}
+        Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
         \item[\text{(\ref{rule:IHole})}]
         \begin{pfsteps*}
@@ -319,6 +380,7 @@
         \item $\cmaysatisfy{\hhole{e_1}{u}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[hole][inl]notintro} and \pfref{[inl]refutable}} \pflabel{[hole][inl]maysat}
         \item $\csatisfyormay{\hhole{e_1}{u}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[hole][inl]maysat}}
         \end{pfsteps*} 
+        Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
         \item[\text{(\ref{rule:IAp})}]
         \begin{pfsteps*}
@@ -327,6 +389,7 @@
         \item $\cmaysatisfy{\hap{e_1}{e_2}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[ap][inl]notintro} and \pfref{[inl]refutable}} \pflabel{[ap][inl]maysat}
         \item $\csatisfyormay{\hap{e_1}{e_2}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[ap][inl]maysat}}
         \end{pfsteps*} 
+        Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
         \item[\text{(\ref{rule:IPrl})}]
         \begin{pfsteps*}
@@ -335,6 +398,7 @@
         \item $\cmaysatisfy{\hprl{e_1}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[prl][inl]notintro} and \pfref{[inl]refutable}} \pflabel{[prl][inl]maysat}
         \item $\csatisfyormay{\hprl{e_1}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[prl][inl]maysat}}
         \end{pfsteps*} 
+        Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
         \item[\text{(\ref{rule:IPrr})}]
         \begin{pfsteps*}
@@ -343,6 +407,7 @@
         \item $\cmaysatisfy{\hprr{e_1}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[prr][inl]notintro} and \pfref{[inl]refutable}} \pflabel{[prr][inl]maysat}
         \item $\csatisfyormay{\hprr{e_1}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[prr][inl]maysat}}
         \end{pfsteps*} 
+        Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
         \item[\text{(\ref{rule:IMatch})}]
         \begin{pfsteps*}
@@ -351,6 +416,7 @@
         \item $\cmaysatisfy{\hmatch{e_1}{\zrules}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[match][inl]notintro} and \pfref{[inl]refutable}} \pflabel{[match][inl]maysat}
         \item $\csatisfyormay{\hmatch{e_1}{\zrules}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[match][inl]maysat}}
         \end{pfsteps*} 
+        Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
         \item[\text{(\ref{rule:IPairL}), (\ref{rule:IPairR}), (\ref{rule:IPair})}] 
         \begin{pfsteps*}
@@ -370,19 +436,66 @@
           \item $\tau_2'=\tau_2$ \BY{assumption}
           \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{[inl]e1typ}
           \item $\cnotsatisfyormay{e_1}{\hxi_1}$ \BY{\autoref{lem:satormay-inl} on \pfref{not-satormay}} \pflabel{[inl]not-satormay1}
-          \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ for any $e_1' \in \expcomplete{e_1}$ \BY{IH on \pfref{[inl]e1indet} and \pfref{[inl]e1typ} and \pfref{[inl]c1typ} and \pfref{[inl]not-satormay1}} \pflabel{[inl]forall1}
-          \item $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$ for any $e' \in \{\hinl{\tau_2}{e_1'} ~\vert~ e_1' \in \expcomplete{e_1}\}$ \BY{\autoref{lem:satormay-inl} on \pfref{[inl]forall1}} \pflabel{[inl]forall}
-          \item $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$ for any $e' \in \expcomplete{\hinl{\tau_2}{e_1}}$ \BY{\autoref{defn:complete} on \pfref{[inl]forall}}
+          \item if $\inValues{e_1'}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[inl]e1indet} and \pfref{[inl]e1typ} and \pfref{[inl]c1typ} and \pfref{[inl]not-satormay1}} \pflabel{[inl]forall1}
           \end{pfsteps*} 
+          To show if $\inValues{e'}{\hinl{\tau_2}{e_1}}$ then $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$, we assume $\inValues{e'}{\hinl{\tau_2}{e_1}}$.
+          \begin{pfsteps*}
+          \item $\inValues{e'}{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{[inl]invalues}
+          \end{pfsteps*}
+          By rule induction over \rulesref{rules:inValues} on \pfref{[inl]invalues}.
+          \begin{byCases}
+            \savelocalsteps{2}
+            \item[\text{(\ref{rule:IVVal})}]
+            \begin{pfsteps*}
+            \item $\isVal{\hinl{\tau_2}{e_1}}$ \BY{assumption}
+            \end{pfsteps*} 
+            Contradicts \pfref{eindet} by \autoref{lem:val-not-indet}.
+            \restorelocalsteps{2} 
+            \item[\text{(\ref{rule:IVIndet})}] 
+            \begin{pfsteps*}
+            \item $\notIntro{\hinl{\tau_2}{e_1}}$ \BY{assumption}
+            \end{pfsteps*} 
+            Contradicts \autoref{lem:no-inl-notintro}
+            \restorelocalsteps{2}
+            \item[\text{(\ref{rule:IVInl})}] 
+            \begin{pfsteps*}
+            \item $e'=\hinl{\tau_2}{e_1'}$ \BY{assumption}
+            \item $\inValues{e_1'}{e_1}$ \BY{assumption} \pflabel{[inl]invalues1}
+            \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{\pfref{[inl]forall1} on \pfref{[inl]invalues1}} \pflabel{[inl]not-satormay1'}
+            \item $\cnotsatisfyormay{\hinl{\tau_2}{e_1'}}{\cinl{\hxi_1}}$ \BY{\autoref{lem:satormay-inl} on \pfref{[inl]not-satormay1'}}
+            \end{pfsteps*} 
+          \end{byCases}
         \end{byCases}
         \restorelocalsteps{1}
         \item[\text{(\ref{rule:IInr})}] 
         \begin{pfsteps*}
         \item $e=\hinr{\tau_1}{e_2}$ \BY{assumption}
-        \item $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$ for any $e' \in \{\hinr{\tau_1}{e_2'}\}$ \BY{\autoref{lem:inr-notsatormay-inl}} \pflabel{[inr][inl]forallinr}
-        \item $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$ for any $e' \in \{\hinr{\tau_1}{e_2'} ~\vert~ e_2' \in \expcomplete{e_2}\}$ \BY{Weakening on \pfref{[inr][inl]forallinr}} \pflabel{[inr][inl]forallinr'}
-        \item $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$ for any $e' \in \expcomplete{\hinr{\tau_1}{e_2}}$ \BY{\autoref{defn:complete} on \pfref{[inr][inl]forallinr'}}
         \end{pfsteps*}
+        To show if $\inValues{e'}{\hinr{\tau_1}{e_2}}$ then $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$, we assume $\inValues{e'}{\hinr{\tau_1}{e_2}}$.
+        \begin{pfsteps*}
+        \item $\inValues{e'}{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{[inr]invalues}
+        \end{pfsteps*}
+        By rule induction over \rulesref{rules:inValues} on \pfref{[inr]invalues}.
+        \begin{byCases}
+          \savelocalsteps{2}
+          \item[\text{(\ref{rule:IVVal})}]
+          \begin{pfsteps*}
+          \item $\isVal{\hinr{\tau_1}{e_2}}$ \BY{assumption}
+          \end{pfsteps*} 
+          Contradicts \pfref{eindet} by \autoref{lem:val-not-indet}.
+          \restorelocalsteps{2} 
+          \item[\text{(\ref{rule:IVIndet})}] 
+          \begin{pfsteps*}
+          \item $\notIntro{\hinr{\tau_1}{e_2}}$ \BY{assumption}
+          \end{pfsteps*} 
+          Contradicts \autoref{lem:no-inr-notintro}
+          \restorelocalsteps{2}
+          \item[\text{(\ref{rule:IVInr})}] 
+          \begin{pfsteps*}
+          \item $e'=\hinr{\tau_1}{e_2'}$ \BY{assumption}
+          \item $\cnotsatisfyormay{\hinr{\tau_1}{e_2'}}{\cinl{\hxi_1}}$ \BY{\autoref{lem:inr-notsatormay-inl}}
+          \end{pfsteps*} 
+        \end{byCases}
       \end{byCases} 
     \restorelocalsteps{0}
     \item[\text{(\ref{rule:CTInr})}]
@@ -402,6 +515,7 @@
         \item $\cmaysatisfy{\hehole{u}}{\cinr{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[ehole][inr]notintro} and \pfref{[inr]refutable}} \pflabel{[ehole][inr]maysat}
         \item $\csatisfyormay{\hehole{u}}{\cinr{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[ehole][inr]maysat}}
         \end{pfsteps*}
+        Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
         \item[\text{(\ref{rule:IHole})}]
         \begin{pfsteps*}
@@ -410,6 +524,7 @@
         \item $\cmaysatisfy{\hhole{e_1}{u}}{\cinr{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[hole][inr]notintro} and \pfref{[inr]refutable}} \pflabel{[hole][inr]maysat}
         \item $\csatisfyormay{\hhole{e_1}{u}}{\cinr{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[hole][inr]maysat}}
         \end{pfsteps*} 
+        Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
         \item[\text{(\ref{rule:IAp})}]
         \begin{pfsteps*}
@@ -418,6 +533,7 @@
         \item $\cmaysatisfy{\hap{e_1}{e_2}}{\cinr{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[ap][inr]notintro} and \pfref{[inr]refutable}} \pflabel{[ap][inr]maysat}
         \item $\csatisfyormay{\hap{e_1}{e_2}}{\cinr{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[ap][inr]maysat}}
         \end{pfsteps*} 
+        Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
         \item[\text{(\ref{rule:IPrl})}]
         \begin{pfsteps*}
@@ -426,6 +542,7 @@
         \item $\cmaysatisfy{\hprl{e_1}}{\cinr{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[prl][inr]notintro} and \pfref{[inr]refutable}} \pflabel{[prl][inr]maysat}
         \item $\csatisfyormay{\hprl{e_1}}{\cinr{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[prl][inr]maysat}}
         \end{pfsteps*} 
+        Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
         \item[\text{(\ref{rule:IPrr})}]
         \begin{pfsteps*}
@@ -434,6 +551,7 @@
         \item $\cmaysatisfy{\hprr{e_1}}{\cinr{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[prr][inr]notintro} and \pfref{[inr]refutable}} \pflabel{[prr][inr]maysat}
         \item $\csatisfyormay{\hprr{e_1}}{\cinr{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[prr][inr]maysat}}
         \end{pfsteps*} 
+        Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
         \item[\text{(\ref{rule:IMatch})}]
         \begin{pfsteps*}
@@ -442,6 +560,7 @@
         \item $\cmaysatisfy{\hmatch{e_1}{\zrules}}{\cinr{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[match][inr]notintro} and \pfref{[inr]refutable}} \pflabel{[match][inr]maysat}
         \item $\csatisfyormay{\hmatch{e_1}{\zrules}}{\cinr{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[match][inr]maysat}}
         \end{pfsteps*} 
+        Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
         \item[\text{(\ref{rule:IPairL}), (\ref{rule:IPairR}), (\ref{rule:IPair})}] 
         \begin{pfsteps*}
@@ -452,10 +571,32 @@
         \item[\text{(\ref{rule:IInl})}] 
         \begin{pfsteps*}
         \item $e=\hinl{\tau_2}{e_1}$ \BY{assumption}
-        \item $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$ for any $e' \in \{\hinl{\tau_2}{e_1'}\}$ \BY{\autoref{lem:inl-notsatormay-inr}} \pflabel{[inl][inr]forallinl}
-        \item $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$ for any $e' \in \{\hinl{\tau_2}{e_1'} ~\vert~ e_1' \in \expcomplete{e_1}\}$ \BY{Weakening on \pfref{[inl][inr]forallinl}} \pflabel{[inl][inr]forallinl'}
-        \item $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$ for any $e' \in \expcomplete{\hinl{\tau_2}{e_1}}$ \BY{\autoref{defn:complete} on \pfref{[inl][inr]forallinl'}}
-        \end{pfsteps*} 
+        \end{pfsteps*}
+        To show if $\inValues{e'}{\hinl{\tau_2}{e_1}}$ then $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$, we assume $\inValues{e'}{\hinl{\tau_2}{e_1}}$.
+        \begin{pfsteps*}
+        \item $\inValues{e'}{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{[inl][inr]invalues}
+        \end{pfsteps*}
+        By rule induction over \rulesref{rules:inValues} on \pfref{[inl][inr]invalues}.
+        \begin{byCases}
+          \savelocalsteps{2}
+          \item[\text{(\ref{rule:IVVal})}]
+          \begin{pfsteps*}
+          \item $\isVal{\hinl{\tau_2}{e_1}}$ \BY{assumption}
+          \end{pfsteps*} 
+          Contradicts \pfref{eindet} by \autoref{lem:val-not-indet}.
+          \restorelocalsteps{2} 
+          \item[\text{(\ref{rule:IVIndet})}] 
+          \begin{pfsteps*}
+          \item $\notIntro{\hinl{\tau_2}{e_1}}$ \BY{assumption}
+          \end{pfsteps*} 
+          Contradicts \autoref{lem:no-inl-notintro}
+          \restorelocalsteps{2}
+          \item[\text{(\ref{rule:IVInl})}] 
+          \begin{pfsteps*}
+          \item $e'=\hinl{\tau_2}{e_1'}$ \BY{assumption}
+          \item $\cnotsatisfyormay{\hinl{\tau_2}{e_1'}}{\cinr{\hxi_2}}$ \BY{\autoref{lem:inl-notsatormay-inr}}
+          \end{pfsteps*} 
+        \end{byCases}
         \restorelocalsteps{1}
         \item[\text{(\ref{rule:IInr})}] 
         \begin{pfsteps*}
@@ -469,10 +610,35 @@
           \item $\tau_1'=\tau_1$ \BY{assumption}
           \item $\hexptyp{\cdot}{\Delta}{e_2}{\tau_2}$ \BY{assumption} \pflabel{[inr]e2typ}
           \item $\cnotsatisfyormay{e_2}{\hxi_2}$ \BY{\autoref{lem:satormay-inl} on \pfref{not-satormay}} \pflabel{[inr]not-satormay2}
-          \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ for any $e_2' \in \expcomplete{e_2}$ \BY{IH on \pfref{[inr]e2indet} and \pfref{[inr]e2typ} and \pfref{[inr]c2typ} and \pfref{[inr]not-satormay2}} \pflabel{[inr]forall2}
-          \item $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$ for any $e' \in \{\hinr{\tau_1}{e_2'} ~\vert~ e_2' \in \expcomplete{e_2}\}$ \BY{\autoref{lem:satormay-inr} on \pfref{[inr]forall2}} \pflabel{[inr]forall}
-          \item $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$ for any $e' \in \expcomplete{\hinr{\tau_1}{e_2}}$ \BY{\autoref{defn:complete} on \pfref{[inr]forall}}
+          \item if $\inValues{e_2'}{e_2}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[inr]e2indet} and \pfref{[inr]e2typ} and \pfref{[inr]c2typ} and \pfref{[inr]not-satormay2}} \pflabel{[inr]forall2}
           \end{pfsteps*} 
+          To show if $\inValues{e'}{\hinr{\tau_1}{e_2}}$ then $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$, we assume $\inValues{e'}{\hinr{\tau_1}{e_2}}$.
+          \begin{pfsteps*}
+          \item $\inValues{e'}{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{[inr][inr]invalues}
+          \end{pfsteps*}
+          By rule induction over \rulesref{rules:inValues} on \pfref{[inr][inr]invalues}.
+          \begin{byCases}
+            \savelocalsteps{2}
+            \item[\text{(\ref{rule:IVVal})}]
+            \begin{pfsteps*}
+            \item $\isVal{\hinr{\tau_1}{e_2}}$ \BY{assumption}
+            \end{pfsteps*} 
+            Contradicts \pfref{eindet} by \autoref{lem:val-not-indet}.
+            \restorelocalsteps{2} 
+            \item[\text{(\ref{rule:IVIndet})}] 
+            \begin{pfsteps*}
+            \item $\notIntro{\hinr{\tau_1}{e_2}}$ \BY{assumption}
+            \end{pfsteps*} 
+            Contradicts \autoref{lem:no-inr-notintro}
+            \restorelocalsteps{2}
+            \item[\text{(\ref{rule:IVInr})}] 
+            \begin{pfsteps*}
+            \item $e'=\hinr{\tau_1}{e_2'}$ \BY{assumption}
+            \item $\inValues{e_2'}{e_2}$ \BY{assumption} \pflabel{[inr]invalues2}
+            \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{\pfref{[inr]forall2} on \pfref{[inr]invalues2}} \pflabel{[inr]not-satormay2'}
+            \item $\cnotsatisfyormay{\hinr{\tau_1}{e_2'}}{\cinr{\hxi_2}}$ \BY{\autoref{lem:satormay-inr} on \pfref{[inr]not-satormay2'}}
+            \end{pfsteps*} 
+          \end{byCases}
         \end{byCases}
       \end{byCases} 
     \restorelocalsteps{0}
@@ -1213,6 +1379,11 @@ By rule induction over Rules (\ref{rules:Final}) on $\isFinal{\hpair{e_1}{e_2}}$
 \begin{proof}[Proof Sketch]
 By rule induction over Rules (\ref{rules:notintro}) on  $\notIntro{e}$, for each case, by rule induction over Rules (\ref{rules:Value}) on $\isVal{e}$ and we notice that $\isVal{e}$ is not derivable. By rule induction over Rules (\ref{rules:Final}) on $\isFinal{e}$, Rule (\ref{rule:FVal}) result in a contradiction with the fact that $\isVal{e}$ is not derivable while Rule (\ref{rule:FIndet}) tells us $\isIndet{e}$.
 \end{proof}
+
+\begin{lemma}
+  \label{lem:val-not-indet}
+  There doesn't exist such an expression $e$ such that both $\isVal{e}$ and $\isIndet{e}$.
+\end{lemma}
 
 \begin{lemma}[Finality]
   \label{lem:finality}
