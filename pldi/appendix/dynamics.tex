@@ -656,6 +656,8 @@
       \begin{pfsteps*}
       \item $e=\hehole{u}, \hhole{e_1}{u}, \hap{e_1}{e_2}, \hprl{e_1}, \hprr{e_1}, \hmatch{e_1}{\zrules}$ \BY{assumption}
       \item $\notIntro{e}$ \BY{\rulesref{rules:notintro}} \pflabel{[pair]notintro}
+      \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[pair]prlnotintro}
+      \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[pair]prrnotintro}
       \item $\expcomplete{e}=\{e' ~\vert~ \isVal{e'} \textand e' : \tprod{\tau_1}{\tau_2}\}$ \BY{\autoref{defn:complete} on \pfref{[pair]notintro}}
       \item $\isIndet{\hprl{e}}$ \BY{\ruleref{rule:IPrl} on \pfref{eindet}} \pflabel{[pair]prlindet}
       \item $\isIndet{\hprr{e}}$ \BY{\ruleref{rule:IPrr} on \pfref{eindet}} \pflabel{[pair]prrindet}
@@ -670,62 +672,89 @@
         \item $\fsatisfyormay{\hprl{e}}{\hxi_1}=\true$ \BY{assumption} \pflabel{[pair]fsatormay1}
         \item $\csatisfyormay{\hprl{e}}{\hxi_1}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]fsatormay1}} \pflabel{[pair]satormay1}
         \end{pfsteps*} 
+        By rule induction over \rulesref{rules:satormay} on \pfref{[pair]satormay1}.
+        \begin{byCases}
+          \savelocalsteps{3}
+          \item[\text{(\ref{rule:CSMSSat})}]
+          \begin{pfsteps*}
+          \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{asssumption} \pflabel{[pair]satisfy1}
+          \item 
+          \end{pfsteps*} 
+          \restorelocalsteps{3} 
+          \item[\text{(\ref{rule:CSMSMay})}]
+          \begin{pfsteps*}
+          \item $\cmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair]maysat1}
+          \end{pfsteps*} 
+        \end{byCases}
         \restorelocalsteps{2}
         \item[\false] 
         \begin{pfsteps*}
         \item $\fsatisfyormay{\hprl{e}}{\hxi_1}=\false$ \BY{assumption} \pflabel{[pair]not-fsatormay1}
         \item $\cnotsatisfyormay{\hprl{e}}{\hxi_1}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]not-fsatormay1}} \pflabel{[pair]not-satormay1}
-        \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ for any $e_1' \in \expcomplete{\hprl{e}}$ \BY{IH on \pfref{[pair]prlindet} and \pfref{[pair]prltyp} and \pfref{[pair]c1typ} and \pfref{[pair]not-satormay1}} \pflabel{[pair]complete1}
-        \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ for any $e_1' \in \{e_1' ~\vert~ \isVal{e_1'} \textand e_1' : \tau_1\}$ \BY{\autoref{defn:complete} on \pfref{[pair]complete1}} \pflabel{[pair]complete1'}
+        \item if $\inValues{e_1'}{\hprl{e}}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair]prlindet} and \pfref{[pair]prltyp} and \pfref{[pair]c1typ} and \pfref{[pair]not-satormay1}} \pflabel{[pair]complete1}
         \end{pfsteps*} 
-        Then for any $e' \in \{e' ~\vert~ \isVal{e'} \textand e' : \tprod{\tau_1}{\tau_2}\}$,
+        To show if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{e}$.
         \begin{pfsteps*}
-        \item $\isVal{e'}$ \BY{assumption} \pflabel{e'val}
-        \item $\hexptyp{\cdot}{\Delta}{e'}{\tprod{\tau_1}{\tau_2}}$ \BY{assumption} \pflabel{e'typ}
+        \item $\inValues{e'}{e}$ \BY{assumption} \pflabel{e'invalues}
         \end{pfsteps*}
-        By rule induction over \rulesref{rules:Value} on \pfref{e'val}.
+        By rule induction over \rulesref{rules:inValues} on \pfref{e'invalues}, only two rules apply.
         \begin{byCases}
           \savelocalsteps{3}
-          \item[\text{(\ref{rule:VNum})}]
+          \item[\text{(\ref{rule:IVVal})}]
           \begin{pfsteps*}
-          \item $e'=\hnum{n}$ \BY{assumption}
+          \item $\isVal{e}$ \BY{assumption}
           \end{pfsteps*} 
-          By rule induction over \rulesref{rules:TExp} on \pfref{e'typ}, no rule applies due to syntactic contradiction.
-          \restorelocalsteps{3}
-          \item[\text{(\ref{rule:VLam})}]
-          \begin{pfsteps*} 
-          \item $e'=\hlam{x}{\tau'}{e_1'}$ \BY{assumption}
+          Contradicts \pfref{eindet} by \autoref{lem:val-not-indet}.
+          \restorelocalsteps{3} 
+          \item[\text{(\ref{rule:IVIndet})}] 
+          \begin{pfsteps*}
+          \item $\isVal{e'}$ \BY{assumption} \pflabel{e'val}
+          \item $\hexptyp{\cdot}{\Delta}{e'}{\tprod{\tau_1}{\tau_2}}$ \BY{assumption} \pflabel{e'typ}
           \end{pfsteps*}
-          By rule induction over \rulesref{rules:TExp} on \pfref{e'typ}, no rule applies due to syntactic contradiction.
-          \restorelocalsteps{3}
-          \item[\text{(\ref{rule:VPair})}] 
-          \begin{pfsteps*} 
-          \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
-          \item $\isVal{e_1'}$ \BY{assumption} \pflabel{e1'val}
-          \end{pfsteps*}
-          By rule induction over \rulesref{rules:TExp} on \pfref{e'typ}, only one rule applies.
+          By rule induction over \rulesref{rules:Value} on \pfref{e'val}.
           \begin{byCases}
-            \item[\text{(\ref{rule:TPair})}]
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:VNum})}]
             \begin{pfsteps*}
-            \item $\hexptyp{\cdot}{\Delta}{e_1'}{\tau_1}$ \BY{assumption} \pflabel{e1'typ}
-            \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{\pfref{[pair]complete1'} on \pfref{e1'val} and \pfref{e1'typ}} \pflabel{[pair]not-satormay1'}
-            \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair]not-satormay1'}}
+            \item $e'=\hnum{n}$ \BY{assumption}
             \end{pfsteps*} 
+            By rule induction over \rulesref{rules:TExp} on \pfref{e'typ}, no rule applies due to syntactic contradiction.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:VLam})}]
+            \begin{pfsteps*} 
+            \item $e'=\hlam{x}{\tau'}{e_1'}$ \BY{assumption}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:TExp} on \pfref{e'typ}, no rule applies due to syntactic contradiction.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:VPair})}] 
+            \begin{pfsteps*} 
+            \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
+            \item $\isVal{e_1'}$ \BY{assumption} \pflabel{e1'val}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:TExp} on \pfref{e'typ}, only one rule applies.
+            \begin{byCases}
+              \item[\text{(\ref{rule:TPair})}]
+              \begin{pfsteps*}
+              \item $\hexptyp{\cdot}{\Delta}{e_1'}{\tau_1}$ \BY{assumption} \pflabel{e1'typ}
+              \item $\inValues{e_1'}{\hprl{e}}$ \BY{\ruleref{rule:IVIndet} on \pfref{[pair]prlnotintro} and \pfref{[pair]prltyp} and \pfref{e1'val} and \pfref{e1'typ}} \pflabel{e1'invalues}
+              \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{\pfref{[pair]complete1} on \pfref{e1'invalues}} \pflabel{[pair]not-satormay1'}
+              \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair]not-satormay1'}}
+              \end{pfsteps*} 
+            \end{byCases}
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:VInl})}] 
+            \begin{pfsteps*} 
+            \item $e'=\hinl{\tau_2}{e_1'}$ \BY{assumption}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:TExp} on \pfref{e'typ}, no rule applies due to syntactic contradiction.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:VInr})}] 
+            \begin{pfsteps*} 
+            \item $e'=\hinr{\tau_1}{e_2'}$ \BY{assumption}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:TExp} on \pfref{e'typ}, no rule applies due to syntactic contradiction.
           \end{byCases}
-          \restorelocalsteps{3}
-          \item[\text{(\ref{rule:VInl})}] 
-          \begin{pfsteps*} 
-          \item $e'=\hinl{\tau_2}{e_1'}$ \BY{assumption}
-          \end{pfsteps*}
-          By rule induction over \rulesref{rules:TExp} on \pfref{e'typ}, no rule applies due to syntactic contradiction.
-          \restorelocalsteps{3}
-          \item[\text{(\ref{rule:VInr})}] 
-          \begin{pfsteps*} 
-          \item $e'=\hinr{\tau_1}{e_2'}$ \BY{assumption}
-          \end{pfsteps*}
-          By rule induction over \rulesref{rules:TExp} on \pfref{e'typ}, no rule applies due to syntactic contradiction.
         \end{byCases}
-        To conclude, $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ for any $e' \in \expcomplete{e}$.
       \end{byCases}
       \restorelocalsteps{1}
       \item[\text{(\ref{rule:IPairL})}] 
@@ -1384,6 +1413,11 @@ By rule induction over Rules (\ref{rules:notintro}) on  $\notIntro{e}$, for each
   \label{lem:val-not-indet}
   There doesn't exist such an expression $e$ such that both $\isVal{e}$ and $\isIndet{e}$.
 \end{lemma}
+
+% \begin{lemma}
+%   \label{lem:val-not-notintro}
+%   There doesn't exist such an expression $e$ such that both $\isVal{e}$ and $\notIntro{e}$.
+% \end{lemma}
 
 \begin{lemma}[Finality]
   \label{lem:finality}
