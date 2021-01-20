@@ -229,7 +229,7 @@
       \inValues{\hinr{\tau_1}{e_2'}}{\hinr{\tau_1}{e_2}}
     }
   \end{equation}
-  \begin{equation}
+  \begin{equation}\label{rule:IVPair}
     \inferrule[IVPair]{
       \isIndet{\hpair{e_1}{e_2}} \\
       \hexptyp{\cdot}{\Delta}{\hpair{e_1}{e_2}}{\tau} \\
@@ -672,20 +672,120 @@
         \item $\fsatisfyormay{\hprl{e}}{\hxi_1}=\true$ \BY{assumption} \pflabel{[pair]fsatormay1}
         \item $\csatisfyormay{\hprl{e}}{\hxi_1}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]fsatormay1}} \pflabel{[pair]satormay1}
         \end{pfsteps*} 
-        By rule induction over \rulesref{rules:satormay} on \pfref{[pair]satormay1}.
+        By case analysis on the result of $\fsatisfyormay{\hprr{e}}{\hxi_2}$.
         \begin{byCases}
           \savelocalsteps{3}
-          \item[\text{(\ref{rule:CSMSSat})}]
+          \item[\true]
           \begin{pfsteps*}
-          \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{asssumption} \pflabel{[pair]satisfy1}
-          \item 
-          \end{pfsteps*} 
+          \item $\fsatisfyormay{\hprr{e}}{\hxi_2}=\true$ \BY{assumption} \pflabel{[pair]fsatormay2}
+          \item $\csatisfyormay{\hprr{e}}{\hxi_2}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]fsatormay2}} \pflabel{[pair]satormay2}
+          \end{pfsteps*}  
+          By rule induction over \rulesref{rules:satormay} on \pfref{[pair]satormay1}.
+          \begin{byCases}
+            \savelocalsteps{4}
+            \item[\text{(\ref{rule:CSMSSat})}]
+            \begin{pfsteps*}
+            \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{asssumption} \pflabel{[pair]satisfy1}
+            \end{pfsteps*} 
+            By rule induction over \rulesref{rules:satormay} on \pfref{[pair]satormay2}.
+            \begin{byCases}
+              \savelocalsteps{5}
+              \item[\text{(\ref{rule:CSMSSat})}]
+              \begin{pfsteps*}
+              \item $\csatisfy{\hprr{e}}{\hxi_2}$ \BY{asssumption} \pflabel{[pair]satisfy2}
+              \item $\csatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSNotIntroPair} on \pfref{[pair]notintro} and \pfref{[pair]satisfy1} and \pfref{[pair]satisfy2}} \pflabel{[pair]satisfy}
+              \item $\csatisfyormay{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSSat} on \pfref{[pair]satisfy}}
+              \end{pfsteps*} 
+              Contradicts \pfref{not-satormay}.
+              \restorelocalsteps{5}
+              \item[\text{(\ref{rule:CSMSMay})}]
+              \begin{pfsteps*}
+              \item $\cmaysatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair]maysat2}
+              \item $\refutable{\hxi_2}$ \BY{\autoref{lem:notintro-maysat-refutable} on \pfref{[pair]prrnotintro} and \pfref{[pair]maysat2}} \pflabel{[pair]refutable2}
+              \item $\refutable{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:RXPairR} on \pfref{[pair]refutable2}} \pflabel{[pair]refutable}
+              \item $\cmaysatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair]refutable}} \pflabel{[pair]maysat}
+              \item $\csatisfyormay{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair]maysat}}
+              \end{pfsteps*} 
+            \end{byCases}
+            \restorelocalsteps{4} 
+            \item[\text{(\ref{rule:CSMSMay})}]
+            \begin{pfsteps*}
+            \item $\cmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair]maysat1}
+            \item $\refutable{\hxi_1}$ \BY{\autoref{lem:notintro-maysat-refutable} on \pfref{[pair]prlnotintro} and \pfref{[pair]maysat1}} \pflabel{[pair]refutable1}
+            \item $\refutable{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:RXPairL} on \pfref{[pair]refutable1}} \pflabel{[pair]refutable'}
+            \item $\cmaysatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair]refutable'}} \pflabel{[pair]maysat'}
+            \item $\csatisfyormay{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair]maysat'}}
+            \end{pfsteps*} 
+          \end{byCases} 
           \restorelocalsteps{3} 
-          \item[\text{(\ref{rule:CSMSMay})}]
+          \item[\false]
           \begin{pfsteps*}
-          \item $\cmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair]maysat1}
+          \item $\fsatisfyormay{\hprr{e}}{\hxi_2} = \false$ \BY{assumption} \pflabel{[pair]not-fsatormay2}
+          \item $\csatisfyormay{\hprr{e}}{\hxi_2}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]not-fsatormay2}} \pflabel{[pair]not-satormay2}
+          \item if $\inValues{e_2'}{\hprr{e}}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair]prrindet} and \pfref{[pair]prrtyp} and \pfref{[pair]c2typ} and \pfref{[pair]not-satormay2}} \pflabel{[pair]complete2}
           \end{pfsteps*} 
+          To show if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{e}$.
+          \begin{pfsteps*}
+          \item $\inValues{e'}{e}$ \BY{assumption} \pflabel{e'invalues'}
+          \end{pfsteps*}
+          By rule induction over \rulesref{rules:inValues} on \pfref{e'invalues'}, only two rules apply.
+          \begin{byCases}
+            \savelocalsteps{4}
+            \item[\text{(\ref{rule:IVVal})}]
+            \begin{pfsteps*}
+            \item $\isVal{e}$ \BY{assumption}
+            \end{pfsteps*} 
+            Contradicts \pfref{eindet} by \autoref{lem:val-not-indet}.
+            \restorelocalsteps{4} 
+            \item[\text{(\ref{rule:IVIndet})}] 
+            \begin{pfsteps*}
+            \item $\isVal{e'}$ \BY{assumption} \pflabel{e'val'}
+            \item $\hexptyp{\cdot}{\Delta}{e'}{\tprod{\tau_1}{\tau_2}}$ \BY{assumption} \pflabel{e'typ'}
+            \end{pfsteps*}
+            By rule induction over \rulesref{rules:Value} on \pfref{e'val'}.
+            \begin{byCases}
+              \savelocalsteps{5}
+              \item[\text{(\ref{rule:VNum})}]
+              \begin{pfsteps*}
+              \item $e'=\hnum{n}$ \BY{assumption}
+              \end{pfsteps*} 
+              By rule induction over \rulesref{rules:TExp} on \pfref{e'typ'}, no rule applies due to syntactic contradiction.
+              \restorelocalsteps{5}
+              \item[\text{(\ref{rule:VLam})}]
+              \begin{pfsteps*} 
+              \item $e'=\hlam{x}{\tau'}{e_1'}$ \BY{assumption}
+              \end{pfsteps*}
+              By rule induction over \rulesref{rules:TExp} on \pfref{e'typ'}, no rule applies due to syntactic contradiction.
+              \restorelocalsteps{5}
+              \item[\text{(\ref{rule:VPair})}] 
+              \begin{pfsteps*} 
+              \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
+              \item $\isVal{e_2'}$ \BY{assumption} \pflabel{e2'val}
+              \end{pfsteps*}
+              By rule induction over \rulesref{rules:TExp} on \pfref{e'typ'}, only one rule applies.
+                Case \text{(\ref{rule:TPair})}
+                \begin{pfsteps*}
+                \item $\hexptyp{\cdot}{\Delta}{e_2'}{\tau_2}$ \BY{assumption} \pflabel{e2'typ}
+                \item $\inValues{e_2'}{\hprr{e}}$ \BY{\ruleref{rule:IVIndet} on \pfref{[pair]prrnotintro} and \pfref{[pair]prrtyp} and \pfref{e2'val} and \pfref{e2'typ}} \pflabel{e2'invalues}
+                \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{\pfref{[pair]complete2} on \pfref{e2'invalues}} \pflabel{[pair]not-satormay2'}
+                \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair]not-satormay1'}}
+                \end{pfsteps*}
+              \restorelocalsteps{5}
+              \item[\text{(\ref{rule:VInl})}] 
+              \begin{pfsteps*} 
+              \item $e'=\hinl{\tau_2}{e_1'}$ \BY{assumption}
+              \end{pfsteps*}
+              By rule induction over \rulesref{rules:TExp} on \pfref{e'typ'}, no rule applies due to syntactic contradiction.
+              \restorelocalsteps{5}
+              \item[\text{(\ref{rule:VInr})}] 
+              \begin{pfsteps*} 
+              \item $e'=\hinr{\tau_1}{e_2'}$ \BY{assumption}
+              \end{pfsteps*}
+              By rule induction over \rulesref{rules:TExp} on \pfref{e'typ'}, no rule applies due to syntactic contradiction.
+            \end{byCases}
+          \end{byCases}
         \end{byCases}
+        
         \restorelocalsteps{2}
         \item[\false] 
         \begin{pfsteps*}
@@ -776,17 +876,88 @@
           \item[\text{(\ref{rule:TPair})}]
           \begin{pfsteps*}
           \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{[pair1]e1typ}
-          \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ for any $e_1' \in \expcomplete{e_1}$ \BY{IH on \pfref{[pair1]e1indet} and \pfref{[pair1]e1typ} and \pfref{[pair]c1typ} and \pfref{[pair1]not-satormay-1}} \pflabel{[pair1]complete1}
-          \item $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\hpair{\hxi_1}{\hxi_2}}$ for any $e' \in \{\hpair{e_1'}{e_2'} ~\vert~ e_1' \in \expcomplete{e_1} \textand e_2' \in \expcomplete{e_2}\}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair1]complete1}}
+          \item if $\inValues{e_1'}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair1]e1indet} and \pfref{[pair1]e1typ} and \pfref{[pair]c1typ} and \pfref{[pair1]not-satormay-1}} \pflabel{[pair1]complete1}
           \end{pfsteps*} 
+          To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+          \begin{pfsteps*}
+          \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair1]invalues}
+          \end{pfsteps*}
+          By rule induction over \rulesref{rules:inValues} on \pfref{[pair1]invalues}.
+          \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:IVVal})}]
+            \begin{pfsteps*}
+            \item $\isVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+            \end{pfsteps*} 
+            Contradicts \pfref{eindet} by \autoref{lem:val-not-indet}.
+            \restorelocalsteps{3} 
+            \item[\text{(\ref{rule:IVIndet})}] 
+            \begin{pfsteps*}
+            \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
+            \end{pfsteps*}
+            Contradicts \autoref{lem:no-pair-notintro}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:IVPair})}]
+            \begin{pfsteps*}
+            \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
+            \item $\inValues{e_1'}{e_1}$ \BY{assumption} \pflabel{[pair1]invalues1}
+            \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{\pfref{[pair1]complete1} on \pfref{[pair1]invalues1}} \pflabel{[pair1]not-satormay1}
+            \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair1]not-satormay1}}
+            \end{pfsteps*} 
+          \end{byCases}
         \end{byCases}
         \restorelocalsteps{2}
         \item[\cnotsatisfyormay{e_2}{\hxi_2}]
         \begin{pfsteps*}
-        \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{assumption} \pflabel{[pair1]not-satormay-2}
-        \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ for any $e_2' \in \expcomplete{e_2}$ \BY{\autoref{defn:complete} and \pfref{[pair1]not-satormay-2}} \pflabel{[pair1]complete2}
-        \item $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\hpair{\hxi_1}{\hxi_2}}$ for any $e' \in \{\hpair{e_1'}{e_2'} ~\vert~ e_1' \in \expcomplete{e_1} \textand e_2' \in \expcomplete{e_2}\}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair1]complete2}}
-        \end{pfsteps*} 
+        \item $\cnotsatisfyormay{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[pair1]not-satormay-2}
+        \end{pfsteps*}
+        To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+        \begin{pfsteps*}
+        \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair1]invalues'}
+        \end{pfsteps*}
+        By rule induction over \rulesref{rules:inValues} on \pfref{[pair1]invalues'}.
+        \begin{byCases}
+          \savelocalsteps{3}
+          \item[\text{(\ref{rule:IVVal})}]
+          \begin{pfsteps*}
+          \item $\isVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+          \end{pfsteps*} 
+          Contradicts \pfref{eindet} by \autoref{lem:val-not-indet}.
+          \restorelocalsteps{3} 
+          \item[\text{(\ref{rule:IVIndet})}] 
+          \begin{pfsteps*}
+          \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
+          \end{pfsteps*}
+          Contradicts \autoref{lem:no-pair-notintro}.
+          \restorelocalsteps{3}
+          \item[\text{(\ref{rule:IVPair})}]
+          \begin{pfsteps*}
+          \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
+          \item $\inValues{e_2'}{e_2}$ \BY{assumption} \pflabel{[pair1]invalues1'}
+          \end{pfsteps*}
+          By rule induction over \rulesref{rules:inValues} on \pfref{[pair1]invalues1'}.
+          \begin{byCases}
+            \savelocalsteps{4}
+            \item[\text{(\ref{rule:IVVal})}]
+            \begin{pfsteps*}
+            \item $e_2'=e_2$ \BY{assumption} \pflabel{subst}
+            \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{\pfref{subst} and \pfref{[pair1]not-satormay-2}} \pflabel{[pair1]not-satormay-2'}
+            \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair1]not-satormay-2'}}
+            \end{pfsteps*} 
+            \restorelocalsteps{4} 
+            \item[\text{(\ref{rule:IVIndet})}]
+            \begin{pfsteps*}
+            \item $\notIntro{e_2}$ \BY{assumption}
+            \end{pfsteps*} 
+            Contradicts \pfref{[pair1]e2val} by \autoref{lem:val-not-notintro}.
+            \restorelocalsteps{4} 
+            \item[\text{(\ref{rule:IVInl}), (\ref{rule:IVInr}), (\ref{rule:IVPair})}]
+            \begin{pfsteps*}
+            \item $\isIndet{e_2}$ \BY{assumption}
+            \end{pfsteps*} 
+            Contradicts \pfref{[pair1]e2val} by \autoref{lem:val-not-indet}.
+          \end{byCases}
+        \end{byCases}
       \end{byCases}
       \restorelocalsteps{1}
       \item[\text{(\ref{rule:IPairR})}] 
@@ -801,10 +972,55 @@
         \savelocalsteps{2}
         \item[\cnotsatisfyormay{e_1}{\hxi_1}]
         \begin{pfsteps*}
-        \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{assumption} \pflabel{[pair2]not-satormay-1}
-        \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ for any $e_1' \in \expcomplete{e_1}$ \BY{\autoref{defn:complete} and \pfref{[pair2]not-satormay-1}} \pflabel{[pair2]complete1}
-        \item $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\hpair{\hxi_1}{\hxi_2}}$ for any $e' \in \{\hpair{e_1'}{e_2'} ~\vert~ e_1' \in \expcomplete{e_1} \textand e_2' \in \expcomplete{e_2}\}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair2]complete1}}
-        \end{pfsteps*} 
+        \item $\cnotsatisfyormay{e_1}{\hxi_1}$ \BY{assumption} \pflabel{[pair2]not-satormay-1}
+        \end{pfsteps*}
+        To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+        \begin{pfsteps*}
+        \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair2]invalues'}
+        \end{pfsteps*}
+        By rule induction over \rulesref{rules:inValues} on \pfref{[pair2]invalues'}.
+        \begin{byCases}
+          \savelocalsteps{3}
+          \item[\text{(\ref{rule:IVVal})}]
+          \begin{pfsteps*}
+          \item $\isVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+          \end{pfsteps*} 
+          Contradicts \pfref{eindet} by \autoref{lem:val-not-indet}.
+          \restorelocalsteps{3} 
+          \item[\text{(\ref{rule:IVIndet})}] 
+          \begin{pfsteps*}
+          \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
+          \end{pfsteps*}
+          Contradicts \autoref{lem:no-pair-notintro}.
+          \restorelocalsteps{3}
+          \item[\text{(\ref{rule:IVPair})}]
+          \begin{pfsteps*}
+          \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
+          \item $\inValues{e_1'}{e_1}$ \BY{assumption} \pflabel{[pair2]invalues1'}
+          \end{pfsteps*}
+          By rule induction over \rulesref{rules:inValues} on \pfref{[pair2]invalues1'}.
+          \begin{byCases}
+            \savelocalsteps{4}
+            \item[\text{(\ref{rule:IVVal})}]
+            \begin{pfsteps*}
+            \item $e_1'=e_1$ \BY{assumption} \pflabel{[pair2]subst}
+            \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{\pfref{[pair2]subst} and \pfref{[pair2]not-satormay-1}} \pflabel{[pair2]not-satormay-1'}
+            \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair2]not-satormay-1'}}
+            \end{pfsteps*} 
+            \restorelocalsteps{4} 
+            \item[\text{(\ref{rule:IVIndet})}]
+            \begin{pfsteps*}
+            \item $\notIntro{e_1}$ \BY{assumption}
+            \end{pfsteps*} 
+            Contradicts \pfref{[pair2]e1val} by \autoref{lem:val-not-notintro}.
+            \restorelocalsteps{4} 
+            \item[\text{(\ref{rule:IVInl}), (\ref{rule:IVInr}), (\ref{rule:IVPair})}]
+            \begin{pfsteps*}
+            \item $\isIndet{e_1}$ \BY{assumption}
+            \end{pfsteps*} 
+            Contradicts \pfref{[pair2]e1val} by \autoref{lem:val-not-indet}.
+          \end{byCases}
+        \end{byCases}
         \restorelocalsteps{2}
         \item[\cnotsatisfyormay{e_2}{\hxi_2}]
         \begin{pfsteps*}
@@ -815,9 +1031,35 @@
           \item[\text{(\ref{rule:TPair})}]
           \begin{pfsteps*}
           \item $\hexptyp{\cdot}{\Delta}{e_2}{\tau_2}$ \BY{assumption} \pflabel{[pair2]e2typ}
-          \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ for any $e_2' \in \expcomplete{e_2}$ \BY{IH on \pfref{[pair2]e2indet} and \pfref{[pair2]e2typ} and \pfref{[pair]c2typ} and \pfref{[pair2]not-satormay-2}} \pflabel{[pair2]complete2}
-          \item $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\hpair{\hxi_1}{\hxi_2}}$ for any $e' \in \{\hpair{e_1'}{e_2'} ~\vert~ e_1' \in \expcomplete{e_1} \textand e_2' \in \expcomplete{e_2}\}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair2]complete2}}
+          \item if $\inValues{e_2'}{e_2}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair2]e2indet} and \pfref{[pair2]e2typ} and \pfref{[pair]c2typ} and \pfref{[pair2]not-satormay-2}} \pflabel{[pair2]complete2}
           \end{pfsteps*} 
+          To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+          \begin{pfsteps*}
+          \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair2]invalues}
+          \end{pfsteps*}
+          By rule induction over \rulesref{rules:inValues} on \pfref{[pair2]invalues}.
+          \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:IVVal})}]
+            \begin{pfsteps*}
+            \item $\isVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+            \end{pfsteps*} 
+            Contradicts \pfref{eindet} by \autoref{lem:val-not-indet}.
+            \restorelocalsteps{3} 
+            \item[\text{(\ref{rule:IVIndet})}] 
+            \begin{pfsteps*}
+            \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
+            \end{pfsteps*}
+            Contradicts \autoref{lem:no-pair-notintro}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:IVPair})}]
+            \begin{pfsteps*}
+            \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
+            \item $\inValues{e_2'}{e_2}$ \BY{assumption} \pflabel{[pair2]invalues2}
+            \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{\pfref{[pair2]complete2} on \pfref{[pair2]invalues2}} \pflabel{[pair2]not-satormay2}
+            \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair2]not-satormay2}}
+            \end{pfsteps*} 
+          \end{byCases}
         \end{byCases}
       \end{byCases}
       \restorelocalsteps{1}
@@ -828,35 +1070,81 @@
       \item $\isIndet{e_2}$ \BY{assumption} \pflabel{[pair3]e2indet}
       \item $\cnotsatisfyormay{e_1}{\hxi_1}$ or $\cnotsatisfyormay{e_2}{\hxi_2}$ \BY{\autoref{lem:satormay-pair} on \pfref{not-satormay}} \pflabel{[pair3]not-satormay-1or2}
       \end{pfsteps*}
-      By case analysis on the disjunction in \pfref{[pair3]not-satormay-1or2}.
+      By rule induction over \rulesref{rules:TExp} on \pfref{etyp}, only one rule applies.
       \begin{byCases}
-        \savelocalsteps{2}
-        \item[\cnotsatisfyormay{e_1}{\hxi_1}]
+        \item[\text{(\ref{rule:TPair})}]
         \begin{pfsteps*}
-        \item $\cnotsatisfyormay{e_1}{\hxi_1}$ \BY{assumption} \pflabel{[pair3]not-satormay-1}
-        \end{pfsteps*}
-        By rule induction over \rulesref{rules:TExp} on \pfref{etyp}, only one rule applies.
+        \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{[pair3]e1typ}
+        \item $\hexptyp{\cdot}{\Delta}{e_2}{\tau_2}$ \BY{assumption} \pflabel{[pair3]e2typ}
+        \end{pfsteps*} 
+        By case analysis on the disjunction in \pfref{[pair3]not-satormay-1or2}.
         \begin{byCases}
-          \item[\text{(\ref{rule:TPair})}]
+          \savelocalsteps{2}
+          \item[\cnotsatisfyormay{e_1}{\hxi_1}]
           \begin{pfsteps*}
-          \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{[pair3]e1typ}
-          \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ for any $e_1' \in \expcomplete{e_1}$ \BY{IH on \pfref{[pair3]e1indet} and \pfref{[pair3]e1typ} and \pfref{[pair]c1typ} and \pfref{[pair3]not-satormay-1}} \pflabel{[pair3]complete1}
-          \item $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\hpair{\hxi_1}{\hxi_2}}$ for any $e' \in \{\hpair{e_1'}{e_2'} ~\vert~ e_1' \in \expcomplete{e_1} \textand e_2' \in \expcomplete{e_2}\}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair3]complete1}}
-          \end{pfsteps*} 
-        \end{byCases}
-        \restorelocalsteps{2}
-        \item[\cnotsatisfyormay{e_2}{\hxi_2}]
-        \begin{pfsteps*}
-        \item $\cnotsatisfyormay{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[pair3]not-satormay-2}
-        \end{pfsteps*}
-        By rule induction over \rulesref{rules:TExp} on \pfref{etyp}, only one rule applies.
-        \begin{byCases}
-          \item[\text{(\ref{rule:TPair})}]
+          \item $\cnotsatisfyormay{e_1}{\hxi_1}$ \BY{assumption} \pflabel{[pair3]not-satormay-1}
+          \item if $\inValues{e_1'}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair3]e1indet} and \pfref{[pair3]e1typ} and \pfref{[pair]c1typ} and \pfref{[pair3]not-satormay-1}} \pflabel{[pair3]complete1}
+          \end{pfsteps*}
+          To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
           \begin{pfsteps*}
-          \item $\hexptyp{\cdot}{\Delta}{e_2}{\tau_2}$ \BY{assumption} \pflabel{[pair3]e2typ}
-          \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ for any $e_2' \in \expcomplete{e_2}$ \BY{IH on \pfref{[pair3]e2indet} and \pfref{[pair3]e2typ} and \pfref{[pair]c2typ} and \pfref{[pair3]not-satormay-2}} \pflabel{[pair3]complete2}
-          \item $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\hpair{\hxi_1}{\hxi_2}}$ for any $e' \in \{\hpair{e_1'}{e_2'} ~\vert~ e_1' \in \expcomplete{e_1} \textand e_2' \in \expcomplete{e_2}\}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair3]complete2}}
-          \end{pfsteps*} 
+          \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair3]invalues}
+          \end{pfsteps*}
+          By rule induction over \rulesref{rules:inValues} on \pfref{[pair3]invalues}.
+          \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:IVVal})}]
+            \begin{pfsteps*}
+            \item $\isVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+            \end{pfsteps*} 
+            Contradicts \pfref{eindet} by \autoref{lem:val-not-indet}.
+            \restorelocalsteps{3} 
+            \item[\text{(\ref{rule:IVIndet})}] 
+            \begin{pfsteps*}
+            \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
+            \end{pfsteps*}
+            Contradicts \autoref{lem:no-pair-notintro}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:IVPair})}]
+            \begin{pfsteps*}
+            \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
+            \item $\inValues{e_1'}{e_1}$ \BY{assumption} \pflabel{[pair3]invalues1}
+            \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{\pfref{[pair3]complete1} on \pfref{[pair3]invalues1}} \pflabel{[pair3]not-satormay1}
+            \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair3]not-satormay1}}
+            \end{pfsteps*} 
+          \end{byCases}
+          \restorelocalsteps{2}
+          \item[\cnotsatisfyormay{e_2}{\hxi_2}]
+          \begin{pfsteps*}
+          \item $\cnotsatisfyormay{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[pair3]not-satormay-2}
+          \item if $\inValues{e_2'}{e_2}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair3]e2indet} and \pfref{[pair3]e2typ} and \pfref{[pair]c2typ} and \pfref{[pair3]not-satormay-2}} \pflabel{[pair3]complete2}
+          \end{pfsteps*}
+          To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+          \begin{pfsteps*}
+          \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair3]invalues'}
+          \end{pfsteps*}
+          By rule induction over \rulesref{rules:inValues} on \pfref{[pair3]invalues'}.
+          \begin{byCases}
+            \savelocalsteps{3}
+            \item[\text{(\ref{rule:IVVal})}]
+            \begin{pfsteps*}
+            \item $\isVal{\hpair{e_1}{e_2}}$ \BY{assumption}
+            \end{pfsteps*} 
+            Contradicts \pfref{eindet} by \autoref{lem:val-not-indet}.
+            \restorelocalsteps{3} 
+            \item[\text{(\ref{rule:IVIndet})}] 
+            \begin{pfsteps*}
+            \item $\notIntro{\hpair{e_1}{e_2}}$ \BY{assumption}
+            \end{pfsteps*}
+            Contradicts \autoref{lem:no-pair-notintro}.
+            \restorelocalsteps{3}
+            \item[\text{(\ref{rule:IVPair})}]
+            \begin{pfsteps*}
+            \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
+            \item $\inValues{e_2'}{e_2}$ \BY{assumption} \pflabel{[pair3]invalues2}
+            \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{\pfref{[pair3]complete2} on \pfref{[pair3]invalues2}} \pflabel{[pair3]not-satormay2}
+            \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair3]not-satormay2}}
+            \end{pfsteps*} 
+          \end{byCases}
         \end{byCases}
       \end{byCases}
       \restorelocalsteps{1}
@@ -881,9 +1169,15 @@
     \item $\cnotsatisfyormay{e}{\cor{\hxi_1}{\hxi_2}}$ \BY{assumption} \pflabel{[or]not-satormay}
     \item $\cnotsatisfyormay{e}{\hxi_1}$ \BY{\autoref{lem:satormay-or} on \pfref{[or]not-satormay}} \pflabel{[or]not-satormay-1}
     \item $\cnotsatisfyormay{e}{\hxi_2}$ \BY{\autoref{lem:satormay-or} on \pfref{[or]not-satormay}} \pflabel{[or]not-satormay-2}
-    \item $\cnotsatisfyormay{e'}{\hxi_1}$ for any $e' \in \expcomplete{e}$ \BY{IH on \pfref{eindet} and \pfref{etyp} and \pfref{[or]c1typ} and \pfref{[or]not-satormay-1}} \pflabel{[or]complete1}
-    \item $\cnotsatisfyormay{e'}{\hxi_2}$ for any $e' \in \expcomplete{e}$ \BY{IH on \pfref{eindet} and \pfref{etyp} and \pfref{[or]c2typ} and \pfref{[or]not-satormay-2}} \pflabel{[or]complete2}
-    \item $\cnotsatisfyormay{e'}{\cor{\hxi_1}{\hxi_2}}$ for any $e' \in \expcomplete{e}$ \BY{\autoref{lem:satormay-or} on \pfref{[or]complete1} and \pfref{[or]complete2}}
+    \item if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\hxi_1}$ \BY{IH on \pfref{eindet} and \pfref{etyp} and \pfref{[or]c1typ} and \pfref{[or]not-satormay-1}} \pflabel{[or]complete1}
+    \item if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\hxi_2}$ \BY{IH on \pfref{eindet} and \pfref{etyp} and \pfref{[or]c2typ} and \pfref{[or]not-satormay-2}} \pflabel{[or]complete2}
+    \end{pfsteps*}
+    To show that if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\cor{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{e}$.
+    \begin{pfsteps*}
+    \item $\inValues{e'}{e}$ \BY{assumption} \pflabel{[or]invalues}
+    \item $\cnotsatisfyormay{e'}{\hxi_1}$ \BY{\pfref{[or]complete1} on \pfref{[or]invalues}} \pflabel{[or]not-satormay-1'}
+    \item $\cnotsatisfyormay{e'}{\hxi_2}$ \BY{\pfref{[or]complete2} on \pfref{[or]invalues}} \pflabel{[or]not-satormay-2'}
+    \item $\cnotsatisfyormay{e'}{\cor{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-or} on \pfref{[or]not-satormay-1'} and \pfref{[or]not-satormay-2'}}
     \end{pfsteps*}
   \end{byCases}
 \end{proof}
@@ -1414,10 +1708,10 @@ By rule induction over Rules (\ref{rules:notintro}) on  $\notIntro{e}$, for each
   There doesn't exist such an expression $e$ such that both $\isVal{e}$ and $\isIndet{e}$.
 \end{lemma}
 
-% \begin{lemma}
-%   \label{lem:val-not-notintro}
-%   There doesn't exist such an expression $e$ such that both $\isVal{e}$ and $\notIntro{e}$.
-% \end{lemma}
+\begin{lemma}
+  \label{lem:val-not-notintro}
+  There doesn't exist such an expression $e$ such that both $\isVal{e}$ and $\notIntro{e}$.
+\end{lemma}
 
 \begin{lemma}[Finality]
   \label{lem:finality}
