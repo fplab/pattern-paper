@@ -173,21 +173,6 @@
 \end{subequations}
 
 \judgboxa{
-  \expcomplete{e}
-}{
-  for $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$
-}
-\begin{subequations}\label{defn:complete}
-  \begin{align}
-    \expcomplete{e} ={}& \{e\} \textif \isVal{e} \\
-    \expcomplete{e} ={}& \{e' ~\vert~ e' : \tau \textand \isVal{e}\} \textif \notIntro{e} \\
-    \expcomplete{\hinl{\tau_2}{e_1}} ={}& \{\hinl{\tau_2}{e_1'} ~\vert~ e_1' \in \expcomplete{e_1}\} \\
-    \expcomplete{\hinr{\tau_1}{e_2}} ={}& \{\hinr{\tau_1}{e_2'} ~\vert~ e_2' \in \expcomplete{e_2}\} \\
-    \expcomplete{\hpair{e_1}{e_2}} ={}& \{\hpair{e_1'}{e_2'} ~\vert~ e_1' \in \expcomplete{e_1} \textand e_2' \in \expcomplete{e_2}\}
-  \end{align}
-\end{subequations}
-
-\judgboxa{
   \inValues{e'}{e}
 }{
   $e'$ is one of the possible values of $e$
@@ -658,7 +643,6 @@
       \item $\notIntro{e}$ \BY{\rulesref{rules:notintro}} \pflabel{[pair]notintro}
       \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[pair]prlnotintro}
       \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[pair]prrnotintro}
-      \item $\expcomplete{e}=\{e' ~\vert~ \isVal{e'} \textand e' : \tprod{\tau_1}{\tau_2}\}$ \BY{\autoref{defn:complete} on \pfref{[pair]notintro}}
       \item $\isIndet{\hprl{e}}$ \BY{\ruleref{rule:IPrl} on \pfref{eindet}} \pflabel{[pair]prlindet}
       \item $\isIndet{\hprr{e}}$ \BY{\ruleref{rule:IPrr} on \pfref{eindet}} \pflabel{[pair]prrindet}
       \item $\hexptyp{\cdot}{\Delta}{\hprl{e}}{\tau_1}$ \BY{\ruleref{rule:TPrl} on \pfref{etyp}} \pflabel{[pair]prltyp}
@@ -762,8 +746,8 @@
               \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
               \item $\isVal{e_2'}$ \BY{assumption} \pflabel{e2'val}
               \end{pfsteps*}
-              By rule induction over \rulesref{rules:TExp} on \pfref{e'typ'}, only one rule applies.
-                Case \text{(\ref{rule:TPair})}
+              By rule induction over \rulesref{rules:TExp} on \pfref{e'typ'}, only one rule applies. \\
+                \textbf{Case} \text{(\ref{rule:TPair})}\textbf{.}
                 \begin{pfsteps*}
                 \item $\hexptyp{\cdot}{\Delta}{e_2'}{\tau_2}$ \BY{assumption} \pflabel{e2'typ}
                 \item $\inValues{e_2'}{\hprr{e}}$ \BY{\ruleref{rule:IVIndet} on \pfref{[pair]prrnotintro} and \pfref{[pair]prrtyp} and \pfref{e2'val} and \pfref{e2'typ}} \pflabel{e2'invalues}
