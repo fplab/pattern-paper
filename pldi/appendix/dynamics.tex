@@ -172,6 +172,27 @@
 \end{equation}
 \end{subequations}
 
+\judgboxa{\fnotIntro{e}}{}
+\begin{subequations}\label{defn:notintro}
+  \begin{align}
+    \fnotIntro{\hehole{u}} ={}& \true \label{defn:ehole-notintro}\\
+    \fnotIntro{\hhole{e}{u}} ={}& \true \label{defn:hole-notintro}\\
+    \fnotIntro{\hap{e_1}{e_2}} ={}& \true \label{defn:ap-notintro}\\
+    \fnotIntro{\hmatch{e}{\zrules}} ={}& \true \label{defn:match-notintro}\\
+    \fnotIntro{\hprl{e}} ={}& \true \label{defn:prl-notintro}\\
+    \fnotIntro{\hprr{e}} ={}& \true \label{defn:prr-notintro}\\
+    \text{Otherwise}\quad \fnotIntro{e} ={}& \false \label{defn:not-notintro}
+  \end{align}
+\end{subequations}
+
+\begin{lemma}[Soundness and Completeness of NotIntro Judgment]
+  \label{lem:sound-complete-notintro}
+  $\notIntro{e}$ iff $\fnotIntro{e}$.
+\end{lemma}
+\begin{proof}
+  TODO
+\end{proof}
+
 \judgboxa{
   \inValues{e'}{e}
 }{
@@ -229,7 +250,7 @@
 \begin{lemma}
   \label{lem:complete-not-satormay}
   If $\isIndet{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\ctyp{\hxi}{\tau}$ and $\cnotsatisfyormay{e}{\hxi}$
-  then $\cnotsatisfyormay{e'}{\hxi}$ for all $e'\in\expcomplete{e}$.
+  then $\cnotsatisfyormay{e'}{\hxi}$ whenever $\inValues{e'}{e}$.
 \end{lemma}
 \begin{proof}
   \begin{pfsteps*}

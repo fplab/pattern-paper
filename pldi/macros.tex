@@ -75,6 +75,7 @@
 \newcommand{\isIndet}[1]{#1 ~\mathtt{indet}}
 \newcommand{\isFinal}[1]{#1 ~\mathtt{final}}
 \newcommand{\notIntro}[1]{#1 ~\mathtt{notintro}}
+\newcommand{\fnotIntro}[1]{\textit{notintro}\inparens{#1}}
 
 % ZTyp and ZExp
 \newcommand{\zlsel}[1]{{\bowtie}{#1}}
@@ -127,6 +128,7 @@
 \newcommand{\cmayincon}[1]{#1 ~\cancel{\mathtt{not~incon}}}
 
 \newcommand{\fsatisfy}[2]{\textit{satisfy}\inparens{#1, #2}}
+\newcommand{\fmaysatisfy}[2]{\textit{maysatisfy}\inparens{#1, #2}}
 \newcommand{\fsatisfyormay}[2]{\textit{satisfyormay}\inparens{#1, #2}}
 
 \newcommand{\cpattyp}[4]{#1 : #2 [#3] \dashV #4}
@@ -206,6 +208,8 @@
 \newcommand{\true}{\text{true}}
 \newcommand{\false}{\text{false}}
 
+\newcommand{\textnot}{\text{not }}
+\newcommand{\textor}{\text{ or }}
 \newcommand{\textand}{\text{ and }}
 \newcommand{\textif}{\quad\text{if }}
 
@@ -219,3 +223,7 @@
 \newcommand{\nil}{[~]}
 \newcommand{\some}[1]{\mathtt{Some\inparens{#1}}}
 \newcommand{\none}{\mathtt{None}}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "appendix/appendix"
+%%% End:
