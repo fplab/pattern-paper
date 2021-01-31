@@ -381,36 +381,6 @@ $\arraycolsep=4pt\begin{array}{lll}
             \end{pfsteps*}
             \pfref{[cnum]fsatisfy} contradicts \pfref{fsatisfy} and thus vacuously true. 
         \end{byCases}
-        
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\hxi=\cnotnum{n}]\ \\
-        By structural induction on $e$.
-        \begin{byCases}
-
-          \savelocalsteps{lem:sound-complete-satisfy-2}
-          \item[e=\hnum{n'}]
-            \begin{pfsteps*}
-            \item $n' \neq n$ \BY{Definition \ref{defn:num-satisfy-notnum} on \pfref{fsatisfy}} \pflabel{numnotequal}
-            \item $\csatisfy{\hnum{n'}}{\cnotnum{n}}$ \BY{Rule (\ref{rule:CSNotNum}) on \pfref{numnotequal}}
-            \end{pfsteps*}
-            
-          \restorelocalsteps{lem:sound-complete-satisfy-2}
-          \item
-            \begin{pfsteps*}
-            \item $\fsatisfy{e}{\cnotnum{n}} = \false$ \BY{Definition \ref{defn:not-satisfy}} \pflabel{[cnotnum]fsatisfy}
-            \end{pfsteps*}
-            \pfref{[cnotnum]fsatisfy} contradicts \pfref{fsatisfy} and thus vacuously true. 
-        \end{byCases}
-
-      \restorelocalsteps{lem:sound-complete-satisfy-1}
-      \item[\hxi=\cand{\hxi_1}{\hxi_2}]
-        \begin{pfsteps*}
-        \item $\fsatisfy{e}{\hxi_1} = \true$ \BY{Definition \ref{defn:satisfy-and} on \pfref{fsatisfy}} \pflabel{[and]fsatisfy1}
-        \item $\fsatisfy{e}{\hxi_2} = \true$ \BY{Definition \ref{defn:satisfy-and} on \pfref{fsatisfy}} \pflabel{[and]fsatisfy2}
-        \item $\csatisfy{e}{\hxi_1}$ \BY{IH on \pfref{[and]fsatisfy1}} \pflabel{[and]csatisfy1}
-        \item $\csatisfy{e}{\hxi_2}$ \BY{IH on \pfref{[and]fsatisfy2}} \pflabel{[and]csatisfy2}
-        \item $\csatisfy{e}{\cand{\hxi_1}{\hxi_2}}$ \BY{Rule (\ref{rule:CSAnd}) on \pfref{[and]csatisfy1} and \pfref{[and]csatisfy2}}
-        \end{pfsteps*}
 
       \restorelocalsteps{lem:sound-complete-satisfy-1}
       \item[\hxi=\cor{\hxi_1}{\hxi_2}]
@@ -601,13 +571,14 @@ $\arraycolsep=4pt\begin{array}{lll}
     \fmaysatisfy{e}{\cunknown} ={}& \true \label{defn:maysat-unknown}\\
     \fmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\hxi_1}} ={}& \fmaysatisfy{e_1}{\hxi_1} \label{defn:maysat-inl}\\
     \fmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\hxi_2}} ={}& \fmaysatisfy{e_2}{\hxi_2} \label{defn:maysat-inr}\\
+    \fmaysatisfy{\hinl{\tau_2}{e_1}}{\cinr{\hxi_2}} ={}& \false \label{defn:not-inl-maysat-inr}\\
+    \fmaysatisfy{\hinr{\tau_1}{e_2}}{\cinl{\hxi_1}} ={}& \false \label{defn:not-inr-maysat-inl}\\
     \fmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}} ={}& \left(\fmaysatisfy{e_1}{\hxi_1} \textand \fsatisfy{e_2}{\hxi_2}\right) \notag\\
     &\textor \left(\fsatisfy{e_1}{\hxi_1} \textand \fmaysatisfy{e_2}{\hxi_2}\right) \notag\\
     &\textor \left(\fmaysatisfy{e_1}{\hxi_1} \textand \fmaysatisfy{e_2}{\hxi_2}\right) \label{defn:maysat-pair}\\
     \fmaysatisfy{e}{\cor{\hxi_1}{\hxi_2}} ={}& \left(\fmaysatisfy{e}{\hxi_1} \textand \left(\textnot \fsatisfy{e}{\hxi_2}\right)\right) \notag\\
     &\textor \left(\left(\textnot \fsatisfy{e}{\hxi_1}\right) \textand \fmaysatisfy{e}{\hxi_2}\right) \label{defn:maysat-or}\\
-    \fmaysatisfy{e}{\hxi} =& \fnotIntro{e} \textand \frefutable{\hxi} \label{defn:notintor-maysat-refutable}\\
-    \text{Otherwise}\quad \fmaysatisfy{e}{\hxi} ={}& \false \label{defn:not-maysat}
+    \fmaysatisfy{e}{\hxi} =& \fnotIntro{e} \textand \frefutable{\hxi} \label{defn:notintro-maysat-refutable}
   \end{align}
 \end{subequations}
 
@@ -628,7 +599,7 @@ $\arraycolsep=4pt\begin{array}{lll}
       \item[\text{(\ref{rule:CMSUnknown})}]
       \begin{pfsteps*}
       \item $\hxi = \cunknown$ \BY{assumption}
-      \item $\fmaysatisfy{e}{\cunknown}$ \BY{\autoref{defn:maysat-unknown}}
+      \item $\fmaysatisfy{e}{\cunknown}=\true$ \BY{\autoref{defn:maysat-unknown}}
       \end{pfsteps*} 
       \restorelocalsteps{0}
       \item[\text{(\ref{rule:CMSInl})}]
@@ -636,8 +607,8 @@ $\arraycolsep=4pt\begin{array}{lll}
       \item $e = \hinl{\tau_2}{e_1}$ \BY{assumption}
       \item $\hxi = \cinl{\hxi_1}$ \BY{assumption}
       \item $\cmaysatisfy{e_1}{\hxi_1}$ \BY{assumption} \pflabel{[inl]maysat1}
-      \item $\fmaysatisfy{e_1}{\hxi_1}$ \BY{IH on \pfref{[inl]maysat1}} \pflabel{[inl]fmaysat1}
-      \item $\fmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\hxi_1}}$ \BY{\autoref{defn:maysat-inl} on \pfref{[inl]fmaysat1}}
+      \item $\fmaysatisfy{e_1}{\hxi_1}=\true$ \BY{IH on \pfref{[inl]maysat1}} \pflabel{[inl]fmaysat1}
+      \item $\fmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\hxi_1}}=\true$ \BY{\autoref{defn:maysat-inl} on \pfref{[inl]fmaysat1}}
       \end{pfsteps*}
       \restorelocalsteps{0}
       \item[\text{(\ref{rule:CMSInr})}]
@@ -645,8 +616,8 @@ $\arraycolsep=4pt\begin{array}{lll}
       \item $e = \hinr{\tau_1}{e_2}$ \BY{assumption}
       \item $\hxi = \cinr{\hxi_2}$ \BY{assumption}
       \item $\cmaysatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[inr]maysat2}
-      \item $\fmaysatisfy{e_2}{\hxi_2}$ \BY{IH on \pfref{[inr]maysat2}} \pflabel{[inr]fmaysat2}
-      \item $\fmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\hxi_2}}$ \BY{\autoref{defn:maysat-inr} on \pfref{[inr]fmaysat2}}
+      \item $\fmaysatisfy{e_2}{\hxi_2}=\true$ \BY{IH on \pfref{[inr]maysat2}} \pflabel{[inr]fmaysat2}
+      \item $\fmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\hxi_2}}=\true$ \BY{\autoref{defn:maysat-inr} on \pfref{[inr]fmaysat2}}
       \end{pfsteps*}
       \restorelocalsteps{0}
       \item[\text{(\ref{rule:CMSPair1})}]
@@ -655,9 +626,9 @@ $\arraycolsep=4pt\begin{array}{lll}
       \item $\hxi = \cpair{\hxi_1}{\hxi_2}$ \BY{assumption}
       \item $\cmaysatisfy{e_1}{\hxi_1}$ \BY{assumption} \pflabel{[pair1]maysat1}
       \item $\csatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[pair1]satisfy2}
-      \item $\fmaysatisfy{e_1}{\hxi_1}$ \BY{IH on \pfref{[pair1]maysat1}} \pflabel{[pair1]fmaysat1}
-      \item $\fsatisfy{e_2}{\hxi_2}$ \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair1]satisfy2}} \pflabel{[pair1]fsatisfy2}
-      \item $\fmaysatisfy{\hpair{\hxi_1}{\hxi_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{defn:maysat-pair} on \pfref{[pair1]fmaysat1} and \pfref{[pair1]fsatisfy2}}
+      \item $\fmaysatisfy{e_1}{\hxi_1}=\true$ \BY{IH on \pfref{[pair1]maysat1}} \pflabel{[pair1]fmaysat1}
+      \item $\fsatisfy{e_2}{\hxi_2}=\true$ \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair1]satisfy2}} \pflabel{[pair1]fsatisfy2}
+      \item $\fmaysatisfy{\hpair{\hxi_1}{\hxi_2}}{\cpair{\hxi_1}{\hxi_2}}=\true$ \BY{\autoref{defn:maysat-pair} on \pfref{[pair1]fmaysat1} and \pfref{[pair1]fsatisfy2}}
       \end{pfsteps*}
       \restorelocalsteps{0}
       \item[\text{(\ref{rule:CMSPair2})}]
@@ -666,9 +637,9 @@ $\arraycolsep=4pt\begin{array}{lll}
       \item $\hxi = \cpair{\hxi_1}{\hxi_2}$ \BY{assumption}
       \item $\csatisfy{e_1}{\hxi_1}$ \BY{assumption} \pflabel{[pair2]satisfy1}
       \item $\cmaysatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[pair2]maysat2}
-      \item $\fsatisfy{e_1}{\hxi_1}$ \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair2]satisfy1}} \pflabel{[pair2]fsatisfy1}
-      \item $\fmaysatisfy{e_2}{\hxi_2}$ \BY{IH on \pfref{[pair2]maysat2}} \pflabel{[pair2]fmaysat2}
-      \item $\fmaysatisfy{\hpair{\hxi_1}{\hxi_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{defn:maysat-pair} on \pfref{[pair2]fsatisfy1} and \pfref{[pair2]fmaysat2}}
+      \item $\fsatisfy{e_1}{\hxi_1}=\true$ \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair2]satisfy1}} \pflabel{[pair2]fsatisfy1}
+      \item $\fmaysatisfy{e_2}{\hxi_2}=\true$ \BY{IH on \pfref{[pair2]maysat2}} \pflabel{[pair2]fmaysat2}
+      \item $\fmaysatisfy{\hpair{\hxi_1}{\hxi_2}}{\cpair{\hxi_1}{\hxi_2}}=\true$ \BY{\autoref{defn:maysat-pair} on \pfref{[pair2]fsatisfy1} and \pfref{[pair2]fmaysat2}}
       \end{pfsteps*}
       \restorelocalsteps{0}
       \item[\text{(\ref{rule:CMSPair3})}]
@@ -676,10 +647,10 @@ $\arraycolsep=4pt\begin{array}{lll}
       \item $e = \hpair{e_1}{e_2}$ \BY{assumption}
       \item $\hxi = \cpair{\hxi_1}{\hxi_2}$ \BY{assumption}
       \item $\cmaysatisfy{e_1}{\hxi_1}$ \BY{assumption} \pflabel{[pair3]maysat1}
-      \item $\cmaysatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[pair3]satisfy2}
-      \item $\fmaysatisfy{e_1}{\hxi_1}$ \BY{IH on \pfref{[pair3]maysat1}} \pflabel{[pair3]fmaysat1}
-      \item $\fmaysatisfy{e_2}{\hxi_2}$ \BY{IH on \pfref{[pair3]maysat2}} \pflabel{[pair3]fmaysat2}
-      \item $\fmaysatisfy{\hpair{\hxi_1}{\hxi_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{defn:maysat-pair} on \pfref{[pair3]fmaysat1} and \pfref{[pair3]fmaysat2}}
+      \item $\cmaysatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[pair3]maysat2}
+      \item $\fmaysatisfy{e_1}{\hxi_1}=\true$ \BY{IH on \pfref{[pair3]maysat1}} \pflabel{[pair3]fmaysat1}
+      \item $\fmaysatisfy{e_2}{\hxi_2}=\true$ \BY{IH on \pfref{[pair3]maysat2}} \pflabel{[pair3]fmaysat2}
+      \item $\fmaysatisfy{\hpair{\hxi_1}{\hxi_2}}{\cpair{\hxi_1}{\hxi_2}}=\true$ \BY{\autoref{defn:maysat-pair} on \pfref{[pair3]fmaysat1} and \pfref{[pair3]fmaysat2}}
       \end{pfsteps*}
       \restorelocalsteps{0}
       \item[\text{(\ref{rule:CMSOr1})}]
@@ -687,9 +658,9 @@ $\arraycolsep=4pt\begin{array}{lll}
       \item $\hxi = \cor{\hxi_1}{\hxi_2}$ \BY{assumption}
       \item $\cmaysatisfy{e}{\hxi_1}$ \BY{assumption} \pflabel{[or1]maysat1}
       \item $\cnotsatisfy{e}{\hxi_2}$ \BY{assumption} \pflabel{[or1]notsat2}
-      \item $\fmaysatisfy{e}{\hxi_1}$ \BY{IH on \pfref{[or1]maysat1}} \pflabel{[or1]fmaysat1}
-      \item $\textnot \fsatisfy{e}{\hxi_2}$ \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[or1]notsat2}} \pflabel{[or1]fnotsat2}
-      \item $\fmaysatisfy{e}{\cor{\hxi_1}{\hxi_2}}$ \BY{\autoref{defn:satisfy-or} on \pfref{[or1]fmaysat1} and \pfref{[or1]fnotsat2}}
+      \item $\fmaysatisfy{e}{\hxi_1}=\true$ \BY{IH on \pfref{[or1]maysat1}} \pflabel{[or1]fmaysat1}
+      \item $\fsatisfy{e}{\hxi_2}=\false$ \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[or1]notsat2}} \pflabel{[or1]fnotsat2}
+      \item $\fmaysatisfy{e}{\cor{\hxi_1}{\hxi_2}}=\true$ \BY{\autoref{defn:satisfy-or} on \pfref{[or1]fmaysat1} and \pfref{[or1]fnotsat2}}
       \end{pfsteps*} 
       \restorelocalsteps{0}
       \item[\text{(\ref{rule:CMSOr2})}]
@@ -697,24 +668,192 @@ $\arraycolsep=4pt\begin{array}{lll}
       \item $\hxi = \cor{\hxi_1}{\hxi_2}$ \BY{assumption}
       \item $\cnotsatisfy{e}{\hxi_1}$ \BY{assumption} \pflabel{[or2]notsat1}
       \item $\cmaysatisfy{e}{\hxi_2}$ \BY{assumption} \pflabel{[or2]maysat2}
-      \item $\textnot \fsatisfy{e}{\hxi_1}$ \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[or2]notsat1}} \pflabel{[or2]fnotsat1}
-      \item $\fmaysatisfy{e}{\hxi_2}$ \BY{IH on \pfref{[or2]maysat2}} \pflabel{[or2]fmaysat2}
-      \item $\fmaysatisfy{e}{\cor{\hxi_1}{\hxi_2}}$ \BY{\autoref{defn:satisfy-or} on \pfref{[or2]fnotsat1} and \pfref{[or2]fmaysat2}}
+      \item $\fsatisfy{e}{\hxi_1}=\false$ \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[or2]notsat1}} \pflabel{[or2]fnotsat1}
+      \item $\fmaysatisfy{e}{\hxi_2}=\true$ \BY{IH on \pfref{[or2]maysat2}} \pflabel{[or2]fmaysat2}
+      \item $\fmaysatisfy{e}{\cor{\hxi_1}{\hxi_2}}=\true$ \BY{\autoref{defn:satisfy-or} on \pfref{[or2]fnotsat1} and \pfref{[or2]fmaysat2}}
       \end{pfsteps*} 
       \restorelocalsteps{0}
       \item[\text{(\ref{rule:CMSNotIntro})}]
       \begin{pfsteps*}
-      \item $\notIntro{e}$ \BY{assumption} \pflabel{notinro}
+      \item $\notIntro{e}$ \BY{assumption} \pflabel{notintro}
       \item $\refutable{\hxi}$ \BY{assumption} \pflabel{refutable}
-      \item $\fnotIntro{e}$ \BY{\autoref{lem:sound-complete-notintro} on \pfref{notintro}} \pflabel{fnotintro}
-      \item $\frefutable{\hxi}$ \BY{\autoref{lem:sound-complete-xi-refutable} on \pfref{refutable}} \pflabel{frefutable}
-      \item $\fmaysatisfy{e}{\hxi}$ \BY{\autoref{defn:notintor-maysat-refutable} on \pfref{fnotintro} and \pfref{frefutable}}
+      \item $\fnotIntro{e}=\true$ \BY{\autoref{lem:sound-complete-notintro} on \pfref{notintro}} \pflabel{fnotintro}
+      \item $\frefutable{\hxi}=\true$ \BY{\autoref{lem:sound-complete-xi-refutable} on \pfref{refutable}} \pflabel{frefutable}
+      \item $\fmaysatisfy{e}{\hxi}=\true$ \BY{\autoref{defn:notintro-maysat-refutable} on \pfref{fnotintro} and \pfref{frefutable}}
       \end{pfsteps*} 
     \end{byCases}
 
     \resetpfcounter
 
     \item Completeness:
+    \begin{pfsteps*}
+    \item $\fmaysatisfy{e}{\hxi}=\true$ \BY{assumption} \pflabel{fmaysat}
+    \end{pfsteps*}
+    By structural induction on $\hxi$.
+    \begin{byCases}
+      \savelocalsteps{0}
+      \item[\hxi=\ctruth, \cfalsity]
+      \begin{pfsteps*}
+      \item $\frefutable{\hxi}=\false$ \BY{\autoref{defn:xi-refutable}} \pflabel{[tf]fnotrefutable}
+      \item $\fmaysatisfy{e}{\hxi}=\false$ \BY{\autoref{defn:notintro-maysat-refutable} and \pfref{[tf]fnotrefutable}}
+      \end{pfsteps*} 
+      Contradicts \pfref{fmaysat} and thus vacuously true.
+      \restorelocalsteps{0} 
+      \item[\hxi=\cunknown]
+      \begin{pfsteps*}
+      \item $\cmaysatisfy{e}{\cunknown}$ \BY{\ruleref{rule:CMSUnknown}}
+      \end{pfsteps*} 
+      \restorelocalsteps{0} 
+      \item[\hxi=\cnum{n}]
+      \begin{pfsteps*}
+      \item $\fnotIntro{e}=\true$ \BY{\autoref{defn:notintro-maysat-refutable} of \pfref{fmaysat}} \pflabel{[num]fnotintro}
+      \item $\notIntro{e}$ \BY{\autoref{lem:sound-complete-notintro} on \pfref{[num]fnotintro}} \pflabel{[num]notintro}
+      \item $\refutable{\cnum{n}}$ \BY{\ruleref{rule:RXNum}} \pflabel{[num]refutable}
+      \item $\cmaysatisfy{e}{\cnum{n}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[num]notintro} and \pfref{[num]refutable}}
+      \end{pfsteps*} 
+      \restorelocalsteps{0} 
+      \item[\hxi=\cor{\hxi_1}{\hxi_2}]\mbox{}\\
+      By case analysis on \autoref{defn:maysat-or} of \pfref{fmaysat}.
+      \begin{byCases}
+        \savelocalsteps{1}
+        \item[\fmaysatisfy{e}{\hxi_1}=\true\textand\fsatisfy{e}{\hxi_2}=\false]
+        \begin{pfsteps*}
+        \item $\fmaysatisfy{e}{\hxi_1}=\true$ \BY{assumption} \pflabel{[or]fmaysat1}
+        \item $\fsatisfy{e}{\hxi_2}=\false$ \BY{assumption} \pflabel{[or]fnotsatisfy2}
+        \item $\cmaysatisfy{e}{\hxi_1}$ \BY{IH on \pfref{[or]fmaysat1}} \pflabel{[or]maysat1}
+        \item $\cnotsatisfy{e}{\hxi_2}$ \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[or]fnotsatisfy2}} \pflabel{[or]notsatisfy2}
+        \item $\cmaysatisfy{e}{\cor{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSOr1} on \pfref{[or]maysat1} and \pfref{[or]notsatisfy2}}
+        \end{pfsteps*} 
+        \restorelocalsteps{1} 
+        \item[\fsatisfy{e}{\hxi_1}=\false\textand\fmaysatisfy{e}{\hxi_2}=\true]
+        \begin{pfsteps*}
+        \item $\fsatisfy{e}{\hxi_1}=\false$ \BY{assumption} \pflabel{[or]fnotsatisfy1}
+        \item $\fmaysatisfy{e}{\hxi_2}=\true$ \BY{assumption} \pflabel{[or]fmaysat2}
+        \item $\cnotsatisfy{e}{\hxi_1}$ \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[or]fnotsatisfy1}} \pflabel{[or]notsatisfy1}
+        \item $\cmaysatisfy{e}{\hxi_2}$ \BY{IH on \pfref{[or]fmaysat2}} \pflabel{[or]maysat2}
+        \item $\cmaysatisfy{e}{\cor{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSOr2} on \pfref{[or]notsatisfy1} and \pfref{[or]maysat2}}
+        \end{pfsteps*} 
+      \end{byCases}
+      \restorelocalsteps{0}
+      \item[\hxi=\cinl{\hxi_1}]\mbox{}\\
+      By structural induction on $e$.
+      \begin{byCases}
+        \savelocalsteps{1}
+        \item[e=\hehole{u},\hhole{e'}{u},\hap{e_1}{e_2},\hmatch{e'}{\zrules},\hprl{e'},\hprr{e'}]
+        \begin{pfsteps*}
+        \item $\frefutable{\cinl{\hxi_1}}=\true$ \BY{\autoref{defn:notintro-maysat-refutable} of \pfref{fmaysat}} \pflabel{[inl-notintro]frefutable}
+        \item $\refutable{\cinl{\hxi_1}}$ \BY{\autoref{lem:sound-complete-xi-refutable} on \pfref{[inl-notintro]frefutable}} \pflabel{[inl-notintro]refutable}
+        \item $\notIntro{e}$ \BY{\rulesref{rules:notintro}} \pflabel{[inl-notintro]notintro}
+        \item $\cmaysatisfy{e}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[inl-notintro]notintro} and \pfref{[inl-notintro]refutable}}
+        \end{pfsteps*} 
+        \restorelocalsteps{1}
+        \item[e=x,\hnum{n},\hlam{x}{\tau}{e'},\hpair{e_1}{e_2}]
+        \begin{pfsteps*}
+        \item $\fnotIntro{e}=\false$ \BY{\rulesref{rules:notintro}} \pflabel{[inl-intro]fnotnotintro}
+        \item $\fmaysatisfy{e}{\cinl{\hxi_1}}=\false$ \BY{\autoref{defn:notintro-maysat-refutable} on \pfref{[inl-intro]fnotnotintro}}
+        \end{pfsteps*} 
+        Contradicts \pfref{fmaysat}.
+        \restorelocalsteps{1}
+        \item[e=\hinl{\tau_2}{e_1}]
+        \begin{pfsteps*}
+        \item $\fmaysatisfy{e_1}{\hxi_1}$ \BY{\autoref{defn:maysat-inl} of \pfref{fmaysat}} \pflabel{[inl]fmaysat1}
+        \item $\cmaysatisfy{e_1}{\hxi_1}$ \BY{\autoref{lem:sound-complete-maysatisfy} on \pfref{[inl]fmaysat1}} \pflabel{[inl]maysat1}
+        \item $\cmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CMSInl} on \pfref{[inl]maysat1}}
+        \end{pfsteps*} 
+        \restorelocalsteps{1}
+        \item[e=\hinr{\tau_1}{e_2}] 
+        \begin{pfsteps*}
+        \item $\fmaysatisfy{\hinr{\tau_1}{e_2}}{\cinl{\hxi_1}}=\false$ \BY{\autoref{defn:not-inr-maysat-inl}}
+        \end{pfsteps*} 
+        Contradicts \pfref{fmaysat}.
+      \end{byCases}
+      \restorelocalsteps{0}
+      \item[\hxi=\cinr{\hxi_2}]\mbox{}\\
+      By structural induction on $e$.
+      \begin{byCases}
+        \savelocalsteps{1}
+        \item[e=\hehole{u},\hhole{e'}{u},\hap{e_1}{e_2},\hmatch{e'}{\zrules},\hprl{e'},\hprr{e'}]
+        \begin{pfsteps*}
+        \item $\frefutable{\cinr{\hxi_2}}=\true$ \BY{\autoref{defn:notintro-maysat-refutable} of \pfref{fmaysat}} \pflabel{[inr-notintro]frefutable}
+        \item $\refutable{\cinr{\hxi_2}}$ \BY{\autoref{lem:sound-complete-xi-refutable} on \pfref{[inr-notintro]frefutable}} \pflabel{[inr-notintro]refutable}
+        \item $\notIntro{e}$ \BY{\rulesref{rules:notintro}} \pflabel{[inr-notintro]notintro}
+        \item $\cmaysatisfy{e}{\cinr{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[inr-notintro]notintro} and \pfref{[inr-notintro]refutable}}
+        \end{pfsteps*} 
+        \restorelocalsteps{1}
+        \item[e=x,\hnum{n},\hlam{x}{\tau}{e'},\hpair{e_1}{e_2}]
+        \begin{pfsteps*}
+        \item $\fnotIntro{e}=\false$ \BY{\rulesref{rules:notintro}} \pflabel{[inr-intro]fnotnotintro}
+        \item $\fmaysatisfy{e}{\cinr{\hxi_2}}=\false$ \BY{\autoref{defn:notintro-maysat-refutable} on \pfref{[inr-intro]fnotnotintro}}
+        \end{pfsteps*} 
+        Contradicts \pfref{fmaysat}.
+        \restorelocalsteps{1}
+        \item[e=\hinl{\tau_2}{e_1}]
+        \begin{pfsteps*}
+        \item $\fmaysatisfy{\hinl{\tau_2}{e_1}}{\cinr{\hxi_2}}=\false$ \BY{\autoref{defn:not-inl-maysat-inr}}
+        \end{pfsteps*} 
+        Contradicts \pfref{fmaysat}.
+        \restorelocalsteps{1}
+        \item[e=\hinr{\tau_1}{e_2}] 
+        \begin{pfsteps*}
+        \item $\fmaysatisfy{e_2}{\hxi_2}$ \BY{\autoref{defn:maysat-inr} of \pfref{fmaysat}} \pflabel{[inr]fmaysat2}
+        \item $\cmaysatisfy{e_2}{\hxi_2}$ \BY{\autoref{lem:sound-complete-maysatisfy} on \pfref{[inr]fmaysat2}} \pflabel{[inr]maysat2}
+        \item $\cmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\hxi_2}}$ \BY{\ruleref{rule:CMSInr} on \pfref{[inr]maysat2}}
+        \end{pfsteps*} 
+      \end{byCases}
+      \restorelocalsteps{0} 
+      \item[\hxi=\cpair{\hxi_1}{\hxi_2}]\mbox{}\\
+      By structural induction on $e$.
+      \begin{byCases}
+        \savelocalsteps{1}
+        \item[e=\hehole{u},\hhole{e'}{u},\hap{e_1}{e_2},\hmatch{e'}{\zrules},\hprl{e'},\hprr{e'}]
+        \begin{pfsteps*}
+        \item $\frefutable{\cpair{\hxi_1}{\hxi_2}}=\true$ \BY{\autoref{defn:notintro-maysat-refutable} of \pfref{fmaysat}} \pflabel{[pair]frefutable}
+        \item $\refutable{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:sound-complete-xi-refutable} on \pfref{[pair]frefutable}} \pflabel{[pair]refutable}
+        \item $\notIntro{e}$ \BY{\rulesref{rules:notintro}} \pflabel{[pair]notintro}
+        \item $\cmaysatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair]refutable}}
+        \end{pfsteps*} 
+        \restorelocalsteps{1}
+        \item[e=x,\hnum{n},\hlam{x}{\tau}{e'},\hinl{\tau_2}{e_1},\hinr{\tau_1}{e_2}]
+        \begin{pfsteps*}
+        \item $\fnotIntro{e}=\false$ \BY{\rulesref{rules:notintro}} \pflabel{[pair']fnotnotintro}
+        \item $\fmaysatisfy{e}{\cpair{\hxi_1}{\hxi_2}}=\false$ \BY{\autoref{defn:notintro-maysat-refutable} on \pfref{[pair']fnotnotintro}}
+        \end{pfsteps*} 
+        Contradicts \pfref{fmaysat}.
+        \restorelocalsteps{1}
+        \item[e=\hpair{e_1}{e_2}]
+        By case analysis on \autoref{defn:maysat-pair} on \pfref{fmaysat}. 
+        \begin{byCases}
+          \savelocalsteps{2}
+          \item[\fmaysatisfy{e_1}{\hxi_1}=\true\textand\fsatisfy{e_2}{\hxi_2}=\true] 
+          \begin{pfsteps*}
+          \item $\fmaysatisfy{e_1}{\hxi_1}=\true$ \BY{assumption} \pflabel{[pair1]fmaysat1}
+          \item $\fsatisfy{e_2}{\hxi_2}=\true$ \BY{assumption} \pflabel{[pair1]fsatisfy2}
+          \item $\cmaysatisfy{e_1}{\hxi_1}$ \BY{IH on \pfref{[pair1]fmaysat1}} \pflabel{[pair1]maysat1}
+          \item $\csatisfy{e_2}{\hxi_2}$ \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair1]fsatisfy2}} \pflabel{[pair1]satisfy2}
+          \item $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSPair1} on \pfref{[pair1]maysat1} and \pfref{[pair1]satisfy2}}
+          \end{pfsteps*} 
+          \restorelocalsteps{2}
+          \item[\fsatisfy{e_1}{\hxi_1}=\true\textand\fmaysatisfy{e_2}{\hxi_2}=\true]
+          \begin{pfsteps*}
+          \item $\fsatisfy{e_1}{\hxi_1}$ \BY{assumption} \pflabel{[pair2]fsatisfy1}
+          \item $\fmaysatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[pair2]fmaysat2}
+          \item $\csatisfy{e_1}{\hxi_1}$ \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair2]fsatisfy1}} \pflabel{[pair2]satisfy1}
+          \item $\cmaysatisfy{e_2}{\hxi_2}$ \BY{IH on \pfref{[pair2]fmaysat2}} \pflabel{[pair2]maysat2}
+          \item $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSPair2} on \pfref{[pair2]satisfy1} and \pfref{[pair2]maysat2}}
+          \end{pfsteps*} 
+          \restorelocalsteps{2}
+          \item[\fmaysatisfy{e_1}{\hxi_1}=\true\textand\fmaysatisfy{e_2}{\hxi_2}=\true]
+          \begin{pfsteps*}
+          \item $\fmaysatisfy{e_1}{\hxi_1}$ \BY{assumption} \pflabel{[pair3]fmaysat1}
+          \item $\fmaysatisfy{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[pair3]fmaysat2}
+          \item $\cmaysatisfy{e_1}{\hxi_1}$ \BY{IH on \pfref{[pair3]fmaysat1}} \pflabel{[pair3]maysat1}
+          \item $\cmaysatisfy{e_2}{\hxi_2}$ \BY{IH on \pfref{[pair3]fmaysat2}} \pflabel{[pair3]maysat2}
+          \item $\cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSPair3} on \pfref{[pair3]maysat1} and \pfref{[pair3]maysat2}}
+          \end{pfsteps*} 
+        \end{byCases}  
+      \end{byCases} 
+    \end{byCases}
+    \resetpfcounter
   \end{enumerate}
 \end{proof}
 
@@ -736,10 +875,64 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{equation}
 \end{subequations}
 
-\begin{lemma}
+\judgboxa{\fsatisfyormay{e}{\hxi}}{}
+\begin{equation}\label{defn:satormay}
+  \fsatisfyormay{e}{\hxi} = \fsatisfy{e}{\hxi} \textor \fmaysatisfy{e}{\hxi}
+\end{equation}
+
+\begin{lemma}[Soundness and Completeness of Satisfaction or Maybe Satisfaction]
   \label{lem:sound-complete-satormay}
-  \todo{satormay soundness and completeness}
+  $\csatisfyormay{e}{\hxi}$ iff $\fsatisfyormay{e}{\hxi}$.
 \end{lemma}
+\begin{proof}
+  We prove soundness and completeness separately.
+  \begin{enumerate}
+    \item Soundness:
+    \begin{pfsteps*}
+    \item $\csatisfyormay{e}{\hxi}$ \BY{assumption} \pflabel{satormay}
+    \end{pfsteps*}
+    By rule induction over \rulesref{rules:satormay} on \pfref{satormay}.
+    \begin{byCases}
+      \savelocalsteps{0}
+      \item[\text{(\ref{rule:CSMSSat})}]
+      \begin{pfsteps*}
+      \item $\csatisfy{e}{\hxi}$ \BY{assumption} \pflabel{satisfy}
+      \item $\fsatisfy{e}{\hxi}=\true$ \BY{\autoref{lem:sound-complete-satisfy} on \pfref{satisfy}} \pflabel{fsatisfy}
+      \item $\fsatisfyormay{e}{\hxi}=\true$ \BY{\autoref{defn:satormay} on \pfref{fsatisfy}}
+      \end{pfsteps*} 
+      \restorelocalsteps{0} 
+      \item[\text{(\ref{rule:CSMSMay})}] 
+      \begin{pfsteps*}
+      \item $\cmaysatisfy{e}{\hxi}$ \BY{assumption} \pflabel{maysat}
+      \item $\fmaysatisfy{e}{\hxi}=\true$ \BY{\autoref{lem:sound-complete-maysatisfy} on \pfref{maysat}} \pflabel{fmaysat}
+      \item $\fsatisfyormay{e}{\hxi}=\true$ \BY{\autoref{defn:satormay} on \pfref{fmaysat}}
+      \end{pfsteps*}
+    \end{byCases}
+    \resetpfcounter
+    \item Completeness:
+    \begin{pfsteps*}
+    \item $\fsatisfyormay{e}{\hxi}=\true$ \BY{assumption} \pflabel{fsatormay}
+    \end{pfsteps*}
+    By case analysis on \autoref{defn:satormay} of \pfref{fsatormay}.
+    \begin{byCases}
+      \savelocalsteps{0}
+      \item[\fsatisfy{e}{\hxi}=\true]
+      \begin{pfsteps*}
+      \item $\fsatisfy{e}{\hxi}=\true$ \BY{assumption} \pflabel{fsatisfy}
+      \item $\csatisfy{e}{\hxi}$ \BY{\autoref{lem:sound-complete-satisfy} on \pfref{fsatisfy}} \pflabel{satisfy}
+      \item $\csatisfyormay{e}{\hxi}$ \BY{\ruleref{rule:CSMSSat} on \pfref{satisfy}}
+      \end{pfsteps*} 
+      \restorelocalsteps{0} 
+      \item[\fmaysatisfy{e}{\hxi}=\true] 
+      \begin{pfsteps*}
+      \item $\fmaysatisfy{e}{\hxi}=\true$ \BY{assumption} \pflabel{fmaysat}
+      \item $\cmaysatisfy{e}{\hxi}$ \BY{\autoref{lem:sound-complete-maysatisfy} on \pfref{fmaysat}} \pflabel{maysat}
+      \item $\csatisfyormay{e}{\hxi}$ \BY{\ruleref{rule:CSMSMay} on \pfref{maysat}}
+      \end{pfsteps*} 
+    \end{byCases}
+    \resetpfcounter
+  \end{enumerate}
+\end{proof}
 
 \begin{lemma}
   \label{lem:no-e-satisfy-falsity}
