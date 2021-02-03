@@ -2,7 +2,6 @@
 $\arraycolsep=4pt\begin{array}{lll}
 \hxi & ::= &
   \ctruth ~\vert~
-  \cfalsity ~\vert~
   \cunknown ~\vert~
   \cnum{n} ~\vert~
   \cinl{\hxi} ~\vert~
@@ -110,13 +109,13 @@ $\arraycolsep=4pt\begin{array}{lll}
 \judgboxa{\frefutable{\hxi}}{}
 \begin{subequations}\label{defn:xi-refutable}
 \begin{align}
+  \frefutable{\ctruth} &= \false \\
     \frefutable{\cnum{n}} &= \true \\
     \frefutable{\cunknown} &= \true \\
-    \frefutable{\cinl{\hxi}} &= \frefutable{\hxi} \\
-    \frefutable{\cinr{\hxi}} &= \frefutable{\hxi} \\
+    \frefutable{\cinl{\hxi}} &= \true \\
+    \frefutable{\cinr{\hxi}} &= \true \\
     \frefutable{\cpair{\hxi_1}{\hxi_2}} &= \frefutable{\hxi_1} \text{ or } \frefutable{\hxi_2} \\
-    \frefutable{\cor{\hxi_1}{\hxi_2}} &= \frefutable{\hxi_1} \text{ and } \frefutable{\hxi_2} \\
-  \text{Otherwise}\quad \frefutable{\hxi} &= \false 
+    \frefutable{\cor{\hxi_1}{\hxi_2}} &= \frefutable{\hxi_1} \text{ and } \frefutable{\hxi_2}
 \end{align}
 \end{subequations}
 
@@ -124,6 +123,134 @@ $\arraycolsep=4pt\begin{array}{lll}
   \label{lem:sound-complete-xi-refutable}
   $\refutable{\hxi}$ iff $\frefutable{\hxi} = \true$.
 \end{lemma}
+\begin{proof}
+  We prove soundness and completeness separately.
+  \begin{enumerate}
+    \item Soundness:
+    \begin{pfsteps}
+    \item \refutable{\hxi} \BY{assumption} \pflabel{refutable}
+    \end{pfsteps}
+    By rule induction over \rulesref{rules:xi-refutable} on \pfref{refutable}.
+    \begin{byCases}
+      \savelocalsteps{0}
+      \item[\text{(\ref{rule:RXNum})}] 
+      \begin{pfsteps}
+      \item \hxi = \cnum{n} \BY{assumption}
+      \item \frefutable{\cnum{n}} = \true \BY{\autoref{defn:xi-refutable}}
+      \end{pfsteps} 
+      \restorelocalsteps{0}
+      \item[\text{(\ref{rule:RXUnknown})}] 
+      \begin{pfsteps}
+      \item \hxi = \cunknown \BY{assumption}
+      \item \frefutable{\cunknown} = \true \BY{\autoref{defn:xi-refutable}}
+      \end{pfsteps} 
+      \restorelocalsteps{0}
+      \item[\text{(\ref{rule:RXInl})}] 
+      \begin{pfsteps}
+      \item \hxi = \cinl{\hxi_1} \BY{assumption}
+      \item \frefutable{\cinl{\hxi_1}} = \true \BY{\autoref{defn:xi-refutable}}
+      \end{pfsteps} 
+      \restorelocalsteps{0}
+      \item[\text{(\ref{rule:RXInr})}] 
+      \begin{pfsteps}
+      \item \hxi = \cinr{\hxi_2} \BY{assumption}
+      \item \frefutable{\cinr{\hxi_2}} = \true \BY{\autoref{defn:xi-refutable}}
+      \end{pfsteps} 
+      \restorelocalsteps{0}
+      \item[\text{(\ref{rule:RXPairL})}] 
+      \begin{pfsteps}
+      \item \hxi = \cpair{\hxi_1}{\hxi_2} \BY{assumption}
+      \item \refutable{\hxi_1} \BY{assumption} \pflabel{[pair]1}
+      \item \frefutable{\hxi_1} = \true \BY{IH on \pfref{[pair]1}} \pflabel{[pair]f1}
+      \item \frefutable{\cpair{\hxi_1}{\hxi_2}} = \true \BY{\autoref{defn:xi-refutable} on \pfref{[pair]f1}}
+      \end{pfsteps} 
+      \restorelocalsteps{0}
+      \item[\text{(\ref{rule:RXPairR})}] 
+      \begin{pfsteps}
+      \item \hxi = \cpair{\hxi_1}{\hxi_2} \BY{assumption}
+      \item \refutable{\hxi_2} \BY{assumption} \pflabel{[pair]2}
+      \item \frefutable{\hxi_2} = \true \BY{IH on \pfref{[pair]2}} \pflabel{[pair]f2}
+      \item \frefutable{\cpair{\hxi_1}{\hxi_2}} = \true \BY{\autoref{defn:xi-refutable} on \pfref{[pair]f2}}
+      \end{pfsteps} 
+      \restorelocalsteps{0}
+      \item[\text{(\ref{rule:RXOr})}] 
+      \begin{pfsteps}
+      \item \hxi = \cor{\hxi_1}{\hxi_2} \BY{assumption}
+      \item \refutable{\hxi_1} \BY{assumption} \pflabel{[or]1}
+      \item \refutable{\hxi_2} \BY{assumption} \pflabel{[or]2}
+      \item \frefutable{\hxi_1} = \true \BY{IH on \pfref{[or]1}} \pflabel{[or]f1}
+      \item \frefutable{\hxi_2} = \true \BY{IH on \pfref{[or]2}} \pflabel{[or]f2}
+      \item \frefutable{\cor{\hxi_1}{\hxi_2}} = \true \BY{\autoref{defn:xi-refutable} on \pfref{[or]f1} and \pfref{[or]f2}}
+      \end{pfsteps} 
+    \end{byCases}
+    \resetpfcounter
+    \item Completeness:
+    \begin{pfsteps}
+    \item \frefutable{\hxi} = \true \BY{assumption} \pflabel{frefutable}
+    \end{pfsteps}
+    By structural induction on $\hxi$.
+    \begin{byCases}
+      \savelocalsteps{0}
+      \item[\ctruth]
+      \begin{pfsteps}
+      \item \frefutable{\ctruth} = \false \BY{\autoref{defn:xi-refutable}}
+      \end{pfsteps} 
+      Contradicts \pfref{frefutable}.
+      \restorelocalsteps{0}
+      \item[\cunknown]
+      \begin{pfsteps}
+      \item \refutable{\cunknown} \BY{\ruleref{rule:RXUnknown}}
+      \end{pfsteps} 
+      \restorelocalsteps{0}
+      \item[\cnum{n}]
+      \begin{pfsteps}
+      \item \refutable{\cnum{n}} \BY{\ruleref{rule:RXNum}}
+      \end{pfsteps} 
+      \restorelocalsteps{0}
+      \item[\cinl{\hxi_1}]
+      \begin{pfsteps}
+      \item \refutable{\cinl{\hxi_1}} \BY{\ruleref{rule:RXInl}}
+      \end{pfsteps} 
+      \restorelocalsteps{0}
+      \item[\cinr{\hxi_2}]
+      \begin{pfsteps}
+      \item \refutable{\cinr{\hxi_2}} \BY{\ruleref{rule:RXInr}}
+      \end{pfsteps} 
+      \restorelocalsteps{0}
+      \item[\cpair{\hxi_1}{\hxi_2}]
+      \begin{pfsteps}
+      \item \frefutable{\hxi_1} =\true \textor \frefutable{\hxi_2} = \true \BY{\autoref{defn:xi-refutable} on \pfref{frefutable}} \pflabel{[pair]disjunction}
+      \end{pfsteps} 
+      By case analysis on \pfref{[pair]disjunction}.
+      \begin{byCases}
+      \savelocalsteps{1}
+      \item[\frefutable{\hxi_1}=\true]
+      \begin{pfsteps}
+      \item \frefutable{\hxi_1}=\true \BY{assumption} \pflabel{[pair]f1}
+      \item \refutable{\hxi_1} \BY{IH on \pfref{[pair]f1}} \pflabel{[pair]1}
+      \item \refutable{\cpair{\hxi_1}{\hxi_2}} \BY{\ruleref{rule:RXPairL} on \pfref{[pair]1}}
+      \end{pfsteps} 
+      \restorelocalsteps{1}
+      \item[\frefutable{\hxi_2}=\true]
+      \begin{pfsteps}
+      \item \frefutable{\hxi_2}=\true \BY{assumption} \pflabel{[pair]f2}
+      \item \refutable{\hxi_2} \BY{IH on \pfref{[pair]f2}} \pflabel{[pair]2}
+      \item \refutable{\cpair{\hxi_1}{\hxi_2}} \BY{\ruleref{rule:RXPairR} on \pfref{[pair]2}}
+      \end{pfsteps} 
+      \end{byCases}
+      \restorelocalsteps{0}
+      \item[\cor{\hxi_1}{\hxi_2}]
+      \begin{pfsteps}
+      \item \frefutable{\hxi_1}=\true \BY{\autoref{defn:xi-refutable} on \pfref{frefutable}} \pflabel{[or]f1}
+      \item \frefutable{\hxi_2}=\true \BY{\autoref{defn:xi-refutable} on \pfref{frefutable}} \pflabel{[or]f2}
+      \item \refutable{\hxi_1} \BY{IH on \pfref{[or]f1}} \pflabel{[or]1}
+      \item \refutable{\hxi_2} \BY{IH on \pfref{[or]f2}} \pflabel{[or]2}
+      \item \refutable{\cor{\hxi_1}{\hxi_2}} \BY{\ruleref{rule:RXOr} on \pfref{[or]1} and \pfref{[or]2}}
+      \end{pfsteps} 
+    \end{byCases}
+    \resetpfcounter
+  \end{enumerate}
+\end{proof}
 
 \judgboxa{\csatisfy{e}{\hxi}}{$e$ satisfies $\hxi$}
 \begin{subequations}\label{rules:Satisfy}
@@ -1662,14 +1789,6 @@ We prove sufficiency and necessity separately.
   \label{lem:notintro-maysat-refutable}
   If $\notIntro{e}$ and $\cmaysatisfy{e}{\xi}$ then $\refutable{\xi}$.  
 \end{lemma}
-
-\begin{lemma}
-\label{lem:no-and-refutable}
-There does not exist such a constraint $\cand{\hxi_1}{\hxi_2}$ such that $\refutable{\cand{\hxi_1}{\hxi_2}}$.
-\end{lemma}
-\begin{proof}
-By rule induction over Rules (\ref{rules:xi-refutable}), we notice that $\refutable{\cand{\hxi_1}{\hxi_2}}$ is in syntactic contradiction with all the cases, hence not derivable.
-\end{proof}
 
 \begin{lemma}
 \label{lem:no-or-refutable}
