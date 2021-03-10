@@ -253,12 +253,12 @@
   then $\cnotsatisfyormay{e'}{\hxi}$ whenever $\inValues{e'}{e}$.
 \end{lemma}
 \begin{proof}
-  \begin{pfsteps*}
-  \item $\isIndet{e}$ \BY{assumption} \pflabel{eindet}
-  \item $\hexptyp{\cdot}{\Delta}{e}{\tau}$ \BY{assumption} \pflabel{etyp}
-  \item $\ctyp{\hxi}{\tau}$ \BY{assumption} \pflabel{ctyp}
-  \item $\cnotsatisfyormay{e}{\hxi}$ \BY{assumption} \pflabel{not-satormay}
-  \end{pfsteps*}
+  \begin{pfsteps}
+  \item \isIndet{e} \BY{assumption} \pflabel{eindet}
+  \item \hexptyp{\cdot}{\Delta}{e}{\tau} \BY{assumption} \pflabel{etyp}
+  \item \ctyp{\hxi}{\tau} \BY{assumption} \pflabel{ctyp}
+  \item \cnotsatisfyormay{e}{\hxi} \BY{assumption} \pflabel{not-satormay}
+  \end{pfsteps}
   By rule induction over \rulesref{rules:CTyp} on \pfref{ctyp}.
   \begin{byCases}
     \savelocalsteps{0}
@@ -1219,12 +1219,12 @@
 \end{equation}
 \begin{equation}\label{rule:REHole}
 \inferrule[REHole]{ }{
-  \refutable{\hehole{w}}
+  \refutable{\heholep{w}}
 }
 \end{equation}
 \begin{equation}\label{rule:RHole}
 \inferrule[RHole]{ }{
-  \refutable{\hhole{p}{w}}
+  \refutable{\hholep{p}{w}{\tau}}
 }
 \end{equation}
 \begin{equation}\label{rule:RInl}
@@ -1315,12 +1315,12 @@
 \begin{subequations}\label{rules:maymatch}
 \begin{equation}\label{rule:MMEHole}
 \inferrule[MMEHole]{ }{
-  \hmaymatch{e}{\hehole{w}}
+  \hmaymatch{e}{\heholep{w}}
 }
 \end{equation}
 \begin{equation}\label{rule:MMHole}
 \inferrule[MMHole]{ }{
-  \hmaymatch{e}{\hhole{p}{w}}
+  \hmaymatch{e}{\hholep{p}{w}{\tau}}
 }
 \end{equation}
 \begin{equation}\label{rule:MMNotIntro}
@@ -1789,30 +1789,30 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{p-typ}, we would sho
 \restorelocalsteps{0}
 \item[\text{(\ref{rule:PTEHole})}]
     \begin{pfsteps*}
-    \item $p=\hehole{w}$ \BY{assumption}
-    \item $\hmaymatch{e}{\hehole{w}}$ \BY{\ruleref{rule:MMEHole}}
+    \item $p=\heholep{w}$ \BY{assumption}
+    \item $\hmaymatch{e}{\heholep{w}}$ \BY{\ruleref{rule:MMEHole}}
     \end{pfsteps*}
-    Assume $\hpatmatch{e}{\hehole{w}}{\theta}$ for some $\theta$. By rule induction over \rulesref{rules:maymatch} on it, no case applies due to syntactic contradiction.
+    Assume $\hpatmatch{e}{\heholep{w}}{\theta}$ for some $\theta$. By rule induction over \rulesref{rules:maymatch} on it, no case applies due to syntactic contradiction.
     \begin{pfsteps*}
-    \item $\cancel{\hpatmatch{e}{\hehole{w}}{\theta}}$ \BY{contradiction}
+    \item $\cancel{\hpatmatch{e}{\heholep{w}}{\theta}}$ \BY{contradiction}
     \end{pfsteps*}
-    Assume $\hnotmatch{e}{\hehole{w}}$. By rule induction over \rulesref{rules:notmatch} on it, no case applies due to syntactic contradiction.
+    Assume $\hnotmatch{e}{\heholep{w}}$. By rule induction over \rulesref{rules:notmatch} on it, no case applies due to syntactic contradiction.
     \begin{pfsteps*}
-    \item $\cancel{\hnotmatch{e}{\hehole{w}}}$ \BY{contradiction}
+    \item $\cancel{\hnotmatch{e}{\heholep{w}}}$ \BY{contradiction}
     \end{pfsteps*}
 \restorelocalsteps{0}
 \item[\text{(\ref{rule:PTHole})}]
     \begin{pfsteps*}
-    \item $p=\hhole{p_0}{w}$ \BY{assumption}
-    \item $\hmaymatch{e}{\hhole{p_0}{w}}$ \BY{\ruleref{rule:MMHole}}
+    \item $p=\hholep{p_0}{w}{\tau'}$ \BY{assumption}
+    \item $\hmaymatch{e}{\hholep{p_0}{w}{\tau'}}$ \BY{\ruleref{rule:MMHole}}
     \end{pfsteps*}
-    Assume $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ for some $\theta$. By rule induction over \rulesref{rules:maymatch} on it, no case applies due to syntactic contradiction.
+    Assume $\hpatmatch{e}{\hholep{p_0}{w}{\tau'}}{\theta}$ for some $\theta$. By rule induction over \rulesref{rules:maymatch} on it, no case applies due to syntactic contradiction.
     \begin{pfsteps*}
-    \item $\cancel{\hpatmatch{e}{\hhole{p_0}{w}}{\theta}}$ \BY{contradiction}
+    \item $\cancel{\hpatmatch{e}{\hholep{p_0}{w}{\tau'}}{\theta}}$ \BY{contradiction}
     \end{pfsteps*}
-    Assume $\hnotmatch{e}{\hhole{p_0}{w}}$. By rule induction over \rulesref{rules:notmatch} on it, no case applies due to syntactic contradiction.
+    Assume $\hnotmatch{e}{\hholep{p_0}{w}{\tau'}}$. By rule induction over \rulesref{rules:notmatch} on it, no case applies due to syntactic contradiction.
     \begin{pfsteps*}
-    \item $\cancel{\hnotmatch{e}{\hhole{p_0}{w}}}$ \BY{contradiction}
+    \item $\cancel{\hnotmatch{e}{\hholep{p_0}{w}{\tau'}}}$ \BY{contradiction}
     \end{pfsteps*}
 \restorelocalsteps{0}
 \item[\text{(\ref{rule:PTNum})}]
@@ -2271,7 +2271,7 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{p-typ}, we would sho
             \savelocalsteps{3}
             \item[\text{(\ref{rule:MMEHole}),(\ref{rule:MMHole})}]
                 \begin{pfsteps*}
-                \item $p_2=\hehole{w},\hhole{p}{w}$ \BY{assumption}
+                \item $p_2=\heholep{w},\hholep{p}{w}{\tau'}$ \BY{assumption}
                 \item $\refutable{p_2}$ \BY{\ruleref{rule:REHole} and \ruleref{rule:RHole}} \pflabel{[epair2]rft-p2}
                 \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairR} on \pfref{[epair2]rft-p2}} \pflabel{[epair2]rft-pair}
                 \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotIntro} on \pfref{[epair]notintro} and \pfref{[epair2]rft-pair}}
@@ -2323,7 +2323,7 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{p-typ}, we would sho
             \savelocalsteps{3}
             \item[\text{(\ref{rule:MMEHole}),(\ref{rule:MMHole})}]
                 \begin{pfsteps*}
-                \item $p_1=\hehole{w},\hhole{p}{w}$ \BY{assumption}
+                \item $p_1=\heholep{w},\hholep{p}{w}{\tau'}$ \BY{assumption}
                 \item $\refutable{p_1}$ \BY{\ruleref{rule:REHole} and \ruleref{rule:RHole}} \pflabel{[epair4]rft-p1}
                 \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairR} on \pfref{[epair4]rft-p1}} \pflabel{[epair4]rft-pair}
                 \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotIntro} on \pfref{[epair]notintro} and \pfref{[epair4]rft-pair}}
@@ -2363,7 +2363,7 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{p-typ}, we would sho
             \savelocalsteps{3}
             \item[\text{(\ref{rule:MMEHole}),(\ref{rule:MMHole})}]
                 \begin{pfsteps*}
-                \item $p_1=\hehole{w},\hhole{p}{w}$ \BY{assumption}
+                \item $p_1=\heholep{w},\hholep{p}{w}{\tau'}$ \BY{assumption}
                 \item $\refutable{p_1}$ \BY{\ruleref{rule:REHole} and \ruleref{rule:RHole}} \pflabel{[epair5]rft-p1}
                 \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairR} on \pfref{[epair5]rft-p1}} \pflabel{[epair5]rft-pair}
                 \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotIntro} on \pfref{[epair]notintro} and \pfref{[epair5]rft-pair}}
@@ -2975,27 +2975,27 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
 \restorelocalsteps{0}
 \item[\text{(\ref{rule:PTEHole})}]
     \begin{pfsteps*}
-    \item $p=\hehole{w}$ \BY{assumption}
+    \item $p=\heholep{w}$ \BY{assumption}
     \item $\xi=\cunknown$ \BY{assumption}
     \item $\cdual{\xi}=\cunknown$ \BY{Definition \ref{defn:dual}}
     \end{pfsteps*}
     \begin{enumerate}
     \savelocalsteps{1}
-    \item Prove $\csatisfy{e}{\cunknown}$ implies $\hpatmatch{e}{\hehole{w}}{\theta}$ for some $\theta$.
+    \item Prove $\csatisfy{e}{\cunknown}$ implies $\hpatmatch{e}{\heholep{w}}{\theta}$ for some $\theta$.
         \begin{pfsteps*}
         \item $\cnotsatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:MVar})}
         \end{pfsteps*}
         Vacuously true.
     \restorelocalsteps{1}
-    \item Prove $\hpatmatch{e}{\hehole{w}}{\theta}$ implies $\csatisfy{e}{\cunknown}$.\\
-        By rule induction over Rules (\ref{rules:match}), we notice that $\hpatmatch{e}{\hehole{w}}{\theta}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
+    \item Prove $\hpatmatch{e}{\heholep{w}}{\theta}$ implies $\csatisfy{e}{\cunknown}$.\\
+        By rule induction over Rules (\ref{rules:match}), we notice that $\hpatmatch{e}{\heholep{w}}{\theta}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
     \restorelocalsteps{1}
-    \item Prove $\cmaysatisfy{e}{\cunknown}$ implies $\hmaymatch{e}{\hehole{w}}$.
+    \item Prove $\cmaysatisfy{e}{\cunknown}$ implies $\hmaymatch{e}{\heholep{w}}$.
         \begin{pfsteps*}
-        \item $\hmaymatch{e}{\hehole{w}}$ \BY{Rule (\ref{rule:MMEHole})}
+        \item $\hmaymatch{e}{\heholep{w}}$ \BY{Rule (\ref{rule:MMEHole})}
         \end{pfsteps*}
     \restorelocalsteps{1}
-    \item Prove $\hmaymatch{e}{\hehole{w}}$ implies $\cmaysatisfy{e}{\cunknown}$.
+    \item Prove $\hmaymatch{e}{\heholep{w}}$ implies $\cmaysatisfy{e}{\cunknown}$.
         \begin{pfsteps*}
         \item $\cmaysatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:CMSUnknown})}
         \end{pfsteps*}
@@ -3004,26 +3004,26 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
 \restorelocalsteps{0}
 \item[\text{(\ref{rule:PTHole})}]
     \begin{pfsteps*}
-    \item $p=\hhole{p_0}{w}$ \BY{assumption}
+    \item $p=\hholep{p_0}{w}{\tau'}$ \BY{assumption}
     \item $\xi=\cunknown$ \BY{assumption}
     \end{pfsteps*}
     \begin{enumerate}
     \savelocalsteps{1}
-    \item Prove $\csatisfy{e}{\cunknown}$ implies $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ for some $\theta$.
+    \item Prove $\csatisfy{e}{\cunknown}$ implies $\hpatmatch{e}{\hholep{p_0}{w}{\tau'}}{\theta}$ for some $\theta$.
         \begin{pfsteps*}
         \item $\cnotsatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:MVar})}
         \end{pfsteps*}
         Vacuously true.
     \restorelocalsteps{1}
-    \item Prove $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ implies $\csatisfy{e}{\cunknown}$.\\
-        By rule induction over Rules (\ref{rules:match}), we notice that $\hpatmatch{e}{\hhole{p_0}{w}}{\theta}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
+    \item Prove $\hpatmatch{e}{\hholep{p_0}{w}{\tau'}}{\theta}$ implies $\csatisfy{e}{\cunknown}$.\\
+        By rule induction over Rules (\ref{rules:match}), we notice that $\hpatmatch{e}{\hholep{p_0}{w}{\tau'}}{\theta}$ is in syntactic contradiction with all the cases, hence not derivable. And thus vacuously true.
     \restorelocalsteps{1}
-    \item Prove $\cmaysatisfy{e}{\cunknown}$ implies $\hmaymatch{e}{\hhole{p_0}{w}}$.
+    \item Prove $\cmaysatisfy{e}{\cunknown}$ implies $\hmaymatch{e}{\hholep{p_0}{w}{\tau'}}$.
         \begin{pfsteps*}
-        \item $\hmaymatch{e}{\hhole{p_0}{w}}$ \BY{Rule (\ref{rule:MMHole})}
+        \item $\hmaymatch{e}{\hholep{p_0}{w}{\tau'}}$ \BY{Rule (\ref{rule:MMHole})}
         \end{pfsteps*}
     \restorelocalsteps{1}
-    \item Prove $\hmaymatch{e}{\hhole{p_0}{w}}$ implies $\cmaysatisfy{e}{\cunknown}$.
+    \item Prove $\hmaymatch{e}{\hholep{p_0}{w}{\tau'}}$ implies $\cmaysatisfy{e}{\cunknown}$.
         \begin{pfsteps*}
         \item $\cmaysatisfy{e}{\cunknown}$ \BY{Rule (\ref{rule:CMSUnknown})}
         \end{pfsteps*}
@@ -3427,7 +3427,7 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
                     \savelocalsteps{4}
                     \item[\text{(\ref{rule:MMEHole}),(\ref{rule:MMHole})}]
                         \begin{pfsteps*}
-                        \item $p_1=\hehole{w},\hhole{p_0}{w}$ \BY{assumption}
+                        \item $p_1=\heholep{w},\hholep{p_0}{w}{\tau'}$ \BY{assumption}
                         \item $\refutable{p_1}$ \BY{\ruleref{rule:REHole} and \ruleref{rule:RHole}} \pflabel{[epair3]p-rft1}
                         \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairL} on \pfref{[epair3]p-rft1}} \pflabel{[epair3]p-rft}
                         \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotIntro} on \pfref{[epair]notintro} and \pfref{[epair3]p-rft}}
@@ -3453,7 +3453,7 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
                     \savelocalsteps{4}
                     \item[\text{(\ref{rule:MMEHole}),(\ref{rule:MMHole})}]
                         \begin{pfsteps*}
-                        \item $p_2=\hehole{w},\hhole{p_0}{w}$ \BY{assumption}
+                        \item $p_2=\heholep{w},\hholep{p_0}{w}{\tau'}$ \BY{assumption}
                         \item $\refutable{p_2}$ \BY{\ruleref{rule:REHole} and \ruleref{rule:RHole}} \pflabel{[epair3']p-rft1}
                         \item $\refutable{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:RPairR} on \pfref{[epair3']p-rft1}} \pflabel{[epair3']p-rft}
                         \item $\hmaymatch{e}{\hpair{p_1}{p_2}}$ \BY{\ruleref{rule:MMNotIntro} on \pfref{[epair]notintro} and \pfref{[epair3']p-rft}}

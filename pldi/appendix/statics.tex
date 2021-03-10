@@ -33,8 +33,8 @@ p & ::= &
   \hpair{p_1}{p_2} ~\vert~
   \hinlp{p} ~\vert~
   \hinrp{p} ~\vert~
-  \hehole{w} ~\vert~
-  \hhole{p}{w}
+  \heholep{w} ~\vert~
+  \hholep{p}{w}{\tau}
 \end{array}$
 
 \judgboxa{\rmpointer{\zrules} = rs}
@@ -166,14 +166,14 @@ p & ::= &
 \end{equation}
 \begin{equation}\label{rule:PTEHole}
 \inferrule[PTEHole]{ }{
-  \chpattyp{\hehole{w}}{\tau}{\cunknown}{\cdot}{w :: \tau}
+  \chpattyp{\heholep{w}}{\tau}{\cunknown}{\cdot}{w :: \tau}
 }
 \end{equation}
 \begin{equation}\label{rule:PTHole}
 \inferrule[PTHole]{
   \chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}
 }{
-  \chpattyp{\hhole{p}{w}}{\tau'}{\cunknown}
+  \chpattyp{\hholep{p}{w}{\tau}}{\tau'}{\cunknown}
   {\Gamma}{\Delta , w :: \tau'}
 }
 \end{equation}

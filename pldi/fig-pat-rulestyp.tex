@@ -17,13 +17,13 @@
   }
 
   \Infer{\PTEHole}{ }{
-    \chpattyp{\hehole{w}}{\tau}{\cunknown}{\cdot}{w :: \tau}
+    \chpattyp{\heholep{w}}{\tau}{\cunknown}{\cdot}{w :: \tau}
   }
 
   \Infer{\PTHole}{
     \chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}
   }{
-    \chpattyp{\hhole{p}{w}}{\tau'}{\cunknown}
+    \chpattyp{\hholep{p}{w}{\tau}}{\tau'}{\cunknown}
     {\Gamma}{\Delta , w :: \tau'}
   }
   
