@@ -248,6 +248,21 @@
 \end{subequations}
 
 \begin{lemma}
+  \label{lem:invalues-typ}
+  If $\inValues{e'}{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then $\hexptyp{\cdot}{\Delta}{e'}{\tau}$.
+\end{lemma}
+
+\begin{lemma}
+  \label{lem:invalues-val}
+  If $\inValues{e'}{e}$ then $\isVal{e'}$.
+\end{lemma}
+
+\begin{lemma}
+  \label{lem:invalues-derivable}
+  If $\isIndet{e}$ then there exists $e'$ such that $\inValues{e'}{e}$.
+\end{lemma}
+
+\begin{lemma}
   \label{lem:complete-not-satormay}
   If $\isIndet{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\ctyp{\hxi}{\tau}$ and $\cnotsatisfyormay{e}{\hxi}$
   then $\cnotsatisfyormay{e'}{\hxi}$ whenever $\inValues{e'}{e}$.

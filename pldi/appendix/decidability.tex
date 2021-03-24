@@ -117,7 +117,30 @@
   $\ccsatisfy{\xi_1}{\xi_2}$ iff $\ccsatisfy{\ctruth}{\cor{\cdual{\xi_1}}{\xi_2}}$.
 \end{lemma}
 
-\begin{theorem}[Decidability of Entailment of Constraint]
-\label{thrm:entailment-decidability}
-It is decidable whether $\ccsatisfy{\xi_1}{\xi_2}$.
+\begin{theorem}[Decidability of Exhaustiveness]
+\label{thrm:exhaustiveness-decidability}
+It is decidable whether $\csatisfyormay{\ctruth}{\hxi}$.
 \end{theorem}
+\begin{proof}
+  \begin{align*}
+               & \csatisfyormay{\ctruth}{\hxi} & \\
+    \text{iff} \quad& \ccsatisfy{\ctruth}{\ctruify{\hxi}} & \text{by \autoref{thrm:demystify-exhaustiveness}} \\
+    \text{iff} \quad& \cincon{\cdual{\ctruify{\hxi}}} & \text{by \autoref{lem:inconsistency-iff-entailment}}
+  \end{align*}
+  By \autoref{lem:inconsistency-decidability}, $\cincon{\cdual{\ctruify{\hxi}}}$ is decidable, and thus $\csatisfyormay{\ctruth}{\hxi}$ is decidable.
+\end{proof}
+
+\begin{theorem}[Decidability of Redundancy]
+\label{thrm:redundancy-decidability}
+It is decidable whether $\csatisfy{\hxi_1}{\hxi_2}$.
+\end{theorem}
+\begin{proof}
+  \begin{align*}
+               & \csatisfy{\hxi_1}{\hxi_2} & \\
+    \text{iff} \quad& \ccsatisfy{\ctruify{\hxi_1}}{\cfalsify{\hxi_2}} & \text{by \autoref{thrm:demystify-redundancy}} \\
+    \text{iff} \quad& \ccsatisfy{\ctruth}{\cor{\cdual{\ctruify{\hxi_1}}}{\cfalsify{\hxi_2}}} & \text{by \autoref{lem:material-entailment}}\\
+    \text{iff} \quad& \cincon{\cdual{\cor{\cdual{\ctruify{\hxi_1}}}{\cfalsify{\hxi_2}}}} & \text{by \autoref{lem:inconsistency-iff-entailment}} \\
+    \text{iff} \quad& \cincon{\cand{\ctruify{\hxi_1}}{\cdual{\cfalsify{\hxi_2}}}} & \text{by \autoref{defn:dual}}
+  \end{align*}
+  By \autoref{lem:inconsistency-decidability}, $\cincon{\cand{\ctruify{\hxi_1}}{\cdual{\cfalsify{\hxi_2}}}}$ is decidable, and thus $\csatisfy{\hxi_1}{\hxi_2}$ is decidable.
+\end{proof}
