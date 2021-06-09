@@ -183,11 +183,24 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{proof}
 \end{proof}
 
+\begin{lemma}
+  \label{lem:material-entailment}
+  $\ccsatisfy{e}{\cor{\cdual{\xi_1}}{\xi_2}}$ iff $\ccsatisfy{e}{\xi_2}$ whenever $\ccsatisfy{e}{\xi_1}$.
+\end{lemma}
+
 \begin{definition}[Entailment of Constraints]
   \label{defn:complete-constraint-entailment}
   Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$.
   Then $\ccsatisfy{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isVal{e}$ we have $\ccsatisfy{e}{\xi_1}$ implies $\ccsatisfy{e}{\xi_2}$
 \end{definition}
+
+\begin{corollary}[Material Entailment of Complete Constraint]
+\label{corol:material-entailment}
+  $\ccsatisfy{\xi_1}{\xi_2}$ iff $\ccsatisfy{\ctruth}{\cor{\cdual{\xi_1}}{\xi_2}}$.
+\end{corollary}
+\begin{proof}
+  By \autoref{defn:complete-constraint-entailment} and \autoref{lem:material-entailment}.
+\end{proof}
 
 \subsection{Relationship with Incomplete Constraint Language}
 

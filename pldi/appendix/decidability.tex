@@ -74,30 +74,30 @@
 \end{equation}
 \begin{equation}
 \inferrule[CINCInl]{
-  \cincon{\Xi}
+  \cincon{\xi_1, \dotsb, \xi_n}
 }{
-  \cincon{\cinl{\Xi}}
+  \cincon{\cinl{\xi_1}, \dotsb, \cinl{\xi_n}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[CINCInr]{
-  \cincon{\Xi}
+  \cincon{\xi_1, \dotsb, \xi_n}
 }{
-  \cincon{\cinr{\Xi}}
+  \cincon{\cinr{\xi_1}, \dotsb, \cinr{\xi_n}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[CINCPairL]{
-  \cincon{\Xi_1}
+  \cincon{\xi_{11}, \dotsb, \xi_{n1}}
 }{
-  \cincon{\cpair{\Xi_1}{\Xi_2}}
+  \cincon{\cpair{\xi_{11}}{\xi_{12}}, \cpair{\xi_{21}}{\xi_{22}}, \dotsb, \cpair{\xi_{n1}}{\xi_{n2}}}
 }
 \end{equation}
 \begin{equation}
 \inferrule[CINCPairR]{
-  \cincon{\Xi_2}
+  \cincon{\xi_{12}, \dotsb, \xi_{n2}}
 }{
-  \cincon{\cpair{\Xi_1}{\Xi_2}}
+  \cincon{\cpair{\xi_{11}}{\xi_{12}}, \cpair{\xi_{21}}{\xi_{22}}, \dotsb, \cpair{\xi_{n1}}{\xi_{n2}}}
 }
 \end{equation}
 \end{subequations}
@@ -110,11 +110,6 @@
 \begin{lemma}[Inconsistency and Entailment of Constraint]
   \label{lem:inconsistency-iff-entailment}
   $\cincon{\cdual{\xi}}$ iff $\ccsatisfy{\ctruth}{\xi}$
-\end{lemma}
-
-\begin{lemma}[Material Entailment of Complete Constraint]
-\label{lem:material-entailment}
-  $\ccsatisfy{\xi_1}{\xi_2}$ iff $\ccsatisfy{\ctruth}{\cor{\cdual{\xi_1}}{\xi_2}}$.
 \end{lemma}
 
 \begin{theorem}[Decidability of Exhaustiveness]
@@ -138,7 +133,7 @@ It is decidable whether $\csatisfy{\hxi_1}{\hxi_2}$.
   \begin{align*}
                & \csatisfy{\hxi_1}{\hxi_2} & \\
     \text{iff} \quad& \ccsatisfy{\ctruify{\hxi_1}}{\cfalsify{\hxi_2}} & \text{by \autoref{thrm:demystify-redundancy}} \\
-    \text{iff} \quad& \ccsatisfy{\ctruth}{\cor{\cdual{\ctruify{\hxi_1}}}{\cfalsify{\hxi_2}}} & \text{by \autoref{lem:material-entailment}}\\
+    \text{iff} \quad& \ccsatisfy{\ctruth}{\cor{\cdual{\ctruify{\hxi_1}}}{\cfalsify{\hxi_2}}} & \text{by \autoref{corol:material-entailment}}\\
     \text{iff} \quad& \cincon{\cdual{\cor{\cdual{\ctruify{\hxi_1}}}{\cfalsify{\hxi_2}}}} & \text{by \autoref{lem:inconsistency-iff-entailment}} \\
     \text{iff} \quad& \cincon{\cand{\ctruify{\hxi_1}}{\cdual{\cfalsify{\hxi_2}}}} & \text{by \autoref{defn:dual}}
   \end{align*}

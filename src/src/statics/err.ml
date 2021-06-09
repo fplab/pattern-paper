@@ -14,10 +14,6 @@ type our_fault =
   | ScrutNotFinal
 
 (* fault that is handled by us *)
-type their_fault =
-  | Redundant of int
-  | NonExhaustive
+type their_fault = Redundant of int | NonExhaustive
 
-type t =
-  | Our of our_fault
-  | Their of their_fault
+type t = Our of our_fault | Their of their_fault
