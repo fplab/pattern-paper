@@ -291,23 +291,30 @@ By rule induction over Rules (\ref{rules:TExp}) on typing judgment of $e$. For s
   \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{scrutType}
   \item $\isFinal{e_1}$ \BY{assumption} \pflabel{scrutFinal}
   \item $\chrulstyp{\cdot}{\Delta}{\xi_{pre}}{\hrulesP{r}{rs_{post}}}{\tau_1}{\xi_{rest}}{\tau}$ \BY{assumption} \pflabel{restrulesType}
-  \item $\cnotsatisfyormay{e_1}{\xi_{pre}}$ \BY{assumption} \pflabel{notsatisfypre}
+  \item $\forall e_1'. \inValues{e_1'}{e_1} \Rightarrow \cnotsatisfyormay{e_1'}{\xi_{pre}}$ \BY{assumption} \pflabel{notsatisfypre}
   \item $\csatisfyormay{\ctruth}{\cor{\xi_{pre}}{\xi_{rest}}}$ \BY{assumption} \pflabel{exhaust}
   \end{pfsteps*}
+  \todo{apply equivalence lemma: all of its possible values does not satisfy}
   By rule induction over Rules (\ref{rules:CTRules}) on \pfref{restrulesType}.
   \begin{byCases}
 
-  \restorelocalsteps{thrm:progress-1}
+  \savelocalsteps{thrm:progress-1}
   \item[\text{(\ref{rule:CTOneRules})}]
     \begin{pfsteps*}
     \item $rs_{post} = \cdot$ \BY{assumption}
     \item $\xi_{rest} = \xi_r$ \BY{assumption}
     \item $\chrultyp{\cdot}{\Delta}{r}{\tau_1}{\xi_r}{\tau}$ \BY{assumption} \pflabel{ruleType}
-    \item $r = \hrul{p_r}{e_r}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{ruleType}}
-    \item $\chpattyp{p_r}{\tau_1}{\xi_r}{\Gamma_r}{\Delta_r}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{ruleType}} \pflabel{patType}
-    \item $\csatisfyormay{e_1}{\cor{\xi_{pre}}{\xi_r}}$ \BY{Corollary \ref{corol:nn-exhaust} on \pfref{scrutFinal} and \pfref{exhaust}} \pflabel{satisfypre+r}
-    \item $\csatisfyormay{e_1}{\xi_r}$ \BY{Lemma \ref{lem:satisfy-substraction} on \pfref{satisfypre+r} and \pfref{notsatisfypre}} \pflabel{satormayr}
     \end{pfsteps*}
+    By rule induction over \rulesref{rules:CTRule} on \pfref{ruleType}, only one rule applies.
+    \begin{byCases}
+      \item[\text{(\ref{rule:CTRule})}]
+      \begin{pfsteps*}
+      \item $r = \hrul{p_r}{e_r}$ \BY{assumption}
+      \item $\chpattyp{p_r}{\tau_1}{\xi_r}{\Gamma_r}{\Delta_r}$ \BY{assumption} \pflabel{patType}
+      \item $\csatisfyormay{e_1}{\cor{\xi_{pre}}{\xi_r}}$ \BY{Corollary \ref{corol:nn-exhaust} on \pfref{scrutFinal} and \pfref{exhaust}} \pflabel{satisfypre+r}
+      \item $\csatisfyormay{e_1}{\xi_r}$ \BY{Lemma \ref{lem:satisfy-substraction} on \pfref{satisfypre+r} and \pfref{notsatisfypre}} \pflabel{satormayr}
+      \end{pfsteps*}
+    \end{byCases}
     By rule induction over Rules (\ref{rules:satormay}) on \pfref{satormayr}.
     \begin{byCases}
 
@@ -365,3 +372,8 @@ By rule induction over Rules (\ref{rules:TExp}) on typing judgment of $e$. For s
   \end{byCases}
 \end{byCases}
 \end{proof}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "appendix"
+%%% End:

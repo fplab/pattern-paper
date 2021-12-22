@@ -137,10 +137,9 @@ p & ::= &
 \begin{equation}\label{rule:TMatchNZPre}
 \inferrule[TMatchNZPre]{
   \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
-  \isFinal{e} \\
   \chrulstyp{\Gamma}{\Delta}{\cfalsity}{rs_{pre}}{\tau}{\xi_{pre}}{\tau'} \\
   \chrulstyp{\Gamma}{\Delta}{\cor{\cfalsity}{\xi_{pre}}}{\hrules{r}{rs_{post}}}{\tau}{\xi_{rest}}{\tau'} \\
-  \cnotsatisfyormay{e}{\xi_{pre}} \\
+  \forall e'. \inValues{e'}{e} \Rightarrow \cnotsatisfyormay{e'}{\xi_{pre}} \\
   \csatisfyormay{\ctruth}{\cor{\xi_{pre}}{\xi_{rest}}}
 }{
   \hexptyp{\Gamma}{\Delta}{\hmatch{e}{\zruls{rs_{pre}}{r}{rs_{post}}}}{\tau'}
@@ -156,7 +155,7 @@ p & ::= &
 \begin{subequations}\label{rules:PatTyp}
 \begin{equation}\label{rule:PTVar}
 \inferrule[PTVar]{ }{
-  \chpattyp{x}{\tau}{\ctruth}{\cdot}{x : \tau}
+  \chpattyp{x}{\tau}{\ctruth}{x : \tau}{\cdot}
 }
 \end{equation}
 \begin{equation}\label{rule:PTWild}
@@ -338,3 +337,8 @@ Proof by induction on the derivation of $\hpatmatch{e}{p}{\theta}$.
     \item $\htrans{e}{e'}$ for some unique $e'$
   \end{enumerate}
 \end{theorem}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "appendix"
+%%% End:

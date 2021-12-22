@@ -1042,6 +1042,95 @@ $\arraycolsep=4pt\begin{array}{lll}
 \end{proof}
 
 \begin{lemma}
+  \label{lem:exist-val-satormay-hxi}
+  If $\ctyp{\hxi}{\tau}$ then there exists $e$ such that $\isVal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\csatisfyormay{e}{\hxi}$.
+\end{lemma}
+\begin{proof}
+  \begin{pfsteps}
+  \item \ctyp{\hxi}{\tau} \BY{assumption} \pflabel{ctyp}
+  \end{pfsteps}
+  By rule induction over \ref{rules:CTyp} on \pfref{ctyp}.
+  \begin{byCases}
+    \savelocalsteps{0}
+  \item[\text{(\ref{rule:CTTruth})}]
+    \begin{pfsteps}
+    \item \hxi=\ctruth \BY{assumption}
+    \end{pfsteps}
+    By structural induction on $\tau$.
+    \begin{byCases}
+      \savelocalsteps{1}
+    \item[\tau=\tnum]
+      \begin{pfsteps}
+      \item \isVal{\hnum{0}} \BY{\ruleref{rule:VNum}}
+      \item \hexptyp{\cdot}{\cdot}{\hnum{0}}{\tnum} \BY{\ruleref{rule:TNum}} 
+      \item \csatisfy{\hnum{0}}{\ctruth} \BY{\ruleref{rule:CSTruth}} \pflabel{[truth][num]satisfy}
+      \item \csatisfyormay{\hnum{0}}{\ctruth} \BY{\ruleref{rule:CSMSSat} on \pfref{[truth][num]satisfy}}
+      \end{pfsteps}
+      Therefore, $\hnum{0}$ is such an $e$.
+      \restorelocalsteps{1}
+    \item[\tau=\tarr{\tau_1}{\tau_2}]
+      \begin{pfsteps}
+      \item \ctyp{\ctruth}{\tau_2} \BY{\ruleref{rule:CTTruth}} \pflabel{[truth][arr]ctyp2}
+      \item \hexptyp{\cdot}{\Delta}{e_2}{\tau_2} \text{ for some }e_2 \BY{IH on \pfref{[truth][arr]ctyp2}} \pflabel{[truth][arr]etyp2}
+      \item \isVal{\hlam{x}{\tau_1}{e_2}} \BY{\ruleref{rule:VLam}}
+      \item \hexptyp{x : \tau_1}{\Delta}{e_2}{\tau_2} \BY{Weakening?? on
+          \pfref{[truth][arr]etyp2}} \pflabel{[truth][arr]etyp2'}
+      \item
+        \hexptyp{\cdot}{\Delta}{\hlam{x}{\tau_1}{e_2}}{\tarr{\tau_1}{\tau_2}}
+        \BY{\ref{rule:TLam} on \pfref{[truth][arr]etyp2'}}
+      \item \csatisfy{\hlam{x}{\tau_1}{e_2}}{\ctruth} \BY{\ruleref{rule:CSTruth}} \pflabel{[truth][arr]satisfy}
+      \item \csatisfyormay{\hlam{x}{\tau_1}{e_2}}{\ctruth} \BY{\ruleref{rule:CSMSSat} on \pfref{[truth][arr]satisfy}}
+      \end{pfsteps}
+      Therefore, $\hlam{x}{\tau_1}{e_2}$ is such an $e$.
+      \restorelocalsteps{1}
+    \item[\tau=\tprod{\tau_1}{\tau_2}]
+      \begin{pfsteps}
+      \item \ctyp{\ctruth}{\tau_1} \BY{\ruleref{rule:CTTruth}} \pflabel{[truth][prod]ctyp1}
+      \item \ctyp{\ctruth}{\tau_2} \BY{\ruleref{rule:CTTruth}} \pflabel{[truth][prod]ctyp2}
+      \item \isVal{e_1} \text{ for some }e_1 \BY{IH on \pfref{[truth][prod]ctyp1}} \pflabel{[truth][prod]eval1}
+      \item \hexptyp{\cdot}{\Delta}{e_1}{\tau_1} \text{ for some }e_1 \BY{IH on \pfref{[truth][prod]ctyp1}} \pflabel{[truth][prod]etyp1}
+      \item \isVal{e_2} \text{ for some }e_2 \BY{IH on \pfref{[truth][prod]ctyp2}} \pflabel{[truth][prod]eval2}
+      \item \hexptyp{\cdot}{\Delta}{e_2}{\tau_2} \text{ for some }e_2 \BY{IH on \pfref{[truth][prod]ctyp2}} \pflabel{[truth][prod]etyp2}
+      \item \isVal{\hpair{e_1}{e_2}} \BY{\ruleref{rule:VPair} on
+          \pfref{[truth][prod]eval1} and \pfref{[truth][prod]eval2}}
+      \item \hexptyp{\cdot}{\Delta}{\hpair{e_1}{e_2}}{\tprod{\tau_1}{\tau_2}} \BY{\ruleref{rule:TPair} on
+          \pfref{[truth][prod]etyp1} and \pfref{[truth][prod]etyp2}}
+      \item \csatisfy{\hpair{e_1}{e_2}}{\ctruth} \BY{\ruleref{rule:CSTruth}} \pflabel{[truth][prod]satisfy}
+      \item \csatisfyormay{\hpair{e_1}{e_2}}{\ctruth} \BY{\ruleref{rule:CSMSSat} on \pfref{[truth][prod]satisfy}}
+      \end{pfsteps}
+      Therefore, $\hpair{e_1}{e_2}$ is such an $e$.
+      \restorelocalsteps{1}
+    \item[\tau=\tsum{\tau_1}{\tau_2}]
+      \begin{pfsteps}
+      \item \ctyp{\ctruth}{\tau_1} \BY{\ruleref{rule:CTTruth}} \pflabel{[truth][sum]ctyp1}
+      \item \isVal{e_1} \text{ for some }e_1 \BY{IH on \pfref{[truth][sum]ctyp1}} \pflabel{[truth][sum]eval1}
+      \item \hexptyp{\cdot}{\Delta}{e_1}{\tau_1} \text{ for some }e_1 \BY{IH on \pfref{[truth][sum]ctyp1}} \pflabel{[truth][sum]etyp1}
+      \item \isVal{\hinl{\tau_2}{e_1}} \BY{\ruleref{rule:VInl} on
+          \pfref{[truth][sum]eval1}}
+      \item \hexptyp{\cdot}{\Delta}{\hinl{\tau_2}{e_1}}{\tsum{\tau_1}{\tau_2}}
+        \BY{\ruleref{rule:TInl} on \pfref{[truth][sum]etyp1}}
+      \item \csatisfy{\hinl{\tau_2}{e_1}}{\ctruth} \BY{\ruleref{rule:CSTruth}} \pflabel{[truth][sum]satisfy}
+      \item \csatisfyormay{\hinl{\tau_2}{e_1}}{\ctruth} \BY{\ruleref{rule:CSMSSat} on \pfref{[truth][sum]satisfy}}
+      \end{pfsteps}
+      Therefore, $\hinl{\tau_2}{e_1}$ is such an $e$.
+    \end{byCases}
+    \restorelocalsteps{0}
+  \item[\hxi=\cunknown]
+    \restorelocalsteps{0}
+  \item[\hxi=\cnum{n}]
+    \restorelocalsteps{0}
+  \item[\hxi=\cinl{\hxi_1}]
+    \restorelocalsteps{0}
+  \item[\hxi=\cinr{\hxi_1}]
+    \restorelocalsteps{0}
+  \item[\hxi=\cpair{\hxi_1}{\hxi_2}]
+    \restorelocalsteps{0}
+  \item[\hxi=\cor{\hxi_1}{\hxi_2}]
+  \end{byCases}
+  \resetpfcounter
+\end{proof}
+
+\begin{lemma}
   \label{lem:no-e-may-satisfy-truth}
   $\cnotmaysatisfy{e}{\ctruth}$
 \end{lemma}
@@ -3442,5 +3531,6 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
 
 %%% Local Variables:
 %%% mode: latex
+%%% TeX-master: "appendix"
 %%% TeX-master: "appendix"
 %%% End:
