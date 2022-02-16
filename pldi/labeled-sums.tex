@@ -1,0 +1,41 @@
+\section{Labeled Sums}
+
+We can generalize binary sums (with holes) to labeled sums (with holes).
+
+(syntax)
+
+
+A labeled sum consists of a set of label-type pairings.
+For such a pairing, we call the label a ``tag,'' and the type its ``argument type.''
+The syntax for labeled sums introduces two new sorts: tags and sum bodies.
+Each sort requires a new hole form: sum body holes, and tag holes.
+Sum body holes bridge the gap between empty sums and non-empty but fully-indeterminate sums, enabling gap-free manipulation of sum types with no tags defined.
+Tag holes, on the other hand, are necessary for gap-free manipulation of tag declarations (in types) and uses (in expressions).
+Correspondingly, there are two distinct forms of tag hole: duplicate tags (in types) and undefined tags (in expressions).
+Since the syntax of tags is independent of sort, we also include a single form of hole for invalid tag names.
+
+TODO: introduce exps: intro vs elim forms
+
+(statics)
+
+The presence of holes poses interesting challenges for the formal treatment of labeled sums.
+Consistency of labeled sum types is more nuanced than for binary sums.
+For example, consistency of sums of the same cardinality depends on whether there is a consistent mapping between tags as well as argument types.
+(Say something about the algorithmic complexity of naive vs our efficient implementation? Cite even more efficient approaches?)
+
+consistency: (efficient?) matching (we build a bipartite graph of all possible consistent matchings and use Hopcroft-Karp maximum-cardinality matching algo to determine whether a maximum matching exists)
+
+% dont need: elided sums: easy to synthesize and enable a broader notion of consistency
+% dont need: casts between sums: (we do it componentwise)
+% dont need: (matched finite sums?)
+
+(dynamics)
+
+substitution does not affect tags directly (but does affect argument types)
+
+injection constraints (e.g. "not inl")
++ any other modifications to the formalism to make labeled sums work
+
+any interesting details w.r.t. exhaustiveness or redundancy?
+- duals
+- see if existing definitions or operations need a richer understanding of sums than binary
