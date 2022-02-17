@@ -30,7 +30,7 @@
 
 
 % HTag
-\newcommand{\tagC}{\mathbf{C}}
+\newcommand{\tagC}{\underline{\mathbf{C}}}
 \newcommand{\tagset}{\mathcal{C}}
 \newcommand{\tagehole}[1]{\llparenthesiscolor\rrparenthesiscolor^{#1}}
 \newcommand{\taghole}[2]{\llparenthesiscolor#1\rrparenthesiscolor^{#2}}
@@ -49,9 +49,10 @@
 \newcommand{\heholep}[1]{\llparenthesiscolor\rrparenthesiscolor^{#1}}
 \newcommand{\hholep}[3]{\llparenthesiscolor#1\rrparenthesiscolor^{#2}_{#3}}
 \newcommand{\hindet}[1]{\lceil#1\rceil}
-\newcommand{\hinj}[2]{\mathtt{inj}_{#1}({#2})}
+\newcommand{\hinj}[3]{\mathtt{inj}_{#1}^{#2}({#3})}
 \newcommand{\hinl}[2]{\mathtt{inl}_{#1}({#2})}
 \newcommand{\hinr}[2]{\mathtt{inr}_{#1}({#2})}
+\newcommand{\hinjp}[3]{\mathtt{inj}_{#1}^{#2}(#3)}
 \newcommand{\hinlp}[1]{\mathtt{inl}(#1)}
 \newcommand{\hinrp}[1]{\mathtt{inr}(#1)}
 \newcommand{\hprl}[1]{\mathtt{prl}(#1)}
@@ -126,6 +127,8 @@
 \newcommand{\cunknown}{\mathtt{?}}
 \newcommand{\cor}[2]{#1 \vee #2}
 \newcommand{\cand}[2]{#1 \wedge #2}
+\newcommand{\cinj}[3]{\mathtt{inj}_{#1}^{#2}(#3)}
+\newcommand{\notC}{\cancel{C}}
 \newcommand{\cinl}[1]{\mathtt{inl}(#1)}
 \newcommand{\cinr}[1]{\mathtt{inr}(#1)}
 \newcommand{\cpair}[2]{(#1 , #2)}

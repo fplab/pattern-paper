@@ -1,0 +1,30 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+  \judgbox{\ctruify{\xi_1} = \xi_2}{}
+
+  \begin{align*}
+    \ctruify{\cinj{C}{\tau}{\xi}}     & = \cinj{C}{\tau}{\ctruify{\xi}}     \\
+    \ctruify{\cinj{\notC}{\tau}{\xi}} & = \cinj{\notC}{\tau}{\ctruify{\xi}}
+  \end{align*}
+
+  \judgbox{\cfalsify{\xi_1} = \xi_2}{}
+
+  \begin{align*}
+    \cfalsify{\cinj{C}{\tau}{\xi}}     & = \cinj{C}{\tau}{\cfalsify{\xi}}     \\
+    \cfalsify{\cinj{\notC}{\tau}{\xi}} & = \cinj{\notC}{\tau}{\cfalsify{\xi}}
+  \end{align*}
+
+  \judgbox{\cincon{\Xi}}{}
+
+  \begin{mathpar}
+    \Infer{\CINCInj}{
+      \cincon{\Xi}
+    }{
+      \cincon{\cinj{C}{\tau}{\Xi}}
+    }
+  \end{mathpar}
+
+  \caption{Decidability of labeled sums}
+  \label{fig:labeled-sums-decidability}
+\end{figure}
