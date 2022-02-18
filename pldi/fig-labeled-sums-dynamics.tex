@@ -44,7 +44,24 @@
     \Infer{\MInj}{
       \hpatmatch{e}{p}{\theta}
     }{
-      \hpatmatch{\hinj{C}{\tau}{e}}{\hinjp{C}{\tau}{p}}{\theta}
+      \hpatmatch{\hinj{\tagC}{\tau}{e}}{\hinjp{\tagC}{\tau}{p}}{\theta}
+    }
+  \end{mathpar}
+
+  \judgbox{\hmaymatch{e}{p}}{$e$ indeterminately matches $p$}
+
+  \begin{mathpar}
+    \Infer{\MMInjTag}{
+      \tagmaymatch{C}{C'} \\
+      \hmaymatch{e}{p}
+    }{
+      \hmaymatch{\hinj{C}{\tau}{e}}{\hinjp{C'}{\tau}{p}}
+    }
+
+    \Infer{\MMInjArg}{
+      \hmaymatch{e}{p}
+    }{
+      \hmaymatch{\hinj{\tagC}{\tau}{e}}{\hinjp{\tagC}{\tau}{p}}
     }
   \end{mathpar}
 
@@ -52,29 +69,54 @@
 
   \begin{mathpar}
     \Infer{\NMInjTag}{
-      C_1 \neq C_2 \\
-      \hnotmatch{e}{p}
+      \tagC \neq \tagC'
     }{
-      \hnotmatch{\hinj{C_1}{\tau}{e}}{\hinjp{C_2}{\tau}{p}}
+      \hnotmatch{\hinj{\tagC}{\tau}{e}}{\hinjp{\tagC'}{\tau}{p}}
     }
 
-    \Infer{\NMInjArg}{
+    \Infer{\NMInjArgOne}{
       \hnotmatch{e}{p}
     }{
-      \hnotmatch{\hinj{C}{\tau}{e}}{\hinjp{C}{\tau}{p}}
+      \hnotmatch{\hinj{\tagC}{\tau}{e}}{\hinjp{\tagC}{\tau}{p}}
+    }
+
+    \Infer{\NMInjArgTwo}{
+      \tagmaymatch{C}{C'} \\
+      \hnotmatch{e}{p}
+    }{
+      \hnotmatch{\hinj{C}{\tau}{e}}{\hinjp{C'}{\tau}{p}}
     }
   \end{mathpar}
 
-  \judgbox{\hmaymatch{e}{p}}{$e$ indeterminately matches $p$}
+  \judgbox{\tagmaymatch{C}{C'}}{$C$ indeterminately matches $C'$}
 
   \begin{mathpar}
-    \Infer{\MMInj}{
-      C_1 \neq C_2 \\
-      \hmaymatch{e}{p}
-    }{
-      \hmaymatch{\hinj{C_1}{\tau}{e}}{\hinjp{C_2}{\tau}{p}}
+    \Infer{\TMMTagOne}{ }{
+      \tagmaymatch{\tagehole{u}}{\tagC}
+    }
+
+    \Infer{\TMMTagTwo}{ }{
+      \tagmaymatch{\taghole{\tagC}{u}}{\tagC'}
+    }
+
+    \Infer{\TMMEHole}{ }{
+      \tagmaymatch{C}{\tagehole{u}}
+    }
+
+    \Infer{\TMMHole}{ }{
+      \tagmaymatch{C}{\taghole{\tagC}{u}}
     }
   \end{mathpar}
+
+  % \judgbox{\tagnotmatch{C}{C'}}{$C$ does not match $C'$}
+
+  % \begin{mathpar}
+  %   \Infer{\TNMTag}{
+  %     \tagC \neq \tagC'
+  %   }{
+  %     \tagnotmatch{\tagC}{\tagC'}
+  %   }
+  % \end{mathpar}
 
   \judgbox{\refutable{p}}{$p$ is refutable}
 

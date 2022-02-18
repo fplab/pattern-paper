@@ -53,7 +53,8 @@
   \judgbox{\cdual{\xi_1} = \xi_2}{dual of $\xi_1$ is $\xi_2$}
 
   \begin{align*}
-    \cdual{\cinj{C}{\tau}{\xi}} & = \cinj{C}{\tau}{\cdual{\xi}} \vee \cinj{\notC}{\tau}{\ctruth}
+    \cdual{\cinj{C}{\tau}{\xi}}     & = \cinj{C}{\tau}{\cdual{\xi}} \vee \cinj{\notC}{\tau}{\ctruth} \\
+    \cdual{\cinj{\notC}{\tau}{\xi}} & = \cinj{\notC}{\tau}{\cdual{\xi}} \vee \cinj{C}{\tau}{\ctruth}
   \end{align*}
 
   \judgbox{\refutable{\xi}}{$\xi$ is refutable}
@@ -74,7 +75,14 @@
     \Infer{\CSInj}{
       \csatisfy{e}{\xi}
     }{
-      \csatisfy{\hinj{C}{\tau}{e}}{\cinj{C}{\tau}{\xi}}
+      \csatisfy{\hinj{\tagC}{\tau}{e}}{\cinj{\tagC}{\tau}{\xi}}
+    }
+
+    \Infer{\CSNotInj}{
+      \tagC \neq \tagC' \\
+      \csatisfy{e}{\xi}
+    }{
+      \csatisfy{\hinj{\tagC}{\tau}{e}}{\cinj{\nottagC'}{\tau}{\xi}}
     }
   \end{mathpar}
 
@@ -82,13 +90,20 @@
 
   \begin{mathpar}
     \Infer{\CMSInj}{
+      \tagmaymatch{C}{C'} \\
+      \csatisfyormay{e}{\xi}
+    }{
+      \cmaysatisfy{\hinj{C}{\tau}{e}}{\cinj{C'}{\tau}{\xi}}
+    }
+
+    \Infer{\CMSNotInj}{
+      \tagC \neq \tagC' \\
       \cmaysatisfy{e}{\xi}
     }{
-      \cmaysatisfy{\hinj{C}{\tau}{e}}{\cinj{C}{\tau}{\xi}}
+      \cmaysatisfy{\hinj{\tagC}{\tau}{e}}{\cinj{\nottagC'}{\tau}{\xi}}
     }
   \end{mathpar}
 
   \caption{Static semantics of labeled sums}
   \label{fig:labeled-sums-statics}
 \end{figure}
- 

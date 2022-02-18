@@ -18,11 +18,67 @@
   \judgbox{\cincon{\Xi}}{}
 
   \begin{mathpar}
-    \Infer{\CINCInj}{
-      \cincon{\Xi}
+    \Infer{\CINCInjType}{
+      \cinj{C'}{\tau'}{\xi'} \in \Xi \\
+      \tau' \neq \tau
     }{
-      \cincon{\cinj{C}{\tau}{\Xi}}
+      \cincon{\Xi,\cinj{C}{\tau}{\xi}}
     }
+
+    \Infer{\CINCInjTag}{
+      \cinj{\tagC'}{\tau}{\xi'} \in \Xi \\
+      \tagC \neq \tagC'
+    }{
+      \cincon{\Xi,\cinj{\tagC}{\tau}{\xi}}
+    }
+
+    \Infer{\CINCInjOne}{
+    \Xi = \Xi' \cup \{\cinj{\tagC}{\tau}{\xi_i}\}_{0 < i < |\Xi| - |\Xi'|} \\
+    \cincon{\{\xi_i\}_{0 < i < |\Xi| - |\Xi'|}, \xi}
+    }{
+    \cincon{\Xi,\cinj{\tagC}{\tau}{\xi}}
+    }
+
+    \Infer{\CINCInjTwo}{
+    \Xi = \Xi' \cup \{\cinj{\tagC}{\tau}{\xi_i}\}_{0 < i < |\Xi| - |\Xi'|} \\
+    \cincon{\Xi',\cinj{\tagC}{\tau}{\xi}}
+    }{
+    \cincon{\Xi,\cinj{\tagC}{\tau}{\xi}}
+    }
+
+    % \Infer{\CINCInjNot}{
+    %   \cinj{\nottagC}{\tau}{\xi'} \in \Xi
+    % }{
+    %   \cincon{\Xi,\cinj{\tagC}{\tau}{\xi}}
+    % }
+
+    % \Infer{\CINCNotInj}{
+    %   \cinj{C'}{\tau'}{\xi'} \in \Xi \\
+    %   \tau' \neq \tau
+    % }{
+    %   \cincon{\Xi,\cinj{\notC}{\tau}{\xi}}
+    % }
+
+    % \Infer{\CINCNotInj}{
+    %   \cinj{\notC'}{\tau'}{\xi'} \in \Xi \\
+    %   \tau' \neq \tau
+    % }{
+    %   \cincon{\Xi,\cinj{\notC}{\tau}{\xi}}
+    % }
+
+    % \Infer{\CINCNotInj}{
+    %   \cinj{C}{\tau}{\xi'} \in \Xi
+    % }{
+    %   \cincon{\Xi,\cinj{\notC}{\tau}{\xi}}
+    % }
+
+    % \Infer{\CINCNotInj}{
+    %   \cinj{C'}{\tau}{\xi'} \in \Xi \\
+    %   C' \neq \tagC \\
+    %   \cincon{\xi,\xi'}
+    % }{
+    %   \cincon{\Xi,\cinj{\nottagC}{\tau}{\xi}}
+    % }
   \end{mathpar}
 
   \caption{Decidability of labeled sums}
