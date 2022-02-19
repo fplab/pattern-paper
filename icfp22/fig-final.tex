@@ -70,16 +70,16 @@
   \isIndet{\hpair{e_1}{e_2}}
 }
 
-\Infer{\IPrl}{
+\Infer{\IFst}{
   \isIndet{e} \\ e \neq \hpair{e_1}{e_2}
 }{
-  \isIndet{\hprl{e}}
+  \isIndet{\hfst{e}}
 }
 
-\Infer{\IPrr}{
+\Infer{\ISnd}{
   \isIndet{e} \\ e \neq \hpair{e_1}{e_2}
 }{
-  \isIndet{\hprr{e}}
+  \isIndet{\hsnd{e}}
 }
 
 \Infer{\IInl}{

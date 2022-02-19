@@ -44,16 +44,16 @@
   \htrans{\hpair{e_1}{e_2}}{\hpair{e_1}{e_2'}}
 }
 
-\Infer{\ITPrl}{
+\Infer{\ITFstPair}{
   \isFinal{\hpair{e_1}{e_2}}
 }{
-  \htrans{\hprl{\hpair{e_1}{e_2}}}{e_1}
+  \htrans{\hfst{\hpair{e_1}{e_2}}}{e_1}
 }
 
-\Infer{\ITPrr}{
+\Infer{\ITSndPair}{
   \isFinal{\hpair{e_1}{e_2}}
 }{
-  \htrans{\hprr{\hpair{e_1}{e_2}}}{e_2}
+  \htrans{\hsnd{\hpair{e_1}{e_2}}}{e_2}
 }
 
 \Infer{\ITInl}{

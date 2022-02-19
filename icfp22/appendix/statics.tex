@@ -97,18 +97,18 @@ p & ::= &
   \hexptyp{\Gamma}{\Delta}{\hpair{e_1}{e_2}}{\tprod{\tau_1}{\tau_2}}
 }
 \end{equation}
-\begin{equation}\label{rule:TPrl}
-\inferrule[TPrl]{
+\begin{equation}\label{rule:TFst}
+\inferrule[TFst]{
     \hexptyp{\Gamma}{\Delta}{e}{\tprod{\tau_1}{\tau_2}}
 }{
-    \hexptyp{\Gamma}{\Delta}{\hprl{e}}{\tau_1}
+    \hexptyp{\Gamma}{\Delta}{\hfst{e}}{\tau_1}
 } 
 \end{equation}
-\begin{equation}\label{rule:TPrr}
-  \inferrule[TPrr]{
+\begin{equation}\label{rule:TSnd}
+  \inferrule[TSnd]{
     \hexptyp{\Gamma}{\Delta}{e}{\tprod{\tau_1}{\tau_2}}
   }{
-    \hexptyp{\Gamma}{\Delta}{\hprr{e}}{\tau_2}
+    \hexptyp{\Gamma}{\Delta}{\hsnd{e}}{\tau_2}
   }
 \end{equation}
 \begin{equation}\label{rule:TInl}

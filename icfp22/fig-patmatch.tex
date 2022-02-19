@@ -42,8 +42,8 @@
 
 \Infer{\MNotIntroPair}{
   \notIntro{e} \\
-  \hpatmatch{\hprl{e}}{p_1}{\theta_1} \\
-  \hpatmatch{\hprr{e}}{p_2}{\theta_2}
+  \hpatmatch{\hfst{e}}{p_1}{\theta_1} \\
+  \hpatmatch{\hsnd{e}}{p_2}{\theta_2}
 }{
   \hpatmatch{e}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
 }

@@ -45,16 +45,16 @@
     \hexptyp{\Gamma}{\Delta}{\hpair{e_1}{e_2}}{\tprod{\tau_1}{\tau_2}}
   }
 
-  \Infer{\TPrl}{
+  \Infer{\TFst}{
     \hexptyp{\Gamma}{\Delta}{e}{\tprod{\tau_1}{\tau_2}}
   }{
-    \hexptyp{\Gamma}{\Delta}{\hprl{e}}{\tau_1}
+    \hexptyp{\Gamma}{\Delta}{\hfst{e}}{\tau_1}
   }
   
-  \Infer{\TPrr}{
+  \Infer{\TSnd}{
     \hexptyp{\Gamma}{\Delta}{e}{\tprod{\tau_1}{\tau_2}}
   }{
-    \hexptyp{\Gamma}{\Delta}{\hprr{e}}{\tau_2}
+    \hexptyp{\Gamma}{\Delta}{\hsnd{e}}{\tau_2}
   }
   
   \Infer{\TInl}{

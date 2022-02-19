@@ -67,8 +67,8 @@
 
 \Infer{\CSNotIntroPair}{
   \notIntro{e} \\
-  \csatisfy{\hprl{e}}{\xi_1} \\
-  \csatisfy{\hprr{e}}{\xi_2}
+  \csatisfy{\hfst{e}}{\xi_1} \\
+  \csatisfy{\hsnd{e}}{\xi_2}
 }{
   \csatisfy{e}{\cpair{\xi_1}{\xi_2}}
 }

@@ -297,8 +297,8 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{equation}\label{rule:CSNotIntroPair}
 \inferrule[CSNotIntroPair]{
   \notIntro{e} \\
-  \csatisfy{\hprl{e}}{\hxi_1} \\
-  \csatisfy{\hprr{e}}{\hxi_2}
+  \csatisfy{\hfst{e}}{\hxi_1} \\
+  \csatisfy{\hsnd{e}}{\hxi_2}
 }{
   \csatisfy{e}{\cpair{\hxi_1}{\hxi_2}}
 }
@@ -328,22 +328,22 @@ $\arraycolsep=4pt\begin{array}{lll}
   \fsatisfy{\hinl{\tau_2}{e_1}}{\cinl{\hxi_1}} ={}& \fsatisfy{e_1}{\hxi_1} \label{defn:inl-satisfy-inl}\\
   \fsatisfy{\hinr{\tau_1}{e_2}}{\cinr{\hxi_2}} ={}& \fsatisfy{e_2}{\hxi_2} \label{defn:inr-satisfy-inr}\\
   \fsatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}} ={}& \fsatisfy{e_1}{\hxi_1} \text{ and } \fsatisfy{e_2}{\hxi_2} \label{defn:pair-satisfy-pair}\\
-  \fsatisfy{\hehole{u}}{\cpair{\hxi_1}{\hxi_2}} ={}& \fsatisfy{\hprl{\hehole{u}}}{\hxi_1} \text{ and } \fsatisfy{\hprr{\hehole{u}}}{\hxi_2}
+  \fsatisfy{\hehole{u}}{\cpair{\hxi_1}{\hxi_2}} ={}& \fsatisfy{\hfst{\hehole{u}}}{\hxi_1} \text{ and } \fsatisfy{\hsnd{\hehole{u}}}{\hxi_2}
   \label{defn:ehole-satisfy-pair} \\
-  \fsatisfy{\hhole{e}{u}}{\cpair{\hxi_1}{\hxi_2}} ={}& \fsatisfy{\hprl{\hhole{e}{u}}}{\hxi_1} \text{ and } \fsatisfy{\hprr{\hhole{e}{u}}}{\hxi_2}
+  \fsatisfy{\hhole{e}{u}}{\cpair{\hxi_1}{\hxi_2}} ={}& \fsatisfy{\hfst{\hhole{e}{u}}}{\hxi_1} \text{ and } \fsatisfy{\hsnd{\hhole{e}{u}}}{\hxi_2}
   \label{defn:hole-satisfy-pair} \\
-  \fsatisfy{\hap{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}} ={}& \fsatisfy{\hprl{\hap{e_1}{e_2}}}{\hxi_1} \notag\\
-  &\text{ and } \fsatisfy{\hprr{\hap{e_1}{e_2}}}{\hxi_2}
+  \fsatisfy{\hap{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}} ={}& \fsatisfy{\hfst{\hap{e_1}{e_2}}}{\hxi_1} \notag\\
+  &\text{ and } \fsatisfy{\hsnd{\hap{e_1}{e_2}}}{\hxi_2}
   \label{defn:ap-satisfy-pair} \\
-  \fsatisfy{\hmatch{e}{\zrules}}{\cpair{\hxi_1}{\hxi_2}} ={}& \fsatisfy{\hprl{\hmatch{e}{\zrules}}}{\hxi_1} \notag\\
-  &\text{ and } \fsatisfy{\hprr{\hmatch{e}{\zrules}}}{\hxi_2}
+  \fsatisfy{\hmatch{e}{\zrules}}{\cpair{\hxi_1}{\hxi_2}} ={}& \fsatisfy{\hfst{\hmatch{e}{\zrules}}}{\hxi_1} \notag\\
+  &\text{ and } \fsatisfy{\hsnd{\hmatch{e}{\zrules}}}{\hxi_2}
   \label{defn:match-satisfy-pair} \\
-  \fsatisfy{\hprl{e}}{\cpair{\hxi_1}{\hxi_2}} ={}& \fsatisfy{\hprl{\hprl{e}}}{\hxi_1} \notag\\
-  &\text{ and } \fsatisfy{\hprr{\hprl{e}}}{\hxi_2}
-  \label{defn:prl-satisfy-pair} \\
-  \fsatisfy{\hprr{e}}{\cpair{\hxi_1}{\hxi_2}} ={}& \fsatisfy{\hprl{\hprr{e}}}{\hxi_1} \notag\\
-  &\text{ and } \fsatisfy{\hprr{\hprr{e}}}{\hxi_2}
-  \label{defn:prr-satisfy-pair} \\
+  \fsatisfy{\hfst{e}}{\cpair{\hxi_1}{\hxi_2}} ={}& \fsatisfy{\hfst{\hfst{e}}}{\hxi_1} \notag\\
+  &\text{ and } \fsatisfy{\hsnd{\hfst{e}}}{\hxi_2}
+  \label{defn:fst-satisfy-pair} \\
+  \fsatisfy{\hsnd{e}}{\cpair{\hxi_1}{\hxi_2}} ={}& \fsatisfy{\hfst{\hsnd{e}}}{\hxi_1} \notag\\
+  &\text{ and } \fsatisfy{\hsnd{\hsnd{e}}}{\hxi_2}
+  \label{defn:snd-satisfy-pair} \\
   \text{Otherwise}\quad \fsatisfy{e}{\hxi} ={}& \false \label{defn:not-satisfy}
 \end{align}
 \end{subequations}
@@ -432,17 +432,17 @@ $\arraycolsep=4pt\begin{array}{lll}
         \begin{pfsteps*}
         \item $\hxi = \cpair{\hxi_1}{\hxi_2}$ \BY{assumption}
         \item $\notIntro{e}$ \BY{assumption} \pflabel{[notintro]notintro}
-        \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[notintro]csatisfy1}
-        \item $\csatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[notintro]csatisfy2}
-        \item $\fsatisfy{\hprl{e}}{\hxi_1} = \true$ \BY{IH on \pfref{[notintro]csatisfy1}} \pflabel{[notintro]fsatisfy1}
-        \item $\fsatisfy{\hprr{e}}{\hxi_2} = \true$ \BY{IH on \pfref{[notintro]csatisfy2}} \pflabel{[notintro]fsatisfy2}
+        \item $\csatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[notintro]csatisfy1}
+        \item $\csatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[notintro]csatisfy2}
+        \item $\fsatisfy{\hfst{e}}{\hxi_1} = \true$ \BY{IH on \pfref{[notintro]csatisfy1}} \pflabel{[notintro]fsatisfy1}
+        \item $\fsatisfy{\hsnd{e}}{\hxi_2} = \true$ \BY{IH on \pfref{[notintro]csatisfy2}} \pflabel{[notintro]fsatisfy2}
         \end{pfsteps*}
         By rule induction over \rulesref{rules:notintro} on \pfref{[notintro]notintro}.
         \begin{byCases}
         \item
           \begin{pfsteps*}
-          \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-          \item $\fsatisfy{e}{\cpair{\hxi_1}{\hxi_2}} = \fsatisfy{\hprl{e}}{\hxi_1} \text{ and } \fsatisfy{\hprr{e}}{\hxi_2} = \true$ \BY{Definition \ref{defn:satisfy} on \pfref{[notintro]fsatisfy1} and \pfref{[notintro]fsatisfy2}}
+          \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hfst{e_0},\hsnd{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+          \item $\fsatisfy{e}{\cpair{\hxi_1}{\hxi_2}} = \fsatisfy{\hfst{e}}{\hxi_1} \text{ and } \fsatisfy{\hsnd{e}}{\hxi_2} = \true$ \BY{Definition \ref{defn:satisfy} on \pfref{[notintro]fsatisfy1} and \pfref{[notintro]fsatisfy2}}
           \end{pfsteps*}
         \end{byCases}
       \end{byCases}
@@ -572,12 +572,12 @@ $\arraycolsep=4pt\begin{array}{lll}
             \end{pfsteps*}
         
           \restorelocalsteps{lem:sound-complete-satisfy-2}
-          \item[e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}]
+          \item[e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hfst{e_0},\hsnd{e_0},\hmatch{e_0}{\zrules}]
             \begin{pfsteps*}
-            \item $\fsatisfy{\hprl{e}}{\hxi_1} = \true$ \BY{Definition \ref{defn:pair-satisfy-pair} on \pfref{fsatisfy}} \pflabel{[notintro]fsatisfy1}
-            \item $\fsatisfy{\hprr{e}}{\hxi_2} = \true$ \BY{Definition \ref{defn:pair-satisfy-pair} on \pfref{fsatisfy}} \pflabel{[notintro]fsatisfy2}
-            \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{IH on \pfref{[notintro]fsatisfy1}} \pflabel{[notintro]csatisfy1}
-            \item $\csatisfy{\hprr{e}}{\hxi_2}$ \BY{IH on \pfref{[notintro]fsatisfy2}} \pflabel{[notintro]csatisfy2}
+            \item $\fsatisfy{\hfst{e}}{\hxi_1} = \true$ \BY{Definition \ref{defn:pair-satisfy-pair} on \pfref{fsatisfy}} \pflabel{[notintro]fsatisfy1}
+            \item $\fsatisfy{\hsnd{e}}{\hxi_2} = \true$ \BY{Definition \ref{defn:pair-satisfy-pair} on \pfref{fsatisfy}} \pflabel{[notintro]fsatisfy2}
+            \item $\csatisfy{\hfst{e}}{\hxi_1}$ \BY{IH on \pfref{[notintro]fsatisfy1}} \pflabel{[notintro]csatisfy1}
+            \item $\csatisfy{\hsnd{e}}{\hxi_2}$ \BY{IH on \pfref{[notintro]fsatisfy2}} \pflabel{[notintro]csatisfy2}
             \item $\notIntro{e}$ \BY{each rule in \rulesref{rules:notintro}} \pflabel{[notintro]notintro}
             \item $\csatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{Rule (\ref{rule:CSNotIntroPair}) on \pfref{[notintro]notintro} and \pfref{[notintro]csatisfy1} and \pfref{[notintro]csatisfy2}}
             \end{pfsteps*}
@@ -846,7 +846,7 @@ $\arraycolsep=4pt\begin{array}{lll}
       By structural induction on $e$.
       \begin{byCases}
         \savelocalsteps{1}
-        \item[e=\hehole{u},\hhole{e'}{u},\hap{e_1}{e_2},\hmatch{e'}{\zrules},\hprl{e'},\hprr{e'}]
+        \item[e=\hehole{u},\hhole{e'}{u},\hap{e_1}{e_2},\hmatch{e'}{\zrules},\hfst{e'},\hsnd{e'}]
         \begin{pfsteps*}
         \item $\frefutable{\cinl{\hxi_1}}=\true$ \BY{\autoref{defn:notintro-maysat-refutable} of \pfref{fmaysat}} \pflabel{[inl-notintro]frefutable}
         \item $\refutable{\cinl{\hxi_1}}$ \BY{\autoref{lem:sound-complete-xi-refutable} on \pfref{[inl-notintro]frefutable}} \pflabel{[inl-notintro]refutable}
@@ -879,7 +879,7 @@ $\arraycolsep=4pt\begin{array}{lll}
       By structural induction on $e$.
       \begin{byCases}
         \savelocalsteps{1}
-        \item[e=\hehole{u},\hhole{e'}{u},\hap{e_1}{e_2},\hmatch{e'}{\zrules},\hprl{e'},\hprr{e'}]
+        \item[e=\hehole{u},\hhole{e'}{u},\hap{e_1}{e_2},\hmatch{e'}{\zrules},\hfst{e'},\hsnd{e'}]
         \begin{pfsteps*}
         \item $\frefutable{\cinr{\hxi_2}}=\true$ \BY{\autoref{defn:notintro-maysat-refutable} of \pfref{fmaysat}} \pflabel{[inr-notintro]frefutable}
         \item $\refutable{\cinr{\hxi_2}}$ \BY{\autoref{lem:sound-complete-xi-refutable} on \pfref{[inr-notintro]frefutable}} \pflabel{[inr-notintro]refutable}
@@ -912,7 +912,7 @@ $\arraycolsep=4pt\begin{array}{lll}
       By structural induction on $e$.
       \begin{byCases}
         \savelocalsteps{1}
-        \item[e=\hehole{u},\hhole{e'}{u},\hap{e_1}{e_2},\hmatch{e'}{\zrules},\hprl{e'},\hprr{e'}]
+        \item[e=\hehole{u},\hhole{e'}{u},\hap{e_1}{e_2},\hmatch{e'}{\zrules},\hfst{e'},\hsnd{e'}]
         \begin{pfsteps*}
         \item $\frefutable{\cpair{\hxi_1}{\hxi_2}}=\true$ \BY{\autoref{defn:notintro-maysat-refutable} of \pfref{fmaysat}} \pflabel{[pair]frefutable}
         \item $\refutable{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:sound-complete-xi-refutable} on \pfref{[pair]frefutable}} \pflabel{[pair]refutable}
@@ -1751,46 +1751,46 @@ By case analysis on the premise, which is a disjunction.
     \restorelocalsteps{1}
     \item[\hxi=\cpair{\hxi_1}{\hxi_2}]   
     \begin{pfsteps}
-    \item \notIntro{\hprl{e}} \BY{\ruleref{rule:NVPrl}} \pflabel{[pair]prl-notintro}
-    \item \notIntro{\hprr{e}} \BY{\ruleref{rule:NVPrr}} \pflabel{[pair]prr-notintro}
+    \item \notIntro{\hfst{e}} \BY{\ruleref{rule:NVFst}} \pflabel{[pair]fst-notintro}
+    \item \notIntro{\hsnd{e}} \BY{\ruleref{rule:NVSnd}} \pflabel{[pair]snd-notintro}
     \end{pfsteps}
-    By case analysis on the value of $\fsatisfy{\hprl{e}}{\hxi_1}$ and $\fsatisfy{\hprr{e}}{\hxi_2}$.
+    By case analysis on the value of $\fsatisfy{\hfst{e}}{\hxi_1}$ and $\fsatisfy{\hsnd{e}}{\hxi_2}$.
     \begin{byCases}
       \savelocalsteps{2}
       \item[\true, \true]
       \begin{pfsteps}
-      \item \fsatisfy{\hprl{e}}{\hxi_1} = \true \BY{assumption} \pflabel{[pair1]prl-fsatisfy}
-      \item \fsatisfy{\hprr{e}}{\hxi_2} = \true \BY{assumption} \pflabel{[pair1]prr-fsatisfy}
-      \item \csatisfy{\hprl{e}}{\hxi_1} \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair1]prl-fsatisfy}} \pflabel{[pair1]prl-satisfy}
-      \item \csatisfy{\hprr{e}}{\hxi_2} \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair1]prr-fsatisfy}} \pflabel{[pair1]prr-satisfy}
-      \item \csatisfy{e}{\cpair{\hxi_1}{\hxi_2}} \BY{\ruleref{rule:CSNotIntroPair} on \pfref{notintro} and \pfref{[pair1]prl-satisfy} and \pfref{[pair1]prr-satisfy}}
+      \item \fsatisfy{\hfst{e}}{\hxi_1} = \true \BY{assumption} \pflabel{[pair1]fst-fsatisfy}
+      \item \fsatisfy{\hsnd{e}}{\hxi_2} = \true \BY{assumption} \pflabel{[pair1]snd-fsatisfy}
+      \item \csatisfy{\hfst{e}}{\hxi_1} \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair1]fst-fsatisfy}} \pflabel{[pair1]fst-satisfy}
+      \item \csatisfy{\hsnd{e}}{\hxi_2} \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair1]snd-fsatisfy}} \pflabel{[pair1]snd-satisfy}
+      \item \csatisfy{e}{\cpair{\hxi_1}{\hxi_2}} \BY{\ruleref{rule:CSNotIntroPair} on \pfref{notintro} and \pfref{[pair1]fst-satisfy} and \pfref{[pair1]snd-satisfy}}
       \end{pfsteps} 
       Contradicts $\cnotsatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$.
       \restorelocalsteps{2} 
       \item[\true, \false]
       \begin{pfsteps}
-      \item \fsatisfy{\hprl{e}}{\hxi_1} = \true \BY{assumption} \pflabel{[pair2]prl-fsatisfy}
-      \item \fsatisfy{\hprr{e}}{\hxi_2} = \false \BY{assumption} \pflabel{[pair2]prr-fsatisfy}
-      \item \cnotsatisfy{\hprr{e}}{\hxi_2} \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair2]prr-fsatisfy}} \pflabel{[pair2]prr-satisfy}
-      \item \refutable{\hxi_2} \BY{IH on \pfref{[pair]prr-notintro} and \pfref{[pair2]prr-satisfy}} \pflabel{[pair2]refutable2}
+      \item \fsatisfy{\hfst{e}}{\hxi_1} = \true \BY{assumption} \pflabel{[pair2]fst-fsatisfy}
+      \item \fsatisfy{\hsnd{e}}{\hxi_2} = \false \BY{assumption} \pflabel{[pair2]snd-fsatisfy}
+      \item \cnotsatisfy{\hsnd{e}}{\hxi_2} \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair2]snd-fsatisfy}} \pflabel{[pair2]snd-satisfy}
+      \item \refutable{\hxi_2} \BY{IH on \pfref{[pair]snd-notintro} and \pfref{[pair2]snd-satisfy}} \pflabel{[pair2]refutable2}
       \item \refutable{\cpair{\hxi_1}{\hxi_2}} \BY{\ruleref{rule:RXPairR} on \pfref{[pair2]refutable2}}
       \end{pfsteps} 
       \restorelocalsteps{2}
       \item[\false, \true]
       \begin{pfsteps}
-      \item \fsatisfy{\hprl{e}}{\hxi_1} = \false \BY{assumption} \pflabel{[pair3]prl-fsatisfy}
-      \item \fsatisfy{\hprr{e}}{\hxi_2} = \true \BY{assumption} \pflabel{[pair3]prr-fsatisfy}
-      \item \cnotsatisfy{\hprl{e}}{\hxi_1} \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair3]prl-fsatisfy}} \pflabel{[pair3]prl-satisfy}
-      \item \refutable{\hxi_1} \BY{IH on \pfref{[pair]prl-notintro} and \pfref{[pair3]prl-satisfy}} \pflabel{[pair3]refutable1}
+      \item \fsatisfy{\hfst{e}}{\hxi_1} = \false \BY{assumption} \pflabel{[pair3]fst-fsatisfy}
+      \item \fsatisfy{\hsnd{e}}{\hxi_2} = \true \BY{assumption} \pflabel{[pair3]snd-fsatisfy}
+      \item \cnotsatisfy{\hfst{e}}{\hxi_1} \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair3]fst-fsatisfy}} \pflabel{[pair3]fst-satisfy}
+      \item \refutable{\hxi_1} \BY{IH on \pfref{[pair]fst-notintro} and \pfref{[pair3]fst-satisfy}} \pflabel{[pair3]refutable1}
       \item \refutable{\cpair{\hxi_1}{\hxi_2}} \BY{\ruleref{rule:RXPairL} on \pfref{[pair3]refutable1}}
       \end{pfsteps} 
       \restorelocalsteps{2}
       \item[\false, \false]
       \begin{pfsteps}
-      \item \fsatisfy{\hprl{e}}{\hxi_1} = \false \BY{assumption} \pflabel{[pair4]prl-fsatisfy}
-      \item \fsatisfy{\hprr{e}}{\hxi_2} = \false \BY{assumption} \pflabel{[pair4]prr-fsatisfy}
-      \item \cnotsatisfy{\hprl{e}}{\hxi_1} \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair4]prl-fsatisfy}} \pflabel{[pair4]prl-satisfy}
-      \item \refutable{\hxi_1} \BY{IH on \pfref{[pair]prl-notintro} and \pfref{[pair4]prl-satisfy}} \pflabel{[pair4]refutable1}
+      \item \fsatisfy{\hfst{e}}{\hxi_1} = \false \BY{assumption} \pflabel{[pair4]fst-fsatisfy}
+      \item \fsatisfy{\hsnd{e}}{\hxi_2} = \false \BY{assumption} \pflabel{[pair4]snd-fsatisfy}
+      \item \cnotsatisfy{\hfst{e}}{\hxi_1} \BY{\autoref{lem:sound-complete-satisfy} on \pfref{[pair4]fst-fsatisfy}} \pflabel{[pair4]fst-satisfy}
+      \item \refutable{\hxi_1} \BY{IH on \pfref{[pair]fst-notintro} and \pfref{[pair4]fst-satisfy}} \pflabel{[pair4]refutable1}
       \item \refutable{\cpair{\hxi_1}{\hxi_2}} \BY{\ruleref{rule:RXPairL} on \pfref{[pair4]refutable1}}
       \end{pfsteps}    
     \end{byCases}
@@ -1884,12 +1884,12 @@ By rule induction over \rulesref{rules:Satisfy} on \pfref{satisfy}.
 \item[\text{(\ref{rule:CSNotIntroPair})}]
     \begin{pfsteps*}
     \item $\hxi=\cpair{\hxi_1}{\hxi_2}$ \BY{assumption}
-    \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{prl-satisfy}
-    \item $\csatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{prr-satisfy}
-    \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{prl-notintro}
-    \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{prr-notintro}
-    \item $\cancel{\refutable{\hxi_1}}$ \BY{IH on \pfref{prl-notintro} and \pfref{prl-satisfy}} \pflabel{not-rft1}
-    \item $\cancel{\refutable{\hxi_2}}$ \BY{IH on \pfref{prr-notintro} and \pfref{prr-satisfy}} \pflabel{not-rft2}
+    \item $\csatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{fst-satisfy}
+    \item $\csatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{snd-satisfy}
+    \item $\notIntro{\hfst{e}}$ \BY{\ruleref{rule:NVFst}} \pflabel{fst-notintro}
+    \item $\notIntro{\hsnd{e}}$ \BY{\ruleref{rule:NVSnd}} \pflabel{snd-notintro}
+    \item $\cancel{\refutable{\hxi_1}}$ \BY{IH on \pfref{fst-notintro} and \pfref{fst-satisfy}} \pflabel{not-rft1}
+    \item $\cancel{\refutable{\hxi_2}}$ \BY{IH on \pfref{snd-notintro} and \pfref{snd-satisfy}} \pflabel{not-rft2}
     \end{pfsteps*}
     By rule induction over \rulesref{rules:xi-refutable} on it, only two cases apply.
     \begin{byCases}
@@ -2075,10 +2075,10 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
     By rule induction over Rules (\ref{rules:TExp}) on \pfref{eTyp}, the following cases apply.
     \begin{byCases}
     \savelocalsteps{1}
-    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TFst}),(\ref{rule:TSnd}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
-        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[num]notintro}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hfst{e_0},\hsnd{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVFst}),(\ref{rule:NVSnd})} \pflabel{[num]notintro}
         \end{pfsteps*}
         Assume $\csatisfy{e}{\cnum{n_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, no case applies due to syntactic contradiction on $\hxi$.\\
         \begin{pfsteps*}
@@ -2478,10 +2478,10 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
     By rule induction over Rules (\ref{rules:TExp}) on \pfref{eTyp}, the following cases apply.
     \begin{byCases}
     \savelocalsteps{1}
-    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TFst}),(\ref{rule:TSnd}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
-        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[inl]notintro}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hfst{e_0},\hsnd{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVFst}),(\ref{rule:NVSnd})} \pflabel{[inl]notintro}
         \end{pfsteps*}
         Assume $\csatisfy{e}{\cinl{\hxi_1}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, no case applies due to syntactic contradiction.
         \begin{pfsteps*}
@@ -2615,10 +2615,10 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
     By rule induction over Rules (\ref{rules:TExp}) on \pfref{eTyp}, the following cases apply.
     \begin{byCases}
     \savelocalsteps{1}
-    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TFst}),(\ref{rule:TSnd}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
-        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[inr]notintro}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hfst{e_0},\hsnd{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVFst}),(\ref{rule:NVSnd})} \pflabel{[inr]notintro}
         \end{pfsteps*}
         Assume $\csatisfy{e}{\cinr{\hxi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, no case applies due to syntactic contradiction.
         \begin{pfsteps*}
@@ -2753,31 +2753,31 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
     By rule induction over Rules (\ref{rules:TExp}) on \pfref{eTyp}, the following cases apply.
     \begin{byCases}
     \savelocalsteps{00}
-    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TFst}),(\ref{rule:TSnd}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
-        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[pair]notintro}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hfst{e_0},\hsnd{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVFst}),(\ref{rule:NVSnd})} \pflabel{[pair]notintro}
         \item $\isIndet{e}$ \BY{\autoref{lem:final-notintro-indet} on \pfref{eFinal} and \pfref{[pair]notintro}} \pflabel{[pair]indet}
-        \item $\isIndet{\hprl{e}}$ \BY{Rule (\ref{rule:IPrl}) on \pfref{[pair]indet}} \pflabel{[pair]prl-indet}
-        \item $\isFinal{\hprl{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[pair]prl-indet}} \pflabel{[pair]prl-final}
-        \item $\isIndet{\hprr{e}}$ \BY{Rule (\ref{rule:IPrr}) on \pfref{[pair]indet}} \pflabel{[pair]prr-indet}
-        \item $\isFinal{\hprr{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[pair]prr-indet}} \pflabel{[pair]prr-final}
-        \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[pair]prl-notintro}
-        \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[pair]prr-notintro}
-        \item $\hexptyp{\cdot}{\Delta}{\hprl{e}}{\tau_1}$ \BY{Rule (\ref{rule:TPrl}) on \pfref{eTyp}} \pflabel{[pair]prl-typ}
-        \item $\hexptyp{\cdot}{\Delta}{\hprr{e}}{\tau_2}$ \BY{Rule (\ref{rule:TPrr}) on \pfref{eTyp}} \pflabel{[pair]prr-typ}
+        \item $\isIndet{\hfst{e}}$ \BY{Rule (\ref{rule:IFst}) on \pfref{[pair]indet}} \pflabel{[pair]fst-indet}
+        \item $\isFinal{\hfst{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[pair]fst-indet}} \pflabel{[pair]fst-final}
+        \item $\isIndet{\hsnd{e}}$ \BY{Rule (\ref{rule:ISnd}) on \pfref{[pair]indet}} \pflabel{[pair]snd-indet}
+        \item $\isFinal{\hsnd{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[pair]snd-indet}} \pflabel{[pair]snd-final}
+        \item $\notIntro{\hfst{e}}$ \BY{\ruleref{rule:NVFst}} \pflabel{[pair]fst-notintro}
+        \item $\notIntro{\hsnd{e}}$ \BY{\ruleref{rule:NVSnd}} \pflabel{[pair]snd-notintro}
+        \item $\hexptyp{\cdot}{\Delta}{\hfst{e}}{\tau_1}$ \BY{Rule (\ref{rule:TFst}) on \pfref{eTyp}} \pflabel{[pair]fst-typ}
+        \item $\hexptyp{\cdot}{\Delta}{\hsnd{e}}{\tau_2}$ \BY{Rule (\ref{rule:TSnd}) on \pfref{eTyp}} \pflabel{[pair]snd-typ}
         \end{pfsteps*}
-        By inductive hypothesis on \pfref{[pair]c1Typ} and \pfref{[pair]prl-typ} and \pfref{[pair]prl-final}, exactly one of $\csatisfy{\hprl{e}}{\hxi_1}$, $\cmaysatisfy{\hprl{e}}{\hxi_1}$, and $\cnotsatisfyormay{\hprl{e}}{\hxi_1}$ holds. \\
-        By inductive hypothesis on \pfref{[pair]c2Typ} and \pfref{[pair]prr-typ} and \pfref{[pair]prr-final}, exactly one of $\csatisfy{\hprr{e}}{\hxi_2}$, $\cmaysatisfy{\hprr{e}}{\hxi_2}$, and $\cnotsatisfyormay{\hprr{e}}{\hxi_2}$ holds. \\
+        By inductive hypothesis on \pfref{[pair]c1Typ} and \pfref{[pair]fst-typ} and \pfref{[pair]fst-final}, exactly one of $\csatisfy{\hfst{e}}{\hxi_1}$, $\cmaysatisfy{\hfst{e}}{\hxi_1}$, and $\cnotsatisfyormay{\hfst{e}}{\hxi_1}$ holds. \\
+        By inductive hypothesis on \pfref{[pair]c2Typ} and \pfref{[pair]snd-typ} and \pfref{[pair]snd-final}, exactly one of $\csatisfy{\hsnd{e}}{\hxi_2}$, $\cmaysatisfy{\hsnd{e}}{\hxi_2}$, and $\cnotsatisfyormay{\hsnd{e}}{\hxi_2}$ holds. \\
         By case analysis on which conclusion holds for $\hxi_1$ and $\hxi_2$.
         \begin{byCases}
         \savelocalsteps{1}
-        \item[\csatisfy{\hprl{e}}{\hxi_1},\csatisfy{\hprr{e}}{\hxi_2}]
+        \item[\csatisfy{\hfst{e}}{\hxi_1},\csatisfy{\hsnd{e}}{\hxi_2}]
             \begin{pfsteps*}
-            \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair1]satisfy1}
-            \item $\cnotmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair1]notmaysat1}
-            \item $\csatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair1]satisfy2}
-            \item $\cnotmaysatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair1]notmaysat2}
+            \item $\csatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair1]satisfy1}
+            \item $\cnotmaysatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair1]notmaysat1}
+            \item $\csatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair1]satisfy2}
+            \item $\cnotmaysatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair1]notmaysat2}
             \item $\csatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{Rule (\ref{rule:CSNotIntroPair}) on \pfref{[pair]notintro} and \pfref{[pair1]satisfy1} and \pfref{[pair1]satisfy2}} \pflabel{[pair1]satisfy-pair}
             \item $\csatisfyormay{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSSat} on \pfref{[pair1]satisfy-pair}}
             \item $\cancel{\refutable{\cpair{\hxi_1}{\hxi_2}}}$ \BY{\autoref{lem:satisfy-not-refutable} on \pfref{[pair]notintro} and \pfref{[pair1]satisfy-pair}} \pflabel{[pair1]not-rft-pair}
@@ -2795,13 +2795,13 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             
         \restorelocalsteps{1}
-        \item[\csatisfy{\hprl{e}}{\hxi_1},\cmaysatisfy{\hprr{e}}{\hxi_2}]
+        \item[\csatisfy{\hfst{e}}{\hxi_1},\cmaysatisfy{\hsnd{e}}{\hxi_2}]
             \begin{pfsteps*}
-            \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair2]satisfy1}
-            \item $\cnotmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair2]notmaysat1}
-            \item $\cnotsatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair2]notsatisfy2}
-            \item $\cmaysatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair2]maysat2}
-            \item $\refutable{\hxi_2}$ \BY{\autoref{lem:notintro-maysat-or-notsat-refutable} on \pfref{[pair]prr-notintro} and \pfref{[pair2]maysat2}} \pflabel{[pair2]rft2}
+            \item $\csatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair2]satisfy1}
+            \item $\cnotmaysatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair2]notmaysat1}
+            \item $\cnotsatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair2]notsatisfy2}
+            \item $\cmaysatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair2]maysat2}
+            \item $\refutable{\hxi_2}$ \BY{\autoref{lem:notintro-maysat-or-notsat-refutable} on \pfref{[pair]snd-notintro} and \pfref{[pair2]maysat2}} \pflabel{[pair2]rft2}
             \item $\refutable{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:RXPairR} on \pfref{[pair2]rft2}} \pflabel{[pair2]rft-pair}
             \item $\cmaysatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair2]rft-pair}} \pflabel{[pair2]maysat-pair}
             \item $\csatisfyormay{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair2]maysat-pair}}
@@ -2810,7 +2810,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \begin{byCases}
             \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\csatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption}
+                \item $\csatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption}
                 \end{pfsteps*}
                 Contradicts \pfref{[pair2]notsatisfy2}
             \end{byCases}
@@ -2819,18 +2819,18 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             
         \restorelocalsteps{1}
-        \item[\csatisfy{\hprl{e}}{\hxi_1},\cnotsatisfyormay{\hprr{e}}{\hxi_2}]
+        \item[\csatisfy{\hfst{e}}{\hxi_1},\cnotsatisfyormay{\hsnd{e}}{\hxi_2}]
             \begin{pfsteps*}
-            \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair3]satisfy1}
-            \item $\cnotmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair3]notmaysat1}
-            \item $\cnotsatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair3]notsatisfy2}
-            \item $\cnotmaysatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair3]notmaysat2}
+            \item $\csatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair3]satisfy1}
+            \item $\cnotmaysatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair3]notmaysat1}
+            \item $\cnotsatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair3]notsatisfy2}
+            \item $\cnotmaysatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair3]notmaysat2}
             \end{pfsteps*}
             Assume $\csatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, only one case applies.
             \begin{byCases}
             \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\csatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption}
+                \item $\csatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption}
                 \end{pfsteps*}
                 Contradicts \pfref{[pair3]notsatisfy2}.
             \end{byCases}
@@ -2849,16 +2849,16 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
                 \item[\text{(\ref{rule:RXPairL})}]
                     \begin{pfsteps*}
                     \item $\refutable{\hxi_1}$ \BY{assumption} \pflabel{[pair3]rft1}
-                    \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[pair3]prl-notintro}
-                    \item $\cmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair3]prl-notintro} and \pfref{[pair3]rft1}}
+                    \item $\notIntro{\hfst{e}}$ \BY{\ruleref{rule:NVFst}} \pflabel{[pair3]fst-notintro}
+                    \item $\cmaysatisfy{\hfst{e}}{\hxi_1}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair3]fst-notintro} and \pfref{[pair3]rft1}}
                     \end{pfsteps*}
                     Contradicts \pfref{[pair3]notmaysat1}.
                 \restorelocalsteps{2}
                 \item[\text{(\ref{rule:RXPairR})}]
                     \begin{pfsteps*}
                     \item $\refutable{\hxi_2}$ \BY{assumption} \pflabel{[pair3]rft2}
-                    \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[pair3]prr-notintro}
-                    \item $\cmaysatisfy{\hprr{e}}{\hxi_2}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair3]prr-notintro} and \pfref{[pair3]rft2}}
+                    \item $\notIntro{\hsnd{e}}$ \BY{\ruleref{rule:NVSnd}} \pflabel{[pair3]snd-notintro}
+                    \item $\cmaysatisfy{\hsnd{e}}{\hxi_2}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair3]snd-notintro} and \pfref{[pair3]rft2}}
                     \end{pfsteps*}
                     Contradicts \pfref{[pair3]notmaysat2}.
                 \end{byCases}
@@ -2869,13 +2869,13 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             
         \restorelocalsteps{1}
-        \item[\cmaysatisfy{\hprl{e}}{\hxi_1},\csatisfy{\hprr{e}}{\hxi_2}]
+        \item[\cmaysatisfy{\hfst{e}}{\hxi_1},\csatisfy{\hsnd{e}}{\hxi_2}]
             \begin{pfsteps*}
-            \item $\cnotsatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair4]notsatisfy1}
-            \item $\cmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair4]maysat1}
-            \item $\csatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair4]satisfy2}
-            \item $\cnotmaysatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair4]notmaysat2}
-            \item $\refutable{\hxi_1}$ \BY{\autoref{lem:notintro-maysat-or-notsat-refutable} on \pfref{[pair]prl-notintro} and \pfref{[pair4]maysat1}} \pflabel{[pair4]rft1}
+            \item $\cnotsatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair4]notsatisfy1}
+            \item $\cmaysatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair4]maysat1}
+            \item $\csatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair4]satisfy2}
+            \item $\cnotmaysatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair4]notmaysat2}
+            \item $\refutable{\hxi_1}$ \BY{\autoref{lem:notintro-maysat-or-notsat-refutable} on \pfref{[pair]fst-notintro} and \pfref{[pair4]maysat1}} \pflabel{[pair4]rft1}
             \item $\refutable{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:RXPairR} on \pfref{[pair4]rft1}} \pflabel{[pair4]rft-pair}
             \item $\cmaysatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair4]rft-pair}} \pflabel{[pair4]maysat-pair}
             \item $\csatisfyormay{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair4]maysat-pair}}
@@ -2884,7 +2884,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \begin{byCases}
             \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption}
+                \item $\csatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption}
                 \end{pfsteps*}
                 Contradicts \pfref{[pair4]notsatisfy1}.
             \end{byCases}
@@ -2893,13 +2893,13 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             
         \restorelocalsteps{1}
-        \item[\cmaysatisfy{\hprl{e}}{\hxi_1},\cmaysatisfy{\hprr{e}}{\hxi_2}]
+        \item[\cmaysatisfy{\hfst{e}}{\hxi_1},\cmaysatisfy{\hsnd{e}}{\hxi_2}]
             \begin{pfsteps*}
-            \item $\cnotsatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair5]notsatisfy1}
-            \item $\cmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair5]maysat1}
-            \item $\cnotsatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair5]notsatisfy2}
-            \item $\cmaysatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair5]maysat2}
-            \item $\refutable{\hxi_2}$ \BY{\autoref{lem:notintro-maysat-or-notsat-refutable} on \pfref{[pair]prl-notintro} and \pfref{[pair5]maysat1}} \pflabel{[pair5]rft2}
+            \item $\cnotsatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair5]notsatisfy1}
+            \item $\cmaysatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair5]maysat1}
+            \item $\cnotsatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair5]notsatisfy2}
+            \item $\cmaysatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair5]maysat2}
+            \item $\refutable{\hxi_2}$ \BY{\autoref{lem:notintro-maysat-or-notsat-refutable} on \pfref{[pair]fst-notintro} and \pfref{[pair5]maysat1}} \pflabel{[pair5]rft2}
             \item $\refutable{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:RXPairR} on \pfref{[pair5]rft2}} \pflabel{[pair5]rft-pair}
             \item $\cmaysatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair5]rft-pair}} \pflabel{[pair5]maysat-pair}
             \item $\csatisfyormay{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair5]maysat-pair}}
@@ -2908,7 +2908,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \begin{byCases}
             \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption}
+                \item $\csatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption}
                 \end{pfsteps*}
                 Contradicts \pfref{[pair5]notsatisfy1}.
             \end{byCases}
@@ -2917,13 +2917,13 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
 
         \restorelocalsteps{1}
-        \item[\cmaysatisfy{\hprl{e}}{\hxi_1},\cnotsatisfyormay{\hprr{e}}{\hxi_2}]
+        \item[\cmaysatisfy{\hfst{e}}{\hxi_1},\cnotsatisfyormay{\hsnd{e}}{\hxi_2}]
             \begin{pfsteps*}
-            \item $\cnotsatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair6]notsatisfy1}
-            \item $\cmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair6]maysat1}
-            \item $\cnotsatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair6]notsatisfy2}
-            \item $\cnotmaysatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair6]notmaysat2}
-            \item $\refutable{\hxi_1}$ \BY{\autoref{lem:notintro-maysat-or-notsat-refutable} on \pfref{[pair]prl-notintro} and \pfref{[pair6]maysat1}} \pflabel{[pair6]rft1}
+            \item $\cnotsatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair6]notsatisfy1}
+            \item $\cmaysatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair6]maysat1}
+            \item $\cnotsatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair6]notsatisfy2}
+            \item $\cnotmaysatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair6]notmaysat2}
+            \item $\refutable{\hxi_1}$ \BY{\autoref{lem:notintro-maysat-or-notsat-refutable} on \pfref{[pair]fst-notintro} and \pfref{[pair6]maysat1}} \pflabel{[pair6]rft1}
             \item $\refutable{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:RXPairR} on \pfref{[pair6]rft1}} \pflabel{[pair6]rft-pair}
             \item $\cmaysatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair6]rft-pair}} \pflabel{[pair6]maysat-pair}
             \item $\csatisfyormay{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair6]maysat-pair}}
@@ -2932,7 +2932,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \begin{byCases}
             \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption}
+                \item $\csatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption}
                 \end{pfsteps*}
                 Contradicts \pfref{[pair6]notsatisfy1}
             \end{byCases}
@@ -2941,18 +2941,18 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
 
         \restorelocalsteps{1}
-        \item[\cnotsatisfyormay{\hprl{e}}{\hxi_1},\csatisfy{\hprr{e}}{\hxi_2}]
+        \item[\cnotsatisfyormay{\hfst{e}}{\hxi_1},\csatisfy{\hsnd{e}}{\hxi_2}]
             \begin{pfsteps*}
-            \item $\cnotsatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair7]notsatisfy1}
-            \item $\cnotmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair7]notmaysat1}
-            \item $\csatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair7]satisfy2}
-            \item $\cnotmaysatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair7]notmaysat2}
+            \item $\cnotsatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair7]notsatisfy1}
+            \item $\cnotmaysatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair7]notmaysat1}
+            \item $\csatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair7]satisfy2}
+            \item $\cnotmaysatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair7]notmaysat2}
             \end{pfsteps*}
             Assume $\csatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, only one case applies.
             \begin{byCases}
             \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption}
+                \item $\csatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption}
                 \end{pfsteps*}
                 Contradicts \pfref{[pair7]notsatisfy1}
             \end{byCases}
@@ -2971,16 +2971,16 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
                 \item[\text{(\ref{rule:RXPairL})}]
                     \begin{pfsteps*}
                     \item $\refutable{\hxi_1}$ \BY{assumption} \pflabel{[pair7]rft1}
-                    \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[pair7]prl-notintro}
-                    \item $\cmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair7]prl-notintro} and \pfref{[pair7]rft1}}
+                    \item $\notIntro{\hfst{e}}$ \BY{\ruleref{rule:NVFst}} \pflabel{[pair7]fst-notintro}
+                    \item $\cmaysatisfy{\hfst{e}}{\hxi_1}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair7]fst-notintro} and \pfref{[pair7]rft1}}
                     \end{pfsteps*}
                     Contradicts \pfref{[pair3]notmaysat1}.
                 \restorelocalsteps{2}
                 \item[\text{(\ref{rule:RXPairR})}]
                     \begin{pfsteps*}
                     \item $\refutable{\hxi_2}$ \BY{assumption} \pflabel{[pair7]rft2}
-                    \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[pair7]prr-notintro}
-                    \item $\cmaysatisfy{\hprr{e}}{\hxi_2}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair7]prr-notintro} and \pfref{[pair7]rft2}}
+                    \item $\notIntro{\hsnd{e}}$ \BY{\ruleref{rule:NVSnd}} \pflabel{[pair7]snd-notintro}
+                    \item $\cmaysatisfy{\hsnd{e}}{\hxi_2}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair7]snd-notintro} and \pfref{[pair7]rft2}}
                     \end{pfsteps*}
                     Contradicts \pfref{[pair7]notmaysat2}.
                 \end{byCases}
@@ -2991,13 +2991,13 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
             
         \restorelocalsteps{1}
-        \item[\cnotsatisfyormay{\hprl{e}}{\hxi_1},\cmaysatisfy{\hprr{e}}{\hxi_2}]
+        \item[\cnotsatisfyormay{\hfst{e}}{\hxi_1},\cmaysatisfy{\hsnd{e}}{\hxi_2}]
             \begin{pfsteps*}
-            \item $\cnotsatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair8]notsatisfy1}
-            \item $\cnotmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair8]notmaysat1}
-            \item $\cnotsatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair8]notsatisfy2}
-            \item $\cmaysatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair8]maysat2}
-            \item $\refutable{\hxi_2}$ \BY{\autoref{lem:notintro-maysat-or-notsat-refutable} on \pfref{[pair]prr-notintro} and \pfref{[pair8]maysat2}} \pflabel{[pair8]rft2}
+            \item $\cnotsatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair8]notsatisfy1}
+            \item $\cnotmaysatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair8]notmaysat1}
+            \item $\cnotsatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair8]notsatisfy2}
+            \item $\cmaysatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair8]maysat2}
+            \item $\refutable{\hxi_2}$ \BY{\autoref{lem:notintro-maysat-or-notsat-refutable} on \pfref{[pair]snd-notintro} and \pfref{[pair8]maysat2}} \pflabel{[pair8]rft2}
             \item $\refutable{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:RXPairR} on \pfref{[pair8]rft2}} \pflabel{[pair8]rft-pair}
             \item $\cmaysatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair8]rft-pair}} \pflabel{[pair8]maysat-pair}
             \item $\csatisfyormay{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair8]maysat-pair}}
@@ -3006,7 +3006,7 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \begin{byCases}
             \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption}
+                \item $\csatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption}
                 \end{pfsteps*}
                 Contradicts \pfref{[pair8]notsatisfy1}.
             \end{byCases}
@@ -3015,18 +3015,18 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
             \end{pfsteps*}
 
         \restorelocalsteps{1}
-        \item[\cnotsatisfyormay{\hprl{e}}{\hxi_1},\cnotsatisfyormay{\hprr{e}}{\hxi_2}]
+        \item[\cnotsatisfyormay{\hfst{e}}{\hxi_1},\cnotsatisfyormay{\hsnd{e}}{\hxi_2}]
             \begin{pfsteps*}
-            \item $\cnotsatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair9]notsatisfy1}
-            \item $\cnotmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair9]notmaysat1}
-            \item $\cnotsatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair9]notsatisfy2}
-            \item $\cnotmaysatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair9]notmaysat2}
+            \item $\cnotsatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair9]notsatisfy1}
+            \item $\cnotmaysatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair9]notmaysat1}
+            \item $\cnotsatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair9]notsatisfy2}
+            \item $\cnotmaysatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair9]notmaysat2}
             \end{pfsteps*}
             Assume $\csatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$. By rule induction over Rules (\ref{rules:Satisfy}) on it, only one case applies.
             \begin{byCases}
             \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption}
+                \item $\csatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption}
                 \end{pfsteps*}
                 Contradicts \pfref{[pair9]notsatisfy1}
             \end{byCases}
@@ -3045,16 +3045,16 @@ By rule induction over Rules (\ref{rules:CTyp}) on \pfref{cTyp}, we would show o
                 \item[\text{(\ref{rule:RXPairL})}]
                     \begin{pfsteps*}
                     \item $\refutable{\hxi_1}$ \BY{assumption} \pflabel{[pair9]rft1}
-                    \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[pair9]prl-notintro}
-                    \item $\cmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair9]prl-notintro} and \pfref{[pair9]rft1}}
+                    \item $\notIntro{\hfst{e}}$ \BY{\ruleref{rule:NVFst}} \pflabel{[pair9]fst-notintro}
+                    \item $\cmaysatisfy{\hfst{e}}{\hxi_1}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair9]fst-notintro} and \pfref{[pair9]rft1}}
                     \end{pfsteps*}
                     Contradicts \pfref{[pair9]notmaysat1}.
                 \restorelocalsteps{2}
                 \item[\text{(\ref{rule:RXPairR})}]
                     \begin{pfsteps*}
                     \item $\refutable{\hxi_2}$ \BY{assumption} \pflabel{[pair9]rft2}
-                    \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[pair9]prr-notintro}
-                    \item $\cmaysatisfy{\hprr{e}}{\hxi_2}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair9]prr-notintro} and \pfref{[pair9]rft2}}
+                    \item $\notIntro{\hsnd{e}}$ \BY{\ruleref{rule:NVSnd}} \pflabel{[pair9]snd-notintro}
+                    \item $\cmaysatisfy{\hsnd{e}}{\hxi_2}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair9]snd-notintro} and \pfref{[pair9]rft2}}
                     \end{pfsteps*}
                     Contradicts \pfref{[pair9]notmaysat2}.
                 \end{byCases}
