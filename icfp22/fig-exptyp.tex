@@ -1,0 +1,94 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+\judgbox{
+  \hexptyp{\Gamma}{\Delta}{e}{\tau}
+}{
+  $e$ is of type \(\tau\)
+}
+  \begin{mathpar}
+  \Infer{\TVar}{ }{
+    \hexptyp{\Gamma, x:\tau}{\Delta}{x}{\tau}
+  }
+
+  \Infer{\TEHole}{ }{
+    \hexptyp{\Gamma}{\Delta, u::\tau}{\hehole{u}}{\tau}
+  }
+
+  \Infer{\THole}{
+    \hexptyp{\Gamma}{\Delta, u::\tau}{e}{\tau'}
+  }{
+    \hexptyp{\Gamma}{\Delta, u::\tau}{\hhole{e}{u}}{\tau}
+  }
+
+  \Infer{\TNum}{ }{
+    \hexptyp{\Gamma}{\Delta}{\hnum{n}}{\tnum}
+  }
+
+  \Infer{\TLam}{
+    \hexptyp{\Gamma, x:\tau_1}{\Delta}{e}{\tau_2}
+  }{
+    \hexptyp{\Gamma}{\Delta}{\hlam{x}{\tau_1}{e}}{\tarr{\tau_1}{\tau_2}}
+  }
+
+  \Infer{\TAp}{
+    \hexptyp{\Gamma}{\Delta}{e_1}{\tarr{\tau_2}{\tau}} \\
+    \hexptyp{\Gamma}{\Delta}{e_2}{\tau_2}
+  }{
+    \hexptyp{\Gamma}{\Delta}{\hap{e_1}{e_2}}{\tau}
+  }
+
+  \Infer{\TPair}{
+    \hexptyp{\Gamma}{\Delta}{e_1}{\tau_1} \\
+    \hexptyp{\Gamma}{\Delta}{e_2}{\tau_2}
+  }{
+    \hexptyp{\Gamma}{\Delta}{\hpair{e_1}{e_2}}{\tprod{\tau_1}{\tau_2}}
+  }
+
+  \Infer{\TPrl}{
+    \hexptyp{\Gamma}{\Delta}{e}{\tprod{\tau_1}{\tau_2}}
+  }{
+    \hexptyp{\Gamma}{\Delta}{\hprl{e}}{\tau_1}
+  }
+  
+  \Infer{\TPrr}{
+    \hexptyp{\Gamma}{\Delta}{e}{\tprod{\tau_1}{\tau_2}}
+  }{
+    \hexptyp{\Gamma}{\Delta}{\hprr{e}}{\tau_2}
+  }
+  
+  \Infer{\TInl}{
+    \hexptyp{\Gamma}{\Delta}{e}{\tau_1}
+  }{
+    \hexptyp{\Gamma}{\Delta}{\hinl{\tau_2}{e}}{\tsum{\tau_1}{\tau_2}}
+  }
+
+  \Infer{\TInr}{
+    \hexptyp{\Gamma}{\Delta}{e}{\tau_2}
+  }{
+    \hexptyp{\Gamma}{\Delta}{\hinr{\tau_1}{e}}{\tsum{\tau_1}{\tau_2}}
+  }
+  
+  \Infer{\TMatchZPre}{
+    \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
+    \chrulstyp{\Gamma}{\Delta}{\cfalsity}{\hrules{r}{rs}}{\tau}{\xi}{\tau'} \\
+    \csatisfyormay{\ctruth}{\xi}
+  }{
+  \hexptyp{\Gamma}{\Delta}{\hmatch{e}{\zruls{\cdot}{r}{rs}}}{\tau'}
+  }
+
+  \Infer{\TMatchNZPre}{
+    \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
+    \isFinal{e} \\
+    \chrulstyp{\Gamma}{\Delta}{\cfalsity}{rs_{pre}}{\tau}{\xi_{pre}}{\tau'} \\
+    \chrulstyp{\Gamma}{\Delta}{\cor{\cfalsity}{\xi_{pre}}}{\hrules{r}{rs_{post}}}{\tau}{\xi_{rest}}{\tau'} \\
+    \cnotsatisfyormay{e}{\xi_{pre}} \\
+    \csatisfyormay{\ctruth}{\cor{\xi_{pre}}{\xi_{rest}}}
+  }{
+    \hexptyp{\Gamma}{\Delta}{\hmatch{e}{\zruls{rs_{pre}}{r}{rs_{post}}}}{\tau'}
+  }
+  \end{mathpar}
+
+\caption{Typing of Internal Expressions}
+\label{fig:exptyp}
+\end{figure}

@@ -1,0 +1,38 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+\judgbox{
+  \notIntro{e}
+}{
+  $e$ cannot be a value syntactically
+}
+
+\begin{mathpar}
+\Infer{NVEHole}{ }{
+  \notIntro{\hehole{u}}
+}
+
+\Infer{NVHole}{ }{
+  \notIntro{\hhole{e}{u}}
+}
+
+\Infer{NVAp}{ }{
+  \notIntro{\hap{e_1}{e_2}}
+}
+
+\Infer{NVMatch}{ }{
+  \notIntro{\hmatch{e}{\zrules}}
+}
+
+\Infer{NVPrl}{ }{
+  \notIntro{\hprl{e}}
+}
+
+\Infer{NVPrr}{ }{
+  \notIntro{\hprr{e}}
+}
+\end{mathpar}
+
+  \caption{Expressions that are syntactically not values}
+  \label{fig:notintro}
+\end{figure}

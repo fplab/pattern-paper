@@ -1,0 +1,45 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+  $\arraycolsep=4pt\begin{array}{lll}
+    \tau & ::= &
+      \tnum ~\vert~
+      \tarr{\tau_1}{\tau_2} ~\vert~
+      \tprod{\tau_1}{\tau_2} ~\vert~
+      \tsum{\tau_1}{\tau_2} \\
+    e & ::= &
+      x ~\vert~
+      \hnum{n} \\
+      & ~\vert~ &
+      \hlam{x}{\tau}{e} ~\vert~
+      \hap{e_1}{e_2} \\
+      & ~\vert~ &
+      \hpair{e_1}{e_2} ~\vert~
+      \hprl{e} ~\vert~ \hprr{e} \\
+      & ~\vert~ &
+      \hinl{\tau}{e} ~\vert~
+      \hinr{\tau}{e} \\
+      & ~\vert~ &
+      \hmatch{e}{\hat{rs}} \\
+      & ~\vert~ &
+      \hehole{u} ~\vert~
+      \hhole{e}{u} \\
+    \hat{rs} & ::= &
+      \zrulsP{rs}{r}{rs} \\
+    rs & ::= &
+      \cdot ~\vert~ \hrulesP{r}{rs'} \\
+    r & ::= &
+      \hrul{p}{e} \\
+    p & ::= &
+      x ~\vert~
+      \hnum{n} ~\vert~
+      \_ ~\vert~
+      \hpair{p_1}{p_2} ~\vert~
+      \hinlp{p} ~\vert~
+      \hinrp{p} ~\vert~
+      \heholep{w} ~\vert~
+      \hholep{p}{w}{\tau}
+    \end{array}$
+\caption{Syntax of the Internal Language}
+\label{fig:syntax}
+\end{figure}

@@ -1,0 +1,43 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[!ht]
+\judgbox{
+  \refutable{\xi}
+}{$\xi$ is refutable}
+
+\begin{mathpar}
+\Infer{\RXNum}{ }{
+  \refutable{\cnum{n}}
+}
+
+\Infer{\RXNotNum}{ }{
+  \refutable{\cnotnum{n}}
+}
+
+\Infer{\RXUnknown}{ }{
+  \refutable{\cunknown}
+}
+
+\Infer{\RXInl}{ }{
+  \refutable{\cinl{\xi}}
+}
+
+\Infer{\RXInr}{ }{
+  \refutable{\cinr{\xi}}
+}
+
+\Infer{\RXPairL}{
+  \refutable{\xi_1}
+}{
+  \refutable{\cpair{\xi_1}{\xi_2}}
+}
+
+\Infer{\RXPairR}{
+  \refutable{\xi_2}
+}{
+  \refutable{\cpair{\xi_1}{\xi_2}}
+}
+\end{mathpar}
+\caption{Refutable Constraints}
+\label{fig:xi-refutable}
+\end{figure}

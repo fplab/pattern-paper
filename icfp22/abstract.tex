@@ -1,0 +1,29 @@
+\begin{abstract}
+    Programming tools, particularly program editors, are most useful to humans 
+    when they can reason about incomplete programs,
+    i.e. programs where there are missing pieces and semantic errors. 
+    Several programming languages, including GHC Haskell, Hazel, Agda, and Idris, have introduced \emph{typed holes} to make 
+    working with incomplete programs more tractable. 
+    % In these languages, empty holes serve as placeholders for missing program terms, while
+    % non-empty holes operate as semantic membranes around erroneous terms, 
+    % isolating them so that the remainder of the program remains statically meaningful,
+    % and, in certain cases, even dynamically meaningful.
+    The prior work, however, has focused on holes in expressions and types. 
+    This paper considers, from type theoretic first principles,
+    the problem of typed holes that appear in patterns.
+    We confront two main difficulties, (1) reasoning about exhaustiveness and redundancy 
+    when patterns are not fully known, and (2) live evaluation of expressions
+    containing both pattern and expression holes. 
+    In both cases, this requires reasoning conservatively about all 
+    possible hole fillings.
+    We develop a simply typed lambda calculus, Peanut, 
+    where reasoning about exhaustiveness and redundancy is mapped to the
+    problem of deriving first order entailments between constraints. 
+    We prove key metatheoretic properties and formalize a procedure capable of 
+    deciding the necessary entailments.
+    We also develop an operational semantics in the style of Hazelnut Live that allows us 
+    to evaluate around holes.
+    We implement these features into Hazel, a live functional 
+    programming environment that automatically inserts holes to provide live static and dynamic feedback to the programmer without gaps, i.e. in every possible editor state.
+  \keywords{pattern matching \and typed holes \and live programming}
+\end{abstract}

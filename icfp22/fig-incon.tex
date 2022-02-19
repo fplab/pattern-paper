@@ -1,0 +1,71 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+\judgbox{\cincon{\Xi}}{}
+
+\begin{mathpar}
+\Infer{\CINCTruth}{
+  \cincon{\Xi}
+}{
+  \cincon{\Xi, \ctruth}
+}
+
+\Infer{\CINCFalsity}{ }{
+  \cincon{\Xi, \cfalsity}
+}
+
+\Infer{\CINCNum}{
+  n_1 \neq n_2
+}{
+  \cincon{\Xi, \cnum{n_1}, \cnum{n_2}}
+}
+
+\Infer{\CINCNotNum}{ }{
+  \cincon{\Xi, \cnum{n}, \cnotnum{n}}
+}
+
+\Infer{\CINCAnd}{
+  \cincon{\Xi, \xi_1, \xi_2}
+}{
+  \cincon{\Xi, \cand{\xi_1}{\xi_2}}
+}
+
+\Infer{\CINCOr}{
+  \cincon{\Xi, \xi_1} \\
+  \cincon{\Xi, \xi_2}
+}{
+  \cincon{\Xi, \cor{\xi_1}{\xi_2}}
+}
+
+\Infer{\CINCInj}{ }{
+  \cincon{\Xi, \cinl{\xi_1}, \cinr{\xi_2}}
+}
+
+\Infer{\CINCInl}{
+  \cincon{\Xi}
+}{
+  \cincon{\cinl{\Xi}}
+}
+
+\Infer{\CINCInr}{
+  \cincon{\Xi}
+}{
+  \cincon{\cinr{\Xi}}
+}
+
+\Infer{\CINCPairL}{
+  \cincon{\Xi_1}
+}{
+  \cincon{\cpair{\Xi_1}{\Xi_2}}
+}
+
+\Infer{\CINCPairR}{
+  \cincon{\Xi_2}
+}{
+  \cincon{\cpair{\Xi_1}{\Xi_2}}
+}
+\end{mathpar}
+
+  \caption{Inconsistency of Constraints}
+  \label{fig:incon}
+\end{figure}

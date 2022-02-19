@@ -1,0 +1,65 @@
+\section{Introduction}
+\label{sec:intro}
+
+Programming language definitions typically assign meaning 
+only to programs that are syntactically complete, i.e. fully-formed and well-typed.
+However, programming tools (such as typecheckers, language-aware program editors, interpreters, and program synthesizers) 
+are frequently asked to reason about and otherwise operate on input that is not yet fully-formed and well-typed,
+whether because the programmer has made a mistake or because the programmer is in the midst of a time-consuming task. 
+These incomplete inputs are formally meaningless, so many contemporary programming tools exhibit gaps in functionality (or turn to  
+\emph{ad hoc} and complex heuristics of dubious design.)\todo{cite snapl hazel paper}{}
+
+In recognition of this \emph{gap problem}, several programming languages, 
+including GHC Haskell, Hazel, Agda, and Idris\todo{citations}{}, now 
+have support for \emph{typed holes}. Typed holes come in two flavors. \emph{Empty holes} 
+stand for terms that have yet to be constructed by the programmer. 
+\emph{Non-empty holes} 
+operate as membranes that semantically isolate erroneous terms, e.g. type-inconsistent
+expressions or unbound variables, 
+from the rest of the program.
+By incorporating holes into a programming language's syntax and semantics, 
+it is possible to assign meaning to a greater number of notionally incomplete programs.
+Programmers that use holes consequently experience encounter the gap problem less frequently.
+
+In most systems, the programmer manually inserts holes where necessary.
+Luckily, holes are syntactically lightweight: in GHC Haskell, for example, an unnamed
+hole is simply \verb|_| and a named hole is written \verb|_name|. 
+Non-empty holes are inserted implicitly around static errors, when an appropriate compiler flag
+is activated. In Agda, programmers can write 
+non-empty holes explicitly as \verb|{e}n| where \lstinline{n} is a hole number.
+The Hazel programming environment inserts both empty and non-empty holes fully automatically during editing. This allows Hazel to eliminate the gap problem entirely: it assigns static and dynamic meaning to every possible
+editor state\todo{cite hazelnut,hazelnut live}{}. There are no gaps in meaning and therefore no gaps in the availability or functionality of any of the 
+language-aware editor services that Hazel provides, including those that require evaluating the program. Hazel evaluates around the holes, producing an evaluation results containing holes.\todo{cite}{}
+
+In all of these systems, 
+holes can appear in expression position.
+In some of these systems, holes can also appear in types. (GHC Haskell requires that type inference solve for these type holes, whereas Hazel treats them as the unknown types of gradual type theory\todo{cites}{}.)
+None of these systems have yet introduced holes into patterns. 
+This paper confronts this problem: we introduce structural pattern matching with support for empty and non-empty pattern holes into both Hazel and Hazelnut Live,
+Hazel's corresponding core calculus.
+
+\emph{Structural pattern matching} is a ubiquitous feature of ML-family languages. Briefly,
+pattern matching combines structural case analysis with a destructuring binding construct. 
+Patterns are compositional structures, so pattern matching can dramatically collapse what would otherwise 
+need to be a deeply nested sequence of case analyses and destructuring operations. For example, 
+
+Node([Leaf x, Leaf y, Leaf z])
+
+...
+
+Exhaustiveness: all values of the given type match at least one of the values
+
+Redundancy: the pattern is useful, i.e. there are some values that would make it past the preceding patterns
+and be matched by the present pattern
+
+Connect to software quality (null pointer exceptions, forced consideration of edge case behavior)
+
+Adding holes to patterns complicates exhaustiveness and redundancy checking, because we now have to distinguish definitely exhaustive, definitely non-exhaustive, and maybe exhaustive depending on how the holes are filled. Same with redundancy.
+
+Also complicates live programming: we have to be able to decide whether a pattern matches, does not match, or might match a pattern. In some cases, it is possible to decide that a pattern matches or does not match even when there are holes. 
+
+We will discuss these issues by example in Hazel in Sec 2, then formally in Sec 3. More about formalism. 
+
+(Maybe: add gradual typing? add fill-and-resume? add speculative evaluation?)
+
+(How much to emphasize UI components of Sec 2? Is someone going to ask for a user study??)
