@@ -71,13 +71,13 @@
 }
 
 \Infer{\IPrl}{
-  \isIndet{e}
+  \isIndet{e} \\ e \neq \hpair{e_1}{e_2}
 }{
   \isIndet{\hprl{e}}
 }
 
 \Infer{\IPrr}{
-  \isIndet{e}
+  \isIndet{e} \\ e \neq \hpair{e_1}{e_2}
 }{
   \isIndet{\hprr{e}}
 }
