@@ -17,18 +17,18 @@
   }
 
   \Infer{\PTEHole}{ }{
-    \chpattyp{\heholep{w}}{\tau}{\cunknown}{\cdot}{w :: \tau}
+    \chpattyp{\heholep{w}}{\tau}{\cunknown}{\cdot}{\Delta , w :: \tau}
   }
 
   \Infer{\PTHole}{
-    \chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}
+    \chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta , w :: \tau'}
   }{
     \chpattyp{\hholep{p}{w}{\tau}}{\tau'}{\cunknown}
     {\Gamma}{\Delta , w :: \tau'}
   }
   
   \Infer{\PTNum}{ }{
-    \chpattyp{\hnum{n}}{\tnum}{\cnum{n}}{\cdot}{\cdot}
+    \chpattyp{\hnum{n}}{\tnum}{\cnum{n}}{\cdot}{\Delta}
   }
 
   \Infer{\PTInl}{
@@ -44,11 +44,11 @@
   }
 
   \Infer{\PTPair}{
-    \chpattyp{p_1}{\tau_1}{\xi_1}{\Gamma_1}{\Delta_1} \\
-    \chpattyp{p_2}{\tau_2}{\xi_2}{\Gamma_2}{\Delta_2}
+    \chpattyp{p_1}{\tau_1}{\xi_1}{\Gamma_1}{\Delta} \\
+    \chpattyp{p_2}{\tau_2}{\xi_2}{\Gamma_2}{\Delta}
   }{
     \chpattyp{\hpair{p_1}{p_2}}{\tprod{\tau_1}{\tau_2}}
-    {\cpair{\xi_1}{\xi_2}}{\Gamma_1 \uplus \Gamma_2}{\Delta_1 \uplus \Delta_2}
+    {\cpair{\xi_1}{\xi_2}}{\Gamma_1 \uplus \Gamma_2}{\Delta}
   }
 
   \end{mathpar}
