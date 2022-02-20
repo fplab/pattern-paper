@@ -3,21 +3,21 @@
 \begin{figure}[!b]
 
 \judgbox{
-  \hsubstyp{\theta}{\Gamma}
+  \hsubstyp{\Gamma}{\Delta}{\theta}{\Gamma\theta}
 }{
-  $\theta$ is of type $\Gamma$
+  $\theta$ is of type $\Gamma\theta$
 }
 
 \begin{mathpar}
 \Infer{\STEmpty}{ }{
-  \hsubstyp{\emptyset}{\cdot}
+  \hsubstyp{\Gamma}{\Delta}{\emptyset}{\cdot}
 }
 
 \Infer{\STExtend}{
-  \hsubstyp{\theta}{\Gamma_\theta} \\
+  \hsubstyp{\Gamma}{\Delta}{\theta}{\Gamma_\theta} \\
   \hexptyp{\Gamma}{\Delta}{e}{\tau}
 }{
-  \hsubstyp{\theta , e / x}{\Gamma_\theta , x : \tau}
+  \hsubstyp{\Gamma}{\Delta}{\theta , e / x}{\Gamma_\theta , x : \tau}
 }
 \end{mathpar}
 

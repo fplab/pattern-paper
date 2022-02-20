@@ -834,8 +834,8 @@ $\arraycolsep=4pt\begin{array}{lll}
   \item \isIndet{e} \BY{assumption} \pflabel{2}
   \item \hexptyp{\cdot}{\Delta}{e}{\tau} \BY{assumption} \pflabel{3}
   \item \cnotsatisfyormay{e}{\hxi} \BY{assumption} \pflabel{4}
-  \item \inValues{e'}{e} \text{ implies } \cnotsatisfyormay{e'}{\hxi} \BY{\autoref{lem:complete-not-satormay} on \pfref{1} and \pfref{2} and \pfref{3} and \pfref{4}} \pflabel{notsat}
-  \item \inValues{e'}{e} \BY{\autoref{lem:invalues-derivable} on \pfref{2}} \pflabel{invalues}
+  \item \inValues{e'}{\Delta}{e} \text{ implies } \cnotsatisfyormay{e'}{\hxi} \BY{\autoref{lem:complete-not-satormay} on \pfref{1} and \pfref{2} and \pfref{3} and \pfref{4}} \pflabel{notsat}
+  \item \inValues{e'}{\Delta}{e} \BY{\autoref{lem:invalues-derivable} on \pfref{2}} \pflabel{invalues}
   \item \hexptyp{\cdot}{\Delta}{e'}{\tau} \BY{\autoref{lem:invalues-typ} on \pfref{invalues} and \pfref{3}}
   \item \isVal{e'} \BY{\autoref{lem:invalues-val} on \pfref{invalues}}
   \item \cnotsatisfyormay{e'}{\hxi} \BY{\pfref{notsat} on \pfref{invalues}}

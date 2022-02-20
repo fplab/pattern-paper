@@ -44,6 +44,18 @@
   \htrans{\hpair{e_1}{e_2}}{\hpair{e_1}{e_2'}}
 }
 
+\Infer{\ITFst}{
+  \htrans{e_1}{e_1'}
+}{
+  \htrans{\hfst{e_1}}{\hfst{e_1'}}
+}
+
+\Infer{\ITSnd}{
+  \htrans{e_1}{e_1'}
+}{
+  \htrans{\hsnd{e_1}}{\hsnd{e_1'}}
+}
+
 \Infer{\ITFstPair}{
   \isFinal{\hpair{e_1}{e_2}}
 }{

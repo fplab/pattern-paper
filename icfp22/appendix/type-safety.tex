@@ -46,7 +46,7 @@ For simplicity, we only consider two cases for match expressions here.
       \item $\chrultyp{\cdot}{\Delta}{\hrulP{p_r}{e_r}}{\tau_1}{\xi_r}{\tau}$ \BY{assumption} \pflabel{[one]ruleType}
       \item $\chpattyp{p_r}{\tau_1}{\xi_r}{\Gamma_r}{\Delta_r}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{[one]ruleType}} \pflabel{[one]patType}
       \item $\hexptyp{\Gamma_r}{\Delta \uplus \Delta_r}{e_r}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{[one]ruleType}} \pflabel{[one]expinruleType}
-      \item $\hsubstyp{\theta}{\Gamma_r}$ \BY{Lemma \ref{lem:subs-typing} on \pfref{scrutType} and \pfref{[one]patType} and \pfref{patMatch}} \pflabel{[one]substType}
+      \item $\hsubstyp{\cdot}{\Delta}{\theta}{\Gamma_r}$ \BY{Lemma \ref{lem:subs-typing} on \pfref{scrutType} and \pfref{[one]patType} and \pfref{patMatch}} \pflabel{[one]substType}
       \item $\hexptyp{\cdot}{\Delta \uplus \Delta_r}{[\theta](e_r)}{\tau}$ \BY{Lemma \ref{lem:simult-substitution} on \pfref{[one]expinruleType} and \pfref{[one]substType}}
       \end{pfsteps*}
 
@@ -57,7 +57,7 @@ For simplicity, we only consider two cases for match expressions here.
       \item $\chrultyp{\cdot}{\Delta}{\hrulP{p_r}{e_r}}{\tau_1}{\xi_r}{\tau}$ \BY{assumption} \pflabel{ruleType}
       \item $\chpattyp{p_r}{\tau_1}{\xi_r}{\Gamma_r}{\Delta_r}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{ruleType}} \pflabel{patType}
       \item $\hexptyp{\Gamma_r}{\Delta \uplus \Delta_r}{e_r}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{ruleType}} \pflabel{expinruleType}
-      \item $\hsubstyp{\theta}{\Gamma_r}$ \BY{Lemma \ref{lem:subs-typing} on \pfref{scrutType} and \pfref{patType} and \pfref{patMatch}} \pflabel{substType}
+      \item $\hsubstyp{\cdot}{\Delta}{\theta}{\Gamma_r}$ \BY{Lemma \ref{lem:subs-typing} on \pfref{scrutType} and \pfref{patType} and \pfref{patMatch}} \pflabel{substType}
       \item $\hexptyp{\cdot}{\Delta \uplus \Delta_r}{[\theta](e_r)}{\tau}$ \BY{Lemma \ref{lem:simult-substitution} on \pfref{expinruleType} and \pfref{substType}}
       \end{pfsteps*}
     \end{byCases}
@@ -131,7 +131,7 @@ For simplicity, we only consider two cases for match expressions here.
       \item $\chrultyp{\cdot}{\Delta}{\hrulP{p_r}{e_r}}{\tau_1}{\xi_r}{\tau}$ \BY{assumption} \pflabel{[one]ruleType}
       \item $\chpattyp{p_r}{\tau_1}{\xi_r}{\Gamma_r}{\Delta_r}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{[one]ruleType}} \pflabel{[one]patType}
       \item $\hexptyp{\Gamma_r}{\Delta \uplus \Delta_r}{e_r}{\tau}$ \BY{Inversion of Rule (\ref{rule:CTRule}) on \pfref{[one]ruleType}} \pflabel{[one]expinruleType}
-      \item $\hsubstyp{\theta}{\Gamma_r}$ \BY{Lemma \ref{lem:subs-typing} on \pfref{scrutType} and \pfref{[one]patType} and \pfref{patMatch}} \pflabel{[one]substType}
+      \item $\hsubstyp{\cdot}{\Delta}{\theta}{\Gamma_r}$ \BY{Lemma \ref{lem:subs-typing} on \pfref{scrutType} and \pfref{[one]patType} and \pfref{patMatch}} \pflabel{[one]substType}
       \item $\hexptyp{\cdot}{\Delta \uplus \Delta_r}{[\theta](e_r)}{\tau}$ \BY{Lemma \ref{lem:simult-substitution} on \pfref{[one]expinruleType} and \pfref{[one]substType}}
       \end{pfsteps*}
 
@@ -142,7 +142,7 @@ For simplicity, we only consider two cases for match expressions here.
       \item $\chrultyp{\cdot}{\Delta}{\hrulP{p_r}{e_r}}{\tau_1}{\xi_r}{\tau}$ \BY{assumption} \pflabel{ruleType}
       \item $\chpattyp{p_r}{\tau_1}{\xi_r}{\Gamma_r}{\Delta_r}$ \BY{assumption} \pflabel{patType}
       \item $\hexptyp{\Gamma_r}{\Delta \uplus \Delta_r}{e_r}{\tau}$ \BY{assumption} \pflabel{expinruleType}
-      \item $\hsubstyp{\theta}{\Gamma_r}$ \BY{Lemma \ref{lem:subs-typing} on \pfref{scrutType} and \pfref{patType} and \pfref{patMatch}} \pflabel{substType}
+      \item $\hsubstyp{\cdot}{\Delta}{\theta}{\Gamma_r}$ \BY{Lemma \ref{lem:subs-typing} on \pfref{scrutType} and \pfref{patType} and \pfref{patMatch}} \pflabel{substType}
       \item $\hexptyp{\cdot}{\Delta \uplus \Delta_r}{[\theta](e_r)}{\tau}$ \BY{Lemma \ref{lem:simult-substitution} on \pfref{expinruleType} and \pfref{substType}}
       \end{pfsteps*}
     \end{byCases}
@@ -291,7 +291,7 @@ By rule induction over Rules (\ref{rules:TExp}) on typing judgment of $e$. For s
   \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{scrutType}
   \item $\isFinal{e_1}$ \BY{assumption} \pflabel{scrutFinal}
   \item $\chrulstyp{\cdot}{\Delta}{\xi_{pre}}{\hrulesP{r}{rs_{post}}}{\tau_1}{\xi_{rest}}{\tau}$ \BY{assumption} \pflabel{restrulesType}
-  \item $\forall e_1'. \inValues{e_1'}{e_1} \Rightarrow \cnotsatisfyormay{e_1'}{\xi_{pre}}$ \BY{assumption} \pflabel{notsatisfypre}
+  \item $\forall e_1'. \inValues{e_1'}{\Delta}{e_1} \Rightarrow \cnotsatisfyormay{e_1'}{\xi_{pre}}$ \BY{assumption} \pflabel{notsatisfypre}
   \item $\csatisfyormay{\ctruth}{\cor{\xi_{pre}}{\xi_{rest}}}$ \BY{assumption} \pflabel{exhaust}
   \end{pfsteps*}
   \todo{apply equivalence lemma: all of its possible values does not satisfy}

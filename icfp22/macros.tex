@@ -68,8 +68,9 @@
 
 \newcommand{\refutable}[1]{#1 ~\mathtt{refutable}_?}
 \newcommand{\frefutable}[1]{\textit{refutable}_?\inparens{#1}}
+\newcommand{\possible}[1]{#1 ~\mathtt{possible}}
 
-\newcommand{\inValues}[2]{#1 \in \mathtt{values}\inparens{#2}}
+\newcommand{\inValues}[3]{#1 \in \mathtt{values}[#2]\inparens{#3}}
 
 \newcommand{\hGamma}{\dot{\Gamma}}
 \newcommand{\domof}[1]{\text{dom}(#1)}
@@ -77,7 +78,7 @@
 \newcommand{\hana}[3]{#1 \vdash #2 \Leftarrow #3}
 \newcommand{\hexptyp}[4]{#1 \mathbin{;} #2 \vdash #3 : #4}
 \newcommand{\hpattyp}[4]{#1 : #2 \dashV #3 \mathbin{;} #4}
-\newcommand{\hsubstyp}[2]{#1 : #2}
+\newcommand{\hsubstyp}[4]{#1 \mathbin{;} #2 \vdash #3 : #4}
 \newcommand{\hpatmatch}[3]{#1 \vartriangleright #2 \dashV #3}
 \newcommand{\hnotmatch}[2]{#1 \mathbin{\bot} #2}
 \newcommand{\hmaymatch}[2]{#1 \mathbin{?} #2}
@@ -150,8 +151,7 @@
 \newcommand{\fmaysatisfy}[2]{\textit{maysatisfy}\inparens{#1, #2}}
 \newcommand{\fsatisfyormay}[2]{\textit{satisfyormay}\inparens{#1, #2}}
 
-\newcommand{\cpattyp}[4]{#1 : #2 [#3] \dashV #4}
-\newcommand{\chpattyp}[5]{#1 : #2 [#3] \dashV #4 \mathbin{;} #5}
+\newcommand{\chpattyp}[5]{#5 \vdash #1 : #2 [#3] \dashV #4}
 \newcommand{\crultyp}[5]{#1 \vdash #2 : #3 [#4] \Rightarrow #5}
 \newcommand{\chrultyp}[6]{#1 \mathbin{;} #2 \vdash #3 : #4 [#5] \Rightarrow #6}
 \newcommand{\crulstyp}[6]{#1 \vdash [#2] #3 : #4 [#5] \Rightarrow #6}

@@ -276,19 +276,18 @@ matching succeeds.
 
 \begin{lemma}[Substitution]
   \label{lemma:substitution}
-  If $\hexptyp{\Gamma, x : \tau}{\Delta}{e_0}{\tau_0}$ and $\hexptyp{\Gamma}{\Delta}{e}{\tau}$
+  If $\hexptyp{\Gamma, x : \tau}{\Delta}{e_0}{\tau_0}$ and $\hexptyp{\Gamma}{\Delta}{e}{\tau}$ and $\isFinal{e}$
   then $\hexptyp{\Gamma}{\Delta}{[e/x]e_0}{\tau_0}$
 \end{lemma}
 
 \begin{lemma}[Substitution Typing]
   \label{lemma:subs-typing}
-  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta_e}{e}{\tau}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$
-  then $\hsubstyp{\theta}{\Gamma}$
+  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta_e}{e}{\tau}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$ then $\hsubstyp{\cdot}{\Delta_e}{\theta}{\Gamma}$
 \end{lemma}
 
 \begin{lemma}[Simultaneous Substitution]
   \label{lemma:simult-substitution}
-  If $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau}$ and $\hsubstyp{\theta}{\Gamma'}$
+  If $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau}$ and $\hsubstyp{\Gamma}{\Delta}{\theta}{\Gamma'}$ and all expressions in $\theta$ are final
   then $\hexptyp{\Gamma}{\Delta}{[\theta]e}{\tau}$
 \end{lemma}
 
@@ -303,6 +302,7 @@ complement of the subset identified by $\xi$ under the set of the final
 expressions of a type.
 \input{fig-xi-refutable}
 \todo{xi refutable}
+\input{fig-xi-possible}
 \input{fig-satisfy}
 
 \autoref{fig:satisfy} defines satisfaction judgments. As we only

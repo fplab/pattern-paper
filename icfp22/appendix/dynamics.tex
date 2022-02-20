@@ -207,7 +207,7 @@
 \end{proof}
 
 \judgboxa{
-  \inValues{e'}{e}
+  \inValues{e'}{\Delta}{e}
 }{
   $e'$ is one of the possible values of $e$
 }
@@ -217,7 +217,7 @@
       \isVal{e} \\
       \hexptyp{\cdot}{\Delta}{e}{\tau}
     }{
-      \inValues{e}{e}
+      \inValues{e}{\Delta}{e}
     }
   \end{equation}
   \begin{equation}\label{rule:IVIndet}
@@ -227,60 +227,60 @@
       \isVal{e'} \\
       \hexptyp{\cdot}{\Delta}{e'}{\tau}
     }{
-      \inValues{e'}{e}
+      \inValues{e'}{\Delta}{e}
     }
   \end{equation}
   \begin{equation}\label{rule:IVLam}
     \inferrule[IVInl]{
-      \inValues{e'}{e} \\
+      \inValues{e'}{\Delta}{e} \\
     }{ 
-      \inValues{\hlam{x}{\tau}{e'}}{\hlam{x}{\tau}{e}}
+      \inValues{\hlam{x}{\tau}{e'}}{\Delta}{\hlam{x}{\tau}{e}}
     }
   \end{equation}
   \begin{equation}\label{rule:IVInl}
     \inferrule[IVInl]{
-      \inValues{e_1'}{e_1} \\
+      \inValues{e_1'}{\Delta}{e_1} \\
     }{ 
-      \inValues{\hinl{\tau_2}{e_1'}}{\hinl{\tau_2}{e_1}}
+      \inValues{\hinl{\tau_2}{e_1'}}{\Delta}{\hinl{\tau_2}{e_1}}
     }
   \end{equation}
   \begin{equation}\label{rule:IVInr}
     \inferrule[IVInr]{
-      \inValues{e_2'}{e_2} \\
+      \inValues{e_2'}{\Delta}{e_2} \\
     }{ 
-      \inValues{\hinr{\tau_1}{e_2'}}{\hinr{\tau_1}{e_2}}
+      \inValues{\hinr{\tau_1}{e_2'}}{\Delta}{\hinr{\tau_1}{e_2}}
     }
   \end{equation}
   \begin{equation}\label{rule:IVPair}
     \inferrule[IVPair]{
-      \inValues{e_1'}{e_1} \\
-      \inValues{e_2'}{e_2}
+      \inValues{e_1'}{\Delta}{e_1} \\
+      \inValues{e_2'}{\Delta}{e_2}
     }{
-      \inValues{\hpair{e_1'}{e_2'}}{\hpair{e_1}{e_2}}
+      \inValues{\hpair{e_1'}{e_2'}}{\Delta}{\hpair{e_1}{e_2}}
     }
   \end{equation}
 \end{subequations}
 
 \begin{lemma}
   \label{lem:invalues-typ}
-  If $\inValues{e'}{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then $\hexptyp{\cdot}{\Delta}{e'}{\tau}$.
+  If $\inValues{e'}{\Delta}{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then $\hexptyp{\cdot}{\Delta}{e'}{\tau}$.
 \end{lemma}
 
 \begin{lemma}
   \label{lem:invalues-val}
-  If $\inValues{e'}{e}$ then $\isVal{e'}$.
+  If $\inValues{e'}{\Delta}{e}$ then $\isVal{e'}$.
 \end{lemma}
 
 \begin{lemma}
   \label{lem:invalues-derivable}
-  If $\isIndet{e}$ then there exists $e'$ such that $\inValues{e'}{e}$.
+  If $\isIndet{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then there exists $e'$ such that $\inValues{e'}{\Delta}{e}$.
 \end{lemma}
 
 \begin{lemma}
   \label{lem:complete-not-satormay}
   Assume $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and
   $\ctyp{\hxi}{\tau}$. Then $\cnotsatisfyormay{e}{\hxi}$ iff $\forall
-  e'.\inValues{e'}{e} \implies \cnotsatisfyormay{e'}{\hxi}$.
+  e'.\inValues{e'}{\Delta}{e} \implies \cnotsatisfyormay{e'}{\hxi}$.
   
 \end{lemma}
 \begin{proof}
@@ -338,10 +338,10 @@
         \begin{pfsteps}
         \item e=\hnum{n'} \BY{assumption}
         \end{pfsteps}
-        To show the implication, we assume $\inValues{e'}{\hnum{n'}}$ and show
+        To show the implication, we assume $\inValues{e'}{\Delta}{\hnum{n'}}$ and show
         $\cnotsatisfyormay{e'}{\hxi}$.
         \begin{pfsteps}
-        \item \inValues{e'}{\hnum{n'}} \BY{assumption} \pflabel{e'-values-n'}
+        \item \inValues{e'}{\Delta}{\hnum{n'}} \BY{assumption} \pflabel{e'-values-n'}
         \end{pfsteps}
         By rule induction over \rulesref{rules:inValues} on
         \pfref{e'-values-n'}, only two cases apply.
@@ -470,9 +470,9 @@
               \item \hexptyp{\cdot}{\Delta}{e_1}{\tau_1} \BY{assumption} \pflabel{[inl]e1typ}
               \item \isFinal{e_1} \BY{\ruleref{rule:FVal} on \pfref{[inl]e1val}} \pflabel{[inl]e1final}
               \end{pfsteps}
-              To show the implication, we assume $\inValues{e'}{\hinl{\tau_2}{e_1}}$ and show $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$.
+              To show the implication, we assume $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$ and show $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$.
               \begin{pfsteps}
-              \item \inValues{e'}{\hinl{\tau_2}{e_1}} \BY{assumption} \pflabel{[inl-inl]invalues}
+              \item \inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}} \BY{assumption} \pflabel{[inl-inl]invalues}
               \end{pfsteps}
               By rule induction over \rulesref{rules:inValues} on \pfref{[inl-inl]invalues}.
               \begin{byCases}
@@ -495,7 +495,7 @@
                 \item[\text{(\ref{rule:IVInl})}]
                   \begin{pfsteps}
                   \item e' = \hinl{\tau_2}{e_1'} \BY{assumption}
-                  \item \inValues{e_1'}{e_1} \BY{assumption} \pflabel{[inl-inl]invalues1}
+                  \item \inValues{e_1'}{\Delta}{e_1} \BY{assumption} \pflabel{[inl-inl]invalues1}
                   \item \cnotsatisfyormay{e_1}{\hxi_1}
                     \BY{\autoref{lem:satormay-inl} on \pfref{not-satormay}} \pflabel{[inl-inl]not-satormay1}
                   \item \cnotsatisfyormay{e_1'}{\hxi_1} \BY{IH on
@@ -512,9 +512,9 @@
               \begin{pfsteps}
               \item e=\hinr{\tau_1}{e_2} \BY{assumption}
               \end{pfsteps}
-              To show the implication, we assume $\inValues{e'}{\hinr{\tau_1}{e_2}}$ and show $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$.
+              To show the implication, we assume $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$ and show $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$.
               \begin{pfsteps}
-              \item \inValues{e'}{\hinr{\tau_1}{e_2}} \BY{assumption} \pflabel{[inl-inr]invalues}
+              \item \inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}} \BY{assumption} \pflabel{[inl-inr]invalues}
               \end{pfsteps}
               By rule induction over \rulesref{rules:inValues} on \pfref{[inl-inr]invalues}.
               \begin{byCases}
@@ -622,11 +622,11 @@
             \item $\tau_2'=\tau_2$ \BY{assumption}
             \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{[inl]e1typ}
             \item $\cnotsatisfyormay{e_1}{\hxi_1}$ \BY{\autoref{lem:satormay-inl} on \pfref{not-satormay}} \pflabel{[inl]not-satormay1}
-            \item if $\inValues{e_1'}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[inl]e1indet} and \pfref{[inl]e1typ} and \pfref{[inl]c1typ} and \pfref{[inl]not-satormay1}} \pflabel{[inl]forall1}
+            \item if $\inValues{e_1'}{\Delta}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[inl]e1indet} and \pfref{[inl]e1typ} and \pfref{[inl]c1typ} and \pfref{[inl]not-satormay1}} \pflabel{[inl]forall1}
             \end{pfsteps*} 
-            To show if $\inValues{e'}{\hinl{\tau_2}{e_1}}$ then $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$, we assume $\inValues{e'}{\hinl{\tau_2}{e_1}}$.
+            To show if $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$ then $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$, we assume $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$.
             \begin{pfsteps*}
-            \item $\inValues{e'}{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{[inl]invalues}
+            \item $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{[inl]invalues}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{[inl]invalues}.
             \begin{byCases}
@@ -646,7 +646,7 @@
               \item[\text{(\ref{rule:IVInl})}] 
               \begin{pfsteps*}
               \item $e'=\hinl{\tau_2}{e_1'}$ \BY{assumption}
-              \item $\inValues{e_1'}{e_1}$ \BY{assumption} \pflabel{[inl]invalues1}
+              \item $\inValues{e_1'}{\Delta}{e_1}$ \BY{assumption} \pflabel{[inl]invalues1}
               \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{\pfref{[inl]forall1} on \pfref{[inl]invalues1}} \pflabel{[inl]not-satormay1'}
               \item $\cnotsatisfyormay{\hinl{\tau_2}{e_1'}}{\cinl{\hxi_1}}$ \BY{\autoref{lem:satormay-inl} on \pfref{[inl]not-satormay1'}}
               \end{pfsteps*} 
@@ -657,9 +657,9 @@
           \begin{pfsteps*}
           \item $e=\hinr{\tau_1}{e_2}$ \BY{assumption}
           \end{pfsteps*}
-          To show if $\inValues{e'}{\hinr{\tau_1}{e_2}}$ then $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$, we assume $\inValues{e'}{\hinr{\tau_1}{e_2}}$.
+          To show if $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$ then $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$, we assume $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$.
           \begin{pfsteps*}
-          \item $\inValues{e'}{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{[inr]invalues}
+          \item $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{[inr]invalues}
           \end{pfsteps*}
           By rule induction over \rulesref{rules:inValues} on \pfref{[inr]invalues}.
           \begin{byCases}
@@ -709,9 +709,9 @@
               \begin{pfsteps}
               \item e=\hinl{\tau_2}{e_1} \BY{assumption}
               \end{pfsteps}
-              To show the implication, we assume $\inValues{e'}{\hinl{\tau_2}{e_1}}$ and show $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$.
+              To show the implication, we assume $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$ and show $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$.
               \begin{pfsteps}
-              \item \inValues{e'}{\hinl{\tau_2}{e_1}} \BY{assumption} \pflabel{[inr-inl]invalues}
+              \item \inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}} \BY{assumption} \pflabel{[inr-inl]invalues}
               \end{pfsteps}
               By rule induction over \rulesref{rules:inValues} on \pfref{[inr-inl]invalues}.
               \begin{byCases}
@@ -748,9 +748,9 @@
               \item \isFinal{e_2} \BY{\ruleref{rule:FVal} on
                     \pfref{[inr]e2val}} \pflabel{[inr]e2final}
               \end{pfsteps}
-              To show the implication, we assume $\inValues{e'}{\hinr{\tau_1}{e_2}}$ and show $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$.
+              To show the implication, we assume $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$ and show $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$.
               \begin{pfsteps}
-              \item \inValues{e'}{\hinr{\tau_1}{e_2}} \BY{assumption} \pflabel{[inr-inr]invalues}
+              \item \inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}} \BY{assumption} \pflabel{[inr-inr]invalues}
               \end{pfsteps}
               By rule induction over \rulesref{rules:inValues} on \pfref{[inr-inr]invalues}.
               \begin{byCases}
@@ -773,7 +773,7 @@
                 \item[\text{(\ref{rule:IVInr})}]
                   \begin{pfsteps}
                   \item e' = \hinr{\tau_1}{e_2'} \BY{assumption}
-                  \item \inValues{e_2'}{e_2} \BY{assumption} \pflabel{[inr-inr]invalues2}
+                  \item \inValues{e_2'}{\Delta}{e_2} \BY{assumption} \pflabel{[inr-inr]invalues2}
                   \item \cnotsatisfyormay{e_2}{\hxi_2}
                     \BY{\autoref{lem:satormay-inr} on \pfref{not-satormay}} \pflabel{[inr-inr]not-satormay2}
                   \item \cnotsatisfyormay{e_2'}{\hxi_2} \BY{IH on
@@ -876,11 +876,11 @@
           \begin{pfsteps*}
           \item $e=\hinl{\tau_2}{e_1}$ \BY{assumption}
           \end{pfsteps*}
-          To show if $\inValues{e'}{\hinl{\tau_2}{e_1}}$ then
+          To show if $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$ then
           $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$, we assume
-          $\inValues{e'}{\hinl{\tau_2}{e_1}}$.
+          $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$.
           \begin{pfsteps*}
-          \item $\inValues{e'}{\hinl{\tau_2}{e_1}}$ \BY{assumption}
+          \item $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$ \BY{assumption}
             \pflabel{[inl][inr]invalues}
           \end{pfsteps*}
           By rule induction over \rulesref{rules:inValues} on
@@ -922,16 +922,16 @@
             \item $\cnotsatisfyormay{e_2}{\hxi_2}$
               \BY{\autoref{lem:satormay-inl} on \pfref{not-satormay}}
               \pflabel{[inr]not-satormay2}
-            \item if $\inValues{e_2'}{e_2}$ then
+            \item if $\inValues{e_2'}{\Delta}{e_2}$ then
               $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[inr]e2indet}
                 and \pfref{[inr]e2typ} and \pfref{[inr]c2typ} and
                 \pfref{[inr]not-satormay2}} \pflabel{[inr]forall2}
             \end{pfsteps*}
-            To show if $\inValues{e'}{\hinr{\tau_1}{e_2}}$ then
+            To show if $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$ then
             $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$, we assume
-            $\inValues{e'}{\hinr{\tau_1}{e_2}}$.
+            $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$.
             \begin{pfsteps*}
-            \item $\inValues{e'}{\hinr{\tau_1}{e_2}}$ \BY{assumption}
+            \item $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$ \BY{assumption}
               \pflabel{[inr][inr]invalues}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on
@@ -952,7 +952,7 @@
             \item[\text{(\ref{rule:IVInr})}]
               \begin{pfsteps*}
               \item $e'=\hinr{\tau_1}{e_2'}$ \BY{assumption}
-              \item $\inValues{e_2'}{e_2}$ \BY{assumption}
+              \item $\inValues{e_2'}{\Delta}{e_2}$ \BY{assumption}
                 \pflabel{[inr]invalues2}
               \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{\pfref{[inr]forall2}
                   on \pfref{[inr]invalues2}} \pflabel{[inr]not-satormay2'}
@@ -993,9 +993,9 @@
         \item \isFinal{e_1} \BY{\ruleref{rule:FVal} on \pfref{[pair]e1val}} \pflabel{[pair]e1final}
         \item \isFinal{e_2} \BY{\ruleref{rule:FVal} on \pfref{[pair]e2val}} \pflabel{[pair]e2final}
         \end{pfsteps}
-        To show the implication, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$ and show $\cnotsatisfyormay{e'}{\cpair{\hxi_1}{\hxi_2}}$.
+        To show the implication, we assume $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ and show $\cnotsatisfyormay{e'}{\cpair{\hxi_1}{\hxi_2}}$.
         \begin{pfsteps}
-        \item \inValues{e'}{\hpair{e_1}{e_2}} \BY{assumption} \pflabel{[pair]invalues}
+        \item \inValues{e'}{\Delta}{\hpair{e_1}{e_2}} \BY{assumption} \pflabel{[pair]invalues}
         \end{pfsteps}
         By rule induction over \rulesref{rules:inValues} on \pfref{[pair]invalues}.
         \begin{byCases}
@@ -1019,8 +1019,8 @@
         \item[\text{(\ref{rule:IVPair})}]
           \begin{pfsteps}
           \item e' = \hpair{e_1'}{e_2'} \BY{assumption}
-          \item \inValues{e_1'}{e_1} \BY{assumption} \pflabel{[pair]invalues1}
-          \item \inValues{e_2'}{e_2} \BY{assumption} \pflabel{[pair]invalues2}
+          \item \inValues{e_1'}{\Delta}{e_1} \BY{assumption} \pflabel{[pair]invalues1}
+          \item \inValues{e_2'}{\Delta}{e_2} \BY{assumption} \pflabel{[pair]invalues2}
           \item \cnotsatisfyormay{e_1}{\hxi_1}
             \BY{\autoref{lem:satormay-pair} on \pfref{not-satormay}} \pflabel{[pair]not-satormay1}
           \item \cnotsatisfyormay{e_2}{\hxi_2}
@@ -1116,11 +1116,11 @@
             \begin{pfsteps*}
             \item $\fsatisfyormay{\hsnd{e}}{\hxi_2} = \false$ \BY{assumption} \pflabel{[pair]not-fsatormay2}
             \item $\csatisfyormay{\hsnd{e}}{\hxi_2}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]not-fsatormay2}} \pflabel{[pair]not-satormay2}
-            \item if $\inValues{e_2'}{\hsnd{e}}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair]sndindet} and \pfref{[pair]sndtyp} and \pfref{[pair]c2typ} and \pfref{[pair]not-satormay2}} \pflabel{[pair]complete2}
+            \item if $\inValues{e_2'}{\Delta}{\hsnd{e}}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair]sndindet} and \pfref{[pair]sndtyp} and \pfref{[pair]c2typ} and \pfref{[pair]not-satormay2}} \pflabel{[pair]complete2}
             \end{pfsteps*} 
-            To show if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{e}$.
+            To show if $\inValues{e'}{\Delta}{e}$ then $\cnotsatisfyormay{e'}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{e}$.
             \begin{pfsteps*}
-            \item $\inValues{e'}{e}$ \BY{assumption} \pflabel{e'invalues'}
+            \item $\inValues{e'}{\Delta}{e}$ \BY{assumption} \pflabel{e'invalues'}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{e'invalues'}, only two rules apply.
             \begin{byCases}
@@ -1160,7 +1160,7 @@
                   \textbf{Case} \text{(\ref{rule:TPair})}\textbf{.}
                   \begin{pfsteps*}
                   \item $\hexptyp{\cdot}{\Delta}{e_2'}{\tau_2}$ \BY{assumption} \pflabel{e2'typ}
-                  \item $\inValues{e_2'}{\hsnd{e}}$ \BY{\ruleref{rule:IVIndet} on \pfref{[pair]sndnotintro} and \pfref{[pair]sndtyp} and \pfref{e2'val} and \pfref{e2'typ}} \pflabel{e2'invalues}
+                  \item $\inValues{e_2'}{\Delta}{\hsnd{e}}$ \BY{\ruleref{rule:IVIndet} on \pfref{[pair]sndnotintro} and \pfref{[pair]sndtyp} and \pfref{e2'val} and \pfref{e2'typ}} \pflabel{e2'invalues}
                   \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{\pfref{[pair]complete2} on \pfref{e2'invalues}} \pflabel{[pair]not-satormay2'}
                   \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair]not-satormay1'}}
                   \end{pfsteps*}
@@ -1185,11 +1185,11 @@
           \begin{pfsteps*}
           \item $\fsatisfyormay{\hfst{e}}{\hxi_1}=\false$ \BY{assumption} \pflabel{[pair]not-fsatormay1}
           \item $\cnotsatisfyormay{\hfst{e}}{\hxi_1}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]not-fsatormay1}} \pflabel{[pair]not-satormay1}
-          \item if $\inValues{e_1'}{\hfst{e}}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair]fstindet} and \pfref{[pair]fsttyp} and \pfref{[pair]c1typ} and \pfref{[pair]not-satormay1}} \pflabel{[pair]complete1}
+          \item if $\inValues{e_1'}{\Delta}{\hfst{e}}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair]fstindet} and \pfref{[pair]fsttyp} and \pfref{[pair]c1typ} and \pfref{[pair]not-satormay1}} \pflabel{[pair]complete1}
           \end{pfsteps*} 
-          To show if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{e}$.
+          To show if $\inValues{e'}{\Delta}{e}$ then $\cnotsatisfyormay{e'}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{e}$.
           \begin{pfsteps*}
-          \item $\inValues{e'}{e}$ \BY{assumption} \pflabel{e'invalues}
+          \item $\inValues{e'}{\Delta}{e}$ \BY{assumption} \pflabel{e'invalues}
           \end{pfsteps*}
           By rule induction over \rulesref{rules:inValues} on \pfref{e'invalues}, only two rules apply.
           \begin{byCases}
@@ -1230,7 +1230,7 @@
                 \item[\text{(\ref{rule:TPair})}]
                 \begin{pfsteps*}
                 \item $\hexptyp{\cdot}{\Delta}{e_1'}{\tau_1}$ \BY{assumption} \pflabel{e1'typ}
-                \item $\inValues{e_1'}{\hfst{e}}$ \BY{\ruleref{rule:IVIndet} on \pfref{[pair]fstnotintro} and \pfref{[pair]fsttyp} and \pfref{e1'val} and \pfref{e1'typ}} \pflabel{e1'invalues}
+                \item $\inValues{e_1'}{\Delta}{\hfst{e}}$ \BY{\ruleref{rule:IVIndet} on \pfref{[pair]fstnotintro} and \pfref{[pair]fsttyp} and \pfref{e1'val} and \pfref{e1'typ}} \pflabel{e1'invalues}
                 \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{\pfref{[pair]complete1} on \pfref{e1'invalues}} \pflabel{[pair]not-satormay1'}
                 \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair]not-satormay1'}}
                 \end{pfsteps*} 
@@ -1270,11 +1270,11 @@
             \item[\text{(\ref{rule:TPair})}]
             \begin{pfsteps*}
             \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{[pair1]e1typ}
-            \item if $\inValues{e_1'}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair1]e1indet} and \pfref{[pair1]e1typ} and \pfref{[pair]c1typ} and \pfref{[pair1]not-satormay-1}} \pflabel{[pair1]complete1}
+            \item if $\inValues{e_1'}{\Delta}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair1]e1indet} and \pfref{[pair1]e1typ} and \pfref{[pair]c1typ} and \pfref{[pair1]not-satormay-1}} \pflabel{[pair1]complete1}
             \end{pfsteps*} 
-            To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+            To show that if $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$.
             \begin{pfsteps*}
-            \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair1]invalues}
+            \item $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair1]invalues}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{[pair1]invalues}.
             \begin{byCases}
@@ -1294,7 +1294,7 @@
               \item[\text{(\ref{rule:IVPair})}]
               \begin{pfsteps*}
               \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
-              \item $\inValues{e_1'}{e_1}$ \BY{assumption} \pflabel{[pair1]invalues1}
+              \item $\inValues{e_1'}{\Delta}{e_1}$ \BY{assumption} \pflabel{[pair1]invalues1}
               \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{\pfref{[pair1]complete1} on \pfref{[pair1]invalues1}} \pflabel{[pair1]not-satormay1}
               \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair1]not-satormay1}}
               \end{pfsteps*} 
@@ -1305,9 +1305,9 @@
           \begin{pfsteps*}
           \item $\cnotsatisfyormay{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[pair1]not-satormay-2}
           \end{pfsteps*}
-          To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+          To show that if $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$.
           \begin{pfsteps*}
-          \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair1]invalues'}
+          \item $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair1]invalues'}
           \end{pfsteps*}
           By rule induction over \rulesref{rules:inValues} on \pfref{[pair1]invalues'}.
           \begin{byCases}
@@ -1327,7 +1327,7 @@
             \item[\text{(\ref{rule:IVPair})}]
             \begin{pfsteps*}
             \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
-            \item $\inValues{e_2'}{e_2}$ \BY{assumption} \pflabel{[pair1]invalues1'}
+            \item $\inValues{e_2'}{\Delta}{e_2}$ \BY{assumption} \pflabel{[pair1]invalues1'}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{[pair1]invalues1'}.
             \begin{byCases}
@@ -1368,9 +1368,9 @@
           \begin{pfsteps*}
           \item $\cnotsatisfyormay{e_1}{\hxi_1}$ \BY{assumption} \pflabel{[pair2]not-satormay-1}
           \end{pfsteps*}
-          To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+          To show that if $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$.
           \begin{pfsteps*}
-          \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair2]invalues'}
+          \item $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair2]invalues'}
           \end{pfsteps*}
           By rule induction over \rulesref{rules:inValues} on \pfref{[pair2]invalues'}.
           \begin{byCases}
@@ -1390,7 +1390,7 @@
             \item[\text{(\ref{rule:IVPair})}]
             \begin{pfsteps*}
             \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
-            \item $\inValues{e_1'}{e_1}$ \BY{assumption} \pflabel{[pair2]invalues1'}
+            \item $\inValues{e_1'}{\Delta}{e_1}$ \BY{assumption} \pflabel{[pair2]invalues1'}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{[pair2]invalues1'}.
             \begin{byCases}
@@ -1425,11 +1425,11 @@
             \item[\text{(\ref{rule:TPair})}]
             \begin{pfsteps*}
             \item $\hexptyp{\cdot}{\Delta}{e_2}{\tau_2}$ \BY{assumption} \pflabel{[pair2]e2typ}
-            \item if $\inValues{e_2'}{e_2}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair2]e2indet} and \pfref{[pair2]e2typ} and \pfref{[pair]c2typ} and \pfref{[pair2]not-satormay-2}} \pflabel{[pair2]complete2}
+            \item if $\inValues{e_2'}{\Delta}{e_2}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair2]e2indet} and \pfref{[pair2]e2typ} and \pfref{[pair]c2typ} and \pfref{[pair2]not-satormay-2}} \pflabel{[pair2]complete2}
             \end{pfsteps*} 
-            To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+            To show that if $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$.
             \begin{pfsteps*}
-            \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair2]invalues}
+            \item $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair2]invalues}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{[pair2]invalues}.
             \begin{byCases}
@@ -1449,7 +1449,7 @@
               \item[\text{(\ref{rule:IVPair})}]
               \begin{pfsteps*}
               \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
-              \item $\inValues{e_2'}{e_2}$ \BY{assumption} \pflabel{[pair2]invalues2}
+              \item $\inValues{e_2'}{\Delta}{e_2}$ \BY{assumption} \pflabel{[pair2]invalues2}
               \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{\pfref{[pair2]complete2} on \pfref{[pair2]invalues2}} \pflabel{[pair2]not-satormay2}
               \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair2]not-satormay2}}
               \end{pfsteps*} 
@@ -1477,11 +1477,11 @@
             \item[\cnotsatisfyormay{e_1}{\hxi_1}]
             \begin{pfsteps*}
             \item $\cnotsatisfyormay{e_1}{\hxi_1}$ \BY{assumption} \pflabel{[pair3]not-satormay-1}
-            \item if $\inValues{e_1'}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair3]e1indet} and \pfref{[pair3]e1typ} and \pfref{[pair]c1typ} and \pfref{[pair3]not-satormay-1}} \pflabel{[pair3]complete1}
+            \item if $\inValues{e_1'}{\Delta}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair3]e1indet} and \pfref{[pair3]e1typ} and \pfref{[pair]c1typ} and \pfref{[pair3]not-satormay-1}} \pflabel{[pair3]complete1}
             \end{pfsteps*}
-            To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+            To show that if $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$.
             \begin{pfsteps*}
-            \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair3]invalues}
+            \item $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair3]invalues}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{[pair3]invalues}.
             \begin{byCases}
@@ -1501,7 +1501,7 @@
               \item[\text{(\ref{rule:IVPair})}]
               \begin{pfsteps*}
               \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
-              \item $\inValues{e_1'}{e_1}$ \BY{assumption} \pflabel{[pair3]invalues1}
+              \item $\inValues{e_1'}{\Delta}{e_1}$ \BY{assumption} \pflabel{[pair3]invalues1}
               \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{\pfref{[pair3]complete1} on \pfref{[pair3]invalues1}} \pflabel{[pair3]not-satormay1}
               \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair3]not-satormay1}}
               \end{pfsteps*} 
@@ -1510,11 +1510,11 @@
             \item[\cnotsatisfyormay{e_2}{\hxi_2}]
             \begin{pfsteps*}
             \item $\cnotsatisfyormay{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[pair3]not-satormay-2}
-            \item if $\inValues{e_2'}{e_2}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair3]e2indet} and \pfref{[pair3]e2typ} and \pfref{[pair]c2typ} and \pfref{[pair3]not-satormay-2}} \pflabel{[pair3]complete2}
+            \item if $\inValues{e_2'}{\Delta}{e_2}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair3]e2indet} and \pfref{[pair3]e2typ} and \pfref{[pair]c2typ} and \pfref{[pair3]not-satormay-2}} \pflabel{[pair3]complete2}
             \end{pfsteps*}
-            To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+            To show that if $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$.
             \begin{pfsteps*}
-            \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair3]invalues'}
+            \item $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair3]invalues'}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{[pair3]invalues'}.
             \begin{byCases}
@@ -1534,7 +1534,7 @@
               \item[\text{(\ref{rule:IVPair})}]
               \begin{pfsteps*}
               \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
-              \item $\inValues{e_2'}{e_2}$ \BY{assumption} \pflabel{[pair3]invalues2}
+              \item $\inValues{e_2'}{\Delta}{e_2}$ \BY{assumption} \pflabel{[pair3]invalues2}
               \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{\pfref{[pair3]complete2} on \pfref{[pair3]invalues2}} \pflabel{[pair3]not-satormay2}
               \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair3]not-satormay2}}
               \end{pfsteps*} 
@@ -1565,12 +1565,12 @@
     \item $\cnotsatisfyormay{e}{\cor{\hxi_1}{\hxi_2}}$ \BY{assumption} \pflabel{[or]not-satormay}
     \item $\cnotsatisfyormay{e}{\hxi_1}$ \BY{\autoref{lem:satormay-or} on \pfref{[or]not-satormay}} \pflabel{[or]not-satormay-1}
     \item $\cnotsatisfyormay{e}{\hxi_2}$ \BY{\autoref{lem:satormay-or} on \pfref{[or]not-satormay}} \pflabel{[or]not-satormay-2}
-    \item if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\hxi_1}$ \BY{IH on \pfref{eindet} and \pfref{etyp} and \pfref{[or]c1typ} and \pfref{[or]not-satormay-1}} \pflabel{[or]complete1}
-    \item if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\hxi_2}$ \BY{IH on \pfref{eindet} and \pfref{etyp} and \pfref{[or]c2typ} and \pfref{[or]not-satormay-2}} \pflabel{[or]complete2}
+    \item if $\inValues{e'}{\Delta}{e}$ then $\cnotsatisfyormay{e'}{\hxi_1}$ \BY{IH on \pfref{eindet} and \pfref{etyp} and \pfref{[or]c1typ} and \pfref{[or]not-satormay-1}} \pflabel{[or]complete1}
+    \item if $\inValues{e'}{\Delta}{e}$ then $\cnotsatisfyormay{e'}{\hxi_2}$ \BY{IH on \pfref{eindet} and \pfref{etyp} and \pfref{[or]c2typ} and \pfref{[or]not-satormay-2}} \pflabel{[or]complete2}
     \end{pfsteps*}
-    To show that if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\cor{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{e}$.
+    To show that if $\inValues{e'}{\Delta}{e}$ then $\cnotsatisfyormay{e'}{\cor{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{e}$.
     \begin{pfsteps*}
-    \item $\inValues{e'}{e}$ \BY{assumption} \pflabel{[or]invalues}
+    \item $\inValues{e'}{\Delta}{e}$ \BY{assumption} \pflabel{[or]invalues}
     \item $\cnotsatisfyormay{e'}{\hxi_1}$ \BY{\pfref{[or]complete1} on \pfref{[or]invalues}} \pflabel{[or]not-satormay-1'}
     \item $\cnotsatisfyormay{e'}{\hxi_2}$ \BY{\pfref{[or]complete2} on \pfref{[or]invalues}} \pflabel{[or]not-satormay-2'}
     \item $\cnotsatisfyormay{e'}{\cor{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-or} on \pfref{[or]not-satormay-1'} and \pfref{[or]not-satormay-2'}}
@@ -1582,7 +1582,7 @@
   Since we already shown that $\csatisfyormay{e}{\hxi}$ is decidable with
   \autoref{lem:sound-complete-satormay}, we just need to prove its
   contraposition -- if $\csatisfyormay{e}{\hxi}$ then there exists
-  $\inValues{e'}{e}$ such that $\csatisfyormay{e'}{\hxi}$.
+  $\inValues{e'}{\Delta}{e}$ such that $\csatisfyormay{e'}{\hxi}$.
   \begin{pfsteps}
   \item \csatisfyormay{e}{\hxi} \BY{assumption} \pflabel{satormay}
   \end{pfsteps}
@@ -1606,14 +1606,14 @@
       \item[\text{(\ref{rule:FVal})}]
         \begin{pfsteps}
         \item \isVal{e} \BY{assumption}\pflabel{[truth]eval}
-        \item \inValues{e}{e} \BY{\ruleref{rule:IVVal} on \pfref{[truth]eval}} \pflabel{[truth]invalues}
+        \item \inValues{e}{\Delta}{e} \BY{\ruleref{rule:IVVal} on \pfref{[truth]eval}} \pflabel{[truth]invalues}
         \end{pfsteps}
         In conclusion, we have \pfref{[truth]invalues} and \pfref{satormay}.
         \restorelocalsteps{2}
       \item[\text{(\ref{rule:FIndet})}]
         \begin{pfsteps}
         \item \isIndet{e} \BY{assumption}\pflabel{[truth]indet}
-        \item \inValues{e'}{e} \text{ for fresh $e'$} \BY{\autoref{lem:invalues-derivable}}\pflabel{[truth]e'invalues}
+        \item \inValues{e'}{\Delta}{e} \text{ for fresh $e'$} \BY{\autoref{lem:invalues-derivable}}\pflabel{[truth]e'invalues}
         \item \csatisfy{e'}{\ctruth} \BY{\ruleref{rule:CSTruth}} \pflabel{[truth]e'satisfy}
         \item \csatisfyormay{e'}{\ctruth} \BY{\ruleref{rule:CSMSSat} on
             \pfref{[truth]e'satisfy}} \pflabel{[truth]e'satormay}
@@ -1626,7 +1626,7 @@
       \item e=\hnum{n} \BY{assumption}
       \item \hxi=\cnum{n} \BY{assumption}
       \item \isVal{\hnum{n}} \BY{\ruleref{rule:VNum}} \pflabel{[num]val}
-      \item \inValues{\hnum{n}}{\hnum{n}} \BY{\ruleref{rule:IVVal} on
+      \item \inValues{\hnum{n}}{\Delta}{\hnum{n}} \BY{\ruleref{rule:IVVal} on
           \pfref{[num]val}} \pflabel{[num]invalues}
       \end{pfsteps}
       In conclusion, we have \pfref{[num]invalues} and \pfref{satormay}.
@@ -1645,11 +1645,11 @@
       \item \ctyp{\hxi_1}{\tau_1} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[inl]c1typ}
       \item \isFinal{e_1} \BY{\autoref{lem:inv-final-inl} on \pfref{efinal}} \pflabel{[inl]e1final}
-      \item \inValues{e_1'}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[inl]c1typ},
+      \item \inValues{e_1'}{\Delta}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[inl]c1typ},
           \pfref{[inl]e1typ}, \pfref{[inl]e1final}, \pfref{[inl]satormay1}} \pflabel{[inl]e1'values}
       \item \csatisfyormay{e_1'}{\hxi_1} \BY{IH on \pfref{[inl]c1typ},
           \pfref{[inl]e1typ}, \pfref{[inl]e1final}, \pfref{[inl]satormay1}} \pflabel{[inl]e1'satormay}
-      \item \inValues{\hinl{\tau_2}{e_1'}}{\hinl{\tau_2}{e_1}}
+      \item \inValues{\hinl{\tau_2}{e_1'}}{\Delta}{\hinl{\tau_2}{e_1}}
         \BY{\ruleref{rule:IVInl} on \pfref{[inl]e1'values}}
       \item \csatisfyormay{\hinl{\tau_2}{e_1'}}{\cinl{\hxi_1}}
         \BY{\autoref{lem:satormay-inl} on \pfref{[inl]e1'satormay}}
@@ -1669,11 +1669,11 @@
       \item \ctyp{\hxi_2}{\tau_2} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[inr]c2typ}
       \item \isFinal{e_2} \BY{\autoref{lem:inv-final-inr} on \pfref{efinal}} \pflabel{[inr]e2final}
-      \item \inValues{e_2'}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[inr]c2typ},
+      \item \inValues{e_2'}{\Delta}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[inr]c2typ},
           \pfref{[inr]e2typ}, \pfref{[inr]e2final}, \pfref{[inr]satormay2}} \pflabel{[inr]e2'values}
       \item \csatisfyormay{e_2'}{\hxi_2} \BY{IH on \pfref{[inr]c2typ},
           \pfref{[inr]e2typ}, \pfref{[inr]e2final}, \pfref{[inr]satormay2}} \pflabel{[inr]e2'satormay}
-      \item \inValues{\hinr{\tau_1}{e_2'}}{\hinr{\tau_1}{e_2}}
+      \item \inValues{\hinr{\tau_1}{e_2'}}{\Delta}{\hinr{\tau_1}{e_2}}
         \BY{\ruleref{rule:IVInr} on \pfref{[inr]e2'values}}
       \item \csatisfyormay{\hinr{\tau_1}{e_2'}}{\cinr{\hxi_2}}
         \BY{\autoref{lem:satormay-inr} on \pfref{[inr]e2'satormay}}
@@ -1701,15 +1701,15 @@
           \pfref{ctyp}} \pflabel{[pair]c2typ}
       \item \isFinal{e_1} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair]e1final}
       \item \isFinal{e_2} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair]e2final}
-      \item \inValues{e_1'}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair]c1typ},
+      \item \inValues{e_1'}{\Delta}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair]c1typ},
           \pfref{[pair]e1typ}, \pfref{[pair]e1final}, \pfref{[pair]satormay1}} \pflabel{[pair]e1'values}
       \item \csatisfyormay{e_1'}{\hxi_1} \BY{IH on \pfref{[pair]c1typ},
           \pfref{[pair]e1typ}, \pfref{[pair]e1final}, \pfref{[pair]satormay1}} \pflabel{[pair]e1'satormay}
-      \item \inValues{e_2'}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair]c2typ},
+      \item \inValues{e_2'}{\Delta}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair]c2typ},
           \pfref{[pair]e2typ}, \pfref{[pair]e2final}, \pfref{[pair]satormay2}} \pflabel{[pair]e2'values}
       \item \csatisfyormay{e_2'}{\hxi_2} \BY{IH on \pfref{[pair]c2typ},
           \pfref{[pair]e2typ}, \pfref{[pair]e2final}, \pfref{[pair]satormay2}} \pflabel{[pair]e2'satormay}
-      \item \inValues{\hpair{e_1'}{e_2'}}{\hpair{e_1}{e_2}}
+      \item \inValues{\hpair{e_1'}{e_2'}}{\Delta}{\hpair{e_1}{e_2}}
         \BY{\ruleref{rule:IVPair} on \pfref{[pair]e1'values} and \pfref{[pair]e2'values}}
       \item \csatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}
         \BY{\autoref{lem:satormay-pair} on \pfref{[pair]e1'satormay} and \pfref{[pair]e2'satormay}}
@@ -1739,11 +1739,11 @@
       \item \isFinal{\hfst{e}} \BY{\ruleref{rule:FIndet} on \pfref{[notintro]e1indet}} \pflabel{[notintro]e1final}
       \item \isIndet{\hsnd{e}} \BY{\ruleref{rule:ISnd} on \pfref{efinal}} \pflabel{[notintro]e2indet}
       \item \isFinal{\hsnd{e}} \BY{\ruleref{rule:FIndet} on \pfref{[notintro]e2indet}} \pflabel{[notintro]e2final}
-      \item \inValues{e_1'}{\hfst{e}} \text{ for fresh $e_1'$} \BY{IH on \pfref{[notintro]c1typ},
+      \item \inValues{e_1'}{\Delta}{\hfst{e}} \text{ for fresh $e_1'$} \BY{IH on \pfref{[notintro]c1typ},
           \pfref{[notintro]e1typ}, \pfref{[notintro]e1final}, \pfref{[notintro]satormay1}} \pflabel{[notintro]e1'values}
       \item \csatisfyormay{e_1'}{\hxi_1} \BY{IH on \pfref{[notintro]c1typ},
           \pfref{[notintro]e1typ}, \pfref{[notintro]e1final}, \pfref{[notintro]satormay1}} \pflabel{[notintro]e1'satormay}
-      \item \inValues{e_2'}{\hsnd{e}} \text{ for fresh $e_2'$} \BY{IH on \pfref{[notintro]c2typ},
+      \item \inValues{e_2'}{\Delta}{\hsnd{e}} \text{ for fresh $e_2'$} \BY{IH on \pfref{[notintro]c2typ},
           \pfref{[notintro]e2typ}, \pfref{[notintro]e2final}, \pfref{[notintro]satormay2}} \pflabel{[notintro]e2'values}
       \item \csatisfyormay{e_2'}{\hxi_2} \BY{IH on \pfref{[notintro]c2typ},
           \pfref{[notintro]e2typ}, \pfref{[notintro]e2final}, \pfref{[notintro]satormay2}} \pflabel{[notintro]e2'satormay}
@@ -1760,7 +1760,7 @@
       \item \hexptyp{\cdot}{\Delta}{\hpair{e_1'}{e_2'}}{\tprod{\tau_1}{\tau_2}}
         \BY{\ruleref{rule:TPair} on \pfref{[notintro]e1'typ} and
           \pfref{[notintro]e2'typ}} \pflabel{[notintro]e'typ}
-      \item \inValues{\hpair{e_1'}{e_2'}}{e}
+      \item \inValues{\hpair{e_1'}{e_2'}}{\Delta}{e}
         \BY{\ruleref{rule:IVIndet} on \pfref{[notintro]enotintro}, \pfref{etyp},
           \pfref{[notintro]e'val} and \pfref{[notintro]e'typ}}
       \item \csatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}
@@ -1775,7 +1775,7 @@
           \pfref{[or1]satisfy1}} \pflabel{[or1]satormay1}
       \item \ctyp{\hxi_1}{\tau} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[or1]c1typ}
-      \item \inValues{e'}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or1]c1typ},
+      \item \inValues{e'}{\Delta}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or1]c1typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or1]satormay1}} \pflabel{[or1]e'values}
       \item \csatisfyormay{e'}{\hxi_1} \BY{IH on \pfref{[or1]c1typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or1]satormay1}} \pflabel{[or1]e'satormay}
@@ -1791,7 +1791,7 @@
           \pfref{[or2]satisfy2}} \pflabel{[or2]satormay2}
       \item \ctyp{\hxi_2}{\tau} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[or2]c2typ}
-      \item \inValues{e'}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or2]c2typ},
+      \item \inValues{e'}{\Delta}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or2]c2typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or2]satormay2}} \pflabel{[or2]e'values}
       \item \csatisfyormay{e'}{\hxi_2} \BY{IH on \pfref{[or2]c2typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or2]satormay2}} \pflabel{[or2]e'satormay}
@@ -1817,14 +1817,14 @@
       \item[\text{(\ref{rule:FVal})}]
         \begin{pfsteps}
         \item \isVal{e} \BY{assumption}\pflabel{[unknown]eval}
-        \item \inValues{e}{e} \BY{\ruleref{rule:IVVal} on \pfref{[unknown]eval}} \pflabel{[unknown]invalues}
+        \item \inValues{e}{\Delta}{e} \BY{\ruleref{rule:IVVal} on \pfref{[unknown]eval}} \pflabel{[unknown]invalues}
         \end{pfsteps}
         In conclusion, we have \pfref{[unknown]invalues} and \pfref{satormay}.
         \restorelocalsteps{2}
       \item[\text{(\ref{rule:FIndet})}]
         \begin{pfsteps}
         \item \isIndet{e} \BY{assumption}\pflabel{[unknown]indet}
-        \item \inValues{e'}{e} \text{ for fresh $e'$} \BY{\autoref{lem:invalues-derivable}}\pflabel{[unknown]e'invalues}
+        \item \inValues{e'}{\Delta}{e} \text{ for fresh $e'$} \BY{\autoref{lem:invalues-derivable}}\pflabel{[unknown]e'invalues}
         \item \cmaysatisfy{e'}{\cunknown} \BY{\ruleref{rule:CMSUnknown}} \pflabel{[unknown]e'satisfy}
         \item \csatisfyormay{e'}{\ctruth} \BY{\ruleref{rule:CSMSSat} on
             \pfref{[unknown]e'satisfy}} \pflabel{[unknown]e'satormay}
@@ -1846,11 +1846,11 @@
       \item \ctyp{\hxi_1}{\tau_1} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[inl']c1typ}
       \item \isFinal{e_1} \BY{\autoref{lem:inv-final-inl} on \pfref{efinal}} \pflabel{[inl']e1final}
-      \item \inValues{e_1'}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[inl']c1typ},
+      \item \inValues{e_1'}{\Delta}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[inl']c1typ},
           \pfref{[inl']e1typ}, \pfref{[inl']e1final}, \pfref{[inl']satormay1}} \pflabel{[inl']e1'values}
       \item \csatisfyormay{e_1'}{\hxi_1} \BY{IH on \pfref{[inl']c1typ},
           \pfref{[inl']e1typ}, \pfref{[inl']e1final}, \pfref{[inl']satormay1}} \pflabel{[inl']e1'satormay}
-      \item \inValues{\hinl{\tau_2}{e_1'}}{\hinl{\tau_2}{e_1}}
+      \item \inValues{\hinl{\tau_2}{e_1'}}{\Delta}{\hinl{\tau_2}{e_1}}
         \BY{\ruleref{rule:IVInl} on \pfref{[inl']e1'values}}
       \item \csatisfyormay{\hinl{\tau_2}{e_1'}}{\cinl{\hxi_1}}
         \BY{\autoref{lem:satormay-inl} on \pfref{[inl']e1'satormay}}
@@ -1870,11 +1870,11 @@
       \item \ctyp{\hxi_2}{\tau_2} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[inr']c2typ}
       \item \isFinal{e_2} \BY{\autoref{lem:inv-final-inr} on \pfref{efinal}} \pflabel{[inr']e2final}
-      \item \inValues{e_2'}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[inr']c2typ},
+      \item \inValues{e_2'}{\Delta}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[inr']c2typ},
           \pfref{[inr']e2typ}, \pfref{[inr']e2final}, \pfref{[inr']satormay2}} \pflabel{[inr']e2'values}
       \item \csatisfyormay{e_2'}{\hxi_2} \BY{IH on \pfref{[inr']c2typ},
           \pfref{[inr']e2typ}, \pfref{[inr']e2final}, \pfref{[inr']satormay2}} \pflabel{[inr']e2'satormay}
-      \item \inValues{\hinr{\tau_1}{e_2'}}{\hinr{\tau_1}{e_2}}
+      \item \inValues{\hinr{\tau_1}{e_2'}}{\Delta}{\hinr{\tau_1}{e_2}}
         \BY{\ruleref{rule:IVInr} on \pfref{[inr']e2'values}}
       \item \csatisfyormay{\hinr{\tau_1}{e_2'}}{\cinr{\hxi_2}}
         \BY{\autoref{lem:satormay-inr} on \pfref{[inr']e2'satormay}}
@@ -1902,15 +1902,15 @@
           \pfref{ctyp}} \pflabel{[pair1]c2typ}
       \item \isFinal{e_1} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair1]e1final}
       \item \isFinal{e_2} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair1]e2final}
-      \item \inValues{e_1'}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair1]c1typ},
+      \item \inValues{e_1'}{\Delta}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair1]c1typ},
           \pfref{[pair1]e1typ}, \pfref{[pair1]e1final}, \pfref{[pair1]satormay1}} \pflabel{[pair1]e1'values}
       \item \csatisfyormay{e_1'}{\hxi_1} \BY{IH on \pfref{[pair1]c1typ},
           \pfref{[pair1]e1typ}, \pfref{[pair1]e1final}, \pfref{[pair1]satormay1}} \pflabel{[pair1]e1'satormay}
-      \item \inValues{e_2'}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair1]c2typ},
+      \item \inValues{e_2'}{\Delta}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair1]c2typ},
           \pfref{[pair1]e2typ}, \pfref{[pair1]e2final}, \pfref{[pair1]satormay2}} \pflabel{[pair1]e2'values}
       \item \csatisfyormay{e_2'}{\hxi_2} \BY{IH on \pfref{[pair1]c2typ},
           \pfref{[pair1]e2typ}, \pfref{[pair1]e2final}, \pfref{[pair1]satormay2}} \pflabel{[pair1]e2'satormay}
-      \item \inValues{\hpair{e_1'}{e_2'}}{\hpair{e_1}{e_2}}
+      \item \inValues{\hpair{e_1'}{e_2'}}{\Delta}{\hpair{e_1}{e_2}}
         \BY{\ruleref{rule:IVPair} on \pfref{[pair1]e1'values} and \pfref{[pair1]e2'values}}
       \item \csatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}
         \BY{\autoref{lem:satormay-pair} on \pfref{[pair1]e1'satormay} and \pfref{[pair1]e2'satormay}}
@@ -1938,15 +1938,15 @@
           \pfref{ctyp}} \pflabel{[pair2]c2typ}
       \item \isFinal{e_1} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair2]e1final}
       \item \isFinal{e_2} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair2]e2final}
-      \item \inValues{e_1'}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair2]c1typ},
+      \item \inValues{e_1'}{\Delta}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair2]c1typ},
           \pfref{[pair2]e1typ}, \pfref{[pair2]e1final}, \pfref{[pair2]satormay1}} \pflabel{[pair2]e1'values}
       \item \csatisfyormay{e_1'}{\hxi_1} \BY{IH on \pfref{[pair2]c1typ},
           \pfref{[pair2]e1typ}, \pfref{[pair2]e1final}, \pfref{[pair2]satormay1}} \pflabel{[pair2]e1'satormay}
-      \item \inValues{e_2'}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair2]c2typ},
+      \item \inValues{e_2'}{\Delta}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair2]c2typ},
           \pfref{[pair2]e2typ}, \pfref{[pair2]e2final}, \pfref{[pair2]satormay2}} \pflabel{[pair2]e2'values}
       \item \csatisfyormay{e_2'}{\hxi_2} \BY{IH on \pfref{[pair2]c2typ},
           \pfref{[pair2]e2typ}, \pfref{[pair2]e2final}, \pfref{[pair2]satormay2}} \pflabel{[pair2]e2'satormay}
-      \item \inValues{\hpair{e_1'}{e_2'}}{\hpair{e_1}{e_2}}
+      \item \inValues{\hpair{e_1'}{e_2'}}{\Delta}{\hpair{e_1}{e_2}}
         \BY{\ruleref{rule:IVPair} on \pfref{[pair2]e1'values} and \pfref{[pair2]e2'values}}
       \item \csatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}
         \BY{\autoref{lem:satormay-pair} on \pfref{[pair2]e1'satormay} and \pfref{[pair2]e2'satormay}}
@@ -1974,15 +1974,15 @@
           \pfref{ctyp}} \pflabel{[pair3]c2typ}
       \item \isFinal{e_1} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair3]e1final}
       \item \isFinal{e_2} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair3]e2final}
-      \item \inValues{e_1'}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair3]c1typ},
+      \item \inValues{e_1'}{\Delta}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair3]c1typ},
           \pfref{[pair3]e1typ}, \pfref{[pair3]e1final}, \pfref{[pair3]satormay1}} \pflabel{[pair3]e1'values}
       \item \csatisfyormay{e_1'}{\hxi_1} \BY{IH on \pfref{[pair3]c1typ},
           \pfref{[pair3]e1typ}, \pfref{[pair3]e1final}, \pfref{[pair3]satormay1}} \pflabel{[pair3]e1'satormay}
-      \item \inValues{e_2'}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair3]c2typ},
+      \item \inValues{e_2'}{\Delta}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair3]c2typ},
           \pfref{[pair3]e2typ}, \pfref{[pair3]e2final}, \pfref{[pair3]satormay2}} \pflabel{[pair3]e2'values}
       \item \csatisfyormay{e_2'}{\hxi_2} \BY{IH on \pfref{[pair3]c2typ},
           \pfref{[pair3]e2typ}, \pfref{[pair3]e2final}, \pfref{[pair3]satormay2}} \pflabel{[pair3]e2'satormay}
-      \item \inValues{\hpair{e_1'}{e_2'}}{\hpair{e_1}{e_2}}
+      \item \inValues{\hpair{e_1'}{e_2'}}{\Delta}{\hpair{e_1}{e_2}}
         \BY{\ruleref{rule:IVPair} on \pfref{[pair3]e1'values} and \pfref{[pair3]e2'values}}
       \item \csatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}
         \BY{\autoref{lem:satormay-pair} on \pfref{[pair3]e1'satormay} and \pfref{[pair3]e2'satormay}}
@@ -1996,7 +1996,7 @@
           \pfref{[or1']satisfy1}} \pflabel{[or1']satormay1}
       \item \ctyp{\hxi_1}{\tau} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[or1']c1typ}
-      \item \inValues{e'}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or1']c1typ},
+      \item \inValues{e'}{\Delta}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or1']c1typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or1']satormay1}} \pflabel{[or1']e'values}
       \item \csatisfyormay{e'}{\hxi_1} \BY{IH on \pfref{[or1']c1typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or1']satormay1}} \pflabel{[or1']e'satormay}
@@ -2012,7 +2012,7 @@
           \pfref{[or2']satisfy2}} \pflabel{[or2']satormay2}
       \item \ctyp{\hxi_2}{\tau} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[or2']c2typ}
-      \item \inValues{e'}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or2']c2typ},
+      \item \inValues{e'}{\Delta}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or2']c2typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or2']satormay2}} \pflabel{[or2']e'values}
       \item \csatisfyormay{e'}{\hxi_2} \BY{IH on \pfref{[or2']c2typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or2']satormay2}} \pflabel{[or2']e'satormay}
@@ -2026,11 +2026,11 @@
       \item \isVal{e'} \text{ for fresh $e'$} \BY{\autoref{lem:exist-val-satormay-hxi} on \pfref{ctyp}} \pflabel{[notintro]e'val}
       \item \hexptyp{\cdot}{\Delta}{e'}{\tau} \BY{\autoref{lem:exist-val-satormay-hxi} on \pfref{ctyp}} \pflabel{[notintro]e'typ}
       \item \csatisfyormay{e'}{\hxi} \BY{\autoref{lem:exist-val-satormay-hxi} on \pfref{ctyp}} \pflabel{[notintro]e'satormay}
-      \item \inValues{e'}{e} \BY{\ref{rule:IVIndet} on
+      \item \inValues{e'}{\Delta}{e} \BY{\ref{rule:IVIndet} on
           \pfref{[notintro]notintro} and \pfref{etyp} and \pfref{[notintro]e'val} and
           \pfref{[notintro]e'typ}}
       \end{pfsteps}
-      $e'$ is such an expression that $\inValues{e'}{e}$ and $\csatisfyormay{e'}{\hxi}$.
+      $e'$ is such an expression that $\inValues{e'}{\Delta}{e}$ and $\csatisfyormay{e'}{\hxi}$.
     \end{byCases}
   \end{byCases}
   \resetpfcounter
@@ -2039,7 +2039,7 @@
 \begin{lemma}
   \label{lem:incomplete-satormay}
   If $\isIndet{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and
-  $\ctyp{\hxi}{\tau}$ and there exists $e'$ such that $\inValues{e'}{e}$
+  $\ctyp{\hxi}{\tau}$ and there exists $e'$ such that $\inValues{e'}{\Delta}{e}$
   and $\csatisfyormay{e'}{\hxi}$ then $\csatisfyormay{e}{\hxi}$.
 \end{lemma}
 \begin{proof}
@@ -2047,22 +2047,22 @@
 \end{proof}
 
 \judgboxa{
-  \hsubstyp{\theta}{\Gamma}
+  \hsubstyp{\Gamma}{\Delta}{\theta}{\Gamma\theta}
 }{
-  $\theta$ is of type $\Gamma$
+  $\theta$ is of type $\Gamma\theta$
 }
 \begin{subequations}
 \begin{equation}
 \inferrule[STEmpty]{ }{
-  \hsubstyp{\emptyset}{\cdot}
+  \hsubstyp{\Gamma}{\Delta}{\emptyset}{\cdot}
 }
 \end{equation}
 \begin{equation}
 \inferrule[STExtend]{
-  \hsubstyp{\theta}{\Gamma_\theta} \\
+  \hsubstyp{\Gamma}{\Delta}{\theta}{\Gamma_\theta} \\
   \hexptyp{\Gamma}{\Delta}{e}{\tau}
 }{
-  \hsubstyp{\theta , x / e}{\Gamma_\theta , x : \tau}
+  \hsubstyp{\Gamma}{\Delta}{\theta , x / e}{\Gamma_\theta , x : \tau}
 }
 \end{equation}
 \end{subequations}

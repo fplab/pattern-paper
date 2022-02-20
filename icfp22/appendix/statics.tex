@@ -139,7 +139,7 @@ p & ::= &
   \hexptyp{\Gamma}{\Delta}{e}{\tau} \\
   \chrulstyp{\Gamma}{\Delta}{\cfalsity}{rs_{pre}}{\tau}{\xi_{pre}}{\tau'} \\
   \chrulstyp{\Gamma}{\Delta}{\cor{\cfalsity}{\xi_{pre}}}{\hrules{r}{rs_{post}}}{\tau}{\xi_{rest}}{\tau'} \\
-  \forall e'. \inValues{e'}{e} \Rightarrow \cnotsatisfyormay{e'}{\xi_{pre}} \\
+  \forall e'. \inValues{e'}{\Delta}{e} \Rightarrow \cnotsatisfyormay{e'}{\xi_{pre}} \\
   \csatisfyormay{\ctruth}{\cor{\xi_{pre}}{\xi_{rest}}}
 }{
   \hexptyp{\Gamma}{\Delta}{\hmatch{e}{\zruls{rs_{pre}}{r}{rs_{post}}}}{\tau'}
@@ -311,20 +311,20 @@ By rule induction over \rulesref{rules:CTRules}.
 
 \begin{lemma}[Substitution]
   \label{lem:substitution}
-  If $\hexptyp{\Gamma, x : \tau}{\Delta}{e_0}{\tau_0}$ and $\hexptyp{\Gamma}{\Delta}{e}{\tau}$
+  If $\hexptyp{\Gamma, x : \tau}{\Delta}{e_0}{\tau_0}$ and $\hexptyp{\Gamma}{\Delta}{e}{\tau}$ and $\isFinal{e}$
   then $\hexptyp{\Gamma}{\Delta}{[e/x]e_0}{\tau_0}$
 \end{lemma}
 
 \begin{lemma}[Simultaneous Substitution]
   \label{lem:simult-substitution}
-  If $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau}$ and $\hsubstyp{\theta}{\Gamma'}$
+  If $\hexptyp{\Gamma \uplus \Gamma'}{\Delta}{e}{\tau}$ and $\hsubstyp{\Gamma}{\Delta}{\theta}{\Gamma'}$
   then $\hexptyp{\Gamma}{\Delta}{[\theta]e}{\tau}$
 \end{lemma}
 
 \begin{lemma}[Substitution Typing]
   \label{lem:subs-typing}
-  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta_e}{e}{\tau}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$
-  then $\hsubstyp{\theta}{\Gamma}$
+  If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta_e}{e}{\tau}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$ and all expressions in $\theta$ are final
+  then $\hsubstyp{\cdot}{\Delta_e}{\theta}{\Gamma}$
 \end{lemma}
 Proof by induction on the derivation of $\hpatmatch{e}{p}{\theta}$.
 
