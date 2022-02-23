@@ -26,7 +26,7 @@
   \end{mathpar}
 
   $\arraycolsep=4pt\begin{array}{lll}
-      \xi & ::= & \ldots ~\vert~ \cinj{C}{\tau}{\xi} ~\vert~ \cinj{\notC}{\tau}{\xi}
+      \xi & ::= & \ldots ~\vert~ \cinj{C}{\tau}{\xi}
     \end{array}$
 
   \judgbox{\ctyp{\xi}{\tau}}{$\xi$ constrains final expressions of type $\tau$}
@@ -39,22 +39,12 @@
     }{
       \ctyp{\cinj{C_j}{\tau}{\xi}}{\tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset}}
     }
-
-    \Infer{\CTNotInj}{
-      \tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset} \\
-      C_j \in \tagset \\
-      \ctyp{\xi}{\tau_{j'}} \\
-      j' \neq j
-    }{
-      \ctyp{\cinj{\notC_j}{\tau}{\xi}}{\tau}
-    }
   \end{mathpar}
 
   \judgbox{\cdual{\xi_1} = \xi_2}{dual of $\xi_1$ is $\xi_2$}
 
   \begin{align*}
-    \cdual{\cinj{C}{\tau}{\xi}}     & = \cinj{C}{\tau}{\cdual{\xi}} \vee \cinj{\notC}{\tau}{\ctruth} \\
-    \cdual{\cinj{\notC}{\tau}{\xi}} & = \cinj{\notC}{\tau}{\cdual{\xi}} \vee \cinj{C}{\tau}{\ctruth}
+    \cdual{\cinj{C}{\tau}{\xi}} & = \cinj{C}{\tau}{\cdual{\xi}} \vee \bigvee_{C_i \in \tagset \setminus \{C\}} \cinj{C}{\tau}{\ctruth} \qquad \left(\tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset}\right)
   \end{align*}
 
   \judgbox{\refutable{\xi}}{$\xi$ is refutable}
@@ -63,44 +53,34 @@
     \Infer{\RXInj}{ }{
       \refutable{\cinj{C}{\tau}{\xi}}
     }
-
-    \Infer{\RXNotInj}{ }{
-      \refutable{\cinj{\notC}{\tau}{\xi}}
-    }
   \end{mathpar}
 
   \judgbox{\csatisfy{e}{\xi}}{$e$ satisfies $\xi$}
 
   \begin{mathpar}
     \Infer{\CSInj}{
+      C = C' \\
       \csatisfy{e}{\xi}
     }{
-      \csatisfy{\hinj{\tagC}{\tau}{e}}{\cinj{\tagC}{\tau}{\xi}}
-    }
-
-    \Infer{\CSNotInj}{
-      \tagC \neq \tagC' \\
-      \csatisfy{e}{\xi}
-    }{
-      \csatisfy{\hinj{\tagC}{\tau}{e}}{\cinj{\nottagC'}{\tau}{\xi}}
+      \csatisfy{\hinj{C}{\tau}{e}}{\cinj{C}{\tau}{\xi}}
     }
   \end{mathpar}
 
   \judgbox{\cmaysatisfy{e}{\xi}}{$e$ may satisfy $\xi$}
 
   \begin{mathpar}
-    \Infer{\CMSInj}{
+    \Infer{\CMSInjTag}{
       \tagmaymatch{C}{C'} \\
       \csatisfyormay{e}{\xi}
     }{
       \cmaysatisfy{\hinj{C}{\tau}{e}}{\cinj{C'}{\tau}{\xi}}
     }
 
-    \Infer{\CMSNotInj}{
-      \tagC \neq \tagC' \\
+    \Infer{\CMSInjArg}{
+      C = C' \\
       \cmaysatisfy{e}{\xi}
     }{
-      \cmaysatisfy{\hinj{\tagC}{\tau}{e}}{\cinj{\nottagC'}{\tau}{\xi}}
+      \cmaysatisfy{\hinj{C}{\tau}{e}}{\cinj{C'}{\tau}{\xi}}
     }
   \end{mathpar}
 

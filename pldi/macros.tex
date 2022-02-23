@@ -79,6 +79,7 @@
 \newcommand{\hpattyp}[4]{#1 : #2 \dashV #3 \mathbin{;} #4}
 \newcommand{\hsubstyp}[2]{#1 : #2}
 \newcommand{\hpatmatch}[3]{#1 \vartriangleright #2 \dashV #3}
+\newcommand{\hnotnotmatch}[2]{#1 \mathbin{\cancel{\bot}} #2}
 \newcommand{\hnotmatch}[2]{#1 \mathbin{\bot} #2}
 \newcommand{\hmaymatch}[2]{#1 \mathbin{?} #2}
 \newcommand{\htrans}[2]{#1 \mapsto #2}
@@ -90,6 +91,8 @@
 \newcommand{\isFinal}[1]{#1 ~\mathtt{final}}
 \newcommand{\notIntro}[1]{#1 ~\mathtt{notintro}}
 \newcommand{\fnotIntro}[1]{\textit{notintro}\inparens{#1}}
+
+\newcommand{\setof}[1]{\{#1\}}
 
 % ZTyp and ZExp
 \newcommand{\zlsel}[1]{{\bowtie}{#1}}
