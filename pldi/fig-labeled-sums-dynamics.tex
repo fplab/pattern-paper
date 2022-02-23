@@ -42,10 +42,9 @@
 
   \begin{mathpar}
     \Infer{\MInj}{
-      C = C' \\
       \hpatmatch{e}{p}{\theta}
     }{
-      \hpatmatch{\hinj{C}{\tau}{e}}{\hinjp{C'}{\tau}{p}}{\theta}
+      \hpatmatch{\hinj{C}{\tau}{e}}{\hinjp{C}{p}}{\theta}
     }
   \end{mathpar}
 
@@ -56,14 +55,13 @@
       \tagmaymatch{C}{C'} \\
       \hnotnotmatch{e}{p}
     }{
-      \hmaymatch{\hinj{C}{\tau}{e}}{\hinjp{C'}{\tau}{p}}
+      \hmaymatch{\hinj{C}{\tau}{e}}{\hinjp{C'}{p}}
     }
 
     \Infer{\MMInjArg}{
-      C = C' \\
       \hmaymatch{e}{p}
     }{
-      \hmaymatch{\hinj{C}{\tau}{e}}{\hinjp{C'}{\tau}{p}}
+      \hmaymatch{\hinj{C}{\tau}{e}}{\hinjp{C}{p}}
     }
   \end{mathpar}
 
@@ -73,21 +71,20 @@
     \Infer{\NMInj}{
       \tagC \neq \tagC'
     }{
-      \hnotmatch{\hinj{\tagC}{\tau}{e}}{\hinjp{\tagC'}{\tau}{p}}
+      \hnotmatch{\hinj{\tagC}{\tau}{e}}{\hinjp{\tagC'}{p}}
     }
 
     \Infer{\NMInjTag}{
       \tagmaymatch{C}{C'} \\
       \hnotmatch{e}{p}
     }{
-      \hnotmatch{\hinj{C}{\tau}{e}}{\hinjp{C'}{\tau}{p}}
+      \hnotmatch{\hinj{C}{\tau}{e}}{\hinjp{C'}{p}}
     }
 
     \Infer{\NMInjArg}{
-      C = C' \\
       \hnotmatch{e}{p}
     }{
-      \hnotmatch{\hinj{C}{\tau}{e}}{\hinjp{C}{\tau}{p}}
+      \hnotmatch{\hinj{C}{\tau}{e}}{\hinjp{C}{p}}
     }
   \end{mathpar}
 
@@ -129,7 +126,7 @@
     \Infer{\RInj}{
       \refutable{p}
     }{
-      \refutable{\hinjp{C}{\tau}{p}}
+      \refutable{\hinjp{C}{p}}
     }
   \end{mathpar}
 
