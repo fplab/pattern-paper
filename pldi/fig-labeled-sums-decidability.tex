@@ -17,14 +17,13 @@
 
   \begin{mathpar}
     \Infer{\CINCInjTag}{
-      \cinj{\tagC'}{\tau}{\xi'} \in \Xi \\
       \tagC \neq \tagC'
     }{
-      \cincon{\Xi,\cinj{\tagC}{\tau}{\xi}}
+      \cincon{\Xi,\cinj{\tagC'}{\tau}{\xi'},\cinj{\tagC}{\tau}{\xi}}
     }
 
     \Infer{\CINCInjArg}{
-      \cincon{\setof{\xi' | \cinj{C'}{\tau}{\xi'} \in \Xi \wedge (C' = C \vee \tagmaymatch{C'}{C})}, \xi}
+      \cincon{\setof{\xi' | \cinj{C'}{\tau}{\xi'} \in \Xi}, \xi}
     }{
       \cincon{\Xi,\cinj{C}{\tau}{\xi}}
     }
