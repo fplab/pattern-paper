@@ -110,21 +110,20 @@
     }
   \end{mathpar}
 
-  % \judgbox{\tagnotmatch{C}{C'}}{$C$ does not match $C'$}
-
-  % \begin{mathpar}
-  %   \Infer{\TNMTag}{
-  %     \tagC \neq \tagC'
-  %   }{
-  %     \tagnotmatch{\tagC}{\tagC'}
-  %   }
-  % \end{mathpar}
-
   \judgbox{\refutable{p}}{$p$ is refutable}
 
   \begin{mathpar}
-    \Infer{\RInj}{
+    \Infer{\RInjSing}{
+      C \in \tagset \\
+      |\tagset| = 1 \\
       \refutable{p}
+    }{
+      \refutable{\hinjp{C}{p}}
+    }
+
+    \Infer{\RInjMult}{
+      C \in \tagset \\
+      |\tagset| > 1
     }{
       \refutable{\hinjp{C}{p}}
     }
