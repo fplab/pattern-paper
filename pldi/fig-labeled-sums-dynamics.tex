@@ -76,6 +76,12 @@
       \hnotmatch{\hinj{\tagC}{\tau}{e}}{\hinjp{\tagC'}{\tau}{p}}
     }
 
+    \Infer{\NMInjType}{
+      \tau \neq \tau
+    }{
+      \hnotmatch{\hinj{C}{\tau}{e}}{\hinjp{C'}{\tau}{p}}
+    }
+
     \Infer{\NMInjTag}{
       \tagmaymatch{C}{C'} \\
       \hnotmatch{e}{p}
