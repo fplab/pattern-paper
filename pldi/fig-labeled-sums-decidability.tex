@@ -16,13 +16,6 @@
   \judgbox{\cincon{\Xi}}{}
 
   \begin{mathpar}
-    \Infer{\CINCInjType}{
-      \cinj{C'}{\tau'}{\xi'} \in \Xi \\
-      \tau' \neq \tau
-    }{
-      \cincon{\Xi,\cinj{C}{\tau}{\xi}}
-    }
-
     \Infer{\CINCInjTag}{
       \cinj{\tagC'}{\tau}{\xi'} \in \Xi \\
       \tagC \neq \tagC'
@@ -32,12 +25,6 @@
 
     \Infer{\CINCInjArg}{
       \cincon{\setof{\xi' | \cinj{C'}{\tau}{\xi'} \in \Xi \wedge (C' = C \vee \tagmaymatch{C'}{C})}, \xi}
-    }{
-      \cincon{\Xi,\cinj{C}{\tau}{\xi}}
-    }
-
-    \Infer{\CINCNotInj}{
-      \cincon{\setof{\xi' \in \Xi | \xi' \neq \cinj{C'}{\tau'}{\xi''}}}
     }{
       \cincon{\Xi,\cinj{C}{\tau}{\xi}}
     }
