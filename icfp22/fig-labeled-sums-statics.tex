@@ -1,0 +1,109 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+  \judgbox{\hexptyp{\Gamma}{\Delta}{e}{\tau}}{$e$ is of type \(\tau\)}
+
+  \begin{mathpar}
+    \Infer{\TInj}{
+      \tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset} \\
+      C_j \in \tagset \\
+      \hexptyp{\Gamma}{\Delta}{e}{\tau_j}
+    }{
+      \hexptyp{\Gamma}{\Delta}{\hinj{C_j}{\tau}{e}}{\tau}
+    }
+  \end{mathpar}
+
+  \judgbox{\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}}{$p$ is assigned type $\tau$ and emits constraint $\xi$}
+
+  \begin{mathpar}
+    \Infer{\PTInj}{
+      \tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset} \\
+      C_j \in \tagset \\
+      \chpattyp{p}{\tau_j}{\xi}{\Gamma}{\Delta}
+    }{
+      \chpattyp{\hinjp{C_j}{\tau}{p}}{\tau}{\hinjp{C_j}{\tau}{\xi}}{\Gamma}{\Delta}
+    }
+  \end{mathpar}
+
+  $\arraycolsep=4pt\begin{array}{lll}
+      \xi & ::= & \ldots ~\vert~ \cinj{C}{\tau}{\xi} ~\vert~ \cinj{\notC}{\tau}{\xi}
+    \end{array}$
+
+  \judgbox{\ctyp{\xi}{\tau}}{$\xi$ constrains final expressions of type $\tau$}
+
+  \begin{mathpar}
+    \Infer{\CTInj}{
+      \tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset} \\
+      C_j \in \tagset \\
+      \ctyp{\xi}{\tau_j}
+    }{
+      \ctyp{\cinj{C_j}{\tau}{\xi}}{\tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset}}
+    }
+
+    \Infer{\CTNotInj}{
+      \tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset} \\
+      C_j \in \tagset \\
+      \ctyp{\xi}{\tau_{j'}} \\
+      j' \neq j
+    }{
+      \ctyp{\cinj{\notC_j}{\tau}{\xi}}{\tau}
+    }
+  \end{mathpar}
+
+  \judgbox{\cdual{\xi_1} = \xi_2}{dual of $\xi_1$ is $\xi_2$}
+
+  \begin{align*}
+    \cdual{\cinj{C}{\tau}{\xi}}     & = \cinj{C}{\tau}{\cdual{\xi}} \vee \cinj{\notC}{\tau}{\ctruth} \\
+    \cdual{\cinj{\notC}{\tau}{\xi}} & = \cinj{\notC}{\tau}{\cdual{\xi}} \vee \cinj{C}{\tau}{\ctruth}
+  \end{align*}
+
+  \judgbox{\refutable{\xi}}{$\xi$ is refutable}
+
+  \begin{mathpar}
+    \Infer{\RXInj}{ }{
+      \refutable{\cinj{C}{\tau}{\xi}}
+    }
+
+    \Infer{\RXNotInj}{ }{
+      \refutable{\cinj{\notC}{\tau}{\xi}}
+    }
+  \end{mathpar}
+
+  \judgbox{\csatisfy{e}{\xi}}{$e$ satisfies $\xi$}
+
+  \begin{mathpar}
+    \Infer{\CSInj}{
+      \csatisfy{e}{\xi}
+    }{
+      \csatisfy{\hinj{\tagC}{\tau}{e}}{\cinj{\tagC}{\tau}{\xi}}
+    }
+
+    \Infer{\CSNotInj}{
+      \tagC \neq \tagC' \\
+      \csatisfy{e}{\xi}
+    }{
+      \csatisfy{\hinj{\tagC}{\tau}{e}}{\cinj{\nottagC'}{\tau}{\xi}}
+    }
+  \end{mathpar}
+
+  \judgbox{\cmaysatisfy{e}{\xi}}{$e$ may satisfy $\xi$}
+
+  \begin{mathpar}
+    \Infer{\CMSInj}{
+      \tagmaymatch{C}{C'} \\
+      \csatisfyormay{e}{\xi}
+    }{
+      \cmaysatisfy{\hinj{C}{\tau}{e}}{\cinj{C'}{\tau}{\xi}}
+    }
+
+    \Infer{\CMSNotInj}{
+      \tagC \neq \tagC' \\
+      \cmaysatisfy{e}{\xi}
+    }{
+      \cmaysatisfy{\hinj{\tagC}{\tau}{e}}{\cinj{\nottagC'}{\tau}{\xi}}
+    }
+  \end{mathpar}
+
+  \caption{Static semantics of labeled sums}
+  \label{fig:labeled-sums-statics}
+\end{figure}

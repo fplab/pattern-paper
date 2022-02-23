@@ -76,18 +76,18 @@
   \isIndet{\hpair{e_1}{e_2}}
 }
 \end{equation}
-\begin{equation}\label{rule:IPrl}
-\inferrule[IPrl]{
+\begin{equation}\label{rule:IFst}
+\inferrule[IFst]{
   \isFinal{e}
 }{
-  \isIndet{\hprl{e}}
+  \isIndet{\hfst{e}}
 }
 \end{equation}
-\begin{equation}\label{rule:IPrr}
-\inferrule[IPrr]{
+\begin{equation}\label{rule:ISnd}
+\inferrule[ISnd]{
   \isFinal{e}
 }{
-  \isIndet{\hprr{e}}
+  \isIndet{\hsnd{e}}
 }
 \end{equation}
 \begin{equation}\label{rule:IInl}
@@ -173,14 +173,14 @@
   \notIntro{\hmatch{e}{\zrules}}
 }
 \end{equation}
-\begin{equation}\label{rule:NVPrl}
-\inferrule[NVPrl]{ }{
-  \notIntro{\hprl{e}}
+\begin{equation}\label{rule:NVFst}
+\inferrule[NVFst]{ }{
+  \notIntro{\hfst{e}}
 }
 \end{equation}
-\begin{equation}\label{rule:NVPrr}
-\inferrule[NVPrr]{ }{
-  \notIntro{\hprr{e}}
+\begin{equation}\label{rule:NVSnd}
+\inferrule[NVSnd]{ }{
+  \notIntro{\hsnd{e}}
 }
 \end{equation}
 \end{subequations}
@@ -192,8 +192,8 @@
     \fnotIntro{\hhole{e}{u}} ={}& \true \label{defn:hole-notintro}\\
     \fnotIntro{\hap{e_1}{e_2}} ={}& \true \label{defn:ap-notintro}\\
     \fnotIntro{\hmatch{e}{\zrules}} ={}& \true \label{defn:match-notintro}\\
-    \fnotIntro{\hprl{e}} ={}& \true \label{defn:prl-notintro}\\
-    \fnotIntro{\hprr{e}} ={}& \true \label{defn:prr-notintro}\\
+    \fnotIntro{\hfst{e}} ={}& \true \label{defn:fst-notintro}\\
+    \fnotIntro{\hsnd{e}} ={}& \true \label{defn:snd-notintro}\\
     \text{Otherwise}\quad \fnotIntro{e} ={}& \false \label{defn:not-notintro}
   \end{align}
 \end{subequations}
@@ -207,7 +207,7 @@
 \end{proof}
 
 \judgboxa{
-  \inValues{e'}{e}
+  \inValues{e'}{\Delta}{e}
 }{
   $e'$ is one of the possible values of $e$
 }
@@ -217,7 +217,7 @@
       \isVal{e} \\
       \hexptyp{\cdot}{\Delta}{e}{\tau}
     }{
-      \inValues{e}{e}
+      \inValues{e}{\Delta}{e}
     }
   \end{equation}
   \begin{equation}\label{rule:IVIndet}
@@ -227,60 +227,60 @@
       \isVal{e'} \\
       \hexptyp{\cdot}{\Delta}{e'}{\tau}
     }{
-      \inValues{e'}{e}
+      \inValues{e'}{\Delta}{e}
     }
   \end{equation}
   \begin{equation}\label{rule:IVLam}
     \inferrule[IVInl]{
-      \inValues{e'}{e} \\
+      \inValues{e'}{\Delta}{e} \\
     }{ 
-      \inValues{\hlam{x}{\tau}{e'}}{\hlam{x}{\tau}{e}}
+      \inValues{\hlam{x}{\tau}{e'}}{\Delta}{\hlam{x}{\tau}{e}}
     }
   \end{equation}
   \begin{equation}\label{rule:IVInl}
     \inferrule[IVInl]{
-      \inValues{e_1'}{e_1} \\
+      \inValues{e_1'}{\Delta}{e_1} \\
     }{ 
-      \inValues{\hinl{\tau_2}{e_1'}}{\hinl{\tau_2}{e_1}}
+      \inValues{\hinl{\tau_2}{e_1'}}{\Delta}{\hinl{\tau_2}{e_1}}
     }
   \end{equation}
   \begin{equation}\label{rule:IVInr}
     \inferrule[IVInr]{
-      \inValues{e_2'}{e_2} \\
+      \inValues{e_2'}{\Delta}{e_2} \\
     }{ 
-      \inValues{\hinr{\tau_1}{e_2'}}{\hinr{\tau_1}{e_2}}
+      \inValues{\hinr{\tau_1}{e_2'}}{\Delta}{\hinr{\tau_1}{e_2}}
     }
   \end{equation}
   \begin{equation}\label{rule:IVPair}
     \inferrule[IVPair]{
-      \inValues{e_1'}{e_1} \\
-      \inValues{e_2'}{e_2}
+      \inValues{e_1'}{\Delta}{e_1} \\
+      \inValues{e_2'}{\Delta}{e_2}
     }{
-      \inValues{\hpair{e_1'}{e_2'}}{\hpair{e_1}{e_2}}
+      \inValues{\hpair{e_1'}{e_2'}}{\Delta}{\hpair{e_1}{e_2}}
     }
   \end{equation}
 \end{subequations}
 
 \begin{lemma}
   \label{lem:invalues-typ}
-  If $\inValues{e'}{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then $\hexptyp{\cdot}{\Delta}{e'}{\tau}$.
+  If $\inValues{e'}{\Delta}{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then $\hexptyp{\cdot}{\Delta}{e'}{\tau}$.
 \end{lemma}
 
 \begin{lemma}
   \label{lem:invalues-val}
-  If $\inValues{e'}{e}$ then $\isVal{e'}$.
+  If $\inValues{e'}{\Delta}{e}$ then $\isVal{e'}$.
 \end{lemma}
 
 \begin{lemma}
   \label{lem:invalues-derivable}
-  If $\isIndet{e}$ then there exists $e'$ such that $\inValues{e'}{e}$.
+  If $\isIndet{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then there exists $e'$ such that $\inValues{e'}{\Delta}{e}$.
 \end{lemma}
 
 \begin{lemma}
   \label{lem:complete-not-satormay}
   Assume $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and
   $\ctyp{\hxi}{\tau}$. Then $\cnotsatisfyormay{e}{\hxi}$ iff $\forall
-  e'.\inValues{e'}{e} \implies \cnotsatisfyormay{e'}{\hxi}$.
+  e'.\inValues{e'}{\Delta}{e} \implies \cnotsatisfyormay{e'}{\hxi}$.
   
 \end{lemma}
 \begin{proof}
@@ -338,10 +338,10 @@
         \begin{pfsteps}
         \item e=\hnum{n'} \BY{assumption}
         \end{pfsteps}
-        To show the implication, we assume $\inValues{e'}{\hnum{n'}}$ and show
+        To show the implication, we assume $\inValues{e'}{\Delta}{\hnum{n'}}$ and show
         $\cnotsatisfyormay{e'}{\hxi}$.
         \begin{pfsteps}
-        \item \inValues{e'}{\hnum{n'}} \BY{assumption} \pflabel{e'-values-n'}
+        \item \inValues{e'}{\Delta}{\hnum{n'}} \BY{assumption} \pflabel{e'-values-n'}
         \end{pfsteps}
         By rule induction over \rulesref{rules:inValues} on
         \pfref{e'-values-n'}, only two cases apply.
@@ -396,21 +396,21 @@
         \end{pfsteps*} 
         Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
-        \item[\text{(\ref{rule:IPrl})}]
+        \item[\text{(\ref{rule:IFst})}]
         \begin{pfsteps*}
-        \item $e=\hprl{e_1}$ \BY{assumption}
-        \item $\notIntro{\hprl{e_1}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[prl]notintro}
-        \item $\cmaysatisfy{\hprl{e_1}}{\cnum{n}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[prl]notintro} and \pfref{[num]refutable}} \pflabel{[prl][num]maysat}
-        \item $\csatisfyormay{\hprl{e_1}}{\cnum{n}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[prl][num]maysat}}
+        \item $e=\hfst{e_1}$ \BY{assumption}
+        \item $\notIntro{\hfst{e_1}}$ \BY{\ruleref{rule:NVFst}} \pflabel{[fst]notintro}
+        \item $\cmaysatisfy{\hfst{e_1}}{\cnum{n}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[fst]notintro} and \pfref{[num]refutable}} \pflabel{[fst][num]maysat}
+        \item $\csatisfyormay{\hfst{e_1}}{\cnum{n}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[fst][num]maysat}}
         \end{pfsteps*} 
         Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
-        \item[\text{(\ref{rule:IPrr})}]
+        \item[\text{(\ref{rule:ISnd})}]
         \begin{pfsteps*}
-        \item $e=\hprr{e_1}$ \BY{assumption}
-        \item $\notIntro{\hprr{e_1}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[prr]notintro}
-        \item $\cmaysatisfy{\hprr{e_1}}{\cnum{n}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[prr]notintro} and \pfref{[num]refutable}} \pflabel{[prr][num]maysat}
-        \item $\csatisfyormay{\hprr{e_1}}{\cnum{n}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[prr][num]maysat}}
+        \item $e=\hsnd{e_1}$ \BY{assumption}
+        \item $\notIntro{\hsnd{e_1}}$ \BY{\ruleref{rule:NVSnd}} \pflabel{[snd]notintro}
+        \item $\cmaysatisfy{\hsnd{e_1}}{\cnum{n}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[snd]notintro} and \pfref{[num]refutable}} \pflabel{[snd][num]maysat}
+        \item $\csatisfyormay{\hsnd{e_1}}{\cnum{n}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[snd][num]maysat}}
         \end{pfsteps*} 
         Contradicts \pfref{not-satormay}.
         \restorelocalsteps{1}
@@ -470,9 +470,9 @@
               \item \hexptyp{\cdot}{\Delta}{e_1}{\tau_1} \BY{assumption} \pflabel{[inl]e1typ}
               \item \isFinal{e_1} \BY{\ruleref{rule:FVal} on \pfref{[inl]e1val}} \pflabel{[inl]e1final}
               \end{pfsteps}
-              To show the implication, we assume $\inValues{e'}{\hinl{\tau_2}{e_1}}$ and show $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$.
+              To show the implication, we assume $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$ and show $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$.
               \begin{pfsteps}
-              \item \inValues{e'}{\hinl{\tau_2}{e_1}} \BY{assumption} \pflabel{[inl-inl]invalues}
+              \item \inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}} \BY{assumption} \pflabel{[inl-inl]invalues}
               \end{pfsteps}
               By rule induction over \rulesref{rules:inValues} on \pfref{[inl-inl]invalues}.
               \begin{byCases}
@@ -495,7 +495,7 @@
                 \item[\text{(\ref{rule:IVInl})}]
                   \begin{pfsteps}
                   \item e' = \hinl{\tau_2}{e_1'} \BY{assumption}
-                  \item \inValues{e_1'}{e_1} \BY{assumption} \pflabel{[inl-inl]invalues1}
+                  \item \inValues{e_1'}{\Delta}{e_1} \BY{assumption} \pflabel{[inl-inl]invalues1}
                   \item \cnotsatisfyormay{e_1}{\hxi_1}
                     \BY{\autoref{lem:satormay-inl} on \pfref{not-satormay}} \pflabel{[inl-inl]not-satormay1}
                   \item \cnotsatisfyormay{e_1'}{\hxi_1} \BY{IH on
@@ -512,9 +512,9 @@
               \begin{pfsteps}
               \item e=\hinr{\tau_1}{e_2} \BY{assumption}
               \end{pfsteps}
-              To show the implication, we assume $\inValues{e'}{\hinr{\tau_1}{e_2}}$ and show $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$.
+              To show the implication, we assume $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$ and show $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$.
               \begin{pfsteps}
-              \item \inValues{e'}{\hinr{\tau_1}{e_2}} \BY{assumption} \pflabel{[inl-inr]invalues}
+              \item \inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}} \BY{assumption} \pflabel{[inl-inr]invalues}
               \end{pfsteps}
               By rule induction over \rulesref{rules:inValues} on \pfref{[inl-inr]invalues}.
               \begin{byCases}
@@ -577,21 +577,21 @@
           \end{pfsteps*} 
           Contradicts \pfref{not-satormay}.
           \restorelocalsteps{1}
-          \item[\text{(\ref{rule:IPrl})}]
+          \item[\text{(\ref{rule:IFst})}]
           \begin{pfsteps*}
-          \item $e=\hprl{e_1}$ \BY{assumption}
-          \item $\notIntro{\hprl{e_1}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[prl][inl]notintro}
-          \item $\cmaysatisfy{\hprl{e_1}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[prl][inl]notintro} and \pfref{[inl]refutable}} \pflabel{[prl][inl]maysat}
-          \item $\csatisfyormay{\hprl{e_1}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[prl][inl]maysat}}
+          \item $e=\hfst{e_1}$ \BY{assumption}
+          \item $\notIntro{\hfst{e_1}}$ \BY{\ruleref{rule:NVFst}} \pflabel{[fst][inl]notintro}
+          \item $\cmaysatisfy{\hfst{e_1}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[fst][inl]notintro} and \pfref{[inl]refutable}} \pflabel{[fst][inl]maysat}
+          \item $\csatisfyormay{\hfst{e_1}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[fst][inl]maysat}}
           \end{pfsteps*} 
           Contradicts \pfref{not-satormay}.
           \restorelocalsteps{1}
-          \item[\text{(\ref{rule:IPrr})}]
+          \item[\text{(\ref{rule:ISnd})}]
           \begin{pfsteps*}
-          \item $e=\hprr{e_1}$ \BY{assumption}
-          \item $\notIntro{\hprr{e_1}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[prr][inl]notintro}
-          \item $\cmaysatisfy{\hprr{e_1}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[prr][inl]notintro} and \pfref{[inl]refutable}} \pflabel{[prr][inl]maysat}
-          \item $\csatisfyormay{\hprr{e_1}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[prr][inl]maysat}}
+          \item $e=\hsnd{e_1}$ \BY{assumption}
+          \item $\notIntro{\hsnd{e_1}}$ \BY{\ruleref{rule:NVSnd}} \pflabel{[snd][inl]notintro}
+          \item $\cmaysatisfy{\hsnd{e_1}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[snd][inl]notintro} and \pfref{[inl]refutable}} \pflabel{[snd][inl]maysat}
+          \item $\csatisfyormay{\hsnd{e_1}}{\cinl{\hxi_1}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[snd][inl]maysat}}
           \end{pfsteps*} 
           Contradicts \pfref{not-satormay}.
           \restorelocalsteps{1}
@@ -622,11 +622,11 @@
             \item $\tau_2'=\tau_2$ \BY{assumption}
             \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{[inl]e1typ}
             \item $\cnotsatisfyormay{e_1}{\hxi_1}$ \BY{\autoref{lem:satormay-inl} on \pfref{not-satormay}} \pflabel{[inl]not-satormay1}
-            \item if $\inValues{e_1'}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[inl]e1indet} and \pfref{[inl]e1typ} and \pfref{[inl]c1typ} and \pfref{[inl]not-satormay1}} \pflabel{[inl]forall1}
+            \item if $\inValues{e_1'}{\Delta}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[inl]e1indet} and \pfref{[inl]e1typ} and \pfref{[inl]c1typ} and \pfref{[inl]not-satormay1}} \pflabel{[inl]forall1}
             \end{pfsteps*} 
-            To show if $\inValues{e'}{\hinl{\tau_2}{e_1}}$ then $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$, we assume $\inValues{e'}{\hinl{\tau_2}{e_1}}$.
+            To show if $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$ then $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$, we assume $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$.
             \begin{pfsteps*}
-            \item $\inValues{e'}{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{[inl]invalues}
+            \item $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$ \BY{assumption} \pflabel{[inl]invalues}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{[inl]invalues}.
             \begin{byCases}
@@ -646,7 +646,7 @@
               \item[\text{(\ref{rule:IVInl})}] 
               \begin{pfsteps*}
               \item $e'=\hinl{\tau_2}{e_1'}$ \BY{assumption}
-              \item $\inValues{e_1'}{e_1}$ \BY{assumption} \pflabel{[inl]invalues1}
+              \item $\inValues{e_1'}{\Delta}{e_1}$ \BY{assumption} \pflabel{[inl]invalues1}
               \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{\pfref{[inl]forall1} on \pfref{[inl]invalues1}} \pflabel{[inl]not-satormay1'}
               \item $\cnotsatisfyormay{\hinl{\tau_2}{e_1'}}{\cinl{\hxi_1}}$ \BY{\autoref{lem:satormay-inl} on \pfref{[inl]not-satormay1'}}
               \end{pfsteps*} 
@@ -657,9 +657,9 @@
           \begin{pfsteps*}
           \item $e=\hinr{\tau_1}{e_2}$ \BY{assumption}
           \end{pfsteps*}
-          To show if $\inValues{e'}{\hinr{\tau_1}{e_2}}$ then $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$, we assume $\inValues{e'}{\hinr{\tau_1}{e_2}}$.
+          To show if $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$ then $\cnotsatisfyormay{e'}{\cinl{\hxi_1}}$, we assume $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$.
           \begin{pfsteps*}
-          \item $\inValues{e'}{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{[inr]invalues}
+          \item $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$ \BY{assumption} \pflabel{[inr]invalues}
           \end{pfsteps*}
           By rule induction over \rulesref{rules:inValues} on \pfref{[inr]invalues}.
           \begin{byCases}
@@ -709,9 +709,9 @@
               \begin{pfsteps}
               \item e=\hinl{\tau_2}{e_1} \BY{assumption}
               \end{pfsteps}
-              To show the implication, we assume $\inValues{e'}{\hinl{\tau_2}{e_1}}$ and show $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$.
+              To show the implication, we assume $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$ and show $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$.
               \begin{pfsteps}
-              \item \inValues{e'}{\hinl{\tau_2}{e_1}} \BY{assumption} \pflabel{[inr-inl]invalues}
+              \item \inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}} \BY{assumption} \pflabel{[inr-inl]invalues}
               \end{pfsteps}
               By rule induction over \rulesref{rules:inValues} on \pfref{[inr-inl]invalues}.
               \begin{byCases}
@@ -748,9 +748,9 @@
               \item \isFinal{e_2} \BY{\ruleref{rule:FVal} on
                     \pfref{[inr]e2val}} \pflabel{[inr]e2final}
               \end{pfsteps}
-              To show the implication, we assume $\inValues{e'}{\hinr{\tau_1}{e_2}}$ and show $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$.
+              To show the implication, we assume $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$ and show $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$.
               \begin{pfsteps}
-              \item \inValues{e'}{\hinr{\tau_1}{e_2}} \BY{assumption} \pflabel{[inr-inr]invalues}
+              \item \inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}} \BY{assumption} \pflabel{[inr-inr]invalues}
               \end{pfsteps}
               By rule induction over \rulesref{rules:inValues} on \pfref{[inr-inr]invalues}.
               \begin{byCases}
@@ -773,7 +773,7 @@
                 \item[\text{(\ref{rule:IVInr})}]
                   \begin{pfsteps}
                   \item e' = \hinr{\tau_1}{e_2'} \BY{assumption}
-                  \item \inValues{e_2'}{e_2} \BY{assumption} \pflabel{[inr-inr]invalues2}
+                  \item \inValues{e_2'}{\Delta}{e_2} \BY{assumption} \pflabel{[inr-inr]invalues2}
                   \item \cnotsatisfyormay{e_2}{\hxi_2}
                     \BY{\autoref{lem:satormay-inr} on \pfref{not-satormay}} \pflabel{[inr-inr]not-satormay2}
                   \item \cnotsatisfyormay{e_2'}{\hxi_2} \BY{IH on
@@ -829,28 +829,28 @@
             \BY{\ruleref{rule:CSMSMay} on \pfref{[ap][inr]maysat}}
           \end{pfsteps*}
           Contradicts \pfref{not-satormay}. \restorelocalsteps{1}
-        \item[\text{(\ref{rule:IPrl})}]
+        \item[\text{(\ref{rule:IFst})}]
           \begin{pfsteps*}
-          \item $e=\hprl{e_1}$ \BY{assumption}
-          \item $\notIntro{\hprl{e_1}}$ \BY{\ruleref{rule:NVPrl}}
-            \pflabel{[prl][inr]notintro}
-          \item $\cmaysatisfy{\hprl{e_1}}{\cinr{\hxi_2}}$
-            \BY{\ruleref{rule:CMSNotIntro} on \pfref{[prl][inr]notintro} and
-              \pfref{[inr]refutable}} \pflabel{[prl][inr]maysat}
-          \item $\csatisfyormay{\hprl{e_1}}{\cinr{\hxi_2}}$
-            \BY{\ruleref{rule:CSMSMay} on \pfref{[prl][inr]maysat}}
+          \item $e=\hfst{e_1}$ \BY{assumption}
+          \item $\notIntro{\hfst{e_1}}$ \BY{\ruleref{rule:NVFst}}
+            \pflabel{[fst][inr]notintro}
+          \item $\cmaysatisfy{\hfst{e_1}}{\cinr{\hxi_2}}$
+            \BY{\ruleref{rule:CMSNotIntro} on \pfref{[fst][inr]notintro} and
+              \pfref{[inr]refutable}} \pflabel{[fst][inr]maysat}
+          \item $\csatisfyormay{\hfst{e_1}}{\cinr{\hxi_2}}$
+            \BY{\ruleref{rule:CSMSMay} on \pfref{[fst][inr]maysat}}
           \end{pfsteps*}
           Contradicts \pfref{not-satormay}. \restorelocalsteps{1}
-        \item[\text{(\ref{rule:IPrr})}]
+        \item[\text{(\ref{rule:ISnd})}]
           \begin{pfsteps*}
-          \item $e=\hprr{e_1}$ \BY{assumption}
-          \item $\notIntro{\hprr{e_1}}$ \BY{\ruleref{rule:NVPrr}}
-            \pflabel{[prr][inr]notintro}
-          \item $\cmaysatisfy{\hprr{e_1}}{\cinr{\hxi_2}}$
-            \BY{\ruleref{rule:CMSNotIntro} on \pfref{[prr][inr]notintro} and
-              \pfref{[inr]refutable}} \pflabel{[prr][inr]maysat}
-          \item $\csatisfyormay{\hprr{e_1}}{\cinr{\hxi_2}}$
-            \BY{\ruleref{rule:CSMSMay} on \pfref{[prr][inr]maysat}}
+          \item $e=\hsnd{e_1}$ \BY{assumption}
+          \item $\notIntro{\hsnd{e_1}}$ \BY{\ruleref{rule:NVSnd}}
+            \pflabel{[snd][inr]notintro}
+          \item $\cmaysatisfy{\hsnd{e_1}}{\cinr{\hxi_2}}$
+            \BY{\ruleref{rule:CMSNotIntro} on \pfref{[snd][inr]notintro} and
+              \pfref{[inr]refutable}} \pflabel{[snd][inr]maysat}
+          \item $\csatisfyormay{\hsnd{e_1}}{\cinr{\hxi_2}}$
+            \BY{\ruleref{rule:CSMSMay} on \pfref{[snd][inr]maysat}}
           \end{pfsteps*}
           Contradicts \pfref{not-satormay}. \restorelocalsteps{1}
         \item[\text{(\ref{rule:IMatch})}]
@@ -876,11 +876,11 @@
           \begin{pfsteps*}
           \item $e=\hinl{\tau_2}{e_1}$ \BY{assumption}
           \end{pfsteps*}
-          To show if $\inValues{e'}{\hinl{\tau_2}{e_1}}$ then
+          To show if $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$ then
           $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$, we assume
-          $\inValues{e'}{\hinl{\tau_2}{e_1}}$.
+          $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$.
           \begin{pfsteps*}
-          \item $\inValues{e'}{\hinl{\tau_2}{e_1}}$ \BY{assumption}
+          \item $\inValues{e'}{\Delta}{\hinl{\tau_2}{e_1}}$ \BY{assumption}
             \pflabel{[inl][inr]invalues}
           \end{pfsteps*}
           By rule induction over \rulesref{rules:inValues} on
@@ -922,16 +922,16 @@
             \item $\cnotsatisfyormay{e_2}{\hxi_2}$
               \BY{\autoref{lem:satormay-inl} on \pfref{not-satormay}}
               \pflabel{[inr]not-satormay2}
-            \item if $\inValues{e_2'}{e_2}$ then
+            \item if $\inValues{e_2'}{\Delta}{e_2}$ then
               $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[inr]e2indet}
                 and \pfref{[inr]e2typ} and \pfref{[inr]c2typ} and
                 \pfref{[inr]not-satormay2}} \pflabel{[inr]forall2}
             \end{pfsteps*}
-            To show if $\inValues{e'}{\hinr{\tau_1}{e_2}}$ then
+            To show if $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$ then
             $\cnotsatisfyormay{e'}{\cinr{\hxi_2}}$, we assume
-            $\inValues{e'}{\hinr{\tau_1}{e_2}}$.
+            $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$.
             \begin{pfsteps*}
-            \item $\inValues{e'}{\hinr{\tau_1}{e_2}}$ \BY{assumption}
+            \item $\inValues{e'}{\Delta}{\hinr{\tau_1}{e_2}}$ \BY{assumption}
               \pflabel{[inr][inr]invalues}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on
@@ -952,7 +952,7 @@
             \item[\text{(\ref{rule:IVInr})}]
               \begin{pfsteps*}
               \item $e'=\hinr{\tau_1}{e_2'}$ \BY{assumption}
-              \item $\inValues{e_2'}{e_2}$ \BY{assumption}
+              \item $\inValues{e_2'}{\Delta}{e_2}$ \BY{assumption}
                 \pflabel{[inr]invalues2}
               \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{\pfref{[inr]forall2}
                   on \pfref{[inr]invalues2}} \pflabel{[inr]not-satormay2'}
@@ -993,9 +993,9 @@
         \item \isFinal{e_1} \BY{\ruleref{rule:FVal} on \pfref{[pair]e1val}} \pflabel{[pair]e1final}
         \item \isFinal{e_2} \BY{\ruleref{rule:FVal} on \pfref{[pair]e2val}} \pflabel{[pair]e2final}
         \end{pfsteps}
-        To show the implication, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$ and show $\cnotsatisfyormay{e'}{\cpair{\hxi_1}{\hxi_2}}$.
+        To show the implication, we assume $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ and show $\cnotsatisfyormay{e'}{\cpair{\hxi_1}{\hxi_2}}$.
         \begin{pfsteps}
-        \item \inValues{e'}{\hpair{e_1}{e_2}} \BY{assumption} \pflabel{[pair]invalues}
+        \item \inValues{e'}{\Delta}{\hpair{e_1}{e_2}} \BY{assumption} \pflabel{[pair]invalues}
         \end{pfsteps}
         By rule induction over \rulesref{rules:inValues} on \pfref{[pair]invalues}.
         \begin{byCases}
@@ -1019,8 +1019,8 @@
         \item[\text{(\ref{rule:IVPair})}]
           \begin{pfsteps}
           \item e' = \hpair{e_1'}{e_2'} \BY{assumption}
-          \item \inValues{e_1'}{e_1} \BY{assumption} \pflabel{[pair]invalues1}
-          \item \inValues{e_2'}{e_2} \BY{assumption} \pflabel{[pair]invalues2}
+          \item \inValues{e_1'}{\Delta}{e_1} \BY{assumption} \pflabel{[pair]invalues1}
+          \item \inValues{e_2'}{\Delta}{e_2} \BY{assumption} \pflabel{[pair]invalues2}
           \item \cnotsatisfyormay{e_1}{\hxi_1}
             \BY{\autoref{lem:satormay-pair} on \pfref{not-satormay}} \pflabel{[pair]not-satormay1}
           \item \cnotsatisfyormay{e_2}{\hxi_2}
@@ -1047,46 +1047,46 @@
       By rule induction over \rulesref{rules:Indet} on \pfref{[pair]eindet}.
       \begin{byCases}
         \savelocalsteps{1}
-        \item[\text{(\ref{rule:IEHole}), (\ref{rule:IHole}), (\ref{rule:IAp}), (\ref{rule:IPrl}), (\ref{rule:IPrr}), (\ref{rule:IMatch})}]
+        \item[\text{(\ref{rule:IEHole}), (\ref{rule:IHole}), (\ref{rule:IAp}), (\ref{rule:IFst}), (\ref{rule:ISnd}), (\ref{rule:IMatch})}]
         \begin{pfsteps*}
-        \item $e=\hehole{u}, \hhole{e_1}{u}, \hap{e_1}{e_2}, \hprl{e_1}, \hprr{e_1}, \hmatch{e_1}{\zrules}$ \BY{assumption}
+        \item $e=\hehole{u}, \hhole{e_1}{u}, \hap{e_1}{e_2}, \hfst{e_1}, \hsnd{e_1}, \hmatch{e_1}{\zrules}$ \BY{assumption}
         \item $\notIntro{e}$ \BY{\rulesref{rules:notintro}} \pflabel{[pair]notintro}
-        \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[pair]prlnotintro}
-        \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[pair]prrnotintro}
-        \item $\isIndet{\hprl{e}}$ \BY{\ruleref{rule:IPrl} on \pfref{eindet}} \pflabel{[pair]prlindet}
-        \item $\isIndet{\hprr{e}}$ \BY{\ruleref{rule:IPrr} on \pfref{eindet}} \pflabel{[pair]prrindet}
-        \item $\hexptyp{\cdot}{\Delta}{\hprl{e}}{\tau_1}$ \BY{\ruleref{rule:TPrl} on \pfref{etyp}} \pflabel{[pair]prltyp}
-        \item $\hexptyp{\cdot}{\Delta}{\hprr{e}}{\tau_2}$ \BY{\ruleref{rule:TPrr} on \pfref{etyp}} \pflabel{[pair]prrtyp}
+        \item $\notIntro{\hfst{e}}$ \BY{\ruleref{rule:NVFst}} \pflabel{[pair]fstnotintro}
+        \item $\notIntro{\hsnd{e}}$ \BY{\ruleref{rule:NVSnd}} \pflabel{[pair]sndnotintro}
+        \item $\isIndet{\hfst{e}}$ \BY{\ruleref{rule:IFst} on \pfref{eindet}} \pflabel{[pair]fstindet}
+        \item $\isIndet{\hsnd{e}}$ \BY{\ruleref{rule:ISnd} on \pfref{eindet}} \pflabel{[pair]sndindet}
+        \item $\hexptyp{\cdot}{\Delta}{\hfst{e}}{\tau_1}$ \BY{\ruleref{rule:TFst} on \pfref{etyp}} \pflabel{[pair]fsttyp}
+        \item $\hexptyp{\cdot}{\Delta}{\hsnd{e}}{\tau_2}$ \BY{\ruleref{rule:TSnd} on \pfref{etyp}} \pflabel{[pair]sndtyp}
         \end{pfsteps*}
-        By case analysis on the result of $\fsatisfyormay{\hprl{e}}{\hxi_1}$.
+        By case analysis on the result of $\fsatisfyormay{\hfst{e}}{\hxi_1}$.
         \begin{byCases}
           \savelocalsteps{2}
           \item[\true]
           \begin{pfsteps*}
-          \item $\fsatisfyormay{\hprl{e}}{\hxi_1}=\true$ \BY{assumption} \pflabel{[pair]fsatormay1}
-          \item $\csatisfyormay{\hprl{e}}{\hxi_1}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]fsatormay1}} \pflabel{[pair]satormay1}
+          \item $\fsatisfyormay{\hfst{e}}{\hxi_1}=\true$ \BY{assumption} \pflabel{[pair]fsatormay1}
+          \item $\csatisfyormay{\hfst{e}}{\hxi_1}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]fsatormay1}} \pflabel{[pair]satormay1}
           \end{pfsteps*} 
-          By case analysis on the result of $\fsatisfyormay{\hprr{e}}{\hxi_2}$.
+          By case analysis on the result of $\fsatisfyormay{\hsnd{e}}{\hxi_2}$.
           \begin{byCases}
             \savelocalsteps{3}
             \item[\true]
             \begin{pfsteps*}
-            \item $\fsatisfyormay{\hprr{e}}{\hxi_2}=\true$ \BY{assumption} \pflabel{[pair]fsatormay2}
-            \item $\csatisfyormay{\hprr{e}}{\hxi_2}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]fsatormay2}} \pflabel{[pair]satormay2}
+            \item $\fsatisfyormay{\hsnd{e}}{\hxi_2}=\true$ \BY{assumption} \pflabel{[pair]fsatormay2}
+            \item $\csatisfyormay{\hsnd{e}}{\hxi_2}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]fsatormay2}} \pflabel{[pair]satormay2}
             \end{pfsteps*}  
             By rule induction over \rulesref{rules:satormay} on \pfref{[pair]satormay1}.
             \begin{byCases}
               \savelocalsteps{4}
               \item[\text{(\ref{rule:CSMSSat})}]
               \begin{pfsteps*}
-              \item $\csatisfy{\hprl{e}}{\hxi_1}$ \BY{asssumption} \pflabel{[pair]satisfy1}
+              \item $\csatisfy{\hfst{e}}{\hxi_1}$ \BY{asssumption} \pflabel{[pair]satisfy1}
               \end{pfsteps*} 
               By rule induction over \rulesref{rules:satormay} on \pfref{[pair]satormay2}.
               \begin{byCases}
                 \savelocalsteps{5}
                 \item[\text{(\ref{rule:CSMSSat})}]
                 \begin{pfsteps*}
-                \item $\csatisfy{\hprr{e}}{\hxi_2}$ \BY{asssumption} \pflabel{[pair]satisfy2}
+                \item $\csatisfy{\hsnd{e}}{\hxi_2}$ \BY{asssumption} \pflabel{[pair]satisfy2}
                 \item $\csatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSNotIntroPair} on \pfref{[pair]notintro} and \pfref{[pair]satisfy1} and \pfref{[pair]satisfy2}} \pflabel{[pair]satisfy}
                 \item $\csatisfyormay{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSSat} on \pfref{[pair]satisfy}}
                 \end{pfsteps*} 
@@ -1094,8 +1094,8 @@
                 \restorelocalsteps{5}
                 \item[\text{(\ref{rule:CSMSMay})}]
                 \begin{pfsteps*}
-                \item $\cmaysatisfy{\hprr{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair]maysat2}
-                \item $\refutable{\hxi_2}$ \BY{\autoref{lem:notintro-maysat-or-notsat-refutable} on \pfref{[pair]prrnotintro} and \pfref{[pair]maysat2}} \pflabel{[pair]refutable2}
+                \item $\cmaysatisfy{\hsnd{e}}{\hxi_2}$ \BY{assumption} \pflabel{[pair]maysat2}
+                \item $\refutable{\hxi_2}$ \BY{\autoref{lem:notintro-maysat-or-notsat-refutable} on \pfref{[pair]sndnotintro} and \pfref{[pair]maysat2}} \pflabel{[pair]refutable2}
                 \item $\refutable{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:RXPairR} on \pfref{[pair]refutable2}} \pflabel{[pair]refutable}
                 \item $\cmaysatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair]refutable}} \pflabel{[pair]maysat}
                 \item $\csatisfyormay{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair]maysat}}
@@ -1104,8 +1104,8 @@
               \restorelocalsteps{4} 
               \item[\text{(\ref{rule:CSMSMay})}]
               \begin{pfsteps*}
-              \item $\cmaysatisfy{\hprl{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair]maysat1}
-              \item $\refutable{\hxi_1}$ \BY{\autoref{lem:notintro-maysat-or-notsat-refutable} on \pfref{[pair]prlnotintro} and \pfref{[pair]maysat1}} \pflabel{[pair]refutable1}
+              \item $\cmaysatisfy{\hfst{e}}{\hxi_1}$ \BY{assumption} \pflabel{[pair]maysat1}
+              \item $\refutable{\hxi_1}$ \BY{\autoref{lem:notintro-maysat-or-notsat-refutable} on \pfref{[pair]fstnotintro} and \pfref{[pair]maysat1}} \pflabel{[pair]refutable1}
               \item $\refutable{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:RXPairL} on \pfref{[pair]refutable1}} \pflabel{[pair]refutable'}
               \item $\cmaysatisfy{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[pair]notintro} and \pfref{[pair]refutable'}} \pflabel{[pair]maysat'}
               \item $\csatisfyormay{e}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\ruleref{rule:CSMSMay} on \pfref{[pair]maysat'}}
@@ -1114,13 +1114,13 @@
             \restorelocalsteps{3} 
             \item[\false]
             \begin{pfsteps*}
-            \item $\fsatisfyormay{\hprr{e}}{\hxi_2} = \false$ \BY{assumption} \pflabel{[pair]not-fsatormay2}
-            \item $\csatisfyormay{\hprr{e}}{\hxi_2}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]not-fsatormay2}} \pflabel{[pair]not-satormay2}
-            \item if $\inValues{e_2'}{\hprr{e}}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair]prrindet} and \pfref{[pair]prrtyp} and \pfref{[pair]c2typ} and \pfref{[pair]not-satormay2}} \pflabel{[pair]complete2}
+            \item $\fsatisfyormay{\hsnd{e}}{\hxi_2} = \false$ \BY{assumption} \pflabel{[pair]not-fsatormay2}
+            \item $\csatisfyormay{\hsnd{e}}{\hxi_2}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]not-fsatormay2}} \pflabel{[pair]not-satormay2}
+            \item if $\inValues{e_2'}{\Delta}{\hsnd{e}}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair]sndindet} and \pfref{[pair]sndtyp} and \pfref{[pair]c2typ} and \pfref{[pair]not-satormay2}} \pflabel{[pair]complete2}
             \end{pfsteps*} 
-            To show if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{e}$.
+            To show if $\inValues{e'}{\Delta}{e}$ then $\cnotsatisfyormay{e'}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{e}$.
             \begin{pfsteps*}
-            \item $\inValues{e'}{e}$ \BY{assumption} \pflabel{e'invalues'}
+            \item $\inValues{e'}{\Delta}{e}$ \BY{assumption} \pflabel{e'invalues'}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{e'invalues'}, only two rules apply.
             \begin{byCases}
@@ -1160,7 +1160,7 @@
                   \textbf{Case} \text{(\ref{rule:TPair})}\textbf{.}
                   \begin{pfsteps*}
                   \item $\hexptyp{\cdot}{\Delta}{e_2'}{\tau_2}$ \BY{assumption} \pflabel{e2'typ}
-                  \item $\inValues{e_2'}{\hprr{e}}$ \BY{\ruleref{rule:IVIndet} on \pfref{[pair]prrnotintro} and \pfref{[pair]prrtyp} and \pfref{e2'val} and \pfref{e2'typ}} \pflabel{e2'invalues}
+                  \item $\inValues{e_2'}{\Delta}{\hsnd{e}}$ \BY{\ruleref{rule:IVIndet} on \pfref{[pair]sndnotintro} and \pfref{[pair]sndtyp} and \pfref{e2'val} and \pfref{e2'typ}} \pflabel{e2'invalues}
                   \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{\pfref{[pair]complete2} on \pfref{e2'invalues}} \pflabel{[pair]not-satormay2'}
                   \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair]not-satormay1'}}
                   \end{pfsteps*}
@@ -1183,13 +1183,13 @@
           \restorelocalsteps{2}
           \item[\false] 
           \begin{pfsteps*}
-          \item $\fsatisfyormay{\hprl{e}}{\hxi_1}=\false$ \BY{assumption} \pflabel{[pair]not-fsatormay1}
-          \item $\cnotsatisfyormay{\hprl{e}}{\hxi_1}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]not-fsatormay1}} \pflabel{[pair]not-satormay1}
-          \item if $\inValues{e_1'}{\hprl{e}}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair]prlindet} and \pfref{[pair]prltyp} and \pfref{[pair]c1typ} and \pfref{[pair]not-satormay1}} \pflabel{[pair]complete1}
+          \item $\fsatisfyormay{\hfst{e}}{\hxi_1}=\false$ \BY{assumption} \pflabel{[pair]not-fsatormay1}
+          \item $\cnotsatisfyormay{\hfst{e}}{\hxi_1}$ \BY{\autoref{lem:sound-complete-satormay} on \pfref{[pair]not-fsatormay1}} \pflabel{[pair]not-satormay1}
+          \item if $\inValues{e_1'}{\Delta}{\hfst{e}}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair]fstindet} and \pfref{[pair]fsttyp} and \pfref{[pair]c1typ} and \pfref{[pair]not-satormay1}} \pflabel{[pair]complete1}
           \end{pfsteps*} 
-          To show if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{e}$.
+          To show if $\inValues{e'}{\Delta}{e}$ then $\cnotsatisfyormay{e'}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{e}$.
           \begin{pfsteps*}
-          \item $\inValues{e'}{e}$ \BY{assumption} \pflabel{e'invalues}
+          \item $\inValues{e'}{\Delta}{e}$ \BY{assumption} \pflabel{e'invalues}
           \end{pfsteps*}
           By rule induction over \rulesref{rules:inValues} on \pfref{e'invalues}, only two rules apply.
           \begin{byCases}
@@ -1230,7 +1230,7 @@
                 \item[\text{(\ref{rule:TPair})}]
                 \begin{pfsteps*}
                 \item $\hexptyp{\cdot}{\Delta}{e_1'}{\tau_1}$ \BY{assumption} \pflabel{e1'typ}
-                \item $\inValues{e_1'}{\hprl{e}}$ \BY{\ruleref{rule:IVIndet} on \pfref{[pair]prlnotintro} and \pfref{[pair]prltyp} and \pfref{e1'val} and \pfref{e1'typ}} \pflabel{e1'invalues}
+                \item $\inValues{e_1'}{\Delta}{\hfst{e}}$ \BY{\ruleref{rule:IVIndet} on \pfref{[pair]fstnotintro} and \pfref{[pair]fsttyp} and \pfref{e1'val} and \pfref{e1'typ}} \pflabel{e1'invalues}
                 \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{\pfref{[pair]complete1} on \pfref{e1'invalues}} \pflabel{[pair]not-satormay1'}
                 \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair]not-satormay1'}}
                 \end{pfsteps*} 
@@ -1270,11 +1270,11 @@
             \item[\text{(\ref{rule:TPair})}]
             \begin{pfsteps*}
             \item $\hexptyp{\cdot}{\Delta}{e_1}{\tau_1}$ \BY{assumption} \pflabel{[pair1]e1typ}
-            \item if $\inValues{e_1'}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair1]e1indet} and \pfref{[pair1]e1typ} and \pfref{[pair]c1typ} and \pfref{[pair1]not-satormay-1}} \pflabel{[pair1]complete1}
+            \item if $\inValues{e_1'}{\Delta}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair1]e1indet} and \pfref{[pair1]e1typ} and \pfref{[pair]c1typ} and \pfref{[pair1]not-satormay-1}} \pflabel{[pair1]complete1}
             \end{pfsteps*} 
-            To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+            To show that if $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$.
             \begin{pfsteps*}
-            \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair1]invalues}
+            \item $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair1]invalues}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{[pair1]invalues}.
             \begin{byCases}
@@ -1294,7 +1294,7 @@
               \item[\text{(\ref{rule:IVPair})}]
               \begin{pfsteps*}
               \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
-              \item $\inValues{e_1'}{e_1}$ \BY{assumption} \pflabel{[pair1]invalues1}
+              \item $\inValues{e_1'}{\Delta}{e_1}$ \BY{assumption} \pflabel{[pair1]invalues1}
               \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{\pfref{[pair1]complete1} on \pfref{[pair1]invalues1}} \pflabel{[pair1]not-satormay1}
               \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair1]not-satormay1}}
               \end{pfsteps*} 
@@ -1305,9 +1305,9 @@
           \begin{pfsteps*}
           \item $\cnotsatisfyormay{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[pair1]not-satormay-2}
           \end{pfsteps*}
-          To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+          To show that if $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$.
           \begin{pfsteps*}
-          \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair1]invalues'}
+          \item $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair1]invalues'}
           \end{pfsteps*}
           By rule induction over \rulesref{rules:inValues} on \pfref{[pair1]invalues'}.
           \begin{byCases}
@@ -1327,7 +1327,7 @@
             \item[\text{(\ref{rule:IVPair})}]
             \begin{pfsteps*}
             \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
-            \item $\inValues{e_2'}{e_2}$ \BY{assumption} \pflabel{[pair1]invalues1'}
+            \item $\inValues{e_2'}{\Delta}{e_2}$ \BY{assumption} \pflabel{[pair1]invalues1'}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{[pair1]invalues1'}.
             \begin{byCases}
@@ -1368,9 +1368,9 @@
           \begin{pfsteps*}
           \item $\cnotsatisfyormay{e_1}{\hxi_1}$ \BY{assumption} \pflabel{[pair2]not-satormay-1}
           \end{pfsteps*}
-          To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+          To show that if $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$.
           \begin{pfsteps*}
-          \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair2]invalues'}
+          \item $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair2]invalues'}
           \end{pfsteps*}
           By rule induction over \rulesref{rules:inValues} on \pfref{[pair2]invalues'}.
           \begin{byCases}
@@ -1390,7 +1390,7 @@
             \item[\text{(\ref{rule:IVPair})}]
             \begin{pfsteps*}
             \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
-            \item $\inValues{e_1'}{e_1}$ \BY{assumption} \pflabel{[pair2]invalues1'}
+            \item $\inValues{e_1'}{\Delta}{e_1}$ \BY{assumption} \pflabel{[pair2]invalues1'}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{[pair2]invalues1'}.
             \begin{byCases}
@@ -1425,11 +1425,11 @@
             \item[\text{(\ref{rule:TPair})}]
             \begin{pfsteps*}
             \item $\hexptyp{\cdot}{\Delta}{e_2}{\tau_2}$ \BY{assumption} \pflabel{[pair2]e2typ}
-            \item if $\inValues{e_2'}{e_2}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair2]e2indet} and \pfref{[pair2]e2typ} and \pfref{[pair]c2typ} and \pfref{[pair2]not-satormay-2}} \pflabel{[pair2]complete2}
+            \item if $\inValues{e_2'}{\Delta}{e_2}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair2]e2indet} and \pfref{[pair2]e2typ} and \pfref{[pair]c2typ} and \pfref{[pair2]not-satormay-2}} \pflabel{[pair2]complete2}
             \end{pfsteps*} 
-            To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+            To show that if $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$.
             \begin{pfsteps*}
-            \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair2]invalues}
+            \item $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair2]invalues}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{[pair2]invalues}.
             \begin{byCases}
@@ -1449,7 +1449,7 @@
               \item[\text{(\ref{rule:IVPair})}]
               \begin{pfsteps*}
               \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
-              \item $\inValues{e_2'}{e_2}$ \BY{assumption} \pflabel{[pair2]invalues2}
+              \item $\inValues{e_2'}{\Delta}{e_2}$ \BY{assumption} \pflabel{[pair2]invalues2}
               \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{\pfref{[pair2]complete2} on \pfref{[pair2]invalues2}} \pflabel{[pair2]not-satormay2}
               \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair2]not-satormay2}}
               \end{pfsteps*} 
@@ -1477,11 +1477,11 @@
             \item[\cnotsatisfyormay{e_1}{\hxi_1}]
             \begin{pfsteps*}
             \item $\cnotsatisfyormay{e_1}{\hxi_1}$ \BY{assumption} \pflabel{[pair3]not-satormay-1}
-            \item if $\inValues{e_1'}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair3]e1indet} and \pfref{[pair3]e1typ} and \pfref{[pair]c1typ} and \pfref{[pair3]not-satormay-1}} \pflabel{[pair3]complete1}
+            \item if $\inValues{e_1'}{\Delta}{e_1}$ then $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{IH on \pfref{[pair3]e1indet} and \pfref{[pair3]e1typ} and \pfref{[pair]c1typ} and \pfref{[pair3]not-satormay-1}} \pflabel{[pair3]complete1}
             \end{pfsteps*}
-            To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+            To show that if $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$.
             \begin{pfsteps*}
-            \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair3]invalues}
+            \item $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair3]invalues}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{[pair3]invalues}.
             \begin{byCases}
@@ -1501,7 +1501,7 @@
               \item[\text{(\ref{rule:IVPair})}]
               \begin{pfsteps*}
               \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
-              \item $\inValues{e_1'}{e_1}$ \BY{assumption} \pflabel{[pair3]invalues1}
+              \item $\inValues{e_1'}{\Delta}{e_1}$ \BY{assumption} \pflabel{[pair3]invalues1}
               \item $\cnotsatisfyormay{e_1'}{\hxi_1}$ \BY{\pfref{[pair3]complete1} on \pfref{[pair3]invalues1}} \pflabel{[pair3]not-satormay1}
               \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair3]not-satormay1}}
               \end{pfsteps*} 
@@ -1510,11 +1510,11 @@
             \item[\cnotsatisfyormay{e_2}{\hxi_2}]
             \begin{pfsteps*}
             \item $\cnotsatisfyormay{e_2}{\hxi_2}$ \BY{assumption} \pflabel{[pair3]not-satormay-2}
-            \item if $\inValues{e_2'}{e_2}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair3]e2indet} and \pfref{[pair3]e2typ} and \pfref{[pair]c2typ} and \pfref{[pair3]not-satormay-2}} \pflabel{[pair3]complete2}
+            \item if $\inValues{e_2'}{\Delta}{e_2}$ then $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{IH on \pfref{[pair3]e2indet} and \pfref{[pair3]e2typ} and \pfref{[pair]c2typ} and \pfref{[pair3]not-satormay-2}} \pflabel{[pair3]complete2}
             \end{pfsteps*}
-            To show that if $\inValues{e'}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\hpair{e_1}{e_2}}$.
+            To show that if $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ then $\cnotsatisfyormay{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$.
             \begin{pfsteps*}
-            \item $\inValues{e'}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair3]invalues'}
+            \item $\inValues{e'}{\Delta}{\hpair{e_1}{e_2}}$ \BY{assumption} \pflabel{[pair3]invalues'}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:inValues} on \pfref{[pair3]invalues'}.
             \begin{byCases}
@@ -1534,7 +1534,7 @@
               \item[\text{(\ref{rule:IVPair})}]
               \begin{pfsteps*}
               \item $e'=\hpair{e_1'}{e_2'}$ \BY{assumption}
-              \item $\inValues{e_2'}{e_2}$ \BY{assumption} \pflabel{[pair3]invalues2}
+              \item $\inValues{e_2'}{\Delta}{e_2}$ \BY{assumption} \pflabel{[pair3]invalues2}
               \item $\cnotsatisfyormay{e_2'}{\hxi_2}$ \BY{\pfref{[pair3]complete2} on \pfref{[pair3]invalues2}} \pflabel{[pair3]not-satormay2}
               \item $\cnotsatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-pair} on \pfref{[pair3]not-satormay2}}
               \end{pfsteps*} 
@@ -1565,12 +1565,12 @@
     \item $\cnotsatisfyormay{e}{\cor{\hxi_1}{\hxi_2}}$ \BY{assumption} \pflabel{[or]not-satormay}
     \item $\cnotsatisfyormay{e}{\hxi_1}$ \BY{\autoref{lem:satormay-or} on \pfref{[or]not-satormay}} \pflabel{[or]not-satormay-1}
     \item $\cnotsatisfyormay{e}{\hxi_2}$ \BY{\autoref{lem:satormay-or} on \pfref{[or]not-satormay}} \pflabel{[or]not-satormay-2}
-    \item if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\hxi_1}$ \BY{IH on \pfref{eindet} and \pfref{etyp} and \pfref{[or]c1typ} and \pfref{[or]not-satormay-1}} \pflabel{[or]complete1}
-    \item if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\hxi_2}$ \BY{IH on \pfref{eindet} and \pfref{etyp} and \pfref{[or]c2typ} and \pfref{[or]not-satormay-2}} \pflabel{[or]complete2}
+    \item if $\inValues{e'}{\Delta}{e}$ then $\cnotsatisfyormay{e'}{\hxi_1}$ \BY{IH on \pfref{eindet} and \pfref{etyp} and \pfref{[or]c1typ} and \pfref{[or]not-satormay-1}} \pflabel{[or]complete1}
+    \item if $\inValues{e'}{\Delta}{e}$ then $\cnotsatisfyormay{e'}{\hxi_2}$ \BY{IH on \pfref{eindet} and \pfref{etyp} and \pfref{[or]c2typ} and \pfref{[or]not-satormay-2}} \pflabel{[or]complete2}
     \end{pfsteps*}
-    To show that if $\inValues{e'}{e}$ then $\cnotsatisfyormay{e'}{\cor{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{e}$.
+    To show that if $\inValues{e'}{\Delta}{e}$ then $\cnotsatisfyormay{e'}{\cor{\hxi_1}{\hxi_2}}$, we assume $\inValues{e'}{\Delta}{e}$.
     \begin{pfsteps*}
-    \item $\inValues{e'}{e}$ \BY{assumption} \pflabel{[or]invalues}
+    \item $\inValues{e'}{\Delta}{e}$ \BY{assumption} \pflabel{[or]invalues}
     \item $\cnotsatisfyormay{e'}{\hxi_1}$ \BY{\pfref{[or]complete1} on \pfref{[or]invalues}} \pflabel{[or]not-satormay-1'}
     \item $\cnotsatisfyormay{e'}{\hxi_2}$ \BY{\pfref{[or]complete2} on \pfref{[or]invalues}} \pflabel{[or]not-satormay-2'}
     \item $\cnotsatisfyormay{e'}{\cor{\hxi_1}{\hxi_2}}$ \BY{\autoref{lem:satormay-or} on \pfref{[or]not-satormay-1'} and \pfref{[or]not-satormay-2'}}
@@ -1582,7 +1582,7 @@
   Since we already shown that $\csatisfyormay{e}{\hxi}$ is decidable with
   \autoref{lem:sound-complete-satormay}, we just need to prove its
   contraposition -- if $\csatisfyormay{e}{\hxi}$ then there exists
-  $\inValues{e'}{e}$ such that $\csatisfyormay{e'}{\hxi}$.
+  $\inValues{e'}{\Delta}{e}$ such that $\csatisfyormay{e'}{\hxi}$.
   \begin{pfsteps}
   \item \csatisfyormay{e}{\hxi} \BY{assumption} \pflabel{satormay}
   \end{pfsteps}
@@ -1606,14 +1606,14 @@
       \item[\text{(\ref{rule:FVal})}]
         \begin{pfsteps}
         \item \isVal{e} \BY{assumption}\pflabel{[truth]eval}
-        \item \inValues{e}{e} \BY{\ruleref{rule:IVVal} on \pfref{[truth]eval}} \pflabel{[truth]invalues}
+        \item \inValues{e}{\Delta}{e} \BY{\ruleref{rule:IVVal} on \pfref{[truth]eval}} \pflabel{[truth]invalues}
         \end{pfsteps}
         In conclusion, we have \pfref{[truth]invalues} and \pfref{satormay}.
         \restorelocalsteps{2}
       \item[\text{(\ref{rule:FIndet})}]
         \begin{pfsteps}
         \item \isIndet{e} \BY{assumption}\pflabel{[truth]indet}
-        \item \inValues{e'}{e} \text{ for fresh $e'$} \BY{\autoref{lem:invalues-derivable}}\pflabel{[truth]e'invalues}
+        \item \inValues{e'}{\Delta}{e} \text{ for fresh $e'$} \BY{\autoref{lem:invalues-derivable}}\pflabel{[truth]e'invalues}
         \item \csatisfy{e'}{\ctruth} \BY{\ruleref{rule:CSTruth}} \pflabel{[truth]e'satisfy}
         \item \csatisfyormay{e'}{\ctruth} \BY{\ruleref{rule:CSMSSat} on
             \pfref{[truth]e'satisfy}} \pflabel{[truth]e'satormay}
@@ -1626,7 +1626,7 @@
       \item e=\hnum{n} \BY{assumption}
       \item \hxi=\cnum{n} \BY{assumption}
       \item \isVal{\hnum{n}} \BY{\ruleref{rule:VNum}} \pflabel{[num]val}
-      \item \inValues{\hnum{n}}{\hnum{n}} \BY{\ruleref{rule:IVVal} on
+      \item \inValues{\hnum{n}}{\Delta}{\hnum{n}} \BY{\ruleref{rule:IVVal} on
           \pfref{[num]val}} \pflabel{[num]invalues}
       \end{pfsteps}
       In conclusion, we have \pfref{[num]invalues} and \pfref{satormay}.
@@ -1645,11 +1645,11 @@
       \item \ctyp{\hxi_1}{\tau_1} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[inl]c1typ}
       \item \isFinal{e_1} \BY{\autoref{lem:inv-final-inl} on \pfref{efinal}} \pflabel{[inl]e1final}
-      \item \inValues{e_1'}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[inl]c1typ},
+      \item \inValues{e_1'}{\Delta}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[inl]c1typ},
           \pfref{[inl]e1typ}, \pfref{[inl]e1final}, \pfref{[inl]satormay1}} \pflabel{[inl]e1'values}
       \item \csatisfyormay{e_1'}{\hxi_1} \BY{IH on \pfref{[inl]c1typ},
           \pfref{[inl]e1typ}, \pfref{[inl]e1final}, \pfref{[inl]satormay1}} \pflabel{[inl]e1'satormay}
-      \item \inValues{\hinl{\tau_2}{e_1'}}{\hinl{\tau_2}{e_1}}
+      \item \inValues{\hinl{\tau_2}{e_1'}}{\Delta}{\hinl{\tau_2}{e_1}}
         \BY{\ruleref{rule:IVInl} on \pfref{[inl]e1'values}}
       \item \csatisfyormay{\hinl{\tau_2}{e_1'}}{\cinl{\hxi_1}}
         \BY{\autoref{lem:satormay-inl} on \pfref{[inl]e1'satormay}}
@@ -1669,11 +1669,11 @@
       \item \ctyp{\hxi_2}{\tau_2} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[inr]c2typ}
       \item \isFinal{e_2} \BY{\autoref{lem:inv-final-inr} on \pfref{efinal}} \pflabel{[inr]e2final}
-      \item \inValues{e_2'}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[inr]c2typ},
+      \item \inValues{e_2'}{\Delta}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[inr]c2typ},
           \pfref{[inr]e2typ}, \pfref{[inr]e2final}, \pfref{[inr]satormay2}} \pflabel{[inr]e2'values}
       \item \csatisfyormay{e_2'}{\hxi_2} \BY{IH on \pfref{[inr]c2typ},
           \pfref{[inr]e2typ}, \pfref{[inr]e2final}, \pfref{[inr]satormay2}} \pflabel{[inr]e2'satormay}
-      \item \inValues{\hinr{\tau_1}{e_2'}}{\hinr{\tau_1}{e_2}}
+      \item \inValues{\hinr{\tau_1}{e_2'}}{\Delta}{\hinr{\tau_1}{e_2}}
         \BY{\ruleref{rule:IVInr} on \pfref{[inr]e2'values}}
       \item \csatisfyormay{\hinr{\tau_1}{e_2'}}{\cinr{\hxi_2}}
         \BY{\autoref{lem:satormay-inr} on \pfref{[inr]e2'satormay}}
@@ -1701,15 +1701,15 @@
           \pfref{ctyp}} \pflabel{[pair]c2typ}
       \item \isFinal{e_1} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair]e1final}
       \item \isFinal{e_2} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair]e2final}
-      \item \inValues{e_1'}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair]c1typ},
+      \item \inValues{e_1'}{\Delta}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair]c1typ},
           \pfref{[pair]e1typ}, \pfref{[pair]e1final}, \pfref{[pair]satormay1}} \pflabel{[pair]e1'values}
       \item \csatisfyormay{e_1'}{\hxi_1} \BY{IH on \pfref{[pair]c1typ},
           \pfref{[pair]e1typ}, \pfref{[pair]e1final}, \pfref{[pair]satormay1}} \pflabel{[pair]e1'satormay}
-      \item \inValues{e_2'}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair]c2typ},
+      \item \inValues{e_2'}{\Delta}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair]c2typ},
           \pfref{[pair]e2typ}, \pfref{[pair]e2final}, \pfref{[pair]satormay2}} \pflabel{[pair]e2'values}
       \item \csatisfyormay{e_2'}{\hxi_2} \BY{IH on \pfref{[pair]c2typ},
           \pfref{[pair]e2typ}, \pfref{[pair]e2final}, \pfref{[pair]satormay2}} \pflabel{[pair]e2'satormay}
-      \item \inValues{\hpair{e_1'}{e_2'}}{\hpair{e_1}{e_2}}
+      \item \inValues{\hpair{e_1'}{e_2'}}{\Delta}{\hpair{e_1}{e_2}}
         \BY{\ruleref{rule:IVPair} on \pfref{[pair]e1'values} and \pfref{[pair]e2'values}}
       \item \csatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}
         \BY{\autoref{lem:satormay-pair} on \pfref{[pair]e1'satormay} and \pfref{[pair]e2'satormay}}
@@ -1719,11 +1719,11 @@
       \begin{pfsteps}
       \item \hxi = \cpair{\hxi_1}{\hxi_2} \BY{assumption}
       \item \notIntro{e} \BY{assumption} \pflabel{[notintro]enotintro}
-      \item \csatisfy{\hprl{e}}{\hxi_1} \BY{assumption} \pflabel{[notintro]satisfy1}
-      \item \csatisfy{\hprr{e}}{\hxi_2} \BY{assumption} \pflabel{[notintro]satisfy2}
-      \item \csatisfyormay{\hprl{e}}{\hxi_1} \BY{\ruleref{rule:CSMSSat} on
+      \item \csatisfy{\hfst{e}}{\hxi_1} \BY{assumption} \pflabel{[notintro]satisfy1}
+      \item \csatisfy{\hsnd{e}}{\hxi_2} \BY{assumption} \pflabel{[notintro]satisfy2}
+      \item \csatisfyormay{\hfst{e}}{\hxi_1} \BY{\ruleref{rule:CSMSSat} on
           \pfref{[notintro]satisfy1}} \pflabel{[notintro]satormay1}
-      \item \csatisfyormay{\hprr{e}}{\hxi_2} \BY{\ruleref{rule:CSMSSat} on
+      \item \csatisfyormay{\hsnd{e}}{\hxi_2} \BY{\ruleref{rule:CSMSSat} on
           \pfref{[notintro]satisfy2}} \pflabel{[notintro]satormay2}
       \item \tau = \tprod{\tau_1}{\tau_2} \BY{Inversion of \rulesref{rules:CTyp}
           on \pfref{ctyp}}
@@ -1731,19 +1731,19 @@
           \pfref{ctyp}} \pflabel{[notintro]c1typ}
       \item \ctyp{\hxi_2}{\tau_2} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[notintro]c2typ}
-      \item \hexptyp{\cdot}{\Delta}{\hprl{e}}{\tau_1} \BY{\ruleref{rule:TPrl} on
+      \item \hexptyp{\cdot}{\Delta}{\hfst{e}}{\tau_1} \BY{\ruleref{rule:TFst} on
         \pfref{etyp}} \pflabel{[notintro]e1typ}
-    \item \hexptyp{\cdot}{\Delta}{\hprr{e}}{\tau_2} \BY{\ruleref{rule:TPrr} on
+    \item \hexptyp{\cdot}{\Delta}{\hsnd{e}}{\tau_2} \BY{\ruleref{rule:TSnd} on
         \pfref{etyp}} \pflabel{[notintro]e2typ}
-      \item \isIndet{\hprl{e}} \BY{\ruleref{rule:IPrl} on \pfref{efinal}} \pflabel{[notintro]e1indet}
-      \item \isFinal{\hprl{e}} \BY{\ruleref{rule:FIndet} on \pfref{[notintro]e1indet}} \pflabel{[notintro]e1final}
-      \item \isIndet{\hprr{e}} \BY{\ruleref{rule:IPrr} on \pfref{efinal}} \pflabel{[notintro]e2indet}
-      \item \isFinal{\hprr{e}} \BY{\ruleref{rule:FIndet} on \pfref{[notintro]e2indet}} \pflabel{[notintro]e2final}
-      \item \inValues{e_1'}{\hprl{e}} \text{ for fresh $e_1'$} \BY{IH on \pfref{[notintro]c1typ},
+      \item \isIndet{\hfst{e}} \BY{\ruleref{rule:IFst} on \pfref{efinal}} \pflabel{[notintro]e1indet}
+      \item \isFinal{\hfst{e}} \BY{\ruleref{rule:FIndet} on \pfref{[notintro]e1indet}} \pflabel{[notintro]e1final}
+      \item \isIndet{\hsnd{e}} \BY{\ruleref{rule:ISnd} on \pfref{efinal}} \pflabel{[notintro]e2indet}
+      \item \isFinal{\hsnd{e}} \BY{\ruleref{rule:FIndet} on \pfref{[notintro]e2indet}} \pflabel{[notintro]e2final}
+      \item \inValues{e_1'}{\Delta}{\hfst{e}} \text{ for fresh $e_1'$} \BY{IH on \pfref{[notintro]c1typ},
           \pfref{[notintro]e1typ}, \pfref{[notintro]e1final}, \pfref{[notintro]satormay1}} \pflabel{[notintro]e1'values}
       \item \csatisfyormay{e_1'}{\hxi_1} \BY{IH on \pfref{[notintro]c1typ},
           \pfref{[notintro]e1typ}, \pfref{[notintro]e1final}, \pfref{[notintro]satormay1}} \pflabel{[notintro]e1'satormay}
-      \item \inValues{e_2'}{\hprr{e}} \text{ for fresh $e_2'$} \BY{IH on \pfref{[notintro]c2typ},
+      \item \inValues{e_2'}{\Delta}{\hsnd{e}} \text{ for fresh $e_2'$} \BY{IH on \pfref{[notintro]c2typ},
           \pfref{[notintro]e2typ}, \pfref{[notintro]e2final}, \pfref{[notintro]satormay2}} \pflabel{[notintro]e2'values}
       \item \csatisfyormay{e_2'}{\hxi_2} \BY{IH on \pfref{[notintro]c2typ},
           \pfref{[notintro]e2typ}, \pfref{[notintro]e2final}, \pfref{[notintro]satormay2}} \pflabel{[notintro]e2'satormay}
@@ -1760,7 +1760,7 @@
       \item \hexptyp{\cdot}{\Delta}{\hpair{e_1'}{e_2'}}{\tprod{\tau_1}{\tau_2}}
         \BY{\ruleref{rule:TPair} on \pfref{[notintro]e1'typ} and
           \pfref{[notintro]e2'typ}} \pflabel{[notintro]e'typ}
-      \item \inValues{\hpair{e_1'}{e_2'}}{e}
+      \item \inValues{\hpair{e_1'}{e_2'}}{\Delta}{e}
         \BY{\ruleref{rule:IVIndet} on \pfref{[notintro]enotintro}, \pfref{etyp},
           \pfref{[notintro]e'val} and \pfref{[notintro]e'typ}}
       \item \csatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}
@@ -1775,7 +1775,7 @@
           \pfref{[or1]satisfy1}} \pflabel{[or1]satormay1}
       \item \ctyp{\hxi_1}{\tau} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[or1]c1typ}
-      \item \inValues{e'}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or1]c1typ},
+      \item \inValues{e'}{\Delta}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or1]c1typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or1]satormay1}} \pflabel{[or1]e'values}
       \item \csatisfyormay{e'}{\hxi_1} \BY{IH on \pfref{[or1]c1typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or1]satormay1}} \pflabel{[or1]e'satormay}
@@ -1791,7 +1791,7 @@
           \pfref{[or2]satisfy2}} \pflabel{[or2]satormay2}
       \item \ctyp{\hxi_2}{\tau} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[or2]c2typ}
-      \item \inValues{e'}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or2]c2typ},
+      \item \inValues{e'}{\Delta}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or2]c2typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or2]satormay2}} \pflabel{[or2]e'values}
       \item \csatisfyormay{e'}{\hxi_2} \BY{IH on \pfref{[or2]c2typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or2]satormay2}} \pflabel{[or2]e'satormay}
@@ -1817,14 +1817,14 @@
       \item[\text{(\ref{rule:FVal})}]
         \begin{pfsteps}
         \item \isVal{e} \BY{assumption}\pflabel{[unknown]eval}
-        \item \inValues{e}{e} \BY{\ruleref{rule:IVVal} on \pfref{[unknown]eval}} \pflabel{[unknown]invalues}
+        \item \inValues{e}{\Delta}{e} \BY{\ruleref{rule:IVVal} on \pfref{[unknown]eval}} \pflabel{[unknown]invalues}
         \end{pfsteps}
         In conclusion, we have \pfref{[unknown]invalues} and \pfref{satormay}.
         \restorelocalsteps{2}
       \item[\text{(\ref{rule:FIndet})}]
         \begin{pfsteps}
         \item \isIndet{e} \BY{assumption}\pflabel{[unknown]indet}
-        \item \inValues{e'}{e} \text{ for fresh $e'$} \BY{\autoref{lem:invalues-derivable}}\pflabel{[unknown]e'invalues}
+        \item \inValues{e'}{\Delta}{e} \text{ for fresh $e'$} \BY{\autoref{lem:invalues-derivable}}\pflabel{[unknown]e'invalues}
         \item \cmaysatisfy{e'}{\cunknown} \BY{\ruleref{rule:CMSUnknown}} \pflabel{[unknown]e'satisfy}
         \item \csatisfyormay{e'}{\ctruth} \BY{\ruleref{rule:CSMSSat} on
             \pfref{[unknown]e'satisfy}} \pflabel{[unknown]e'satormay}
@@ -1846,11 +1846,11 @@
       \item \ctyp{\hxi_1}{\tau_1} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[inl']c1typ}
       \item \isFinal{e_1} \BY{\autoref{lem:inv-final-inl} on \pfref{efinal}} \pflabel{[inl']e1final}
-      \item \inValues{e_1'}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[inl']c1typ},
+      \item \inValues{e_1'}{\Delta}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[inl']c1typ},
           \pfref{[inl']e1typ}, \pfref{[inl']e1final}, \pfref{[inl']satormay1}} \pflabel{[inl']e1'values}
       \item \csatisfyormay{e_1'}{\hxi_1} \BY{IH on \pfref{[inl']c1typ},
           \pfref{[inl']e1typ}, \pfref{[inl']e1final}, \pfref{[inl']satormay1}} \pflabel{[inl']e1'satormay}
-      \item \inValues{\hinl{\tau_2}{e_1'}}{\hinl{\tau_2}{e_1}}
+      \item \inValues{\hinl{\tau_2}{e_1'}}{\Delta}{\hinl{\tau_2}{e_1}}
         \BY{\ruleref{rule:IVInl} on \pfref{[inl']e1'values}}
       \item \csatisfyormay{\hinl{\tau_2}{e_1'}}{\cinl{\hxi_1}}
         \BY{\autoref{lem:satormay-inl} on \pfref{[inl']e1'satormay}}
@@ -1870,11 +1870,11 @@
       \item \ctyp{\hxi_2}{\tau_2} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[inr']c2typ}
       \item \isFinal{e_2} \BY{\autoref{lem:inv-final-inr} on \pfref{efinal}} \pflabel{[inr']e2final}
-      \item \inValues{e_2'}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[inr']c2typ},
+      \item \inValues{e_2'}{\Delta}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[inr']c2typ},
           \pfref{[inr']e2typ}, \pfref{[inr']e2final}, \pfref{[inr']satormay2}} \pflabel{[inr']e2'values}
       \item \csatisfyormay{e_2'}{\hxi_2} \BY{IH on \pfref{[inr']c2typ},
           \pfref{[inr']e2typ}, \pfref{[inr']e2final}, \pfref{[inr']satormay2}} \pflabel{[inr']e2'satormay}
-      \item \inValues{\hinr{\tau_1}{e_2'}}{\hinr{\tau_1}{e_2}}
+      \item \inValues{\hinr{\tau_1}{e_2'}}{\Delta}{\hinr{\tau_1}{e_2}}
         \BY{\ruleref{rule:IVInr} on \pfref{[inr']e2'values}}
       \item \csatisfyormay{\hinr{\tau_1}{e_2'}}{\cinr{\hxi_2}}
         \BY{\autoref{lem:satormay-inr} on \pfref{[inr']e2'satormay}}
@@ -1902,15 +1902,15 @@
           \pfref{ctyp}} \pflabel{[pair1]c2typ}
       \item \isFinal{e_1} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair1]e1final}
       \item \isFinal{e_2} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair1]e2final}
-      \item \inValues{e_1'}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair1]c1typ},
+      \item \inValues{e_1'}{\Delta}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair1]c1typ},
           \pfref{[pair1]e1typ}, \pfref{[pair1]e1final}, \pfref{[pair1]satormay1}} \pflabel{[pair1]e1'values}
       \item \csatisfyormay{e_1'}{\hxi_1} \BY{IH on \pfref{[pair1]c1typ},
           \pfref{[pair1]e1typ}, \pfref{[pair1]e1final}, \pfref{[pair1]satormay1}} \pflabel{[pair1]e1'satormay}
-      \item \inValues{e_2'}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair1]c2typ},
+      \item \inValues{e_2'}{\Delta}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair1]c2typ},
           \pfref{[pair1]e2typ}, \pfref{[pair1]e2final}, \pfref{[pair1]satormay2}} \pflabel{[pair1]e2'values}
       \item \csatisfyormay{e_2'}{\hxi_2} \BY{IH on \pfref{[pair1]c2typ},
           \pfref{[pair1]e2typ}, \pfref{[pair1]e2final}, \pfref{[pair1]satormay2}} \pflabel{[pair1]e2'satormay}
-      \item \inValues{\hpair{e_1'}{e_2'}}{\hpair{e_1}{e_2}}
+      \item \inValues{\hpair{e_1'}{e_2'}}{\Delta}{\hpair{e_1}{e_2}}
         \BY{\ruleref{rule:IVPair} on \pfref{[pair1]e1'values} and \pfref{[pair1]e2'values}}
       \item \csatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}
         \BY{\autoref{lem:satormay-pair} on \pfref{[pair1]e1'satormay} and \pfref{[pair1]e2'satormay}}
@@ -1938,15 +1938,15 @@
           \pfref{ctyp}} \pflabel{[pair2]c2typ}
       \item \isFinal{e_1} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair2]e1final}
       \item \isFinal{e_2} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair2]e2final}
-      \item \inValues{e_1'}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair2]c1typ},
+      \item \inValues{e_1'}{\Delta}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair2]c1typ},
           \pfref{[pair2]e1typ}, \pfref{[pair2]e1final}, \pfref{[pair2]satormay1}} \pflabel{[pair2]e1'values}
       \item \csatisfyormay{e_1'}{\hxi_1} \BY{IH on \pfref{[pair2]c1typ},
           \pfref{[pair2]e1typ}, \pfref{[pair2]e1final}, \pfref{[pair2]satormay1}} \pflabel{[pair2]e1'satormay}
-      \item \inValues{e_2'}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair2]c2typ},
+      \item \inValues{e_2'}{\Delta}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair2]c2typ},
           \pfref{[pair2]e2typ}, \pfref{[pair2]e2final}, \pfref{[pair2]satormay2}} \pflabel{[pair2]e2'values}
       \item \csatisfyormay{e_2'}{\hxi_2} \BY{IH on \pfref{[pair2]c2typ},
           \pfref{[pair2]e2typ}, \pfref{[pair2]e2final}, \pfref{[pair2]satormay2}} \pflabel{[pair2]e2'satormay}
-      \item \inValues{\hpair{e_1'}{e_2'}}{\hpair{e_1}{e_2}}
+      \item \inValues{\hpair{e_1'}{e_2'}}{\Delta}{\hpair{e_1}{e_2}}
         \BY{\ruleref{rule:IVPair} on \pfref{[pair2]e1'values} and \pfref{[pair2]e2'values}}
       \item \csatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}
         \BY{\autoref{lem:satormay-pair} on \pfref{[pair2]e1'satormay} and \pfref{[pair2]e2'satormay}}
@@ -1974,15 +1974,15 @@
           \pfref{ctyp}} \pflabel{[pair3]c2typ}
       \item \isFinal{e_1} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair3]e1final}
       \item \isFinal{e_2} \BY{\autoref{lem:inv-final-pair} on \pfref{efinal}} \pflabel{[pair3]e2final}
-      \item \inValues{e_1'}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair3]c1typ},
+      \item \inValues{e_1'}{\Delta}{e_1} \text{ for fresh $e_1'$} \BY{IH on \pfref{[pair3]c1typ},
           \pfref{[pair3]e1typ}, \pfref{[pair3]e1final}, \pfref{[pair3]satormay1}} \pflabel{[pair3]e1'values}
       \item \csatisfyormay{e_1'}{\hxi_1} \BY{IH on \pfref{[pair3]c1typ},
           \pfref{[pair3]e1typ}, \pfref{[pair3]e1final}, \pfref{[pair3]satormay1}} \pflabel{[pair3]e1'satormay}
-      \item \inValues{e_2'}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair3]c2typ},
+      \item \inValues{e_2'}{\Delta}{e_2} \text{ for fresh $e_2'$} \BY{IH on \pfref{[pair3]c2typ},
           \pfref{[pair3]e2typ}, \pfref{[pair3]e2final}, \pfref{[pair3]satormay2}} \pflabel{[pair3]e2'values}
       \item \csatisfyormay{e_2'}{\hxi_2} \BY{IH on \pfref{[pair3]c2typ},
           \pfref{[pair3]e2typ}, \pfref{[pair3]e2final}, \pfref{[pair3]satormay2}} \pflabel{[pair3]e2'satormay}
-      \item \inValues{\hpair{e_1'}{e_2'}}{\hpair{e_1}{e_2}}
+      \item \inValues{\hpair{e_1'}{e_2'}}{\Delta}{\hpair{e_1}{e_2}}
         \BY{\ruleref{rule:IVPair} on \pfref{[pair3]e1'values} and \pfref{[pair3]e2'values}}
       \item \csatisfyormay{\hpair{e_1'}{e_2'}}{\cpair{\hxi_1}{\hxi_2}}
         \BY{\autoref{lem:satormay-pair} on \pfref{[pair3]e1'satormay} and \pfref{[pair3]e2'satormay}}
@@ -1996,7 +1996,7 @@
           \pfref{[or1']satisfy1}} \pflabel{[or1']satormay1}
       \item \ctyp{\hxi_1}{\tau} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[or1']c1typ}
-      \item \inValues{e'}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or1']c1typ},
+      \item \inValues{e'}{\Delta}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or1']c1typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or1']satormay1}} \pflabel{[or1']e'values}
       \item \csatisfyormay{e'}{\hxi_1} \BY{IH on \pfref{[or1']c1typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or1']satormay1}} \pflabel{[or1']e'satormay}
@@ -2012,7 +2012,7 @@
           \pfref{[or2']satisfy2}} \pflabel{[or2']satormay2}
       \item \ctyp{\hxi_2}{\tau} \BY{Inversion of \rulesref{rules:CTyp} on
           \pfref{ctyp}} \pflabel{[or2']c2typ}
-      \item \inValues{e'}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or2']c2typ},
+      \item \inValues{e'}{\Delta}{e} \text{ for fresh $e'$} \BY{IH on \pfref{[or2']c2typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or2']satormay2}} \pflabel{[or2']e'values}
       \item \csatisfyormay{e'}{\hxi_2} \BY{IH on \pfref{[or2']c2typ},
           \pfref{etyp}, \pfref{efinal}, \pfref{[or2']satormay2}} \pflabel{[or2']e'satormay}
@@ -2026,11 +2026,11 @@
       \item \isVal{e'} \text{ for fresh $e'$} \BY{\autoref{lem:exist-val-satormay-hxi} on \pfref{ctyp}} \pflabel{[notintro]e'val}
       \item \hexptyp{\cdot}{\Delta}{e'}{\tau} \BY{\autoref{lem:exist-val-satormay-hxi} on \pfref{ctyp}} \pflabel{[notintro]e'typ}
       \item \csatisfyormay{e'}{\hxi} \BY{\autoref{lem:exist-val-satormay-hxi} on \pfref{ctyp}} \pflabel{[notintro]e'satormay}
-      \item \inValues{e'}{e} \BY{\ref{rule:IVIndet} on
+      \item \inValues{e'}{\Delta}{e} \BY{\ref{rule:IVIndet} on
           \pfref{[notintro]notintro} and \pfref{etyp} and \pfref{[notintro]e'val} and
           \pfref{[notintro]e'typ}}
       \end{pfsteps}
-      $e'$ is such an expression that $\inValues{e'}{e}$ and $\csatisfyormay{e'}{\hxi}$.
+      $e'$ is such an expression that $\inValues{e'}{\Delta}{e}$ and $\csatisfyormay{e'}{\hxi}$.
     \end{byCases}
   \end{byCases}
   \resetpfcounter
@@ -2039,7 +2039,7 @@
 \begin{lemma}
   \label{lem:incomplete-satormay}
   If $\isIndet{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and
-  $\ctyp{\hxi}{\tau}$ and there exists $e'$ such that $\inValues{e'}{e}$
+  $\ctyp{\hxi}{\tau}$ and there exists $e'$ such that $\inValues{e'}{\Delta}{e}$
   and $\csatisfyormay{e'}{\hxi}$ then $\csatisfyormay{e}{\hxi}$.
 \end{lemma}
 \begin{proof}
@@ -2047,22 +2047,22 @@
 \end{proof}
 
 \judgboxa{
-  \hsubstyp{\theta}{\Gamma}
+  \hsubstyp{\Gamma}{\Delta}{\theta}{\Gamma\theta}
 }{
-  $\theta$ is of type $\Gamma$
+  $\theta$ is of type $\Gamma\theta$
 }
 \begin{subequations}
 \begin{equation}
 \inferrule[STEmpty]{ }{
-  \hsubstyp{\emptyset}{\cdot}
+  \hsubstyp{\Gamma}{\Delta}{\emptyset}{\cdot}
 }
 \end{equation}
 \begin{equation}
 \inferrule[STExtend]{
-  \hsubstyp{\theta}{\Gamma_\theta} \\
+  \hsubstyp{\Gamma}{\Delta}{\theta}{\Gamma_\theta} \\
   \hexptyp{\Gamma}{\Delta}{e}{\tau}
 }{
-  \hsubstyp{\theta , x / e}{\Gamma_\theta , x : \tau}
+  \hsubstyp{\Gamma}{\Delta}{\theta , x / e}{\Gamma_\theta , x : \tau}
 }
 \end{equation}
 \end{subequations}
@@ -2158,8 +2158,8 @@
 \begin{equation}\label{rule:MNotIntroPair}
 \inferrule[MNotIntroPair]{
   \notIntro{e} \\
-  \hpatmatch{\hprl{e}}{p_1}{\theta_1} \\
-  \hpatmatch{\hprr{e}}{p_2}{\theta_2}
+  \hpatmatch{\hfst{e}}{p_1}{\theta_1} \\
+  \hpatmatch{\hsnd{e}}{p_2}{\theta_2}
 }{
   \hpatmatch{e}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
 }
@@ -2331,17 +2331,17 @@
 }
 \end{equation}
 \begin{equation}
-\inferrule[ITPrl]{
+\inferrule[ITFstPair]{
   \isFinal{\hpair{e_1}{e_2}}
 }{
-  \htrans{\hprl{\hpair{e_1}{e_2}}}{e_1}
+  \htrans{\hfst{\hpair{e_1}{e_2}}}{e_1}
 }
 \end{equation}
 \begin{equation}
-\inferrule[ITPrr]{
+\inferrule[ITSndPair]{
   \isFinal{\hpair{e_1}{e_2}}
 }{
-  \htrans{\hprr{\hpair{e_1}{e_2}}}{e_2}
+  \htrans{\hsnd{\hpair{e_1}{e_2}}}{e_2}
 }
 \end{equation}
 \begin{equation}
@@ -2684,10 +2684,10 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{p-typ}, we would sho
     By rule induction over Rules (\ref{rules:TExp}) on \pfref{e-typ}, the following cases apply.
     \begin{byCases}
     \savelocalsteps{1}
-    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TFst}),(\ref{rule:TSnd}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
-        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[num]notintro}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hfst{e_0},\hsnd{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVFst}),(\ref{rule:NVSnd})} \pflabel{[num]notintro}
         \item $\hmaymatch{e}{\hnum{n_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[num]rft} and \pfref{[num]notintro}}
         \end{pfsteps*}
         Assume $\hpatmatch{e}{\hnum{n_2}}{\theta}$ for some $\theta$. By rule induction over it, no case applies due to syntactic contradiction.
@@ -2757,10 +2757,10 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{p-typ}, we would sho
     By rule induction over Rules (\ref{rules:TExp}) on \pfref{e-typ}, the following cases apply.
     \begin{byCases}
     \savelocalsteps{1}
-    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TFst}),(\ref{rule:TSnd}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
-        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[inl]notintro}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hfst{e_0},\hsnd{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVFst}),(\ref{rule:NVSnd})} \pflabel{[inl]notintro}
         \item $\hmaymatch{e}{\hinlp{p_1}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[inl]rft} and \pfref{[inl]notintro}}
         \end{pfsteps*}
         Assume $\hpatmatch{e}{\hinlp{p_1}}{\theta_1}$ for some $\theta_1$. By rule induction over it, no case applies due to syntactic contradiction.
@@ -2899,10 +2899,10 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{p-typ}, we would sho
     By rule induction over Rules (\ref{rules:TExp}) on \pfref{e-typ}, the following cases apply.
     \begin{byCases}
     \savelocalsteps{1}
-    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TFst}),(\ref{rule:TSnd}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
-        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[inr]notintro}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hfst{e_0},\hsnd{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVFst}),(\ref{rule:NVSnd})} \pflabel{[inr]notintro}
         \item $\hmaymatch{e}{\hinrp{p_2}}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[inr]rft} and \pfref{[inr]notintro}}
         \end{pfsteps*}
         Assume $\hpatmatch{e}{\hinrp{p_2}}{\theta_2}$ for some $\theta_2$. By rule induction over it, no case applies due to syntactic contradiction.
@@ -3043,35 +3043,35 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{p-typ}, we would sho
     By rule induction over Rules (\ref{rules:TExp}) on \pfref{e-typ}, the following cases apply.
     \begin{byCases}
     \savelocalsteps{1}
-    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TFst}),(\ref{rule:TSnd}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
-        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[epair]notintro}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hfst{e_0},\hsnd{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVFst}),(\ref{rule:NVSnd})} \pflabel{[epair]notintro}
         \item $\isIndet{e}$ \BY{\autoref{lem:final-notintro-indet} on \pfref{e-final} and \pfref{[epair]notintro}} \pflabel{[epair]indet}
-        \item $\isIndet{\hprl{e}}$ \BY{Rule (\ref{rule:IPrl}) on \pfref{[epair]indet}} \pflabel{[epair]prl-indet}
-        \item $\isFinal{\hprl{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[epair]prl-indet}} \pflabel{[epair]prl-final}
-        \item $\isIndet{\hprr{e}}$ \BY{Rule (\ref{rule:IPrr}) on \pfref{[epair]indet}} \pflabel{[epair]prr-indet}
-        \item $\isFinal{\hprr{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[epair]prr-indet}} \pflabel{[epair]prr-final}
-        \item $\hexptyp{\cdot}{\Delta}{\hprl{e}}{\tau_1}$ \BY{Rule (\ref{rule:TPrl}) on \pfref{e-typ}} \pflabel{[epair]prl-typ}
-        \item $\hexptyp{\cdot}{\Delta}{\hprr{e}}{\tau_2}$ \BY{Rule (\ref{rule:TPrr}) on \pfref{e-typ}} \pflabel{[epair]prr-typ}
+        \item $\isIndet{\hfst{e}}$ \BY{Rule (\ref{rule:IFst}) on \pfref{[epair]indet}} \pflabel{[epair]fst-indet}
+        \item $\isFinal{\hfst{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[epair]fst-indet}} \pflabel{[epair]fst-final}
+        \item $\isIndet{\hsnd{e}}$ \BY{Rule (\ref{rule:ISnd}) on \pfref{[epair]indet}} \pflabel{[epair]snd-indet}
+        \item $\isFinal{\hsnd{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[epair]snd-indet}} \pflabel{[epair]snd-final}
+        \item $\hexptyp{\cdot}{\Delta}{\hfst{e}}{\tau_1}$ \BY{Rule (\ref{rule:TFst}) on \pfref{e-typ}} \pflabel{[epair]fst-typ}
+        \item $\hexptyp{\cdot}{\Delta}{\hsnd{e}}{\tau_2}$ \BY{Rule (\ref{rule:TSnd}) on \pfref{e-typ}} \pflabel{[epair]snd-typ}
         \end{pfsteps*}
         Assume $\hnotmatch{e}{\hpair{p_1}{p_2}}$. By rule induction on it, no case applies due to syntactic contradiction.
         \begin{pfsteps*}
         \item $\cancel{\hnotmatch{e}{\hpair{p_1}{p_2}}}$ \BY{contradiction}
         \end{pfsteps*}
-        By inductive hypothesis on \pfref{[epair]prl-final} and \pfref{[epair]prl-typ} and \pfref{[pair]p1-typ}, exactly one of $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$, $\hmaymatch{\hprl{e}}{p_1}$, and $\hnotmatch{\hprl{e}}{p_1}$ holds. \\
-        By inductive hypothesis on \pfref{[epair]prr-final} and \pfref{[epair]prr-typ} and \pfref{[pair]p2-typ}, exactly one of $\hpatmatch{\hprr{e}}{p_2}{\theta_2}$, $\hmaymatch{\hprr{e}}{p_2}$, and $\hnotmatch{\hprr{e}}{p_2}$ holds. \\
+        By inductive hypothesis on \pfref{[epair]fst-final} and \pfref{[epair]fst-typ} and \pfref{[pair]p1-typ}, exactly one of $\hpatmatch{\hfst{e}}{p_1}{\theta_1}$, $\hmaymatch{\hfst{e}}{p_1}$, and $\hnotmatch{\hfst{e}}{p_1}$ holds. \\
+        By inductive hypothesis on \pfref{[epair]snd-final} and \pfref{[epair]snd-typ} and \pfref{[pair]p2-typ}, exactly one of $\hpatmatch{\hsnd{e}}{p_2}{\theta_2}$, $\hmaymatch{\hsnd{e}}{p_2}$, and $\hnotmatch{\hsnd{e}}{p_2}$ holds. \\
         By case analysis on which conclusion holds for $p_1$ and $p_2$. Note that we have already shown $\cancel{\hnotmatch{e}{\hpair{p_1}{p_2}}}$.
         \begin{byCases}
         \savelocalsteps{2}
-        \item[\hpatmatch{\hprl{e}}{p_1}{\theta_1},\hpatmatch{\hprr{e}}{p_2}{\theta_2}]
+        \item[\hpatmatch{\hfst{e}}{p_1}{\theta_1},\hpatmatch{\hsnd{e}}{p_2}{\theta_2}]
             \begin{pfsteps*}
-            \item $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair1]match1}
-            \item $\cancel{\hmaymatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair1]not-maymatch1}
-            \item $\cancel{\hnotmatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair1]not-notmatch1}
-            \item $\hpatmatch{\hprr{e}}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[epair1]match2}
-            \item $\cancel{\hmaymatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair1]not-maymatch2}
-            \item $\cancel{\hnotmatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair1]not-notmatch2}
+            \item $\hpatmatch{\hfst{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair1]match1}
+            \item $\cancel{\hmaymatch{\hfst{e}}{p_1}}$ \BY{assumption} \pflabel{[epair1]not-maymatch1}
+            \item $\cancel{\hnotmatch{\hfst{e}}{p_1}}$ \BY{assumption} \pflabel{[epair1]not-notmatch1}
+            \item $\hpatmatch{\hsnd{e}}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[epair1]match2}
+            \item $\cancel{\hmaymatch{\hsnd{e}}{p_2}}$ \BY{assumption} \pflabel{[epair1]not-maymatch2}
+            \item $\cancel{\hnotmatch{\hsnd{e}}{p_2}}$ \BY{assumption} \pflabel{[epair1]not-notmatch2}
             \item $\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}$ \BY{\ruleref{rule:MNotIntroPair} on \pfref{[epair]notintro} and \pfref{[epair1]match1} and \pfref{[epair1]match2}}
             \end{pfsteps*}
             Assume $\hmaymatch{e}{\hpair{p_1}{p_2}}$. By rule induction over \rulesref{rules:maymatch} on it, only one case applies.
@@ -3086,16 +3086,16 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{p-typ}, we would sho
                 \item[\text{(\ref{rule:RPairL})}]
                     \begin{pfsteps*}
                     \item $\refutable{p_1}$ \BY{assumption} \pflabel{[epair1]rft-p1}
-                    \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[epair1]notintro-prl}
-                    \item $\hmaymatch{\hprl{e}}{p_1}$ \BY{\ruleref{rule:MMNotIntro} on \pfref{[epair1]rft-p1} and \pfref{[epair1]notintro-prl}}
+                    \item $\notIntro{\hfst{e}}$ \BY{\ruleref{rule:NVFst}} \pflabel{[epair1]notintro-fst}
+                    \item $\hmaymatch{\hfst{e}}{p_1}$ \BY{\ruleref{rule:MMNotIntro} on \pfref{[epair1]rft-p1} and \pfref{[epair1]notintro-fst}}
                     \end{pfsteps*}
                     Contradicts \pfref{[epair1]not-maymatch1}.
                 \restorelocalsteps{3}
                 \item[\text{(\ref{rule:RPairR})}]
                     \begin{pfsteps*}
                     \item $\refutable{p_2}$ \BY{assumption} \pflabel{[epair1]rft-p2}
-                    \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrr}} \pflabel{[epair1]notintro-prr}
-                    \item $\hmaymatch{\hprl{e}}{p_1}$ \BY{\ruleref{rule:MMNotIntro} on \pfref{[epair1]rft-p2} and \pfref{[epair1]notintro-prr}}
+                    \item $\notIntro{\hsnd{e}}$ \BY{\ruleref{rule:NVSnd}} \pflabel{[epair1]notintro-snd}
+                    \item $\hmaymatch{\hfst{e}}{p_1}$ \BY{\ruleref{rule:MMNotIntro} on \pfref{[epair1]rft-p2} and \pfref{[epair1]notintro-snd}}
                     \end{pfsteps*}
                     Contradicts \pfref{[epair1]not-maymatch1}.
                 \end{byCases}
@@ -3104,21 +3104,21 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{p-typ}, we would sho
             \item $\cancel{\hmaymatch{e}{\hpair{p_1}{p_2}}}$ \BY{contradiction}
             \end{pfsteps*}
         \restorelocalsteps{2}
-        \item[\hpatmatch{\hprl{e}}{p_1}{\theta_1},\hmaymatch{\hprr{e}}{p_2}]
+        \item[\hpatmatch{\hfst{e}}{p_1}{\theta_1},\hmaymatch{\hsnd{e}}{p_2}]
             \begin{pfsteps*}
-            \item $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair2]match1}
-            \item $\cancel{\hmaymatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair2]not-maymatch1}
-            \item $\cancel{\hnotmatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair2]not-notmatch1}
-            \item $\cancel{\hpatmatch{\hprr{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair2]not-match2}
-            \item $\hmaymatch{\hprr{e}}{p_2}$ \BY{assumption} \pflabel{[epair2]maymatch2}
-            \item $\cancel{\hnotmatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair2]not-notmatch2}
+            \item $\hpatmatch{\hfst{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair2]match1}
+            \item $\cancel{\hmaymatch{\hfst{e}}{p_1}}$ \BY{assumption} \pflabel{[epair2]not-maymatch1}
+            \item $\cancel{\hnotmatch{\hfst{e}}{p_1}}$ \BY{assumption} \pflabel{[epair2]not-notmatch1}
+            \item $\cancel{\hpatmatch{\hsnd{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair2]not-match2}
+            \item $\hmaymatch{\hsnd{e}}{p_2}$ \BY{assumption} \pflabel{[epair2]maymatch2}
+            \item $\cancel{\hnotmatch{\hsnd{e}}{p_2}}$ \BY{assumption} \pflabel{[epair2]not-notmatch2}
             \end{pfsteps*}
             Assume $\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta}$. By rule induction over \rulesref{rules:match}, only one case applies.
             \begin{byCases}
             \item[\text{(\ref{rule:MNotIntroPair})}]
                 \begin{pfsteps*}
                 \item $\theta=\theta_1\uplus\theta_2$ \BY{assumption}
-                \item $\hpatmatch{\hprr{e}}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[epair2]match2}
+                \item $\hpatmatch{\hsnd{e}}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[epair2]match2}
                 \end{pfsteps*}
                 Contradicts \pfref{[epair2]not-match2}.
             \end{byCases}
@@ -3144,33 +3144,33 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{p-typ}, we would sho
                 \end{pfsteps*}
             \end{byCases}
         \restorelocalsteps{2}
-        \item[\hpatmatch{\hprl{e}}{p_1}{\theta_1},\hnotmatch{\hprr{e}}{p_2}]
+        \item[\hpatmatch{\hfst{e}}{p_1}{\theta_1},\hnotmatch{\hsnd{e}}{p_2}]
             \begin{pfsteps*}
-            \item $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair3]match1}
-            \item $\cancel{\hmaymatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair3]not-maymatch1}
-            \item $\cancel{\hnotmatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair3]not-notmatch1}
-            \item $\cancel{\hpatmatch{\hprr{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair3]not-match2}
-            \item $\cancel{\hmaymatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair3]not-maymatch2}
-            \item $\hnotmatch{\hprr{e}}{p_2}$ \BY{assumption} \pflabel{[epair3]notmatch2}
+            \item $\hpatmatch{\hfst{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair3]match1}
+            \item $\cancel{\hmaymatch{\hfst{e}}{p_1}}$ \BY{assumption} \pflabel{[epair3]not-maymatch1}
+            \item $\cancel{\hnotmatch{\hfst{e}}{p_1}}$ \BY{assumption} \pflabel{[epair3]not-notmatch1}
+            \item $\cancel{\hpatmatch{\hsnd{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair3]not-match2}
+            \item $\cancel{\hmaymatch{\hsnd{e}}{p_2}}$ \BY{assumption} \pflabel{[epair3]not-maymatch2}
+            \item $\hnotmatch{\hsnd{e}}{p_2}$ \BY{assumption} \pflabel{[epair3]notmatch2}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:notmatch} on \pfref{[epair3]notmatch2}, no case applies due to syntactic contradiction.\\
             Therefore, vacuously true.
         \restorelocalsteps{2}
-        \item[\hmaymatch{\hprl{e}}{p_1},\hpatmatch{\hprr{e}}{p_2}{\theta_2}]
+        \item[\hmaymatch{\hfst{e}}{p_1},\hpatmatch{\hsnd{e}}{p_2}{\theta_2}]
             \begin{pfsteps*}
-            \item $\cancel{\hpatmatch{\hprl{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair4]not-match1}
-            \item $\hmaymatch{\hprl{e}}{p_1}$ \BY{assumption} \pflabel{[epair4]maymatch1}
-            \item $\cancel{\hnotmatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair4]not-notmatch1}
-            \item $\hpatmatch{\hprr{e}}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[epair4]match2}
-            \item $\cancel{\hmaymatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair4]not-maymatch2}
-            \item $\cancel{\hnotmatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair4]not-notmatch2}
+            \item $\cancel{\hpatmatch{\hfst{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair4]not-match1}
+            \item $\hmaymatch{\hfst{e}}{p_1}$ \BY{assumption} \pflabel{[epair4]maymatch1}
+            \item $\cancel{\hnotmatch{\hfst{e}}{p_1}}$ \BY{assumption} \pflabel{[epair4]not-notmatch1}
+            \item $\hpatmatch{\hsnd{e}}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[epair4]match2}
+            \item $\cancel{\hmaymatch{\hsnd{e}}{p_2}}$ \BY{assumption} \pflabel{[epair4]not-maymatch2}
+            \item $\cancel{\hnotmatch{\hsnd{e}}{p_2}}$ \BY{assumption} \pflabel{[epair4]not-notmatch2}
             \end{pfsteps*}
             Assume $\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta}$. By rule induction over \rulesref{rules:match}, only one case applies.
             \begin{byCases}
             \item[\text{(\ref{rule:MNotIntroPair})}]
                 \begin{pfsteps*}
                 \item $\theta=\theta_1\uplus\theta_2$ \BY{assumption}
-                \item $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair4]match1}
+                \item $\hpatmatch{\hfst{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair4]match1}
                 \end{pfsteps*}
                 Contradicts \pfref{[epair4]not-match1}.
             \end{byCases}
@@ -3196,21 +3196,21 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{p-typ}, we would sho
                 \end{pfsteps*}
             \end{byCases}
         \restorelocalsteps{2}
-        \item[\hmaymatch{\hprl{e}}{p_1},\hmaymatch{\hprr{e}}{p_2}]
+        \item[\hmaymatch{\hfst{e}}{p_1},\hmaymatch{\hsnd{e}}{p_2}]
             \begin{pfsteps*}
-            \item $\cancel{\hpatmatch{\hprl{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair5]not-match1}
-            \item $\hmaymatch{\hprl{e}}{p_1}$ \BY{assumption} \pflabel{[epair5]maymatch1}
-            \item $\cancel{\hnotmatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair5]not-notmatch1}
-            \item $\cancel{\hpatmatch{\hprr{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair5]not-match2}
-            \item $\hmaymatch{\hprr{e}}{p_2}$ \BY{assumption} \pflabel{[epair5]maymatch2}
-            \item $\cancel{\hnotmatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair5]not-notmatch2}
+            \item $\cancel{\hpatmatch{\hfst{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair5]not-match1}
+            \item $\hmaymatch{\hfst{e}}{p_1}$ \BY{assumption} \pflabel{[epair5]maymatch1}
+            \item $\cancel{\hnotmatch{\hfst{e}}{p_1}}$ \BY{assumption} \pflabel{[epair5]not-notmatch1}
+            \item $\cancel{\hpatmatch{\hsnd{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair5]not-match2}
+            \item $\hmaymatch{\hsnd{e}}{p_2}$ \BY{assumption} \pflabel{[epair5]maymatch2}
+            \item $\cancel{\hnotmatch{\hsnd{e}}{p_2}}$ \BY{assumption} \pflabel{[epair5]not-notmatch2}
             \end{pfsteps*}
             Assume $\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta}$. By rule induction over \rulesref{rules:match}, only one case applies.
             \begin{byCases}
             \item[\text{(\ref{rule:MNotIntroPair})}]
                 \begin{pfsteps*}
                 \item $\theta=\theta_1\uplus\theta_2$ \BY{assumption}
-                \item $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair5]match1}
+                \item $\hpatmatch{\hfst{e}}{p_1}{\theta_1}$ \BY{assumption} \pflabel{[epair5]match1}
                 \end{pfsteps*}
                 Contradicts \pfref{[epair5]not-match1}.
             \end{byCases}
@@ -3236,50 +3236,50 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{p-typ}, we would sho
                 \end{pfsteps*}
             \end{byCases}
         \restorelocalsteps{2}
-        \item[\hmaymatch{\hprl{e}}{p_1},\hnotmatch{\hprr{e}}{p_2}]
+        \item[\hmaymatch{\hfst{e}}{p_1},\hnotmatch{\hsnd{e}}{p_2}]
             \begin{pfsteps*}
-            \item $\cancel{\hpatmatch{\hprl{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair6]not-match1}
-            \item $\hmaymatch{\hprl{e}}{p_1}$ \BY{assumption} \pflabel{[epair6]maymatch1}
-            \item $\cancel{\hnotmatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair6]not-notmatch1}
-            \item $\cancel{\hpatmatch{\hprr{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair6]not-match2}
-            \item $\cancel{\hmaymatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair6]not-maymatch2}
-            \item $\hnotmatch{\hprr{e}}{p_2}$ \BY{assumption} \pflabel{[epair6]notmatch2}
+            \item $\cancel{\hpatmatch{\hfst{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair6]not-match1}
+            \item $\hmaymatch{\hfst{e}}{p_1}$ \BY{assumption} \pflabel{[epair6]maymatch1}
+            \item $\cancel{\hnotmatch{\hfst{e}}{p_1}}$ \BY{assumption} \pflabel{[epair6]not-notmatch1}
+            \item $\cancel{\hpatmatch{\hsnd{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair6]not-match2}
+            \item $\cancel{\hmaymatch{\hsnd{e}}{p_2}}$ \BY{assumption} \pflabel{[epair6]not-maymatch2}
+            \item $\hnotmatch{\hsnd{e}}{p_2}$ \BY{assumption} \pflabel{[epair6]notmatch2}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:notmatch} on \pfref{[epair6]notmatch2}, no case applies due to syntactic contradiction.\\
             Therefore, vacuously true.
         \restorelocalsteps{2}
-        \item[\hnotmatch{\hprl{e}}{p_1},\hpatmatch{\hprr{e}}{p_2}{\theta_2}]
+        \item[\hnotmatch{\hfst{e}}{p_1},\hpatmatch{\hsnd{e}}{p_2}{\theta_2}]
             \begin{pfsteps*}
-            \item $\cancel{\hpatmatch{\hprl{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair7]not-match1}
-            \item $\cancel{\hmaymatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair7]not-maymatch1}
-            \item $\hnotmatch{\hprl{e}}{p_1}$ \BY{assumption} \pflabel{[epair7]notmatch1}
-            \item $\hpatmatch{\hprr{e}}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[epair7]match2}
-            \item $\cancel{\hmaymatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair7]not-maymatch2}
-            \item $\cancel{\hnotmatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair7]not-notmatch2}
+            \item $\cancel{\hpatmatch{\hfst{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair7]not-match1}
+            \item $\cancel{\hmaymatch{\hfst{e}}{p_1}}$ \BY{assumption} \pflabel{[epair7]not-maymatch1}
+            \item $\hnotmatch{\hfst{e}}{p_1}$ \BY{assumption} \pflabel{[epair7]notmatch1}
+            \item $\hpatmatch{\hsnd{e}}{p_2}{\theta_2}$ \BY{assumption} \pflabel{[epair7]match2}
+            \item $\cancel{\hmaymatch{\hsnd{e}}{p_2}}$ \BY{assumption} \pflabel{[epair7]not-maymatch2}
+            \item $\cancel{\hnotmatch{\hsnd{e}}{p_2}}$ \BY{assumption} \pflabel{[epair7]not-notmatch2}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:notmatch} on \pfref{[epair7]notmatch1}, no case applies due to syntactic contradiction.\\
             Therefore, vacuously true.
         \restorelocalsteps{2}
-        \item[\hnotmatch{\hprl{e}}{p_1},\hmaymatch{\hprr{e}}{p_2}]
+        \item[\hnotmatch{\hfst{e}}{p_1},\hmaymatch{\hsnd{e}}{p_2}]
             \begin{pfsteps*}
-            \item $\cancel{\hpatmatch{\hprl{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair8]not-match1}
-            \item $\cancel{\hmaymatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair8]not-maymatch1}
-            \item $\hnotmatch{\hprl{e}}{p_1}$ \BY{assumption} \pflabel{[epair8]notmatch1}
-            \item $\cancel{\hpatmatch{\hprr{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair8]not-match2}
-            \item $\hmaymatch{\hprr{e}}{p_2}$ \BY{assumption} \pflabel{[epair8]maymatch2}
-            \item $\cancel{\hnotmatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair8]not-notmatch2}
+            \item $\cancel{\hpatmatch{\hfst{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair8]not-match1}
+            \item $\cancel{\hmaymatch{\hfst{e}}{p_1}}$ \BY{assumption} \pflabel{[epair8]not-maymatch1}
+            \item $\hnotmatch{\hfst{e}}{p_1}$ \BY{assumption} \pflabel{[epair8]notmatch1}
+            \item $\cancel{\hpatmatch{\hsnd{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair8]not-match2}
+            \item $\hmaymatch{\hsnd{e}}{p_2}$ \BY{assumption} \pflabel{[epair8]maymatch2}
+            \item $\cancel{\hnotmatch{\hsnd{e}}{p_2}}$ \BY{assumption} \pflabel{[epair8]not-notmatch2}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:notmatch} on \pfref{[epair8]notmatch1}, no case applies due to syntactic contradiction.\\
             Therefore, vacuously true.
         \restorelocalsteps{2}
-        \item[\hnotmatch{\hprl{e}}{p_1},\hnotmatch{\hprr{e}}{p_2}]
+        \item[\hnotmatch{\hfst{e}}{p_1},\hnotmatch{\hsnd{e}}{p_2}]
             \begin{pfsteps*}
-            \item $\cancel{\hpatmatch{\hprl{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair9]not-match1}
-            \item $\cancel{\hmaymatch{\hprl{e}}{p_1}}$ \BY{assumption} \pflabel{[epair9]not-maymatch1}
-            \item $\hnotmatch{\hprl{e}}{p_1}$ \BY{assumption} \pflabel{[epair9]notmatch1}
-            \item $\cancel{\hpatmatch{\hprr{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair9]not-match2}
-            \item $\hmaymatch{\hprr{e}}{p_2}$ \BY{assumption} \pflabel{[epair9]maymatch2}
-            \item $\cancel{\hnotmatch{\hprr{e}}{p_2}}$ \BY{assumption} \pflabel{[epair9]not-notmatch2}
+            \item $\cancel{\hpatmatch{\hfst{e}}{p_1}{\theta_1}}$ \BY{assumption} \pflabel{[epair9]not-match1}
+            \item $\cancel{\hmaymatch{\hfst{e}}{p_1}}$ \BY{assumption} \pflabel{[epair9]not-maymatch1}
+            \item $\hnotmatch{\hfst{e}}{p_1}$ \BY{assumption} \pflabel{[epair9]notmatch1}
+            \item $\cancel{\hpatmatch{\hsnd{e}}{p_2}{\theta_2}}$ \BY{assumption} \pflabel{[epair9]not-match2}
+            \item $\hmaymatch{\hsnd{e}}{p_2}$ \BY{assumption} \pflabel{[epair9]maymatch2}
+            \item $\cancel{\hnotmatch{\hsnd{e}}{p_2}}$ \BY{assumption} \pflabel{[epair9]not-notmatch2}
             \end{pfsteps*}
             By rule induction over \rulesref{rules:notmatch} on \pfref{[epair9]notmatch1}, no case applies due to syntactic contradiction.\\
             Therefore, vacuously true.
@@ -3962,10 +3962,10 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
     By rule induction over Rules (\ref{rules:TExp}) on \pfref{eTyp}, the following cases apply.
     \begin{byCases}
     \savelocalsteps{1}
-    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TFst}),(\ref{rule:TSnd}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
-        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[inl]notintro}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hfst{e_0},\hsnd{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVFst}),(\ref{rule:NVSnd})} \pflabel{[inl]notintro}
         \end{pfsteps*}
         \begin{enumerate}
         \savelocalsteps{2}
@@ -4083,10 +4083,10 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
     By rule induction over Rules (\ref{rules:TExp}) on \pfref{eTyp}, the following cases apply.
     \begin{byCases}
     \savelocalsteps{1}
-    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TFst}),(\ref{rule:TSnd}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
-        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[inr]notintro}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hfst{e_0},\hsnd{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVFst}),(\ref{rule:NVSnd})} \pflabel{[inr]notintro}
         \end{pfsteps*}
         \begin{enumerate}
         \savelocalsteps{2}
@@ -4207,24 +4207,24 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
     By rule induction over Rules (\ref{rules:TExp}) on \pfref{eTyp}, the following cases apply.
     \begin{byCases}
     \savelocalsteps{1}
-    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TPrl}),(\ref{rule:TPrr}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
+    \item[\text{(\ref{rule:TEHole}),(\ref{rule:THole}),(\ref{rule:TAp}),(\ref{rule:TFst}),(\ref{rule:TSnd}),(\ref{rule:TMatchZPre}),(\ref{rule:TMatchNZPre})}]
         \begin{pfsteps*}
-        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hprl{e_0},\hprr{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
-        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVPrl}),(\ref{rule:NVPrr})} \pflabel{[epair]notintro}
+        \item $e=\hehole{u},\hhole{e_0}{u},\hap{e_1}{e_2},\hfst{e_0},\hsnd{e_0},\hmatch{e_0}{\zrules}$ \BY{assumption}
+        \item $\notIntro{e}$ \BY{Rule (\ref{rule:NVEHole}),(\ref{rule:NVHole}),(\ref{rule:NVAp}),(\ref{rule:NVMatch}),(\ref{rule:NVFst}),(\ref{rule:NVSnd})} \pflabel{[epair]notintro}
         \item $\isIndet{e}$ \BY{\autoref{lem:final-notintro-indet} on \pfref{eFinal} and \pfref{[epair]notintro}} \pflabel{[epair]indet}
-        \item $\isIndet{\hprl{e}}$ \BY{Rule (\ref{rule:IPrl}) on \pfref{[epair]indet}} \pflabel{[epair]prl-indet}
-        \item $\isFinal{\hprl{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[epair]prl-indet}} \pflabel{[epair]prl-final}
-        \item $\isIndet{\hprr{e}}$ \BY{Rule (\ref{rule:IPrr}) on \pfref{[epair]indet}} \pflabel{[epair]prr-indet}
-        \item $\isFinal{\hprr{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[epair]prr-indet}} \pflabel{[epair]prr-final}
-        \item $\hexptyp{\cdot}{\Delta}{\hprl{e}}{\tau_1}$ \BY{Rule (\ref{rule:TPrl}) on \pfref{eTyp}} \pflabel{[epair]prl-typ}
-        \item $\hexptyp{\cdot}{\Delta}{\hprr{e}}{\tau_2}$ \BY{Rule (\ref{rule:TPrr}) on \pfref{eTyp}} \pflabel{[epair]prr-typ}
+        \item $\isIndet{\hfst{e}}$ \BY{Rule (\ref{rule:IFst}) on \pfref{[epair]indet}} \pflabel{[epair]fst-indet}
+        \item $\isFinal{\hfst{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[epair]fst-indet}} \pflabel{[epair]fst-final}
+        \item $\isIndet{\hsnd{e}}$ \BY{Rule (\ref{rule:ISnd}) on \pfref{[epair]indet}} \pflabel{[epair]snd-indet}
+        \item $\isFinal{\hsnd{e}}$ \BY{Rule (\ref{rule:FIndet}) on \pfref{[epair]snd-indet}} \pflabel{[epair]snd-final}
+        \item $\hexptyp{\cdot}{\Delta}{\hfst{e}}{\tau_1}$ \BY{Rule (\ref{rule:TFst}) on \pfref{eTyp}} \pflabel{[epair]fst-typ}
+        \item $\hexptyp{\cdot}{\Delta}{\hsnd{e}}{\tau_2}$ \BY{Rule (\ref{rule:TSnd}) on \pfref{eTyp}} \pflabel{[epair]snd-typ}
         \end{pfsteps*}
-        By inductive hypothesis on \pfref{[pair]p1-typ} and \pfref{[epair]prl-typ} and \pfref{[epair]prl-final} and by inductive hypothesis on \pfref{[pair]p2-typ} and \pfref{[epair]prr-typ} and \pfref{[epair]prr-final}.
+        By inductive hypothesis on \pfref{[pair]p1-typ} and \pfref{[epair]fst-typ} and \pfref{[epair]fst-final} and by inductive hypothesis on \pfref{[pair]p2-typ} and \pfref{[epair]snd-typ} and \pfref{[epair]snd-final}.
         \begin{pfsteps*}
-        \item $\csatisfy{\hprl{e}}{\xi_1}$ iff $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$ for some $\theta_1$ \pflabel{[epair]true-equiv1}
-        \item $\cmaysatisfy{\hprl{e}}{\xi_1}$ iff $\hmaymatch{\hprl{e}}{p_1}$ \pflabel{[epair]may-equiv1}
-        \item $\csatisfy{\hprr{e}}{\xi_2}$ iff $\hpatmatch{\hprr{e}}{p_2}{\theta_2}$ for some $\theta_2$ \pflabel{[epair]true-equiv2}
-        \item $\cmaysatisfy{\hprr{e}}{\xi_2}$ iff $\hmaymatch{\hprr{e}}{p_2}$ \pflabel{[epair]may-equiv2}
+        \item $\csatisfy{\hfst{e}}{\xi_1}$ iff $\hpatmatch{\hfst{e}}{p_1}{\theta_1}$ for some $\theta_1$ \pflabel{[epair]true-equiv1}
+        \item $\cmaysatisfy{\hfst{e}}{\xi_1}$ iff $\hmaymatch{\hfst{e}}{p_1}$ \pflabel{[epair]may-equiv1}
+        \item $\csatisfy{\hsnd{e}}{\xi_2}$ iff $\hpatmatch{\hsnd{e}}{p_2}{\theta_2}$ for some $\theta_2$ \pflabel{[epair]true-equiv2}
+        \item $\cmaysatisfy{\hsnd{e}}{\xi_2}$ iff $\hmaymatch{\hsnd{e}}{p_2}$ \pflabel{[epair]may-equiv2}
         \end{pfsteps*}
         \begin{enumerate}
         \savelocalsteps{2}
@@ -4236,10 +4236,10 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
             \begin{byCases}
             \item[\text{(\ref{rule:CSNotIntroPair})}]
                 \begin{pfsteps*}
-                \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{assumption} \pflabel{[epair1]satisfy1}
-                \item $\csatisfy{\hprr{e}}{\xi_2}$ \BY{assumption} \pflabel{[epair1]satisfy2}
-                \item $\hpatmatch{\hprl{e}}{p_1}{\theta_1}$ \BY{\pfref{[epair]true-equiv1} on \pfref{[epair1]satisfy1}} \pflabel{[epair1]match1}
-                \item $\hpatmatch{\hprr{e}}{p_2}{\theta_2}$ \BY{\pfref{[epair]true-equiv2} on \pfref{[epair1]satisfy2}} \pflabel{[epair1]match2}
+                \item $\csatisfy{\hfst{e}}{\xi_1}$ \BY{assumption} \pflabel{[epair1]satisfy1}
+                \item $\csatisfy{\hsnd{e}}{\xi_2}$ \BY{assumption} \pflabel{[epair1]satisfy2}
+                \item $\hpatmatch{\hfst{e}}{p_1}{\theta_1}$ \BY{\pfref{[epair]true-equiv1} on \pfref{[epair1]satisfy1}} \pflabel{[epair1]match1}
+                \item $\hpatmatch{\hsnd{e}}{p_2}{\theta_2}$ \BY{\pfref{[epair]true-equiv2} on \pfref{[epair1]satisfy2}} \pflabel{[epair1]match2}
                 \item $\hpatmatch{e}{\hpair{p_1}{p_2}}{\theta_1\uplus\theta_2}$ \BY{\ruleref{rule:MNotIntroPair} on \pfref{[epair]notintro} and \pfref{[epair1]match1} and \pfref{[epair1]match2}}
                 \end{pfsteps*}
             \end{byCases}
@@ -4253,10 +4253,10 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
             \item[\text{(\ref{rule:MNotIntroPair})}]
                 \begin{pfsteps*}
                 \item $\theta=\theta_1\uplus\theta_2$ \BY{assumption}
-                \item $\hpatmatch{\hprl{e}}{\xi_1}{\theta_1}$ \BY{assumption} \pflabel{[epair2]match1}
-                \item $\hpatmatch{\hprr{e}}{\xi_2}{\theta_2}$ \BY{assumption} \pflabel{[epair2]match2}
-                \item $\csatisfy{\hprl{e}}{\xi_1}$ \BY{\pfref{[epair]true-equiv1} on \pfref{[epair2]match1}} \pflabel{[epair2]satisfy1}
-                \item $\csatisfy{\hprr{e}}{\xi_2}$ \BY{\pfref{[epair]true-equiv2} on \pfref{[epair2]match2}} \pflabel{[epair2]satisfy2}
+                \item $\hpatmatch{\hfst{e}}{\xi_1}{\theta_1}$ \BY{assumption} \pflabel{[epair2]match1}
+                \item $\hpatmatch{\hsnd{e}}{\xi_2}{\theta_2}$ \BY{assumption} \pflabel{[epair2]match2}
+                \item $\csatisfy{\hfst{e}}{\xi_1}$ \BY{\pfref{[epair]true-equiv1} on \pfref{[epair2]match1}} \pflabel{[epair2]satisfy1}
+                \item $\csatisfy{\hsnd{e}}{\xi_2}$ \BY{\pfref{[epair]true-equiv2} on \pfref{[epair2]match2}} \pflabel{[epair2]satisfy2}
                 \item $\csatisfy{e}{\cpair{\xi_1}{\xi_2}}$ \BY{\ruleref{rule:CSNotIntroPair} on \pfref{[epair]notintro} and \pfref{[epair2]satisfy1} and \pfref{[epair2]satisfy2}}
                 \end{pfsteps*}
             \end{byCases}
@@ -4277,9 +4277,9 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
                 \item[\text{(\ref{rule:RXPairL})}]
                     \begin{pfsteps*}
                     \item $\refutable{\xi_1}$ \BY{assumption} \pflabel{[epair3]rft1}
-                    \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[epair3]notintro1}
-                    \item $\cmaysatisfy{\hprl{e}}{\xi_1}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[epair3]rft1} and \pfref{[epair3]notintro1}} \pflabel{[epair3]satisfy1}
-                    \item $\hmaymatch{\hprl{e}}{p_1}$ \BY{\pfref{[epair]may-equiv1} on \pfref{[epair3]satisfy1}} \pflabel{[epair3]match1}
+                    \item $\notIntro{\hfst{e}}$ \BY{\ruleref{rule:NVFst}} \pflabel{[epair3]notintro1}
+                    \item $\cmaysatisfy{\hfst{e}}{\xi_1}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[epair3]rft1} and \pfref{[epair3]notintro1}} \pflabel{[epair3]satisfy1}
+                    \item $\hmaymatch{\hfst{e}}{p_1}$ \BY{\pfref{[epair]may-equiv1} on \pfref{[epair3]satisfy1}} \pflabel{[epair3]match1}
                     \end{pfsteps*}
                     By rule induction over \rulesref{rules:maymatch} on \pfref{[epair3]match1}, only three cases apply.
                     \begin{byCases}
@@ -4303,9 +4303,9 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
                 \item[\text{(\ref{rule:RXPairR})}]
                     \begin{pfsteps*}
                     \item $\refutable{\xi_2}$ \BY{assumption} \pflabel{[epair3']rft1}
-                    \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[epair3']notintro1}
-                    \item $\cmaysatisfy{\hprr{e}}{\xi_2}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[epair3']rft1} and \pfref{[epair3']notintro1}} \pflabel{[epair3']satisfy1}
-                    \item $\hmaymatch{\hprr{e}}{p_2}$ \BY{\pfref{[epair]may-equiv2} on \pfref{[epair3']satisfy1}} \pflabel{[epair3']match1}
+                    \item $\notIntro{\hsnd{e}}$ \BY{\ruleref{rule:NVFst}} \pflabel{[epair3']notintro1}
+                    \item $\cmaysatisfy{\hsnd{e}}{\xi_2}$ \BY{\ruleref{rule:CMSNotIntro} on \pfref{[epair3']rft1} and \pfref{[epair3']notintro1}} \pflabel{[epair3']satisfy1}
+                    \item $\hmaymatch{\hsnd{e}}{p_2}$ \BY{\pfref{[epair]may-equiv2} on \pfref{[epair3']satisfy1}} \pflabel{[epair3']match1}
                     \end{pfsteps*}
                     By rule induction over \rulesref{rules:maymatch} on \pfref{[epair3']match1}, only three cases apply.
                     \begin{byCases}
@@ -4344,9 +4344,9 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
                 \item[\text{(\ref{rule:RPairL})}]
                     \begin{pfsteps*}
                     \item $\refutable{p_1}$ \BY{assumption} \pflabel{[epair4]rft1}
-                    \item $\notIntro{\hprl{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[epair4]notintro1}
-                    \item $\hmaymatch{\hprl{e}}{p_1}$ \BY{\ruleref{rule:MMNotIntro} on \pfref{[epair4]rft1} and \pfref{[epair4]notintro1}} \pflabel{[epair4]match1}
-                    \item $\cmaysatisfy{\hprl{e}}{\xi_1}$ \BY{\pfref{[epair]may-equiv1} on \pfref{[epair4]match1}} \pflabel{[epair4]satisfy1}
+                    \item $\notIntro{\hfst{e}}$ \BY{\ruleref{rule:NVFst}} \pflabel{[epair4]notintro1}
+                    \item $\hmaymatch{\hfst{e}}{p_1}$ \BY{\ruleref{rule:MMNotIntro} on \pfref{[epair4]rft1} and \pfref{[epair4]notintro1}} \pflabel{[epair4]match1}
+                    \item $\cmaysatisfy{\hfst{e}}{\xi_1}$ \BY{\pfref{[epair]may-equiv1} on \pfref{[epair4]match1}} \pflabel{[epair4]satisfy1}
                     \end{pfsteps*}
                     By rule induction over \rulesref{rules:MaySatisfy} on \pfref{[epair4]satisfy1}, only three cases apply.
                     \begin{byCases}
@@ -4370,9 +4370,9 @@ By rule induction over Rules (\ref{rules:PatTyp}) on \pfref{patTyp}.
                 \item[\text{(\ref{rule:RPairR})}]
                     \begin{pfsteps*}
                     \item $\refutable{p_2}$ \BY{assumption} \pflabel{[epair4']rft1}
-                    \item $\notIntro{\hprr{e}}$ \BY{\ruleref{rule:NVPrl}} \pflabel{[epair4']notintro1}
-                    \item $\hmaymatch{\hprr{e}}{p_2}$ \BY{\ruleref{rule:MMNotIntro} on \pfref{[epair4']rft1} and \pfref{[epair4']notintro1}} \pflabel{[epair4']satisfy1}
-                    \item $\cmaysatisfy{\hprr{e}}{\xi_2}$ \BY{\pfref{[epair]may-equiv2} on \pfref{[epair4']satisfy1}} \pflabel{[epair4']match1}
+                    \item $\notIntro{\hsnd{e}}$ \BY{\ruleref{rule:NVFst}} \pflabel{[epair4']notintro1}
+                    \item $\hmaymatch{\hsnd{e}}{p_2}$ \BY{\ruleref{rule:MMNotIntro} on \pfref{[epair4']rft1} and \pfref{[epair4']notintro1}} \pflabel{[epair4']satisfy1}
+                    \item $\cmaysatisfy{\hsnd{e}}{\xi_2}$ \BY{\pfref{[epair]may-equiv2} on \pfref{[epair4']satisfy1}} \pflabel{[epair4']match1}
                     \end{pfsteps*}
                     By rule induction over \rulesref{rules:MaySatisfy} on \pfref{[epair4']match1}, only three cases apply.
                     \begin{byCases}

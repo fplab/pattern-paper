@@ -1,0 +1,141 @@
+\section{Decidability}
+
+\judgboxa{\ctruify{\hxi} = \xi}{}
+\begin{subequations}\label{defn:truify}
+\begin{align}
+  \ctruify{\ctruth} &= \ctruth \\
+  \ctruify{\cunknown} &= \ctruth \\
+  \ctruify{\cnum{n}} &= \cnum{n} \\
+  \ctruify{\cor{\xi_1}{\xi_2}} &= \cor{\ctruify{\xi_1}}{\ctruify{\xi_2}} \\
+  \ctruify{\cinl{\xi}} &= \cinl{\ctruify{\xi}} \\
+  \ctruify{\cinr{\xi}} &= \cinr{\ctruify{\xi}} \\
+  \ctruify{\cpair{\xi_1}{\xi_2}} &= \cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}
+\end{align}
+\end{subequations}
+
+\judgboxa{\cfalsify{\hxi} = \xi}{}
+\begin{subequations}\label{defn:falsify}
+\begin{align}
+  \cfalsify{\ctruth} &= \ctruth \\
+  \cfalsify{\cunknown} &= \cfalsity \\
+  \cfalsify{\cnum{n}} &= \cnum{n} \\
+  \cfalsify{\cor{\xi_1}{\xi_2}} &= \cor{\cfalsify{\xi_1}}{\cfalsify{\xi_2}} \\
+  \cfalsify{\cinl{\xi}} &= \cinl{\cfalsify{\xi}} \\
+  \cfalsify{\cinr{\xi}} &= \cinr{\cfalsify{\xi}} \\
+  \cfalsify{\cpair{\xi_1}{\xi_2}} &= \cpair{\cfalsify{\xi_1}}{\cfalsify{\xi_2}}
+\end{align}
+\end{subequations}
+
+\judgboxa{\cincon{\Xi}}{A finite set of constraints, $\Xi$, is inconsistent}
+\begin{subequations}
+\begin{equation}
+\inferrule[CINCTruth]{
+  \cincon{\Xi}
+}{
+  \cincon{\Xi, \ctruth}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCFalsity]{ }{
+  \cincon{\Xi, \cfalsity}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCNum]{
+  n_1 \neq n_2
+}{
+  \cincon{\Xi, \cnum{n_1}, \cnum{n_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCNotNum]{ }{
+  \cincon{\Xi, \cnum{n}, \cnotnum{n}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCAnd]{
+  \cincon{\Xi, \xi_1, \xi_2}
+}{
+  \cincon{\Xi, \cand{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCOr]{
+  \cincon{\Xi, \xi_1} \\
+  \cincon{\Xi, \xi_2}
+}{
+  \cincon{\Xi, \cor{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCInj]{ }{
+  \cincon{\Xi, \cinl{\xi_1}, \cinr{\xi_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCInl]{
+  \cincon{\xi_1, \dotsb, \xi_n}
+}{
+  \cincon{\cinl{\xi_1}, \dotsb, \cinl{\xi_n}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCInr]{
+  \cincon{\xi_1, \dotsb, \xi_n}
+}{
+  \cincon{\cinr{\xi_1}, \dotsb, \cinr{\xi_n}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCPairL]{
+  \cincon{\xi_{11}, \dotsb, \xi_{n1}}
+}{
+  \cincon{\cpair{\xi_{11}}{\xi_{12}}, \cpair{\xi_{21}}{\xi_{22}}, \dotsb, \cpair{\xi_{n1}}{\xi_{n2}}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[CINCPairR]{
+  \cincon{\xi_{12}, \dotsb, \xi_{n2}}
+}{
+  \cincon{\cpair{\xi_{11}}{\xi_{12}}, \cpair{\xi_{21}}{\xi_{22}}, \dotsb, \cpair{\xi_{n1}}{\xi_{n2}}}
+}
+\end{equation}
+\end{subequations}
+
+\begin{lemma}[Decidability of Inconsistency]
+  \label{lem:inconsistency-decidability}
+  It is decidable whether $\cincon{\xi}$.
+\end{lemma}
+
+\begin{lemma}[Inconsistency and Entailment of Constraint]
+  \label{lem:inconsistency-iff-entailment}
+  $\cincon{\cdual{\xi}}$ iff $\ccsatisfy{\ctruth}{\xi}$
+\end{lemma}
+
+\begin{theorem}[Decidability of Exhaustiveness]
+\label{thrm:exhaustiveness-decidability}
+It is decidable whether $\csatisfyormay{\ctruth}{\hxi}$.
+\end{theorem}
+\begin{proof}
+  \begin{align*}
+               & \csatisfyormay{\ctruth}{\hxi} & \\
+    \text{iff} \quad& \ccsatisfy{\ctruth}{\ctruify{\hxi}} & \text{by \autoref{thrm:demystify-exhaustiveness}} \\
+    \text{iff} \quad& \cincon{\cdual{\ctruify{\hxi}}} & \text{by \autoref{lem:inconsistency-iff-entailment}}
+  \end{align*}
+  By \autoref{lem:inconsistency-decidability}, $\cincon{\cdual{\ctruify{\hxi}}}$ is decidable, and thus $\csatisfyormay{\ctruth}{\hxi}$ is decidable.
+\end{proof}
+
+\begin{theorem}[Decidability of Redundancy]
+\label{thrm:redundancy-decidability}
+It is decidable whether $\csatisfy{\hxi_1}{\hxi_2}$.
+\end{theorem}
+\begin{proof}
+  \begin{align*}
+               & \csatisfy{\hxi_1}{\hxi_2} & \\
+    \text{iff} \quad& \ccsatisfy{\ctruify{\hxi_1}}{\cfalsify{\hxi_2}} & \text{by \autoref{thrm:demystify-redundancy}} \\
+    \text{iff} \quad& \ccsatisfy{\ctruth}{\cor{\cdual{\ctruify{\hxi_1}}}{\cfalsify{\hxi_2}}} & \text{by \autoref{corol:material-entailment}}\\
+    \text{iff} \quad& \cincon{\cdual{\cor{\cdual{\ctruify{\hxi_1}}}{\cfalsify{\hxi_2}}}} & \text{by \autoref{lem:inconsistency-iff-entailment}} \\
+    \text{iff} \quad& \cincon{\cand{\ctruify{\hxi_1}}{\cdual{\cfalsify{\hxi_2}}}} & \text{by \autoref{defn:dual}}
+  \end{align*}
+  By \autoref{lem:inconsistency-decidability}, $\cincon{\cand{\ctruify{\hxi_1}}{\cdual{\cfalsify{\hxi_2}}}}$ is decidable, and thus $\csatisfy{\hxi_1}{\hxi_2}$ is decidable.
+\end{proof}

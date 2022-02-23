@@ -1,0 +1,26 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[!b]
+
+\judgbox{
+  \hsubstyp{\Gamma}{\Delta}{\theta}{\Gamma\theta}
+}{
+  $\theta$ is of type $\Gamma\theta$
+}
+
+\begin{mathpar}
+\Infer{\STEmpty}{ }{
+  \hsubstyp{\Gamma}{\Delta}{\emptyset}{\cdot}
+}
+
+\Infer{\STExtend}{
+  \hsubstyp{\Gamma}{\Delta}{\theta}{\Gamma_\theta} \\
+  \hexptyp{\Gamma}{\Delta}{e}{\tau}
+}{
+  \hsubstyp{\Gamma}{\Delta}{\theta , e / x}{\Gamma_\theta , x : \tau}
+}
+\end{mathpar}
+
+\caption{Typing of Substitution}
+\label{fig:substyp}
+\end{figure}
