@@ -1,10 +1,10 @@
 \section{Peanut: The Core Calculus}
 % We now formalize the intuitions developed in \autoref{sec:examples} as a core calculus that supports pattern matching with typed holes in both expression and pattern position.
 Traditional matching of an expression to a pattern leads to success or failure (or divergence in the lazy setting). In the setting of typed holes, there is an additional outcome: \emph{indeterminate}.
-An indeterminate match occurs when the pattern or expression contains holes and the match would succeed or fail depending on how the programmer modifies those holes. Such dependence on yet unspecified programmer input similarly colors the outcomes of corresponding coverage and redundancy checkers: a collection of patterns may be \emph{indeterminately inexhaustive}, and a pattern may be \emph{indeterminately redundant} with respect to some preceding collection of patterns.
+An indeterminate match occurs when the pattern or expression contains holes and the match would succeed or fail depending on how the programmer modifies those holes. Such dependence on yet unspecified programmer input similarly colors the outcomes of corresponding coverage and redundancy checkers: a collection of patterns may be \emph{indeterminately inexhaustive}, and a pattern may be \emph{indeterminately redundant} with respect to some preceding collection of patterns. \todo{is "indeterminately" here confusing as in the inexhaustiveness and redundancy are actually determinate}
 
 In this section, we formalize these concepts in a core calculus called Peanut that supports pattern matching with typed holes in both expression and pattern position. 
-We begin with the syntax of the calculus in \autoref{sec:Syntax}\todo{change autoref settings to say Sec. 3.1 instead of subsection 3.1}.
+We begin with the syntax of the calculus in \autoref{sec:Syntax}.
 In \autoref{sec:dynamics}, we define the dynamic semantics as a small-step operational semantics with support for evaluating incomplete programs.
 Next, in \autoref{sec:statics}, we define a corresponding static semantics as a type assignment system together with a match constraint language that we use to reason hypothetically about exhaustiveness and redundancy in the presence of
 holes.
@@ -39,7 +39,7 @@ Each rule, $r$, consists of a pattern and an expression, which we call the branc
 Hazelnut Live \cite{DBLP:journals/pacmpl/OmarVCH19} features a dynamic semantics capable of evaluating expressions with holes.
 Rather than stopping upon encountering a hole, evaluation proceeds around it, taking all evaluation steps that do not depend on the eventual contents of the hole.
 \autoref{fig:step} presents the corresponding stepping judgment $\htrans{e}{e'}$ of Peanut, many of the rules of which are directly adapted from Hazelnut Live.\footnote{Hazelnut Live is a contextual small-step semantics, whereas we choose to define a standard small-step semantics for Peanut.}
-The rules of interest in this work are those concerning match expressions, namely (match rules\todo{}).
+The rules of interest in this work are those concerning match expressions, namely \ITSuccMatch and \ITFailMatch.
 These inference rules use the zipper representation of the Peanut syntax to record the pattern matching progress.
 
 We use zipper rules of the form $\zrulsP{rs}{r}{rs}$ in match expressions to represent the intermediate states when we are performing pattern matching.
@@ -74,46 +74,18 @@ The conclusion of Rule \ITFailMatch demonstrates how it works.
 % \end{itemize}
 
 
-The final result $e$ of evaluation may be, as characterized by the judgment $\isFinal{e}$ in \autoref{fig:final}, either a value ($\isVal{e}$) or an \emph{indeterminate} form ($\isIndet{e}$) whose continued evaluation depends on the remaining holes' contents. For example, Rules \IAp and \IEHole together derive that a function application with a hole in function position is indeterminate.
+The final result $e$ of evaluation may be, as characterized by the judgment $\isFinal{e}$ in \autoref{fig:final}, either a value ($\isVal{e}$) or an \emph{indeterminate} form ($\isIndet{e}$) whose continued evaluation depends on the remaining holes' contents. For example, Rules \IAp and \IEHole together derive that a function application with a hole in function position is indeterminate. The interesting rule here is \IMatch.
 
 \input{fig-patmatch}
 
 Peanut extends this concept of indeterminacy to pattern matching.
-\autoref{fig:patmatch} presents the three possible outcomes of matching an expression $e$ to a pattern $p$.
-First, the judgment $\hpatmatch{e}{p}{\theta}$ denotes a successful match as witnessed by the substitution $\theta$ consisting of the variables bound in $p$. Second, the judgment $\hnotmatch{e}{p}$ denotes that $e$ does not match $p$. Third, the judgment $\hmaymatch{e}{p}$ indicates an \emph{indeterminate match} due to the presence of holes in $e$ or $p$.
-\todo{add mention of assupmtion of finality of expression}
-\todo{recall how we saw how successful/failed matches contextualize within stepping judgment, note how indeterminate match appears in indet judgment}
-% \figurename~\ref{fig:patmatch} defines three judgments corresponding to the
-% three possible results of pattern matching. We consider a final scrutinee $e$
-% and a pattern $p$ that are of the same type (see \autoref{sec:statics}). \autoref{fig:notintro} defines the judgment for expressions that cannot be values by simply looking at its form. Hence, when some final expression is of such form, they must be indeterminate. Besides, there is not need to recursively consider its inner expression during pattern matching.
+\autoref{fig:patmatch} presents the three possible outcomes of matching an expression $e$ against a pattern $p$. 
+First, the judgment $\hpatmatch{e}{p}{\theta}$ denotes a successful match as witnessed by the substitution $\theta$ consisting of the variables bound in $p$. Second, the judgment $\hnotmatch{e}{p}$ denotes that $e$ does not match $p$. Third, the judgment $\hmaymatch{e}{p}$ indicates an \emph{indeterminate match} due to the presence of holes in $e$ or $p$. 
 
+Note that all three judgment appear in the definition of stepping judgment (\autoref{fig:step}) and indet judgment (\autoref{fig:final}), specifically they are the premise of Rules \ITSuccMatch, \ITFailMatch, and \IMatch respectively. It demonstrates that pattern matching is the key to the stepping/indeterminacy of a match expression.
+Due to the one-to-one correspondence between pattern matching and semantics of match expression, \autoref{lemma:match-determinism} accounts for a significant part in proving \autoref{theorem:determinism}.
 
-\todo{add paragraph opener here bridging to going into some detail regarding specifics of matching}
-
-\input{fig-refutable}
-\input{fig-notintro}
-
-\todo{this paragraph below is floating content, needs to be worked into its surroundings}
-The judgment $\hpatmatch{e}{p}{\theta}$ denotes that $e$ matches $p$, as witnessed by
-the substitution $\theta$ defined on the variables in $p$, while the judgment
-$\hnotmatch{e}{p}$ denotes that $e$ does not match $p$. Notably, we introduce the
-third possibility $\hmaymatch{e}{p}$ --- $e$ may match $p$, which is also the
-\textit{key concept}
-\todo{d: the concept itself should be emphasized (if at all), not the phrase ``key concept''}
-in pattern matching with holes. Rules \MMEHole and \MMHole
-specify that any final expression may match a pattern hole, regardless of
-whether it is empty or non-empty. On the other hand, Rule \MMNotIntro specifies that
-an indeterminate expression may match a pattern $p$ only when $p$ is refutable
-(see \figurename~\ref{fig:refutable}).
-It is because any final expressions
-must match an irrefutable pattern of the same type, and it does not make sense to allow
-$\hpatmatch{e}{p}{\theta}$ and $\hmaymatch{e}{p}$ to be derivable at the same time.
-Actually,
-the three possible results of pattern matching are mutually exclusive and at
-least one of judgments can be derived under certain assumptions, as shown in the
-following lemma.
-
-The judgment $\hexptyp{\Gamma}{\Delta}{e}{\tau}$ specifies that expression $e$ is well-typed. And the judgment $\hpattyp{p}{\tau}{\Gamma}{\Delta}$ specifies that we can assign type $\tau$ to pattern $p$.
+Here, the judgment $\hexptyp{\Gamma}{\Delta}{e}{\tau}$ specifies that expression $e$ is well-typed. And the judgment $\hpattyp{p}{\tau}{\Gamma}{\Delta}$ specifies that we can assign type $\tau$ to pattern $p$. Both would be discussed in detail in \autoref{sec:statics}.
 \begin{lemma}[Matching Determinism]
   \label{lemma:match-determinism}
   If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$ then exactly one of the following holds
@@ -124,8 +96,7 @@ The judgment $\hexptyp{\Gamma}{\Delta}{e}{\tau}$ specifies that expression $e$ i
   \end{enumerate}
 \end{lemma}
 
-The determinism of pattern matching ensures the determinism of dynamic semantics.
-
+The following theorem is a combination of finality and progress.
 \begin{theorem}[Determinism]
   \label{theorem:determinism}
   If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then exactly one of the following holds
@@ -136,6 +107,21 @@ The determinism of pattern matching ensures the determinism of dynamic semantics
   \end{enumerate}
 \end{theorem}
 \todo{prove unique e'?}
+
+\input{fig-refutable}
+\input{fig-notintro}
+
+Now that we've identified the significance of pattern matching. Let's take a closer look at the three judgments describing the three possible outcomes of matching an expression $e$ against a pattern $p$ (\autoref{fig:patmatch}). Notably we need to introduce two new judgments ($\refutable{p}$) defined in \autoref{fig:refutable} and ($\notIntro{e}$) defined in \autoref{fig:notintro} that helps capture the indeterminacy of pattern matching. In the following discussion, we assume $e$ is final, \ie, no further step can be taken, and $p$ and $e$ are of the same type.
+
+$\notIntro{e}$ states that expression $e$ cannot be values by simply looking at its form as in it is not in an introduction form. Hence, when some final expression is of such form, they must be indeterminate. Also, when an expression is not in an introduction form, there does not exist a corresponding pattern sharing a similar structure with it. As a result, we cannot and should not recurse into the expression during pattern matching.
+
+$\refutable{p}$ states that pattern $p$ is indeterminately refutable in the sense that taking possible modification of any pattern holes into account, $p$ is not irrefutable. A pattern is irrefutable if any expression $e$ can successfully match it. For example, a pattern hole itself is not irrefutable because no expression must successfully match it.
+
+Now we consider different forms of a pattern $p$ and a expression $e$ and discuss which of the three matching judgments hold (one and only one should hold).
+Consider an irrefutable pattern like $x$ and $\_$, then any expression match them, including those involving holes.
+Consider a pattern hole, no matter it is empty or non-empty, Rules \MMEHole and \MMHole specify that any expression may match it.
+Consider an expression of some introduction form like $\hinl{\tau}{e}$ and a pattern with a corresponding structure like $\hinlp{p}$, we either can tell the matching result directly by looking at its top-level structure(Rule \NMConfR) or need to recursively consider their sub-expression(s) and sub-pattern(s).
+However, when the expression is not of some introduction form, we cannot firmly say it does not match any pattern. Rule \MNotIntroPair shows that such expression still succeed to match an irrefutable pattern (the irrefutability is implicitly shown by the last two premise). When the pattern is not irrefutable, \ie, $\refutable{p}$, it is a indeterminate match as described by Rule \MMNotIntro.
 
 \subsection{Static Semantics}\label{sec:statics}
 
