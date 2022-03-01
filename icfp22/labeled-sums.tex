@@ -1,45 +1,61 @@
 \section{Labeled Sums}\label{sec:labeledsums}
 
-We can generalize binary sums (with holes) to labeled sums (with holes).
+In this section, we will conservatively extend Peanut with finite labeled sums,
+sometimes called tagged unions or discrimnated unions.
 
-(syntax)
+The first step is to generalize the syntax of binary sums to other than two variants:
+\[
+  \arraycolsep=4pt\begin{array}{lll}
+    \tau & ::= & \ldots ~\vert~ \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset} \\
+    e    & ::= & \ldots ~\vert~ \hinj{C}{\tau}{e}                           \\
+    p    & ::= & \ldots ~\vert~ \hinjp{C}{p}                                \\
+    C    & ::= & \tagC ~\vert~ \tagehole{u} ~\vert~ \taghole{\tagC}{u}
+  \end{array}
+\]
+Labeled sums introduce a sort $C$ for labels and a new type-level connective
+\[ C_1(\tau_1) + \cdots + C_n(\tau_n) \]
+for collecting and labeling types.
+Since we are not concerned with the length of any particular sum,
+we employ the more general and compact notation
+\[\tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset}\]
+for a sum consisting of labels $\tagset = \setof{C_i}_{i \leq n}$ with respective argument types $\setof{\tau_i}_{i \leq n}$.
+The introductory form is the \emph{labeled injection} $\hinj{C}{\tau}{e}$ of expression $e$ into sum type $\tau$ at label $C$.
+The elimination form is $\hinj{C}{\tau}{p}$ via pattern matching.
 
-\input{fig-labeled-sums-syntax}
-\input{fig-labeled-sums-dynamics}
-\input{fig-labeled-sums-statics}
-\input{fig-labeled-sums-decidability}
+To facilitate gap-free editing of injection expressions and patterns, we distinguish between \emph{concrete labels} $\tagC$
+and \emph{label holes} which may be empty $\tagehole{u}$ or not empty $\taghole{\tagC}{u}$.
+Empty label holes indicate positions where labels are expected but not present.
+Non-empty label holes contain labels that are either syntactically invalid or violate semantic constraints.
+Whereas syntactic validity is essentially arbitrary, the semantic validity of a label is determined by the sort of its parent term.
+A label in type position is part of a sum type declaration and so must be unique w.r.t. other labels in the same declaration.
+A label in expression position is part of a labeled injection and so must belong to the intended sum type.
 
-A labeled sum consists of a set of label-type pairings.
-For such a pairing, we call the label a ``tag,'' and the type its ``argument type.''
-The syntax for labeled sums introduces two new sorts: tags and sum bodies.
-Each sort requires a new hole form: sum body holes, and tag holes.
-Sum body holes bridge the gap between empty sums and non-empty but fully-indeterminate sums, enabling gap-free manipulation of sum types with no tags defined.
-Tag holes, on the other hand, are necessary for gap-free manipulation of tag declarations (in types) and uses (in expressions).
-Correspondingly, there are two distinct forms of tag hole: duplicate tags (in types) and undefined tags (in expressions).
-Since the syntax of tags is independent of sort, we also include a single form of hole for invalid tag names.
+% Moving on to the static semantics, we must first extend the typing relations as shown in .
 
-TODO: introduce exps: intro vs elim forms
+% \input{fig-labeled-sums-dynamics}
+% \input{fig-labeled-sums-statics}
+% \input{fig-labeled-sums-decidability}
 
-(statics)
+% (statics)
 
-The presence of holes poses interesting challenges for the formal treatment of labeled sums.
-Consistency of labeled sum types is more nuanced than for binary sums.
-For example, consistency of sums of the same cardinality depends on whether there is a consistent mapping between tags as well as argument types.
-(Say something about the algorithmic complexity of naive vs our efficient implementation? Cite even more efficient approaches?)
+% The presence of holes poses interesting challenges for the formal treatment of labeled sums.
+% Consistency of labeled sum types is more nuanced than for binary sums.
+% For example, consistency of sums of the same cardinality depends on whether there is a consistent mapping between tags as well as argument types.
+% (Say something about the algorithmic complexity of naive vs our efficient implementation? Cite even more efficient approaches?)
 
-consistency: (efficient?) matching (we build a bipartite graph of all possible consistent matchings and use Hopcroft-Karp maximum-cardinality matching algo to determine whether a maximum matching exists)
+% consistency: (efficient?) matching (we build a bipartite graph of all possible consistent matchings and use Hopcroft-Karp maximum-cardinality matching algo to determine whether a maximum matching exists)
 
-% dont need: elided sums: easy to synthesize and enable a broader notion of consistency
-% dont need: casts between sums: (we do it componentwise)
-% dont need: (matched finite sums?)
+% % dont need: elided sums: easy to synthesize and enable a broader notion of consistency
+% % dont need: casts between sums: (we do it componentwise)
+% % dont need: (matched finite sums?)
 
-(dynamics)
+% (dynamics)
 
-substitution does not affect tags directly (but does affect argument types)
+% substitution does not affect tags directly (but does affect argument types)
 
-injection constraints (e.g. "not inl")
-+ any other modifications to the formalism to make labeled sums work
+% injection constraints (e.g. "not inl")
+% + any other modifications to the formalism to make labeled sums work
 
-any interesting details w.r.t. exhaustiveness or redundancy?
-- duals
-- see if existing definitions or operations need a richer understanding of sums than binary
+% any interesting details w.r.t. exhaustiveness or redundancy?
+% - duals
+% - see if existing definitions or operations need a richer understanding of sums than binary
