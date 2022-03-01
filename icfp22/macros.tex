@@ -54,7 +54,7 @@
 \newcommand{\hinj}[3]{\mathtt{inj}_{#1}^{#2}({#3})}
 \newcommand{\hinl}[2]{\mathtt{inl}_{#1}({#2})}
 \newcommand{\hinr}[2]{\mathtt{inr}_{#1}({#2})}
-\newcommand{\hinjp}[3]{\mathtt{inj}_{#1}^{#2}(#3)}
+\newcommand{\hinjp}[2]{\mathtt{inj}_{#1}(#2)}
 \newcommand{\hinlp}[1]{\mathtt{inl}(#1)}
 \newcommand{\hinrp}[1]{\mathtt{inr}(#1)}
 \newcommand{\hfst}[1]{\mathtt{fst}(#1)}
@@ -80,6 +80,7 @@
 \newcommand{\hpattyp}[4]{#4 \vdash #1 : #2 \dashV #3}
 \newcommand{\hsubstyp}[4]{#1 \mathbin{;} #2 \vdash #3 : #4}
 \newcommand{\hpatmatch}[3]{#1 \vartriangleright #2 \dashV #3}
+\newcommand{\hnotnotmatch}[2]{#1 \mathbin{\cancel{\bot}} #2}
 \newcommand{\hnotmatch}[2]{#1 \mathbin{\bot} #2}
 \newcommand{\hmaymatch}[2]{#1 \mathbin{?} #2}
 \newcommand{\htrans}[2]{#1 \mapsto #2}
@@ -91,6 +92,8 @@
 \newcommand{\isFinal}[1]{#1 ~\mathtt{final}}
 \newcommand{\notIntro}[1]{#1 ~\mathtt{notintro}}
 \newcommand{\fnotIntro}[1]{\textit{notintro}\inparens{#1}}
+
+\newcommand{\setof}[1]{\{#1\}}
 
 % ZTyp and ZExp
 \newcommand{\zlsel}[1]{{\bowtie}{#1}}

@@ -44,7 +44,7 @@
     \Infer{\MInj}{
       \hpatmatch{e}{p}{\theta}
     }{
-      \hpatmatch{\hinj{\tagC}{\tau}{e}}{\hinjp{\tagC}{p}}{\theta}
+      \hpatmatch{\hinj{C}{\tau}{e}}{\hinjp{C}{p}}{\theta}
     }
   \end{mathpar}
 
@@ -53,7 +53,7 @@
   \begin{mathpar}
     \Infer{\MMInjTag}{
       \tagmaymatch{C}{C'} \\
-      \hmaymatch{e}{p}
+      \hnotnotmatch{e}{p}
     }{
       \hmaymatch{\hinj{C}{\tau}{e}}{\hinjp{C'}{p}}
     }
@@ -61,76 +61,71 @@
     \Infer{\MMInjArg}{
       \hmaymatch{e}{p}
     }{
-      \hmaymatch{\hinj{\tagC}{\tau}{e}}{\hinjp{\tagC}{p}}
+      \hmaymatch{\hinj{C}{\tau}{e}}{\hinjp{C}{p}}
     }
   \end{mathpar}
 
   \judgbox{\hnotmatch{e}{p}}{$e$ does not match $p$}
 
   \begin{mathpar}
-    \Infer{\NMInjTag}{
+    \Infer{\NMInj}{
       \tagC \neq \tagC'
     }{
       \hnotmatch{\hinj{\tagC}{\tau}{e}}{\hinjp{\tagC'}{p}}
     }
 
-    \Infer{\NMInjArgOne}{
-      \hnotmatch{e}{p}
-    }{
-      \hnotmatch{\hinj{\tagC}{\tau}{e}}{\hinjp{\tagC}{p}}
-    }
-
-    \Infer{\NMInjArgTwo}{
+    \Infer{\NMInjTag}{
       \tagmaymatch{C}{C'} \\
       \hnotmatch{e}{p}
     }{
       \hnotmatch{\hinj{C}{\tau}{e}}{\hinjp{C'}{p}}
+    }
+
+    \Infer{\NMInjArg}{
+      \hnotmatch{e}{p}
+    }{
+      \hnotmatch{\hinj{C}{\tau}{e}}{\hinjp{C}{p}}
     }
   \end{mathpar}
 
   \judgbox{\tagmaymatch{C}{C'}}{$C$ indeterminately matches $C'$}
 
   \begin{mathpar}
-    \Infer{\TMMTagOne}{ }{
-      \tagmaymatch{\tagehole{u}}{\tagC}
+    \Infer{\TMMSym}{
+      \tagmaymatch{C'}{C}
+    }{
+      \tagmaymatch{C}{C'}
     }
 
-    \Infer{\TMMTagTwo}{ }{
-      \tagmaymatch{\taghole{\tagC}{u}}{\tagC'}
+    \Infer{\TMMHole}{
+      \tagehole{u} \neq C
+    }{
+      \tagmaymatch{\tagehole{u}}{C}
     }
 
-    \Infer{\TMMEHole}{ }{
-      \tagmaymatch{C}{\tagehole{u}}
-    }
-
-    \Infer{\TMMHole}{ }{
-      \tagmaymatch{C}{\taghole{\tagC}{u}}
+    \Infer{\TMMEHole}{
+      \tagC \neq C
+    }{
+      \tagmaymatch{\taghole{\tagC}{u}}{C}
     }
   \end{mathpar}
-
-  % \judgbox{\tagnotmatch{C}{C'}}{$C$ does not match $C'$}
-
-  % \begin{mathpar}
-  %   \Infer{\TNMTag}{
-  %     \tagC \neq \tagC'
-  %   }{
-  %     \tagnotmatch{\tagC}{\tagC'}
-  %   }
-  % \end{mathpar}
 
   \judgbox{\refutable{p}}{$p$ is refutable}
 
   \begin{mathpar}
-    \Infer{\RInj}{
+    \Infer{\RInjSing}{
+      C \in \tagset \\
+      |\tagset| = 1 \\
       \refutable{p}
     }{
       \refutable{\hinjp{C}{p}}
     }
 
-    \Infer{\RInj}{
-      \refutable{p}
+    \Infer{\RInjMult}{
+      C \in \tagset \\
+      |\tagset| > 1
     }{
-      \refutable{\hinjp{\notC}{p}}
+      \refutable{\hinjp{C}{p}}
     }
   \end{mathpar}
 
