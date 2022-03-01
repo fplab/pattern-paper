@@ -3,12 +3,12 @@
 \begin{figure}[ht]
 
 \judgbox{\rmpointer{\zrules} = rs}
-        {$rs$ can be obtained by erasing pointer from $\zrules$}
+        {$rs$ can be obtained by erasing the pointer from $\zrules$}
 \begin{align*}
   \rmpointer{\zruls{\cdot}{r}{rs}} &= \hrules{r}{rs} \\
   \rmpointer{\zruls{\hrulesP{r'}{rs'}}{r}{rs}} &= \hrules{r'}{\rmpointer{\zruls{rs'}{r}{rs}}}
 \end{align*}
 
-\caption{Pointer raser flattens the rules with pointer.}
+\caption{Pointer erasure flattens the rules with pointer.}
 \label{fig:pointer-eraser}
 \end{figure}

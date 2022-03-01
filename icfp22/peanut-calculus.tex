@@ -1,10 +1,10 @@
 \section{Peanut: The Core Calculus}
 % We now formalize the intuitions developed in \autoref{sec:examples} as a core calculus that supports pattern matching with typed holes in both expression and pattern position.
 Traditional matching of an expression to a pattern leads to success or failure (or divergence in the lazy setting). In the setting of typed holes, there is an additional outcome: \emph{indeterminate}.
-An indeterminate match occurs when the pattern or expression contains holes and the match would succeed or fail depending on how the programmer modifies those holes. Such dependence on yet unspecified programmer input similarly colors the outcomes of corresponding coverage and redundancy checkers: a collection of patterns may be \emph{indeterminately inexhaustive}, and a pattern may be \emph{indeterminately redundant} with respect to some preceding collection of patterns.
+An indeterminate match occurs when the pattern or expression contains holes and the match could succeed or fail depending on how the programmer modifies those holes. Such dependence on yet unspecified programmer input similarly colors the outcomes of corresponding coverage and redundancy checkers: a collection of patterns may be \emph{indeterminately inexhaustive}, and a pattern may be \emph{indeterminately redundant} with respect to some preceding collection of patterns. \todo{is "indeterminately" here confusing as in the inexhaustiveness and redundancy are actually determinate}
 
 In this section, we formalize these concepts in a core calculus called Peanut that supports pattern matching with typed holes in both expression and pattern position. 
-We begin with the syntax of the calculus in \autoref{sec:Syntax}\todo{change autoref settings to say Sec. 3.1 instead of subsection 3.1}.
+We begin with the syntax of the calculus in \autoref{sec:Syntax}.
 In \autoref{sec:dynamics}, we define the dynamic semantics as a small-step operational semantics with support for evaluating incomplete programs.
 Next, in \autoref{sec:statics}, we define a corresponding static semantics as a type assignment system together with a match constraint language that we use to reason hypothetically about exhaustiveness and redundancy in the presence of
 holes.
@@ -39,14 +39,14 @@ Each rule, $r$, consists of a pattern and an expression, which we call the branc
 Hazelnut Live \cite{DBLP:journals/pacmpl/OmarVCH19} features a dynamic semantics capable of evaluating expressions with holes.
 Rather than stopping upon encountering a hole, evaluation proceeds around it, taking all evaluation steps that do not depend on the eventual contents of the hole.
 \autoref{fig:step} presents the corresponding stepping judgment $\htrans{e}{e'}$ of Peanut, many of the rules of which are directly adapted from Hazelnut Live.\footnote{Hazelnut Live is a contextual small-step semantics, whereas we choose to define a standard small-step semantics for Peanut.}
-The rules of interest in this work are those concerning match expressions, namely (match rules\todo{}).
+The rules of interest in this work are those concerning match expressions, namely \ITSuccMatch and \ITFailMatch.
 These inference rules use the zipper representation of the Peanut syntax to record the pattern matching progress.
 
 We use zipper rules of the form $\zrulsP{rs}{r}{rs}$ in match expressions to represent the intermediate states when we are performing pattern matching.
 The former $rs$ represents the preceding rules that has already been considered and fails to match the scrutinee; the rule $r$ in the middle represents the current rule being considered; the latter $rs$ represents the remaining rules to be considered.
 \figurename~\ref{fig:pointer-eraser} defines a helper function to flatten the zipper rules.
 If we need to move the rule pointer to the next rule, we can append the current rule after the preceding rules, and regard the initial rule in the remaining rule as the new current rule.
-The conclusion of Rule \ITFailMatch demonstrates how it works.
+The conclusion of Rule \ITFailMatch demonstrates how this works.
 \todo{edit this paragraph, bringing up successful and failed matches in connection to traditional pattern matching. possibly note some details regarding finality of match scrutinee. see commented text.}
 % \figurename~\ref{fig:step} defines the stepping judgment
 % $\htrans{e}{e'}$. We will focus on stepping judgments of match expressions.
@@ -74,46 +74,18 @@ The conclusion of Rule \ITFailMatch demonstrates how it works.
 % \end{itemize}
 
 
-The final result $e$ of evaluation may be, as characterized by the judgment $\isFinal{e}$ in \autoref{fig:final}, either a value ($\isVal{e}$) or an \emph{indeterminate} form ($\isIndet{e}$) whose continued evaluation depends on the remaining holes' contents. For example, Rules \IAp and \IEHole together derive that a function application with a hole in function position is indeterminate.
+The final result $e$ of evaluation may be, as characterized by the judgment $\isFinal{e}$ in \autoref{fig:final}, either a value ($\isVal{e}$) or an \emph{indeterminate} form ($\isIndet{e}$) whose continued evaluation depends on the remaining holes' contents. For example, Rules \IAp and \IEHole together derive that a function application with a hole in function position is indeterminate. The interesting rule here is \IMatch.
 
 \input{fig-patmatch}
 
 Peanut extends this concept of indeterminacy to pattern matching.
-\autoref{fig:patmatch} presents the three possible outcomes of matching an expression $e$ to a pattern $p$.
-First, the judgment $\hpatmatch{e}{p}{\theta}$ denotes a successful match as witnessed by the substitution $\theta$ consisting of the variables bound in $p$. Second, the judgment $\hnotmatch{e}{p}$ denotes that $e$ does not match $p$. Third, the judgment $\hmaymatch{e}{p}$ indicates an \emph{indeterminate match} due to the presence of holes in $e$ or $p$.
-\todo{add mention of assupmtion of finality of expression}
-\todo{recall how we saw how successful/failed matches contextualize within stepping judgment, note how indeterminate match appears in indet judgment}
-% \figurename~\ref{fig:patmatch} defines three judgments corresponding to the
-% three possible results of pattern matching. We consider a final scrutinee $e$
-% and a pattern $p$ that are of the same type (see \autoref{sec:statics}). \autoref{fig:notintro} defines the judgment for expressions that cannot be values by simply looking at its form. Hence, when some final expression is of such form, they must be indeterminate. Besides, there is not need to recursively consider its inner expression during pattern matching.
+\autoref{fig:patmatch} presents the three possible outcomes of matching an expression $e$ against a pattern $p$. 
+First, the judgment $\hpatmatch{e}{p}{\theta}$ denotes a successful match as witnessed by the substitution $\theta$ consisting of the variables bound in $p$. Second, the judgment $\hnotmatch{e}{p}$ denotes that $e$ does not match $p$. Third, the judgment $\hmaymatch{e}{p}$ indicates an \emph{indeterminate match} due to the presence of holes in $e$ or $p$. 
 
+Note that all three judgment appear in the definition of stepping judgment (\autoref{fig:step}) and indet judgment (\autoref{fig:final}). Specifically, they are the premise of Rules \ITSuccMatch, \ITFailMatch, and \IMatch respectively. It demonstrates that pattern matching is the key to the stepping/indeterminacy of a match expression.
+Due to the one-to-one correspondence between pattern matching and the semantics of the match expression, \autoref{lemma:match-determinism} accounts for a significant part in proving \autoref{theorem:determinism}.
 
-\todo{add paragraph opener here bridging to going into some detail regarding specifics of matching}
-
-\input{fig-refutable}
-\input{fig-notintro}
-
-\todo{this paragraph below is floating content, needs to be worked into its surroundings}
-The judgment $\hpatmatch{e}{p}{\theta}$ denotes that $e$ matches $p$, as witnessed by
-the substitution $\theta$ defined on the variables in $p$, while the judgment
-$\hnotmatch{e}{p}$ denotes that $e$ does not match $p$. Notably, we introduce the
-third possibility $\hmaymatch{e}{p}$ --- $e$ may match $p$, which is also the
-\textit{key concept}
-\todo{d: the concept itself should be emphasized (if at all), not the phrase ``key concept''}
-in pattern matching with holes. Rules \MMEHole and \MMHole
-specify that any final expression may match a pattern hole, regardless of
-whether it is empty or non-empty. On the other hand, Rule \MMNotIntro specifies that
-an indeterminate expression may match a pattern $p$ only when $p$ is refutable
-(see \figurename~\ref{fig:refutable}).
-It is because any final expressions
-must match an irrefutable pattern of the same type, and it does not make sense to allow
-$\hpatmatch{e}{p}{\theta}$ and $\hmaymatch{e}{p}$ to be derivable at the same time.
-Actually,
-the three possible results of pattern matching are mutually exclusive and at
-least one of judgments can be derived under certain assumptions, as shown in the
-following lemma.
-
-The judgment $\hexptyp{\Gamma}{\Delta}{e}{\tau}$ specifies that expression $e$ is well-typed. And the judgment $\hpattyp{p}{\tau}{\Gamma}{\Delta}$ specifies that we can assign type $\tau$ to pattern $p$.
+Here, the judgment $\hexptyp{\Gamma}{\Delta}{e}{\tau}$ specifies that expression $e$ is well-typed. And the judgment $\hpattyp{p}{\tau}{\Gamma}{\Delta}$ specifies that we can assign type $\tau$ to pattern $p$. Both would be discussed in detail in \autoref{sec:statics}.
 \begin{lemma}[Matching Determinism]
   \label{lemma:match-determinism}
   If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\hpattyp{p}{\tau}{\Gamma}{\Delta}$ then exactly one of the following holds
@@ -124,8 +96,7 @@ The judgment $\hexptyp{\Gamma}{\Delta}{e}{\tau}$ specifies that expression $e$ i
   \end{enumerate}
 \end{lemma}
 
-The determinism of pattern matching ensures the determinism of dynamic semantics.
-
+The following theorem is a combination of finality and progress.
 \begin{theorem}[Determinism]
   \label{theorem:determinism}
   If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then exactly one of the following holds
@@ -137,52 +108,62 @@ The determinism of pattern matching ensures the determinism of dynamic semantics
 \end{theorem}
 \todo{prove unique e'?}
 
+\input{fig-refutable}
+\input{fig-notintro}
+
+Now that we've identified the significance of pattern matching, let's take a closer look at the three judgments describing the three possible outcomes of matching an expression $e$ against a pattern $p$ (\autoref{fig:patmatch}). Notably, we need to introduce two new judgments ($\refutable{p}$) defined in \autoref{fig:refutable} and ($\notIntro{e}$) defined in \autoref{fig:notintro} that help capture the indeterminacy of pattern matching. In the following discussion, we assume $e$ is final, \ie, no further step can be taken, and $p$ and $e$ are of the same type.
+
+$\notIntro{e}$ states that an expression $e$ cannot be a value, simply by noting that it is not an introduction form. Hence, when some final expression is of such a form, it must be indeterminate. Also, when an expression is not in an introduction form, there does not exist a corresponding pattern sharing a similar structure with it. As a result, we cannot and should not recurse into the expression during pattern matching.
+
+$\refutable{p}$ states that a pattern $p$ is indeterminately refutable in the sense that taking possible modification of any pattern holes into account, $p$ is not irrefutable. A pattern is irrefutable if all expressions $e$ must successfully match it. For example, a pattern hole itself is not irrefutable because no expression must successfully match it.
+
+Now we consider different forms of a pattern $p$ and an expression $e$, discussing which of the three matching judgments hold (and one, and only one, should hold).
+Considering an irrefutable pattern like $x$ and $\_$, all expressions match them, including those involving holes.
+Considering a pattern hole, either empty or non-empty, Rules \MMEHole and \MMHole specify that all expressions may match it.
+Considering an expression of some introduction form like $\hinl{\tau}{e}$ and a pattern with a corresponding structure like $\hinlp{p}$, we either can tell the matching result directly by looking at its top-level structure (Rule \NMConfR), or we need to recursively consider their sub-expression(s) and sub-pattern(s).
+However, when the expression is not of some introduction form, we cannot firmly say it does not match any pattern. Rule \MNotIntroPair shows that such expression can still succeed to match an irrefutable pattern (the irrefutability is implicitly shown by the last two premises). When the pattern is not irrefutable, \ie, $\refutable{p}$, it is an indeterminate match as described by Rule \MMNotIntro.
 \subsection{Static Semantics}\label{sec:statics}
 
 \input{fig-exptyp}
 
 We have already introduced how pattern matching with holes works. Now, we want
-to predict the runtime behavior of match expressions through checking
-exhaustiveness and redundancy in static semantics. However, in order to do exhaustiveness checking and redundancy
-checking of match expressions in \autoref{fig:exhaustiveness},
-\ref{fig:redundancy}, we need to predict the result of pattern matching in static
-semantics. We start by introducing \textit{match constraint language}, which
+to predict the runtime behavior of match expressions by introducing a static semantics that checks exhaustiveness and redundancy. In order to perform such checking of match expressions in \autoref{fig:exhaustiveness},
+\ref{fig:redundancy}, we must statically predict the result of pattern matching. To do so, we start by introducing a \textit{match constraint language}, which
 extends the idea in \cite{Harper2012}. Then, we build a similar type system to
 \cite{DBLP:journals/pacmpl/OmarVCH19} by defining typing judgments for both
-patterns and expressions. The former generates variable contexts $\Gamma$ and
-hole contexts $\Delta$ (see \figurename~\ref{fig:pat-rulestyp}) while the latter 
-takes variable contexts $\Gamma$ and hole contexts $\Delta$ as hypothesis (see
+patterns and expressions. The former takes hole contexts $\Delta$ as hypotheses and generates variable contexts $\Gamma$ (see \figurename~\ref{fig:pat-rulestyp}) while the latter 
+takes both variable contexts $\Gamma$ and hole contexts $\Delta$ as hypotheses (see
 \autoref{fig:exptyp}).
 
 \subsubsection{Typing of Expressions and Exhaustiveness Checking} \label{sec:exptyp}
 
-We start by specifying the typing of expressions, particularly, match
-expressions. And we will see that the definition of the typing judgments of
-match expressions enforce exhaustiveness of the constituent rules.
-\autoref{fig:exptyp} defines the typing judgment of expressions.
+We start by specifying the typing of expressions, giving particular attention to match expressions. We will see that our definitions enforce exhaustiveness of the constituent branches of any match expression. (Alternatively, one could include exhaustiveness as a separate judgement, as is done in our Agda mechanization.) \autoref{fig:exptyp} defines this typing judgment for expressions. 
+In the following discussion, we will assume scrutinees to be final as 
+it does not make sense to check if a non-final scrutinee will match a pattern.
 
-
-Rule \TMatchZPre corresponds to the case that we have not started pattern
+Rule \TMatchZPre corresponds to the case when we are yet to start pattern
 matching. The first premise specifies that the scrutinee $e$ is of type $\tau$,
-and the second premise specifies that the constituent rules $\hrul{r}{rs}$ are not only
+and the second premise specifies that the constituent rules $\hrules{r}{rs}$ are not only
 well-typed but also transforms a final expression of the same type as the
 scrutinee, into a final expression of type $\tau'$. Notably, it generates a
 constraint $\xi$ associated with the constituent rules $rs$. Then we use the
-third premise $\csatisfyormay{\ctruth}{\xi}$ to ensure that there is at least
-one rule whose pattern does match or may match the final scrutinee (see
-\autoref{sec:constraint}). In other words, for a well-typed match expression,
-it is impossible that the final scrutinee fails to match all the patterns as we
-consider rules $rs$ in order.
+third premise $\csatisfyormay{\ctruth}{\xi}$ to ensure that either 
+one branch would be taken, or indeterminately, some branch might be taken after the holes are filled. 
+In other words, for a well-typed match expression,
+it is impossible that the final scrutinee would determinately fails to match all the patterns as we consider branches $rs$ in order.
+Intuitively, constraint $\xi$ encodes the set of possible expressions that determinately or indeterminately match any of the branches. 
+The precise definition of the constraint language will be discussed in  
+\autoref{sec:constraint}. 
 
 Rule \TMatchNZPre corresponds to the case that we have already started pattern
 matching and have already considered preceding rules $rs_{pre}$. First of all,
 the scrutinee should not only be well-typed but also be final. Next, other than
 ensuring the exhaustiveness of the constituent rules, we want to make sure that
 at least one of the remaining rules $r_{post}$ would be taken. Note
-that only when the final scrutinee $e$ cannot match the pattern $p$, \ie,
+that only when the final scrutinee $e$ determinately match the pattern $p$, \ie,
 $\hnotmatch{e}{p}$, can we move the rule pointer. By
-\autoref{lemma:match-determinism}, for all patterns $p$ in the preceding
-rules, neither $\hpatmatch{e}{p}{\theta}$ nor $\hmaymatch{e}{p}$ is derivable.
+\autoref{lemma:match-determinism}, for any pattern $p$ in the preceding
+branches, neither $\hpatmatch{e}{p}{\theta}$ nor $\hmaymatch{e}{p}$ is derivable.
 Then by \autoref{lemma:const-matching-coherence}, we can derive the premise
 in Rule \TMatchNZPre, $\cnotsatisfyormay{e}{\xi_{pre}}$. And thus, the type of
 the match expression is preserved (\autoref{theorem:preservation})as we consider rules in order.
@@ -342,9 +323,15 @@ reasoning pattern matching in type system possible and helps prove
   \end{enumerate}
 \end{lemma}
 
-The following two definitions take advantage satisfaction judgments and
-corresponds to redundancy and exhaustiveness respectively. We will see how they
-can be determined in \autoref{sec:algorithm}
+In the rest of the section, we use satisfaction judgments to encode redundancy and exhaustiveness respectively, in the form of entailments between constraints. We will show their decidability in \autoref{sec:algorithm}
+
+We begin with the entailment judgement associated with redundancy checking. Recall in Rules \TOneRules and \TRules, we use $\cnotsatisfy{\xi_r}{\xi_{pre}}$ to ensure the branch $r$ of our interest does not have to be redundant with respect to its preceding branches $rs_{pre}$. 
+Here, we say the branch $r$ is determinately redundant iff it would never be taken. 
+Specifically if we put this definition into the context of type checking programs with holes,
+a type checker should give an error/warning about the redundancy of branch $r$,
+only when the branch $r$ would never be taken, regardless of how the programmer may fill the holes in the end.
+And the branch $r$ would never be taken only when for all values that determinately or indeterminately match the pattern in $r$, they determinately match the pattern in one of the previous branches.
+A formalized definition is given as follows:
 
 \begin{definition}[Entailment of Constraints]
   \label{definition:const-entailment}
@@ -352,15 +339,16 @@ can be determined in \autoref{sec:algorithm}
   Then $\csatisfy{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isVal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$
 \end{definition}
 
-Recall in Rules \TOneRules and \TRules, we use $\cnotsatisfy{\xi_r}{\xi_{pre}}$ to ensure rule $r$ does not have to be redundant with respect to its preceding rules $rs_{pre}$. When considering the redundancy of a specific rule in a match expression, the programmer only want to be warned when the rule is destined be redundant, regardless of how the programmer fills the holes at the end. Therefore, only when all values that must or may match the pattern of rule $r$, must have already matched one of the patterns in its preceding rules $rs_{pre}$, can we say $r$ must be redundant with respect to $rs_{pre}$.
-\todo{d: is there a connective word missing in this last sentence? not sure what this is saying}
+Now, we want to define the entailment judgement for exhaustiveness checking. 
+Recall in Rules \TMatchZPre and \TMatchNZPre, we use $\csatisfyormay{\ctruth}{\xi}$ to ensure that the constituent rules in a match expression either determinately or indeterminately exhaustive. 
+The type checker should give an error/warning about the inexhaustiveness only when a case must have been missed, or in other words, there is a value that does not match none of rules' pattern, no matter how the programmer may fill the holes in the program. That is saying a match expression is indeterminately exhaustive, if all values indeterminately match one of its constituent rules' pattern.
+To simply the proof of progress theorem (part of \autoref{theorem:determinism}), we consider all final expressions instead in the following definition of entailment. 
+In this way, even when the scrutinee $e$ is an indet expression, we can still be confident that either one of the branches would be taken or the evaluation will stop on one branch due to the indeterminacy of pattern matching with holes. As we will later show in \autoref{sec:algorithm}, it is equivalent to quantify over all values and all final expressions.
 
 \begin{definition}[Potential Entailment of Constraints]
   \label{definition:nn-entailment}
   Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$. Then $\csatisfyormay{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfyormay{e}{\xi_2}$ 
 \end{definition}
-
-Recall in Rules \TMatchZPre and \TMatchNZPre, we use $\csatisfyormay{\ctruth}{\xi}$ to ensure that the rules associated with constraint $\xi$ either must or may be exhaustive. When considering the exhaustiveness of a sequence of rules, the programmer only want to be warned when the rules cannot be exhaustive, regardless of how the programmer fills the holes at the end. Then, we just need to ensure that for all values $e$, $e$ either must or may match one of the patterns in the sequence of the rules. For simplicity when proving the progress part of  \autoref{theorem:determinism}, we consider all final expressions instead. In this way, even when the match expression is not complete and we may match on an indeterminate expression, we can still be confident that we won't have a match failure error. And actually, as we will later show in \autoref{sec:algorithm}, it is legitimate to replace values with final expressions in the quantifier.
 
 \subsection{Decidability}\label{sec:algorithm}
 
