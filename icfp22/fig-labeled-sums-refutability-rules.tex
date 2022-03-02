@@ -1,0 +1,46 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+  \judgbox{\refutable{p}}{$p$ is refutable}
+
+  \begin{mathpar}
+    \Infer{\RInjSing}{
+      C \in \tagset \\
+      |\tagset| = 1 \\
+      \refutable{p}
+    }{
+      \refutable{\hinjp{C}{p}}
+    }
+
+    \Infer{\RInjMult}{
+      C \in \tagset \\
+      |\tagset| > 1
+    }{
+      \refutable{\hinjp{C}{p}}
+    }
+  \end{mathpar}
+
+  \judgbox{\refutable{\xi}}{$\xi$ is refutable}
+
+  \begin{mathpar}
+    \Infer{\RXInj}{
+      \tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset} \\
+      |\tagset| \geq 2
+    }{
+      \refutable{\cinj{C}{\tau}{\xi}}
+    }
+  \end{mathpar}
+
+  \judgbox{\possible{\xi}}{$\xi$ is possible}
+
+  \begin{mathpar}
+    \Infer{\PInj}{
+      \possible{\xi}
+    }{
+      \possible{\cinj{C}{\tau}{\xi}}
+    }
+  \end{mathpar}
+
+  \caption{refutability of labeled sums}
+  \label{fig:labeled-sums-refutability-rules}
+\end{figure}

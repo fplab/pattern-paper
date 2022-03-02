@@ -1,7 +1,6 @@
 \section{Labeled Sums}\label{sec:labeledsums}
 
-In this section, we will conservatively extend Peanut with finite labeled sums,
-sometimes called tagged unions or discrimnated unions.
+In this section, we conservatively extend Peanut with finite labeled sums, sometimes called tagged unions or discrimnated unions.
 
 The first step is to generalize the syntax of binary sums to other than two variants:
 \[
@@ -12,71 +11,78 @@ The first step is to generalize the syntax of binary sums to other than two vari
     C    & ::= & \tagC ~\vert~ \tagehole{u} ~\vert~ \taghole{\tagC}{u}
   \end{array}
 \]
-Labeled sums introduce a sort $C$ for labels and a new type-level connective
-\[ C_1(\tau_1) + \cdots + C_n(\tau_n) \]
-for collecting and labeling types.
-Since we are not concerned with the length of any particular sum,
-we employ the more general and compact notation
+Labeled sums introduce a new sort $C$ for labels and a new type-level connective $C_1(\tau_1) + \cdots + C_n(\tau_n)$ for gathering and labeling types.
+Since we are not usually concerned with the length of any particular sum,
+we adopt a slightly more general and compact notation
 \[\tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset}\]
-for a sum consisting of labels $\tagset = \setof{C_i}_{i \leq n}$ with respective argument types $\setof{\tau_i}_{i \leq n}$.
+for sums consisting of labels $\tagset = \setof{C_i}_{i \leq n}$ with respective argument types $\setof{\tau_i}_{i \leq n}$.
 The introductory form is the \emph{labeled injection} $\hinj{C}{\tau}{e}$ of expression $e$ into sum type $\tau$ at label $C$.
 The elimination form is $\hinj{C}{\tau}{p}$.
 
-To facilitate gap-free editing of injections, we distinguish between \emph{concrete labels} $\tagC$
+To support gap-free editing of injections, we distinguish between \emph{concrete labels} $\tagC$
 and \emph{label holes} which are either empty $\tagehole{u}$ or not empty $\taghole{\tagC}{u}$.
 Empty label holes indicate positions where labels are expected but not present.
-Non-empty label holes contain labels that are either syntactically invalid or violate semantic constraints.
-Whereas syntactic validity is essentially arbitrary, the semantic validity of a label is determined by the sort of its parent term.
-A label in type position is part of a sum type declaration and so must be unique w.r.t. other labels in the same declaration.
-A label in expression position is part of a labeled injection and so must belong to the intended sum type.
+The labels of non-empty label holes are either syntactically invalid or violate one of the following semantic constraints.
+In type position, a label is part of a sum type declaration and so must be distinct from other labels in the same declaration.
+In expression or pattern position, a label is part of an injection and so must belong to the sum type it injects into.
+Thus, holes around syntactically valid labels indicate duplication for sums and non-membership for injections.
+
+\input{fig-labeled-sums-pattern-matching-rules}
+Moving on to the dynamic semantics, \autoref{fig:labeled-sums-pattern-matching-rules} and \autoref{fig:labeled-sums-evaluation-rules}
+extend Peanut's dynamic semantics to support evaluation of labeled injections.
+The rules in \autoref{fig:labeled-sums-pattern-matching-rules} define pattern matching for labeled sums with label holes,
+subject to the matching determinism conditions imposed by \autoref{lemma:match-determinism}.
+Rule \MInj is a straightforward rule for matching labeled injection expressions and pattern.
+Rules \MMInjTag and \MMInjArg allow indeterminate matching against a pattern whose label or argument may match, respectively.
+Rule \NMInj forbids matching of concrete but unequal labels, and
+Rules \NMInjTag and \NMInjArg forbid matching when the arguments do not match.
+Judgments of the form $\tagmaymatch{C}{C'}$ define consistency of labels that may match.
+Rules \TMMSym, \TMMHole, and \TMMEHole establish a partial equivalence among distinct labels when at least one of them is a hole.
+
+The rules in \autoref{fig:labeled-sums-evaluation-rules} define stepping of labeled injection expressions,
+subject to the determinism conditions imposed by \autoref{theorem:determinism}.
+These rules are direct adaptations of the corresponding rules for binary injections in \autoref{fig:step} and \autoref{fig:final}.
+\input{fig-labeled-sums-evaluation-rules}
 
 \input{fig-labeled-sums-typing-rules}
-Moving on to static semantics, we must first extend the typing relations as shown in \autoref{fig:labeled-sums-typing-rules},
-generalizing the rules for binary injections in \autoref{fig:exptyp} and \autoref{fig:pat-rulestyp}.
+Moving on to the static semantics, we first extend the typing relations as shown in \autoref{fig:labeled-sums-typing-rules}
+by generalizing the rules for binary injections from \autoref{fig:exptyp} and \autoref{fig:pat-rulestyp}.
 The rules shown in \autoref{fig:labeled-sums-typing-rules} are essentially the same as their binary counterparts,
 differing in that instead of assuming all sums contain precisely two fixed labels,
 we must check whether label $C_j$ with argument type $\tau_j$ belongs to the annotated sum type $\tau$.
 
 \input{fig-labeled-sums-constraint-rules}
-Next, we must extend the syntax of constraints to labeled sums:
+Next, we extend the syntax of constraints to labeled sums:
 \[
   \arraycolsep=4pt\begin{array}{lll}
     \xi & ::= & \ldots ~\vert~ \cinj{C}{\tau}{\xi}
   \end{array}
 \]
 \autoref{fig:labeled-sums-constraint-rules} extends Peanut's constraint checking semantics to support matching on injections into labeled sums.
-A constraint of the form $\cinj{C}{\tau}{\xi}$ represents labeled injections into sum $\tau$ of tag $C$ with arguments constrained by $\xi$.
-Rule \CTInj specifices which sum type is constrained by a given labeled injection constraint.
-Rules \CSInj, \CMSInjTag, \CMSInjArg specify whether and to what extent labeled injection expressions satisfy labeled injection constraints,
+A constraint of the form $\cinj{C}{\tau}{\xi}$ represents labeled injections into sum $\tau$ of label $C$ with arguments constrained by $\xi$.
+Rule \CTInj decides which sum type is constrained by a labeled injection constraint.
+Rules \CSInj, \CMSInjTag, and \CMSInjArg specify whether and to what extent labeled injection expressions satisfy labeled injection constraints,
 subject to the coherence conditions imposed by \autoref{theorem:exclusive-constraint-satisfaction} and \autoref{lemma:const-matching-coherence}.
-Rule \RXInj establishes that labeled injection constraints for nontrivial sums are refutable, i.e., that their sets of dual constraints are not empty.
-For a given sum type, the dual of a labeled injection constraint into it consists of injections of the same label with dual argument constraints
-as well as injections of any other label belonging to the sum.
-The premises of Rule \RXInj are necessary to respect the fact that there are no alternatives injections into singleton sums, and none at all into void sums.
+That is, a labeled injection expression satisfies a labeled injection constraint
+only when they have the same label and the argument satisfies the argument constraint.
+If the 
+
+\input{fig-labeled-sums-refutability-rules}
+Rule \RXInj establishes that labeled injection constraints for nontrivial sums are refutable, i.e., that the set of dual constraints is not empty.
+The dual of such a constraint consists of injections of the same label with dual arguments as well as injections of other labels into the sum.
+The premises of Rule \RXInj merely express the fact that there are no alternatives injections into singleton sums, and none at all into void sums.
+Rule \PInj establishes that it is possible to satisfy a labeled injection constraint whenever it is possible to satisfy its argument contraint.
 
 \input{fig-labeled-sums-decidability}
-% \autoref{fig:labeled-sums-decidability} XXX
+\autoref{fig:labeled-sums-decidability} gives the relevant conditions for inconsistency of labeled injection constrants.
+Rule \CINCInjTag detects inconsistent labels and
+Rule \CINCInjArg detects inconsistent argument constrants.
 
-% \input{fig-labeled-sums-dynamics}
-% \input{fig-labeled-sums-statics}
-
-
-% For example, consistency of sums of the same cardinality depends on whether there is a consistent mapping between tags as well as argument types.
-% (Say something about the algorithmic complexity of naive vs our efficient implementation? Cite even more efficient approaches?)
-
-% consistency: (efficient?) matching (we build a bipartite graph of all possible consistent matchings and use Hopcroft-Karp maximum-cardinality matching algo to determine whether a maximum matching exists)
-
-% % dont need: elided sums: easy to synthesize and enable a broader notion of consistency
-% % dont need: casts between sums: (we do it componentwise)
-% % dont need: (matched finite sums?)
-
-% (dynamics)
-
-% substitution does not affect tags directly (but does affect argument types)
-
-% injection constraints (e.g. "not inl")
-% + any other modifications to the formalism to make labeled sums work
-
-% any interesting details w.r.t. exhaustiveness or redundancy?
-% - duals
-% - see if existing definitions or operations need a richer understanding of sums than binary
+The inclusion of finite labeled sums with label holes adds substantial complexity to type consistency checking.
+For example, given two finite labeled sum types of cardinality $n$,
+whether they are consistent depends on whether there is a consistent pairing of the elements.
+Naively generating all $n^2$ pairings and then checking every subset of size $n$ 
+would require $\binom{n^2}{n} \gg n^2$ checks.
+If we instead model the search space as a complete bipartite graph with the elements of the sums on opposing sides,
+the problem reduces to one of finding a maximum matching in a bipartite graph with $2n$ vertices and $n^2$ edges,
+which can be solved by Hopcroft-Karp\todo{cite} in $O(n^{5/2})$ steps.

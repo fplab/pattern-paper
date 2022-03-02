@@ -1,43 +1,6 @@
 % !TEX root= pattern-paper.tex
 
 \begin{figure}[ht]
-  \judgbox{\htrans{e}{e'}}{$e$ takes a step to $e'$}
-
-  \begin{mathpar}
-    \Infer{\ITInj}{
-      \htrans{e}{e'}
-    }{
-      \htrans{\hinj{C}{\tau}{e}}{\hinj{C}{\tau}{e'}}
-    }
-  \end{mathpar}
-
-  \judgbox{\isVal{e}}{$e$ is a value}
-
-  \begin{mathpar}
-    \Infer{\VInj}{
-      \isVal{e}
-    }{
-      \isVal{\hinj{\tagC}{\tau}{e}}
-    }
-  \end{mathpar}
-
-  \judgbox{\isIndet{e}}{$e$ is indeterminate}
-
-  \begin{mathpar}
-    \Infer{\IEInj}{
-      \isIndet{e}
-    }{
-      \isIndet{\hinj{\tagC}{\tau}{e}}
-    }
-
-    \Infer{\IEInjHole}{
-      C \neq \tagC \\
-      \isFinal{e}
-    }{
-      \isIndet{\hinj{C}{\tau}{e}}
-    }
-  \end{mathpar}
-
   \judgbox{\hpatmatch{e}{p}{\theta}}{$e$ matches $p$, emitting $\theta$}
 
   \begin{mathpar}
@@ -110,25 +73,6 @@
     }
   \end{mathpar}
 
-  \judgbox{\refutable{p}}{$p$ is refutable}
-
-  \begin{mathpar}
-    \Infer{\RInjSing}{
-      C \in \tagset \\
-      |\tagset| = 1 \\
-      \refutable{p}
-    }{
-      \refutable{\hinjp{C}{p}}
-    }
-
-    \Infer{\RInjMult}{
-      C \in \tagset \\
-      |\tagset| > 1
-    }{
-      \refutable{\hinjp{C}{p}}
-    }
-  \end{mathpar}
-
-  \caption{Dynamic semantics of labeled sums}
-  \label{fig:labeled-sums-dynamics}
+  \caption{Pattern matching rules for labeled sums}
+  \label{fig:labeled-sums-pattern-matching-rules}
 \end{figure}

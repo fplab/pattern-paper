@@ -22,17 +22,6 @@
     \qquad \left(\text{where }\tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset}\right)
   \end{align*}
 
-  \judgbox{\refutable{\xi}}{$\xi$ is refutable}
-
-  \begin{mathpar}
-    \Infer{\RXInj}{
-      \tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset} \\
-      |\tagset| \geq 2
-    }{
-      \refutable{\cinj{C}{\tau}{\xi}}
-    }
-  \end{mathpar}
-
   \judgbox{\csatisfy{e}{\xi}}{$e$ satisfies $\xi$}
 
   \begin{mathpar}
