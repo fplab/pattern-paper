@@ -15,7 +15,7 @@ $\arraycolsep=4pt\begin{array}{lll}
   \cpair{\xi_1}{\xi_2}
 \end{array}$
 
-\judgbox{\ctyp{\xi}{\tau}}{$\xi$ constrains final expressions of type $\tau$}
+\judgbox{\ctyp{\xi}{\tau}}{$\xi$ is of type $\tau$}
 
 \begin{mathpar}
 \Infer{\CTTruth}{ }{
@@ -73,7 +73,6 @@ $\arraycolsep=4pt\begin{array}{lll}
 \begin{align*}
   \cdual{\ctruth} &= \cfalsity \\
   \cdual{\cfalsity} &= \ctruth \\
-  \cdual{\cunknown} &= \cunknown \\
   \cdual{\cnum{n}} &= \cnotnum{n} \\
   \cdual{\cnotnum{n}} &= \cnum{n} \\
   \cdual{\cand{\xi_1}{\xi_2}} &= \cor{\cdual{\xi_1}}{\cdual{\xi_2}} \\
