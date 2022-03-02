@@ -20,26 +20,47 @@ we employ the more general and compact notation
 \[\tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset}\]
 for a sum consisting of labels $\tagset = \setof{C_i}_{i \leq n}$ with respective argument types $\setof{\tau_i}_{i \leq n}$.
 The introductory form is the \emph{labeled injection} $\hinj{C}{\tau}{e}$ of expression $e$ into sum type $\tau$ at label $C$.
-The elimination form is $\hinj{C}{\tau}{p}$ via pattern matching.
+The elimination form is $\hinj{C}{\tau}{p}$.
 
-To facilitate gap-free editing of injection expressions and patterns, we distinguish between \emph{concrete labels} $\tagC$
-and \emph{label holes} which may be empty $\tagehole{u}$ or not empty $\taghole{\tagC}{u}$.
+To facilitate gap-free editing of injections, we distinguish between \emph{concrete labels} $\tagC$
+and \emph{label holes} which are either empty $\tagehole{u}$ or not empty $\taghole{\tagC}{u}$.
 Empty label holes indicate positions where labels are expected but not present.
 Non-empty label holes contain labels that are either syntactically invalid or violate semantic constraints.
 Whereas syntactic validity is essentially arbitrary, the semantic validity of a label is determined by the sort of its parent term.
 A label in type position is part of a sum type declaration and so must be unique w.r.t. other labels in the same declaration.
 A label in expression position is part of a labeled injection and so must belong to the intended sum type.
 
-% Moving on to the static semantics, we must first extend the typing relations as shown in .
+\input{fig-labeled-sums-typing-rules}
+Moving on to static semantics, we must first extend the typing relations as shown in \autoref{fig:labeled-sums-typing-rules},
+generalizing the rules for binary injections in \autoref{fig:exptyp} and \autoref{fig:pat-rulestyp}.
+The rules shown in \autoref{fig:labeled-sums-typing-rules} are essentially the same as their binary counterparts,
+differing in that instead of assuming all sums contain precisely two fixed labels,
+we must check whether label $C_j$ with argument type $\tau_j$ belongs to the annotated sum type $\tau$.
+
+\input{fig-labeled-sums-constraint-rules}
+Next, we must extend the syntax of constraints to labeled sums:
+\[
+  \arraycolsep=4pt\begin{array}{lll}
+    \xi & ::= & \ldots ~\vert~ \cinj{C}{\tau}{\xi}
+  \end{array}
+\]
+\autoref{fig:labeled-sums-constraint-rules} extends Peanut's constraint checking semantics to support matching on injections into labeled sums.
+A constraint of the form $\cinj{C}{\tau}{\xi}$ represents labeled injections into sum $\tau$ of tag $C$ with arguments constrained by $\xi$.
+Rule \CTInj specifices which sum type is constrained by a given labeled injection constraint.
+Rules \CSInj, \CMSInjTag, \CMSInjArg specify whether and to what extent labeled injection expressions satisfy labeled injection constraints,
+subject to the coherence conditions imposed by \autoref{theorem:exclusive-constraint-satisfaction} and \autoref{lemma:const-matching-coherence}.
+Rule \RXInj establishes that labeled injection constraints for nontrivial sums are refutable, i.e., that their sets of dual constraints are not empty.
+For a given sum type, the dual of a labeled injection constraint into it consists of injections of the same label with dual argument constraints
+as well as injections of any other label belonging to the sum.
+The premises of Rule \RXInj are necessary to respect the fact that there are no alternatives injections into singleton sums, and none at all into void sums.
+
+\input{fig-labeled-sums-decidability}
+% \autoref{fig:labeled-sums-decidability} XXX
 
 % \input{fig-labeled-sums-dynamics}
 % \input{fig-labeled-sums-statics}
-% \input{fig-labeled-sums-decidability}
 
-% (statics)
 
-% The presence of holes poses interesting challenges for the formal treatment of labeled sums.
-% Consistency of labeled sum types is more nuanced than for binary sums.
 % For example, consistency of sums of the same cardinality depends on whether there is a consistent mapping between tags as well as argument types.
 % (Say something about the algorithmic complexity of naive vs our efficient implementation? Cite even more efficient approaches?)
 
