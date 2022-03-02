@@ -87,7 +87,7 @@
 
 \newcommand{\highlight}[1]{\colorbox{yellow}{$\displaystyle #1$}}
 
-%% Joshua Dunfield macros
+%% Jana Dunfield macros
 \def\OPTIONConf{1}
 \usepackage{jdunfield}
 \usepackage{rulelinks} % hyperlink of rule name
@@ -102,6 +102,22 @@
 % }
 % \makeatother
 % \newcommand{\restorelocalsteps}[1]{\setcounter{pfsteps@pfc@local}{\value{#1}}}
+
+\usepackage{listings}%
+\lstloadlanguages{ML}
+\lstset{tabsize=2, 
+basicstyle=\fontsize{7.5pt}{1em}\ttfamily, 
+% keywordstyle=\sffamily,
+commentstyle=\itshape\ttfamily\color{gray}, 
+stringstyle=\ttfamily\color{purple},
+mathescape=false,escapechar=\#,
+numbers=left, numberstyle=\scriptsize\color{gray}\ttfamily, language=ML, showspaces=false,showstringspaces=false,xleftmargin=15pt, 
+morekeywords={string, float, int, bool, match},
+classoffset=0,belowskip=\smallskipamount, aboveskip=\smallskipamount,
+moredelim=**[is][\color{red}]{SSTR}{ESTR}
+}
+\newcommand{\li}[1]{\lstinline[basicstyle=\ttfamily\fontsize{9pt}{1em}\selectfont]{#1}}
+\newcommand{\lismall}[1]{\lstinline[basicstyle=\ttfamily\fontsize{9pt}{1em}\selectfont]{#1}}
 
 \input{macros}
 \input{rulecommands}
