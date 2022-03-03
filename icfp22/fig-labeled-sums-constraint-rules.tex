@@ -16,9 +16,11 @@
   \judgbox{\cdual{\xi_1} = \xi_2}{dual of $\xi_1$ is $\xi_2$}
 
   \begin{align*}
-    \cdual{\cinj{C}{\tau}{\xi}} & = \cinj{C}{\tau}{\cdual{\xi}} \vee \left(
-    \bigvee_{C_i \in \tagset \setminus \{C\}} \cinj{C_i}{\tau}{\ctruth}
-    \right)
+    \cdual{\cinj{\tagC}{\tau}{\xi}}              & = \cinj{\tagC}{\tau}{\cdual{\xi}} \vee \left(
+    \bigvee_{C_i \in \tagset \setminus \{\tagC\}} \cinj{C_i}{\tau}{\ctruth}
+    \right)                                                                                                      \\
+    \cdual{\cinj{\tagehole{u}}{\tau}{\xi}}       & = \bigvee_{\tagC_i \in \tagset} \cinj{\tagC_i}{\tau}{\ctruth} \\
+    \cdual{\cinj{\taghole{\tagC}{u}}{\tau}{\xi}} & = \bigvee_{\tagC_i \in \tagset} \cinj{\tagC_i}{\tau}{\ctruth}
     \qquad \left(\text{where }\tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset}\right)
   \end{align*}
 
