@@ -2,7 +2,7 @@
 
 \begin{figure}[!ht]
 
-\judgbox{\csatisfy{e}{\xi}}{$e$ satisfies $\xi$}
+\judgbox{\csatisfy{e}{\xi}}{$e$ necessarily satisfies $\xi$}
 
 \begin{mathpar}
 \Infer{\CSTruth}{ }{
@@ -74,7 +74,7 @@
 }
 \end{mathpar}
 
-\judgbox{\cmaysatisfy{e}{\xi}}{$e$ may satisfy $\xi$}
+\judgbox{\cmaysatisfy{e}{\xi}}{$e$ indeterminately satisfy $\xi$}
 
 \begin{mathpar}
 \Infer{\CMSUnknown}{ }{
@@ -166,7 +166,7 @@
 }
 \end{mathpar}
 
-\judgbox{\csatisfyormay{e}{\xi}}{$e$ satisfies or may satisfy $\xi$}
+\judgbox{\csatisfyormay{e}{\xi}}{$e$ necessarily or indeterminately satisfy $\xi$}
 
 \begin{mathpar}
 \Infer{\CSMSMay}{
@@ -182,6 +182,6 @@
 }
 \end{mathpar}
 
-  \caption{Satisfaction Judgments}
+  \caption{Satisfaction}
   \label{fig:satisfy}
 \end{figure}

@@ -1,57 +1,61 @@
-\section{Related Work}
+\section{Related and Future Work}
 
-\subsubsection{Typed Holes}
-Peanut is based on Hazelnut Live, a typed lambda calculus that includes only expressions and type holes.
-The Hazel programming environment, which our implementation extends, is based directly on Hazelnut Live. 
-Peanut is derived from Hazelnut Live, retaining expression holes and introducing  
-structural pattern matching and pattern holes. (Some small technical differences are described in \todo{refer part of Sec 3 where we say more about technical distinctions}.) 
-Like Hazelnut Live, evaluation is able to proceed around holes, including pattern holes, in Peanut. An evaluation step is taken 
+\subsection{Typed Holes}
+Hazel, prior to this paper, implemented a minor extension of the Hazelnut Live calculus \cite{DBLP:journals/pacmpl/OmarVCH19}. Peanut is based on the Hazelnut Live internal language, a typed lambda calculus that includes expressions and type holes. 
+Peanut retains expression holes and introduces   
+structural pattern matching, pattern holes, and exhaustiveness and redundancy checking. 
+Like Hazelnut Live, evaluation is able to proceed around holes, including pattern holes. An evaluation step is taken 
 only if it would be justified for all possible hole fillings.
 
-Peanut omits type holes, i.e. the unknown types from gradual type theory \cite{Siek2006, DBLP:conf/snapl/SiekVCB15}. Type holes obscure type information, so 
-is possible to reason statically about exhaustiveness and redundancy in only a limited manner when the scrutinee is of unknown type.\footnote{Constraint-based type inference could be deployed to discover a type for the scrutinee in some cases, at which point it would be possible to use our mechanisms as described. Whether inference is deployed for this purpose is an orthogonal consideration.} Allowing scrutinees of unknown type would also require performing run-time checks, e.g. in the form of casts inserted on terms matched by variables of unknown type. 
-We have implemented this cast insertion machinery, which follows straightforwardly from prior work on cast insertion for binary sum types \cite{DBLP:conf/snapl/SiekVCB15}, into Hazel. This machinery is orthogonal to the machinery we consider in this paper, so we did not include type holes and casts in Peanut.
+We did not formalize the external language, which is bidirectionally typed, because doing so would be straightforward and requires no 
+novel insights \cite{DBLP:journals/csur/DunfieldK21}. Our implementation includes a bidirectionally typed external language that elaborates straightforwardly.
+
+Peanut omits type holes, i.e. the unknown types from gradual type theory \cite{Siek2006, DBLP:conf/snapl/SiekVCB15}. Type holes obscure type information and a scrutinee of unknown type allows patterns of various types to be mixed in a \li{match} expression, so it 
+is difficult to reason statically about exhaustiveness and redundancy except in trivial cases, e.g. variables and wildcards remain exhaustive.\footnote{Constraint-based type inference could be deployed to discover a type for the scrutinee in some cases, at which point it would be possible to use our mechanisms as described. Whether inference is deployed for this purpose is an orthogonal consideration.}
+Allowing scrutinees of unknown type would also require performing run-time checks, e.g. in the form of casts inserted on terms matched by variables of unknown type. 
+We have implemented this cast insertion machinery, which follows straightforwardly from prior work on cast insertion for binary sum types \cite{DBLP:conf/snapl/SiekVCB15}, into Hazel. This machinery is orthogonal to the machinery that we contribute in this paper, and which we intend to be relevant to systems that are not gradually typed like {GHC Haskell}, so we did not include type holes and casts here. 
 
 Hazelnut Live augments each expression hole instance with a closure, which serves to record deferred substitutions 
 (it is therefore a contextual type theory \cite{DBLP:journals/tocl/NanevskiPP08}). This information can be presented to the user and it enables soundly resuming from the current evaluation state when the programmer fills a hole (as long as there are no non-commutative side effects in the language).
 The addition of pattern holes does not interfere with this mechanism. Pattern holes do not themselves need closures because patterns bind,
-rather than consume, variables. (In a language where patterns contain expressions, e.g. when guards are integrated into patterns \cite{Reppy2019}, closures on pattern holes would be necessary to support resumption.) It would not be possible to resume evaluation after filling a pattern hole because doing so can, in general, change the binding structure of the program by introducing shadowing. We leave to future work consideration of 
-conditional resumption when pattern hole filling happens not to cause shadowing.
+rather than consume, variables. In a language where patterns contain expressions, e.g. when guards are integrated into patterns \cite{Reppy2019}, closures on pattern holes would be necessary to support resumption. In languages where datatype constructors are contextually tracked, it would also be possible to track pattern holes as pattern metavariables. It would not be possible to resume evaluation after filling a pattern hole because doing so can, in general, change the binding structure of the program by introducing shadowing or by binding a previously unbound variable. We leave to future work consideration of techniques such as 
+conditional resumption when a pattern hole filling happens not to cause shadowing (which could be considered a \emph{co-contextual} system in that the context around a pattern would limit rather than provide the set of variables that one can use to fill the hole).
 
 In Hazel, holes are inserted automatically during editing. Formally, Hazel is a type-aware structure editor governed by an edit action semantics derived from Hazelnut \cite{DBLP:conf/popl/OmarVHAH17}, a type-aware structure editor calculus 
 for the same language as Hazelnut Live. 
-Hazel, by combining machinery from Hazelnut and Hazelnut Live, maintains a powerful continuity invariant: every edit state has a well-defined type
+Hazel, by combining machinery from Hazelnut and Hazelnut Live, maintains a powerful liveness invariant: every edit state has a well-defined type
 and a well-defined result, both possibly containing holes.
 Our extension of Hazel maintains the same invariant, now with the addition of match expressions 
 as described in this paper. 
-Extending the edit action semantics to allow us to enter patterns presents no special challenges relative to prior work, so we omit formal consideration of editing from this paper.
+Extending the edit action semantics to allow us to enter patterns presented no special challenges relative to prior work, so we omit formal consideration of editing from this paper.
 
 Moreover, our contributions do not require a structure editor: they are also relevant to languages where typed holes are inserted 
 manually by programmers, rather than automatically by an editor. 
 For example, GHC Haskell, Agda, and Idris, all feature manually inserted typed holes, both empty and non-empty, in expression position. 
 None of these systems support pattern holes as of this writing, however. Haskell does support unbound data constructors in patterns, but these bring compilation to a halt and do not interact with the exhaustiveness and redundancy checker, much less the run-time system. With the appropriate flags set, Haskell will attempt to evaluate programs with expression holes, but it stops with an exception whenever a hole is reached \cite{GHCHoles}. In contrast, our system supports evaluating around holes of all sorts, as described in \autoref{sec:examples} and formalized in \autoref{sec:dynamics}. We hope that this paper will prompt other languages to 
-consider adding pattern holes. Our work on the Peanut calculus provides a minimal formal characterization 
-that captures the essential character of pattern matching with holes and our implementation in Hazel 
+consider pattern holes. Our work on Peanut captures the essential character of pattern matching with holes and our implementation in Hazel 
 demonstrates a practical realization, complete with editor integration.
 
-\subsubsection{Pattern Matching}
+We did not consider the problem of synthesizing pattern hole fillings in this paper, but type-driven techniques used for expression holes, e.g. in Haskell \cite{DBLP:conf/haskell/Gissurarson18}, could likely be adapted. The exhaustiveness and redundancy analyses could help guide these techniques to search for hole fillings that increase the exhaustiveness of the \li{match} expression.
+
+\subsection{Pattern Matching}
 Pattern matching has a long history, first appearing in the 1970s in early functional languages
 such as NPL, SASL, and ML.
 All prior work on pattern matching assumes that the patterns and expressions being matched are
 complete, i.e., do not contain any holes.
 Uniquely, the indeterminate matching and exhaustiveness and redundancy checks in Peanut
-take into account how the programmer may fill or correct these holes in a future edit state.
+take into account how the programmer may fill or correct these holes in a future edit state,
+following the modal interpretation of holes \cite{DBLP:journals/tocl/NanevskiPP08,DBLP:journals/pacmpl/OmarVCH19}.
 
-Much of the early work on pattern matching focused on efficient compilation. Some methods construct decision trees encoding the matching procedure, the goal being to minimize the sizes of the constructed trees, meanwhile obtaining exhaustiveness and redundancy checks as easy by-products \cite{Aitken92smlnj,Baudinet85treepattern,Sestoft96mlpattern}.
+Much of the early work on pattern matching focused on efficient compilation. Some methods construct decision trees encoding the matching procedure, the goal being to minimize the sizes of the constructed trees, obtaining exhaustiveness and redundancy checks as easy by-products \cite{Aitken92smlnj,Baudinet85treepattern,Sestoft96mlpattern}.
 Other methods compile pattern matching to backtracking automata \cite{Maranget94lazybacktracking,DBLP:journals/jfp/Maranget07};
-while these methods avoid potential exponential behavior exhibited by decision trees, they are less directly amenable to pattern match analyses and require separate methods for reporting inexhaustive and redundant patterns \cite{DBLP:journals/jfp/Maranget07}.
-In our setting of incomplete programs, the question of compilation is not (yet) relevant. Our goal in this paper is to provide a complete semantics of pattern matching with holes that extends the incomplete program evaluation of Hazelnut Live; in so doing, we integrate exhaustiveness and redundancy checks into the type system.
-We leave questions of optimization to future work.
+while these methods avoid potential exponential behavior exhibited by decision trees, they require separate methods for reporting inexhaustive and redundant patterns \cite{DBLP:journals/jfp/Maranget07}.
+In our setting of incomplete programs, the question of compilation is not (yet) relevant. Our goal in this paper is to provide a complete and mathematically elegant semantics of pattern matching with holes that extends the incomplete program evaluation of Hazelnut Live.  
+Efficiency considerations are, however, a fruitful avenue for further work (alongside the more general question of efficient evaluation or compilation of programs with expression holes).
 
-Contemporary work focuses on extending pattern match analyses to settings with more sophisticated types and pattern matching features \cite{DBLP:conf/icfp/VazouSJVJ14,DBLP:journals/pacmpl/CockxA18,DBLP:conf/itp/Sozeau10,DBLP:conf/icfp/KarachaliasSVJ15,DBLP:journals/pacmpl/GrafJS20}.
-In a similar spirit, our work extends pattern matching to the previously unexplored setting of gradually typed patterns and expressions with holes.
-However, whereas prior work of this sort concerns itself with analyzing increasingly sophisticated predicates delineating a match from a failure (or divergence in the lazy setting), our work introduces a new pattern matching \emph{outcome}---the indeterminate match---and specifies its static and dynamic semantic underpinnings.
-To that end, we narrow our focus to the novel aspects of our system and leave integration with existing, richer pattern matching features and checkers to future work.
+More contemporary work focuses on extending pattern matching to settings with more sophisticated types and pattern matching features \cite{DBLP:conf/icfp/VazouSJVJ14,DBLP:journals/pacmpl/CockxA18,DBLP:conf/itp/Sozeau10,DBLP:conf/icfp/KarachaliasSVJ15,DBLP:journals/pacmpl/GrafJS20}.
+However, whereas prior work of this sort concerns itself with analyzing increasingly sophisticated predicates delineating a match from a failure (or divergence in the lazy setting), our work introduces new pattern matching \emph{outcomes}---indeterminacy.
+To that end, we narrow our focus to the novel aspects of our system and leave integration with existing, richer pattern matching features and checkers to future work. Again, the logical character of our system is likely to simplify integration with systems that rely on SMT solving or other logical techniques, e.g. the work of \citet{DBLP:journals/pacmpl/GrafJS20} on exhaustiveness checking in the presence of arbitrary boolean guards. Indeed, we observed that deciding the entailments of interest in our system can be reduced to an SMT problem in Sec.~\ref{sec:algorithm}.
 
 % The current state of the art is Lower Your Guards by Graf et al., which can handle GADTs and the wide variety of pattern matching features in Haskell, e.g., guards, view patterns, pattern synonyms, etc.
 % This work abandons simple structural pattern matching altogether, instead compiling the various pattern forms into a simpler intermediate representation called a guard tree.

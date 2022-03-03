@@ -2,6 +2,7 @@
 
 \begin{figure}[th]
 
+\begin{minipage}{.45\linewidth}
 \judgbox{\isVal{e}}{$e$ is a value}
 
 \begin{mathpar}
@@ -32,67 +33,70 @@
   \isVal{\hinr{\tau}{e}}
 }
 \end{mathpar}
-
+\end{minipage}%
+\begin{minipage}{.45\linewidth}
 \judgbox{\isIndet{e}}{$e$ is indeterminate}
 
 \begin{mathpar}
-\Infer{\IEHole}{ }{
-  \isIndet{\hehole{u}}
-}
+...
 
-\Infer{\IHole}{
-  \isFinal{e}
-}{
-  \isIndet{\hhole{e}{u}}
-}
-
-\Infer{\IAp}{
-  \isIndet{e_1} \\ \isFinal{e_2}
-}{
-  \isIndet{\hap{e_1}{e_2}}
-}
-
-\Infer{\IPairL}{
-  \isIndet{e_1} \\ \isVal{e_2}
-}{
-  \isIndet{\hpair{e_1}{e_2}}
-}
-
-\Infer{\IPairR}{
-  \isVal{e_1} \\ \isIndet{e_2}
-}{
-  \isIndet{\hpair{e_1}{e_2}}
-}
-
-\Infer{\IPair}{
-  \isIndet{e_1} \\ \isIndet{e_2}
-}{
-  \isIndet{\hpair{e_1}{e_2}}
-}
-
-\Infer{\IFst}{
-  \isIndet{e} \\ e \neq \hpair{e_1}{e_2}
-}{
-  \isIndet{\hfst{e}}
-}
-
-\Infer{\ISnd}{
-  \isIndet{e} \\ e \neq \hpair{e_1}{e_2}
-}{
-  \isIndet{\hsnd{e}}
-}
-
-\Infer{\IInl}{
-  \isIndet{e}
-}{
-  \isIndet{\hinl{\tau}{e}}
-}
-
-\Infer{\IInr}{
-  \isIndet{e}
-}{
-  \isIndet{\hinr{\tau}{e}}
-}
+%\Infer{\IEHole}{ }{
+%  \isIndet{\hehole{u}}
+%}
+%
+%\Infer{\IHole}{
+%  \isFinal{e}
+%}{
+%  \isIndet{\hhole{e}{u}}
+%}
+%
+%\Infer{\IAp}{
+%  \isIndet{e_1} \\ \isFinal{e_2}
+%}{
+%  \isIndet{\hap{e_1}{e_2}}
+%}
+%
+%\Infer{\IPairL}{
+%  \isIndet{e_1} \\ \isVal{e_2}
+%}{
+%  \isIndet{\hpair{e_1}{e_2}}
+%}
+%
+%\Infer{\IPairR}{
+%  \isVal{e_1} \\ \isIndet{e_2}
+%}{
+%  \isIndet{\hpair{e_1}{e_2}}
+%}
+%
+%\Infer{\IPair}{
+%  \isIndet{e_1} \\ \isIndet{e_2}
+%}{
+%  \isIndet{\hpair{e_1}{e_2}}
+%}
+%
+%\Infer{\IFst}{
+%  \isIndet{e} \\ e \neq \hpair{e_1}{e_2}
+%}{
+%  \isIndet{\hfst{e}}
+%}
+%
+%\Infer{\ISnd}{
+%  \isIndet{e} \\ e \neq \hpair{e_1}{e_2}
+%}{
+%  \isIndet{\hsnd{e}}
+%}
+%
+%\Infer{\IInl}{
+%  \isIndet{e}
+%}{
+%  \isIndet{\hinl{\tau}{e}}
+%}
+%
+%\Infer{\IInr}{
+%  \isIndet{e}
+%}{
+%  \isIndet{\hinr{\tau}{e}}
+%}
 
 \Infer{\IMatch}{
   \isFinal{e} \\
@@ -103,9 +107,7 @@
   }
 }
 \end{mathpar}
-
 \judgbox{\isFinal{e}}{$e$ is final}
-
 \begin{mathpar}
 \Infer{\FVal}{
   \isVal{e}
@@ -119,6 +121,8 @@
   \isFinal{e}
 }
 \end{mathpar}
+
+\end{minipage}
 
   \caption{Final expressions}
   \label{fig:final}

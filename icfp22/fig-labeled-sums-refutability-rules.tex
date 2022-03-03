@@ -20,26 +20,30 @@
     }
   \end{mathpar}
 
-  \judgbox{\refutable{\xi}}{$\xi$ is refutable}
+% \begin{minipage}[t][][b]{.47\linewidth}
+%   \judgbox{\refutable{\xi}}{$\xi$ is refutable}
 
-  \begin{mathpar}
-    \Infer{\RXInj}{
-      \tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset} \\
-      |\tagset| \geq 2
-    }{
-      \refutable{\cinj{C}{\tau}{\xi}}
-    }
-  \end{mathpar}
+%   \begin{mathpar}
+%     \Infer{\RXInj}{
+%       \tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset} \\
+%       |\tagset| \geq 2
+%     }{
+%       \refutable{\cinj{C}{\tau}{\xi}}
+%     }
+%   \end{mathpar}
+% \end{minipage}
+% \hfill
+% \begin{minipage}[t][][b]{.47\linewidth}
+%   \judgbox{\possible{\xi}}{$\xi$ is possible}
 
-  \judgbox{\possible{\xi}}{$\xi$ is possible}
-
-  \begin{mathpar}
-    \Infer{\PInj}{
-      \possible{\xi}
-    }{
-      \possible{\cinj{C}{\tau}{\xi}}
-    }
-  \end{mathpar}
+%   \begin{mathpar}
+%     \Infer{\PInj}{
+%       \possible{\xi}
+%     }{
+%       \possible{\cinj{C}{\tau}{\xi}}
+%     }
+%   \end{mathpar}
+% \end{minipage}
 
   \caption{Refutability rules for labeled injections}
   \label{fig:labeled-sums-refutability-rules}

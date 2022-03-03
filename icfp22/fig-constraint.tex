@@ -1,6 +1,6 @@
 % !TEX root= pattern-paper.tex
 
-\begin{figure}[ht]
+\begin{figure}[t]
 $\arraycolsep=4pt\begin{array}{lll}
 \xi & ::= &
   \ctruth ~\vert~
@@ -15,8 +15,8 @@ $\arraycolsep=4pt\begin{array}{lll}
   \cpair{\xi_1}{\xi_2}
 \end{array}$
 
+\begin{minipage}[t][][b]{.62\linewidth}
 \judgbox{\ctyp{\xi}{\tau}}{$\xi$ is of type $\tau$}
-
 \begin{mathpar}
 \Infer{\CTTruth}{ }{
   \ctyp{\ctruth}{\tau}
@@ -68,7 +68,8 @@ $\arraycolsep=4pt\begin{array}{lll}
   \ctyp{\cpair{\xi_1}{\xi_2}}{\tprod{\tau_1}{\tau_2}}
 }
 \end{mathpar}
-
+\end{minipage}%
+\begin{minipage}[t][][b]{.3\linewidth}
 \judgbox{\cdual{\xi_1} = \xi_2}{dual of $\xi_1$ is $\xi_2$}
 \begin{align*}
   \cdual{\ctruth} &= \cfalsity \\
@@ -88,6 +89,7 @@ $\arraycolsep=4pt\begin{array}{lll}
     \cpair{\cdual{\xi_1}}{\cdual{\xi_2}}
   }
 \end{align*}
+\end{minipage}
   \caption{Match Constraints}
   \label{fig:constraint}
 \end{figure}

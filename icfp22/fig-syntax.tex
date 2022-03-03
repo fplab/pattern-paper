@@ -1,12 +1,9 @@
 % !TEX root= pattern-paper.tex
 
 \begin{figure}[ht]
+    \centering
+    \begin{minipage}{.5\linewidth}
   $\arraycolsep=4pt\begin{array}{lll}
-    \tau & ::= &
-      \tnum ~\vert~
-      \tarr{\tau_1}{\tau_2} ~\vert~
-      \tprod{\tau_1}{\tau_2} ~\vert~
-      \tsum{\tau_1}{\tau_2} \\
     e & ::= &
       x ~\vert~
       \hnum{n} \\
@@ -24,6 +21,15 @@
       & ~\vert~ &
       \hehole{u} ~\vert~
       \hhole{e}{u} \\
+    \end{array}$
+    \end{minipage}%
+    \begin{minipage}{.5\linewidth}
+  $\arraycolsep=4pt\begin{array}{lll}
+    \tau & ::= &
+      \tnum ~\vert~
+      \tarr{\tau_1}{\tau_2} ~\vert~
+      \tprod{\tau_1}{\tau_2} ~\vert~
+      \tsum{\tau_1}{\tau_2} \\
     \hat{rs} & ::= &
       \zrulsP{rs}{r}{rs} \\
     rs & ::= &
@@ -32,14 +38,16 @@
       \hrul{p}{e} \\
     p & ::= &
       x ~\vert~
-      \hnum{n} ~\vert~
       \_ ~\vert~
-      \hpair{p_1}{p_2} ~\vert~
+      \hnum{n} ~\vert~
+      \hpair{p_1}{p_2} \\
+      & ~\vert~ &
       \hinlp{p} ~\vert~
       \hinrp{p} ~\vert~
       \heholep{w} ~\vert~
       \hholep{p}{w}{\tau}
     \end{array}$
-\caption{Syntax of the Internal Language}
+    \end{minipage}
+\caption{Syntax}
 \label{fig:syntax}
 \end{figure}

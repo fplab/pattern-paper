@@ -5,80 +5,80 @@
 \judgbox{\htrans{e}{e'}}{$e$ takes a step to $e'$}
 
 \begin{mathpar}
-\Infer{\ITHole}{
-  \htrans{e}{e'}
-}{
-  \htrans{\hhole{e}{u}}{\hhole{e'}{u}}
-}
-
-\Infer{\ITApFun}{
-  \htrans{e_1}{e_1'}
-}{
-  \htrans{\hap{e_1}{e_2}}{\hap{e_1'}{e_2}}
-}
-
-\Infer{\ITApArg}{
-  \isFinal{e_1} \\
-  \htrans{e_2}{e_2'}
-}{
-  \htrans{\hap{e_1}{e_2}}{\hap{e_1}{e_2'}}
-}
-
-\Infer{\ITAp}{
-  \isFinal{e_2}
-}{
-  \hap{\hlam{x}{\tau}{e_1}}{e_2} \mapsto
-    [e_2/x]e_1
-}
-
-\Infer{\ITPairL}{
-  \htrans{e_1}{e_1'}
-}{
-  \htrans{\hpair{e_1}{e_2}}{\hpair{e_1'}{e_2}}
-}
-
-\Infer{\ITPairR}{
-  \isFinal{e_1} \\
-  \htrans{e_2}{e_2'}
-}{
-  \htrans{\hpair{e_1}{e_2}}{\hpair{e_1}{e_2'}}
-}
-
-\Infer{\ITFst}{
-  \htrans{e_1}{e_1'}
-}{
-  \htrans{\hfst{e_1}}{\hfst{e_1'}}
-}
-
-\Infer{\ITSnd}{
-  \htrans{e_1}{e_1'}
-}{
-  \htrans{\hsnd{e_1}}{\hsnd{e_1'}}
-}
-
-\Infer{\ITFstPair}{
-  \isFinal{\hpair{e_1}{e_2}}
-}{
-  \htrans{\hfst{\hpair{e_1}{e_2}}}{e_1}
-}
-
-\Infer{\ITSndPair}{
-  \isFinal{\hpair{e_1}{e_2}}
-}{
-  \htrans{\hsnd{\hpair{e_1}{e_2}}}{e_2}
-}
-
-\Infer{\ITInl}{
-  \htrans{e}{e'}
-}{
-  \htrans{\hinl{\tau}{e}}{\hinl{\tau}{e'}}
-}
-
-\Infer{\ITInr}{
-  \htrans{e}{e'}
-}{
-  \htrans{\hinr{\tau}{e}}{\hinr{\tau}{e'}}
-}
+%\Infer{\ITHole}{
+%  \htrans{e}{e'}
+%}{
+%  \htrans{\hhole{e}{u}}{\hhole{e'}{u}}
+%}
+%
+%\Infer{\ITApFun}{
+%  \htrans{e_1}{e_1'}
+%}{
+%  \htrans{\hap{e_1}{e_2}}{\hap{e_1'}{e_2}}
+%}
+%
+%\Infer{\ITApArg}{
+%  \isFinal{e_1} \\
+%  \htrans{e_2}{e_2'}
+%}{
+%  \htrans{\hap{e_1}{e_2}}{\hap{e_1}{e_2'}}
+%}
+%
+%\Infer{\ITAp}{
+%  \isFinal{e_2}
+%}{
+%  \hap{\hlam{x}{\tau}{e_1}}{e_2} \mapsto
+%    [e_2/x]e_1
+%}
+%
+%\Infer{\ITPairL}{
+%  \htrans{e_1}{e_1'}
+%}{
+%  \htrans{\hpair{e_1}{e_2}}{\hpair{e_1'}{e_2}}
+%}
+%
+%\Infer{\ITPairR}{
+%  \isFinal{e_1} \\
+%  \htrans{e_2}{e_2'}
+%}{
+%  \htrans{\hpair{e_1}{e_2}}{\hpair{e_1}{e_2'}}
+%}
+%
+%\Infer{\ITFst}{
+%  \htrans{e_1}{e_1'}
+%}{
+%  \htrans{\hfst{e_1}}{\hfst{e_1'}}
+%}
+%
+%\Infer{\ITSnd}{
+%  \htrans{e_1}{e_1'}
+%}{
+%  \htrans{\hsnd{e_1}}{\hsnd{e_1'}}
+%}
+%
+%\Infer{\ITFstPair}{
+%  \isFinal{\hpair{e_1}{e_2}}
+%}{
+%  \htrans{\hfst{\hpair{e_1}{e_2}}}{e_1}
+%}
+%
+%\Infer{\ITSndPair}{
+%  \isFinal{\hpair{e_1}{e_2}}
+%}{
+%  \htrans{\hsnd{\hpair{e_1}{e_2}}}{e_2}
+%}
+%
+%\Infer{\ITInl}{
+%  \htrans{e}{e'}
+%}{
+%  \htrans{\hinl{\tau}{e}}{\hinl{\tau}{e'}}
+%}
+%
+%\Infer{\ITInr}{
+%  \htrans{e}{e'}
+%}{
+%  \htrans{\hinr{\tau}{e}}{\hinr{\tau}{e'}}
+%}
 
 \Infer{\ITExpMatch}{
   \htrans{e}{e'}

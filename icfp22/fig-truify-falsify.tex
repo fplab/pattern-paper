@@ -1,11 +1,7 @@
 % !TEX root= pattern-paper.tex
-
 \begin{figure}[ht]
-\centering
-\begin{subfigure}{.4\textwidth}
-  \centering
+\noindent\begin{minipage}{.5\linewidth}
 \judgbox{\ctruify{\xi_1} = \xi_2}{}
-
 \begin{align*}
   \ctruify{\ctruth} &= \ctruth \\
   \ctruify{\cfalsity} &= \cfalsity \\
@@ -18,14 +14,8 @@
   \ctruify{\cinr{\xi}} &= \cinr{\ctruify{\xi}} \\
   \ctruify{\cpair{\xi_1}{\xi_2}} &= \cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}
 \end{align*}
-  \caption{A subfigure}
-  \label{fig:sub1}
-\end{subfigure}%
-
-\begin{subfigure}{.4\textwidth}
-  \centering
-\caption{A figure with two subfigures}
-\label{fig:test}
+\end{minipage}%
+\begin{minipage}{.5\linewidth}
 \judgbox{\cfalsify{\xi_1} = \xi_2}{}
 \begin{align*}
   \cfalsify{\ctruth} &= \ctruth \\
@@ -39,9 +29,7 @@
   \cfalsify{\cinr{\xi}} &= \cinr{\cfalsify{\xi}} \\
   \cfalsify{\cpair{\xi_1}{\xi_2}} &= \cpair{\cfalsify{\xi_1}}{\cfalsify{\xi_2}}
 \end{align*}
+\end{minipage}
   \caption{Truify and Falsify Constraints}
   \label{fig:truify-falsify}
-  \caption{A subfigure}
-  \label{fig:sub2}
-\end{subfigure}
 \end{figure}

@@ -1,6 +1,7 @@
 % !TEX root= pattern-paper.tex
 
 \begin{figure}[ht]
+\begin{minipage}[t][][b]{.47\linewidth}
   \judgbox{\hpatmatch{e}{p}{\theta}}{$e$ matches $p$, emitting $\theta$}
 
   \begin{mathpar}
@@ -27,7 +28,9 @@
       \hmaymatch{\hinj{C}{\tau}{e}}{\hinjp{C}{p}}
     }
   \end{mathpar}
-
+\end{minipage}
+\hfill
+\begin{minipage}[t][][b]{.47\linewidth}
   \judgbox{\hnotmatch{e}{p}}{$e$ does not match $p$}
 
   \begin{mathpar}
@@ -50,6 +53,7 @@
       \hnotmatch{\hinj{C}{\tau}{e}}{\hinjp{C}{p}}
     }
   \end{mathpar}
+\end{minipage}
 
   \judgbox{\tagmaymatch{C}{C'}}{$C$ indeterminately matches $C'$}
 
@@ -72,7 +76,6 @@
       \tagmaymatch{\taghole{\tagC}{u}}{C}
     }
   \end{mathpar}
-
   \caption{Pattern matching rules for labeled sums}
   \label{fig:labeled-sums-pattern-matching-rules}
 \end{figure}

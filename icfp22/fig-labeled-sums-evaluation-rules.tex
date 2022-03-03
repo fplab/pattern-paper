@@ -1,6 +1,7 @@
 % !TEX root= pattern-paper.tex
 
 \begin{figure}[ht]
+\begin{minipage}[t][][b]{.47\linewidth}
   \judgbox{\htrans{e}{e'}}{$e$ takes a step to $e'$}
 
   \begin{mathpar}
@@ -20,7 +21,8 @@
       \isVal{\hinj{\tagC}{\tau}{e}}
     }
   \end{mathpar}
-
+\end{minipage}
+\begin{minipage}[t][][b]{.47\linewidth}
   \judgbox{\isIndet{e}}{$e$ is indeterminate}
 
   \begin{mathpar}
@@ -37,6 +39,8 @@
       \isIndet{\hinj{C}{\tau}{e}}
     }
   \end{mathpar}
+\end{minipage}
+
   \caption{Evaluation rules for labeled injections}
   \label{fig:labeled-sums-evaluation-rules}
 \end{figure}

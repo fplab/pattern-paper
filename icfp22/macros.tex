@@ -139,12 +139,19 @@
 \newcommand{\cinl}[1]{\mathtt{inl}(#1)}
 \newcommand{\cinr}[1]{\mathtt{inr}(#1)}
 \newcommand{\cpair}[2]{(#1 , #2)}
-\newcommand{\csatisfy}[2]{#1 \dot{\models} #2}
-\newcommand{\cnotsatisfy}[2]{#1 \centernot{\dot{\models}} #2}
-\newcommand{\cmaysatisfy}[2]{#1 \dot{\models}_{?} #2}
-\newcommand{\cnotmaysatisfy}[2]{#1 \centernot{\dot{\models}}_{?} #2}
-\newcommand{\csatisfyormay}[2]{#1 \dot{\models}_{?}^{\dag} #2}
-\newcommand{\cnotsatisfyormay}[2]{#1 \centernot{\dot{\models}}_{?}^{\dag} #2}
+\newcommand{\csatisfy}[2]{#1 \models #2}
+\newcommand{\cnotsatisfy}[2]{#1 \centernot{\models} #2}
+\newcommand{\cmaysatisfy}[2]{#1 \models_{?} #2}
+\newcommand{\cnotmaysatisfy}[2]{#1 \centernot{\models}_{?} #2}
+\newcommand{\csatisfyormay}[2]{#1 \models_{?}^{\dag} #2}
+\newcommand{\cnotsatisfyormay}[2]{#1 \centernot{\models}_{?}^{\dag} #2}
+%temporary change, need to get it back to make appendix right
+%\newcommand{\csatisfy}[2]{#1 \dot{\models} #2}
+%\newcommand{\cnotsatisfy}[2]{#1 \centernot{\dot{\models}} #2}
+%\newcommand{\cmaysatisfy}[2]{#1 \dot{\models}_{?} #2}
+%\newcommand{\cnotmaysatisfy}[2]{#1 \centernot{\dot{\models}}_{?} #2}
+%\newcommand{\csatisfyormay}[2]{#1 \dot{\models}_{?}^{\dag} #2}
+%\newcommand{\cnotsatisfyormay}[2]{#1 \centernot{\dot{\models}}_{?}^{\dag} #2}
 \newcommand{\ccsatisfy}[2]{#1 \models #2}
 \newcommand{\ccnotsatisfy}[2]{#1 \centernot{\models} #2}
 \newcommand{\cincon}[1]{#1 ~\mathtt{incon}}

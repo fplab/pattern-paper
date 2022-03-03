@@ -1,6 +1,7 @@
 % !TEX root= pattern-paper.tex
 
 \begin{figure}[ht]
+\begin{minipage}[t][][b]{.47\linewidth}
   \judgbox{\ctruify{\xi_1} = \xi_2}{}
 
   \begin{align*}
@@ -12,7 +13,8 @@
   \begin{align*}
     \cfalsify{\cinj{C}{\tau}{\xi}} & = \cinj{C}{\tau}{\cfalsify{\xi}}
   \end{align*}
-
+\end{minipage}
+\begin{minipage}[t][][b]{.47\linewidth}
   \judgbox{\cincon{\Xi}}{}
 
   \begin{mathpar}
@@ -28,6 +30,7 @@
       \cincon{\Xi,\cinj{C}{\tau}{\xi}}
     }
   \end{mathpar}
+\end{minipage}
 
   \caption{Inconsistency rules for labeled injections}
   \label{fig:labeled-sums-decidability}
