@@ -25,7 +25,11 @@ In our implementation in Hazel, we only want to show warnings for match expressi
   \subfloat[May or may not be exhaustive.\label{fig:may-exhaustive}]{
     \includegraphics[scale=0.5]{imgs/maybe_exhaustive.png}
 }
-\hfill
+% \hfil
+  \subfloat[May or may not be inexhaustive.\label{fig:may-inexhautive}]{
+\includegraphics[scale=0.5]{imgs/maybe_inexhaustive.png}
+}
+% \hfil
   \subfloat[Must not be exhaustive.\label{fig:not-exhautive}]{
 \includegraphics[scale=0.5]{imgs/not_exhaustive.png}
 }
@@ -55,7 +59,7 @@ Again, similarly to exhaustiveness checking, since the branches are not known to
     \subfloat[May or may not be redundant. \label{fig:may-redundant}]{
     \includegraphics[scale=0.5]{imgs/maybe_redundant.png}
     } 
-    \hfill
+    \hfil
   \subfloat[Must be redundant. \label{fig:must-redundant}]{
   \includegraphics[scale=0.5]{imgs/redundant.png}
   }%
@@ -85,7 +89,7 @@ Therefore, our evaluation stops. Hazel indicates to the programmer which branch 
 \begin{figure}[h]
 \centering
 \subfloat[Pattern matching with expression  holes.\label{fig:exp-hole}]{\includegraphics[scale=0.47]{imgs/pat_match_exp_holes.png}}
-\hfill
+\hfil
 \subfloat[Pattern matching with pattern holes.\label{fig:pat-hole}]{\includegraphics[scale=0.47]{imgs/pat_match_pat_holes.png}}
   \caption{Pattern Matching with Holes}
   \label{fig:evaluation-ex}
