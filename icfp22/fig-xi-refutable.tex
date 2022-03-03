@@ -6,20 +6,20 @@
 }{$\xi$ is refutable}
 
 \begin{mathpar}
-\Infer{\RXNum}{ }{
-  \refutable{\cnum{n}}
-}
-
-\Infer{\RXNotNum}{ }{
-  \refutable{\cnotnum{n}}
+\Infer{RXFalsity}{ }{
+  \refutable{\cfalsity}
 }
 
 \Infer{\RXUnknown}{ }{
   \refutable{\cunknown}
 }
 
-\Infer{RXFalsity}{ }{
-  \refutable{\cfalsity}
+\Infer{\RXNum}{ }{
+  \refutable{\cnum{n}}
+}
+
+\Infer{\RXNotNum}{ }{
+  \refutable{\cnotnum{n}}
 }
 
 \Infer{\RXInl}{ }{

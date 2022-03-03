@@ -40,6 +40,17 @@
 
 @book{Harper2012, address={Cambridge}, title={Practical Foundations for Programming Languages}, chapter=8, DOI={10.1017/CBO9781139342131}, publisher={Cambridge University Press}, author={Harper, Robert}, year={2012},}
 
+@inproceedings{HazelnutSNAPL,
+  author = {Omar, Cyrus and {Voysey}, Ian and {Hilton}, Michael and
+             {Sunshine}, Joshua and {Le Goues}, Claire and
+             {Aldrich}, Jonathan and {Hammer}, Matthew A.},
+  title = {Toward Semantic Foundations for Program Editors},
+  url       = {https://doi.org/10.4230/LIPIcs.SNAPL.2017.11},
+  booktitle = {Summit on Advances in Programming Languages (SNAPL)},
+  year = {2017},
+  sortyear={2017-2},
+}
+
 @inproceedings{DBLP:conf/ecoop/SiekT07,
   author    = {Jeremy G. Siek and
                Walid Taha},
@@ -56,6 +67,53 @@
   doi       = {10.1007/978-3-540-73589-2\_2},
   timestamp = {Sun, 02 Jun 2019 21:16:57 +0200},
   biburl    = {https://dblp.org/rec/conf/ecoop/SiekT07.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{DBLP:conf/oopsla/KatsJNV09,
+  author    = {Lennart C. L. Kats and
+               Maartje de Jonge and
+               Emma Nilsson{-}Nyman and
+               Eelco Visser},
+  editor    = {Shail Arora and
+               Gary T. Leavens},
+  title     = {Providing rapid feedback in generated modular language environments:
+               adding error recovery to scannerless generalized-LR parsing},
+  booktitle = {Proceedings of the 24th Annual {ACM} {SIGPLAN} Conference on Object-Oriented
+               Programming, Systems, Languages, and Applications, {OOPSLA} 2009,
+               October 25-29, 2009, Orlando, Florida, {USA}},
+  pages     = {445--464},
+  publisher = {{ACM}},
+  year      = {2009},
+  url       = {https://doi.org/10.1145/1640089.1640122},
+  doi       = {10.1145/1640089.1640122},
+  timestamp = {Fri, 25 Jun 2021 14:48:54 +0200},
+  biburl    = {https://dblp.org/rec/conf/oopsla/KatsJNV09.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{DBLP:conf/snapl/SiekVCB15,
+  author    = {Jeremy G. Siek and
+               Michael M. Vitousek and
+               Matteo Cimini and
+               John Tang Boyland},
+  editor    = {Thomas Ball and
+               Rastislav Bod{\'{\i}}k and
+               Shriram Krishnamurthi and
+               Benjamin S. Lerner and
+               Greg Morrisett},
+  title     = {Refined Criteria for Gradual Typing},
+  booktitle = {1st Summit on Advances in Programming Languages, {SNAPL} 2015, May
+               3-6, 2015, Asilomar, California, {USA}},
+  series    = {LIPIcs},
+  volume    = {32},
+  pages     = {274--293},
+  publisher = {Schloss Dagstuhl - Leibniz-Zentrum f{\"{u}}r Informatik},
+  year      = {2015},
+  url       = {https://doi.org/10.4230/LIPIcs.SNAPL.2015.274},
+  doi       = {10.4230/LIPIcs.SNAPL.2015.274},
+  timestamp = {Tue, 11 Feb 2020 15:52:14 +0100},
+  biburl    = {https://dblp.org/rec/conf/snapl/SiekVCB15.bib},
   bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 
@@ -192,8 +250,19 @@ isbn="978-3-540-70589-5"
   bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 
+@inproceedings{Potter2020HazelTG,
+  title={Hazel Tutor: Guiding Novices Through Type-Driven Development Strategies},
+  author={Hannah Potter and Cyrus Omar},
+  url={https://hazel.org/hazeltutor-hatra2020.pdf},
+  year={2020}
+}
 
-
+@inproceedings{Reppy2019,
+  title={Compiling Successor ML Pattern Guards},
+  author={John Reppy and Mona Zahir},
+  url={https://github.com/JohnReppy/compiling-pattern-guards/blob/master/ml19-paper.pdf},
+  year={2019}
+}
 @inproceedings{DBLP:conf/icfp/KarachaliasSVJ15,
   author    = {Georgios Karachalias and
                Tom Schrijvers and
@@ -233,9 +302,82 @@ isbn="978-3-540-70589-5"
   bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 
+@phdthesis{norell:thesis,
+  author  = {Ulf Norell},
+  title   = {Towards a practical programming language based on dependent type theory},
+  school  = {Department of Computer Science and Engineering, Chalmers University of Technology},
+  year    = 2007,
+  month   = {September},
+  address = {SE-412 96 G\"{o}teborg, Sweden}
+}
+
+@inproceedings{norell2009dependently,
+  author    = {Ulf Norell},
+  title     = {Dependently typed programming in Agda},
+  booktitle = {International Workshop
+               on Types in Languages Design and Implementation (TLDI)},
+  year      = {2009},
+  crossref  = {DBLP:conf/tldi/2009},
+  url       = {https://doi.org/10.1145/1481861.1481862},
+  doi       = {10.1145/1481861.1481862},
+  timestamp = {Tue, 06 Nov 2018 16:58:22 +0100},
+  biburl    = {https://dblp.org/rec/bib/conf/tldi/Norell09},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@book{DBLP:books/daglib/0067558,
+  author    = {Hendrik Pieter Barendregt},
+  title     = {The lambda calculus - its syntax and semantics},
+  series    = {Studies in logic and the foundations of mathematics},
+  volume    = {103},
+  publisher = {North-Holland},
+  year      = {1985},
+  isbn      = {978-0-444-86748-3},
+  timestamp = {Fri, 28 Jun 2019 12:45:52 +0200},
+  biburl    = {https://dblp.org/rec/books/daglib/0067558.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{DBLP:conf/cade/UrbanBN07,
+  author    = {Christian Urban and
+               Stefan Berghofer and
+               Michael Norrish},
+  editor    = {Frank Pfenning},
+  title     = {Barendregt's Variable Convention in Rule Inductions},
+  booktitle = {Automated Deduction - CADE-21, 21st International Conference on Automated
+               Deduction, Bremen, Germany, July 17-20, 2007, Proceedings},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {4603},
+  pages     = {35--50},
+  publisher = {Springer},
+  year      = {2007},
+  url       = {https://doi.org/10.1007/978-3-540-73595-3\_4},
+  doi       = {10.1007/978-3-540-73595-3\_4},
+  timestamp = {Tue, 14 May 2019 10:00:39 +0200},
+  biburl    = {https://dblp.org/rec/conf/cade/UrbanBN07.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{DBLP:conf/lics/AwodeyGS12,
+  author    = {Steven Awodey and
+               Nicola Gambino and
+               Kristina Sojakova},
+  title     = {Inductive Types in Homotopy Type Theory},
+  booktitle = {Proceedings of the 27th Annual {IEEE} Symposium on Logic in Computer
+               Science, {LICS} 2012, Dubrovnik, Croatia, June 25-28, 2012},
+  pages     = {95--104},
+  publisher = {{IEEE} Computer Society},
+  year      = {2012},
+  url       = {https://doi.org/10.1109/LICS.2012.21},
+  doi       = {10.1109/LICS.2012.21},
+  timestamp = {Wed, 16 Oct 2019 14:14:54 +0200},
+  biburl    = {https://dblp.org/rec/conf/lics/AwodeyGS12.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
 @article{HopcroftKarp,
   author   = {Hopcroft, John E. and Karp, Richard M.},
-  title    = {An \$n^{5/2} \$ Algorithm for Maximum Matchings in Bipartite Graphs},
+  title    = {An $n^{5/2}$ Algorithm for Maximum Matchings in Bipartite Graphs},
   journal  = {SIAM Journal on Computing},
   volume   = {2},
   number   = {4},
@@ -244,4 +386,56 @@ isbn="978-3-540-70589-5"
   doi      = {10.1137/0202019},
   url      = {https://doi.org/10.1137/0202019},
   eprint   = {https://doi.org/10.1137/0202019}
+}
+
+@misc{GHCHoles,
+  title={Glasgow Haskell Compiler 9.2.1 User's Guide (Typed Holes)},
+  author={Simon {Peyton Jones} and Sean Leather and Thijs Alkemade},
+  howpublished = {\url{https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/exts/typed_holes.html}. Retrieved Mar 3, 2022},
+  year={2020}
+}
+
+@article{brady2013idris,
+  title={{Idris, A General-Purpose Dependently Typed Programming Language: Design and Implementation}},
+  author={Brady, Edwin},
+  journal={Journal of Functional Programming},
+  volume={23},
+  number={05},
+  pages={552--593},
+  year={2013},
+  _publisher={Cambridge Univ Press},
+   url       = {https://doi.org/10.1017/S095679681300018X},
+}
+
+
+@article{DBLP:journals/tocl/NanevskiPP08,
+  author    = {Aleksandar Nanevski and
+               Frank Pfenning and
+               Brigitte Pientka},
+  title     = {Contextual modal type theory},
+  journal   = {{ACM} Trans. Comput. Log.},
+  volume    = {9},
+  number    = {3},
+  pages     = {23:1--23:49},
+  year      = {2008},
+  url       = {https://doi.org/10.1145/1352582.1352591},
+  doi       = {10.1145/1352582.1352591},
+  timestamp = {Tue, 06 Nov 2018 12:51:53 +0100},
+  biburl    = {https://dblp.org/rec/journals/tocl/NanevskiPP08.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@article{DBLP:journals/corr/abs-1909-04160,
+  author    = {Pavel Kalvoda and
+               Tom Sydney Kerckhove},
+  title     = {Structural and semantic pattern matching analysis in Haskell},
+  journal   = {CoRR},
+  volume    = {abs/1909.04160},
+  year      = {2019},
+  url       = {http://arxiv.org/abs/1909.04160},
+  eprinttype = {arXiv},
+  eprint    = {1909.04160},
+  timestamp = {Tue, 17 Sep 2019 11:23:44 +0200},
+  biburl    = {https://dblp.org/rec/journals/corr/abs-1909-04160.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
 }

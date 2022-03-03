@@ -37,15 +37,6 @@ p & ::= &
   \hholep{p}{w}{\tau}
 \end{array}$
 
-\judgboxa{\rmpointer{\zrules} = rs}
-        {$rs$ can be obtained by erasing pointer from $\zrules$}
-\begin{subequations}\label{defn:rmpointer}
-\begin{align}
-  \rmpointer{\zruls{\cdot}{r}{rs}} &= \hrules{r}{rs} \\
-  \rmpointer{\zruls{\hrulesP{r'}{rs'}}{r}{rs}} &= \hrules{r'}{\rmpointer{\zruls{rs'}{r}{rs}}}
-\end{align}
-\end{subequations}
-
 \judgboxa{
   \hexptyp{\Gamma}{\Delta}{e}{\tau}
 }{
@@ -248,66 +239,21 @@ p & ::= &
   \label{lem:pat-xi-type}
   If $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$ then $\ctyp{\xi}{\tau}$.
 \end{lemma}
-\begin{proof}
-By rule induction over \rulesref{rules:PatTyp}.
-\end{proof}
 
 \begin{lemma}
   \label{lem:rule-constraint-typ}
   If $\chrultyp{\cdot}{\Delta}{r}{\tau_1}{\xi_r}{\tau}$ then $\ctyp{\xi_r}{\tau_1}$.
 \end{lemma}
-\begin{proof}
-By rule induction over \rulesref{rules:CTRule}.
-\end{proof}
 
 \begin{lemma}
   \label{lem:rules-constraint-typ}
   If $\chrulstyp{\cdot}{\Delta}{\xi_{pre}}{rs}{\tau_1}{\xi_{rs}}{\tau}$ then $\ctyp{\xi_{rs}}{\tau_1}$.
 \end{lemma}
-\begin{proof}
-By rule induction over \rulesref{rules:CTRules}.
-\end{proof}
 
 \begin{lemma}
   \label{lem:rule-append}
   If $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{rs}{\tau}{\xi_{rs}}{\tau'}$ and $\chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi_r}{\tau'}$ and $\cnotsatisfy{\xi_r}{\cor{\xi_{pre}}{\xi_{rs}}}$ then $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\rmpointer{\zruls{rs}{r}{\cdot}}}{\tau}{\cor{\xi_{rs}}{\xi_r}}{\tau'}$
 \end{lemma}
-\begin{proof}
-  \begin{pfsteps*}
-  \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{rs}{\tau}{\xi_{rs}}{\tau'}$ \BY{assumption} \pflabel{rsType}
-  \item $\chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi_r}{\tau'}$ \BY{assumption} \pflabel{rType}
-  \item $\cnotsatisfy{\xi_r}{\cor{\xi_{pre}}{\xi_{rs}}}$ \BY{assumption} \pflabel{r|/=pre+rs}
-  \end{pfsteps*}
-  By rule induction over Rules (\ref{rules:CTRules}) on \pfref{rsType}.
-  \begin{byCases}
-    
-  \savelocalsteps{lem:rule-append-1}
-  \item[\text{(\ref{rule:CTOneRules})}]
-    \begin{pfsteps*}
-    \item $rs = \hrules{r'}{\cdot}$ \BY{assumption}
-    \item $\xi_{rs} = \xi_r'$ \BY{assumption}
-    \item $\chrultyp{\Gamma}{\Delta}{r'}{\tau}{\xi_r'}{\tau'}$ \BY{assumption} \pflabel{[one]r'Type}
-    \item $\cnotsatisfy{\xi_r'}{\xi_{pre}}$ \BY{assumption} \pflabel{r'|/=pre}
-    \item $\chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r'}}{\hrules{r}{\cdot}}{\tau}{\xi_r}{\tau'}$ \BY{Rule (\ref{rule:CTOneRules}) on \pfref{rType} and \pfref{r|/=pre+rs}} \pflabel{r+dotType}
-    \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrulesP{r'}{\hrules{r}{\cdot}}}{\tau}{\cor{\xi_r'}{\xi_r}}{\tau'}$ \BY{Rule (\ref{rule:CTRules}) on \pfref{r'Type} and \pfref{r+dotType} and \pfref{r'|/=pre}} \pflabel{[one]conc}
-    \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\rmpointer{\zruls{\hrulesP{r'}{\cdot}}{r}{\cdot}}}{\tau}{\cor{\xi_r'}{\xi_r}}{\tau'}$ \BY{Definition \ref{defn:rmpointer} on \pfref{[one]conc}}
-    \end{pfsteps*}
-
-  \restorelocalsteps{lem:rule-append-1}
-  \item[\text{(\ref{rule:CTRules})}]
-    \begin{pfsteps*}
-    \item $rs = \hrules{r'}{rs'}$ \BY{assumption}
-    \item $\xi_{rs} = \cor{\xi_r'}{\xi_{rs}'}$ \BY{assumption}
-    \item $\chrultyp{\Gamma}{\Delta}{r'}{\tau}{\xi_r'}{\tau'}$ \BY{assumption} \pflabel{r'Type}
-    \item $\chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r'}}{rs'}{\tau}{\xi_{rs}'}{\tau'}$ \BY{assumption} \pflabel{rs'Type}
-    \item $\cnotsatisfy{\xi_r'}{\xi_{pre}}$ \BY{assumption} \pflabel{prenotredundant}
-    \item $\chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r'}}{\rmpointer{\zruls{rs'}{r}{\cdot}}}{\tau}{\cor{\xi_{rs}'}{\xi_r}}{\tau'}$ \BY{IH on \pfref{rs'Type} and \pfref{rType} and \pfref{r|/=pre+rs}} \pflabel{rs'+rType}
-    \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrulesP{r'}{\rmpointer{\zruls{rs'}{r}{\cdot}}}}{\tau}{\cor{\xi_r'}{\cor{\xi_{rs}'}{\xi_r}}}{\tau'}$ \BY{Rule (\ref{rule:CTRules}) on \pfref{r'Type} and \pfref{rs'+rType} and \pfref{prenotredundant}} \pflabel{conc}
-    \item $\chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\rmpointer{\zruls{\hrulesP{r'}{rs'}}{r}{\cdot}}}{\tau}{\cor{\xi_r'}{\cor{\xi_{rs}'}{\xi_r}}}{\tau'}$ \BY{Definition \ref{defn:rmpointer} on \pfref{conc}}
-    \end{pfsteps*}
-  \resetpfcounter
-  \end{byCases}
-\end{proof}
 
 \begin{lemma}[Substitution]
   \label{lem:substitution}
@@ -326,7 +272,12 @@ By rule induction over \rulesref{rules:CTRules}.
   If $\hpatmatch{e}{p}{\theta}$ and $\hexptyp{\cdot}{\Delta_e}{e}{\tau}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$ and all expressions in $\theta$ are final
   then $\hsubstyp{\cdot}{\Delta_e}{\theta}{\Gamma}$
 \end{lemma}
-Proof by induction on the derivation of $\hpatmatch{e}{p}{\theta}$.
+
+\begin{theorem}[Preservation]
+  \label{thrm:preservation}
+  If $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\htrans{e}{e'}$
+  then $\hexptyp{\cdot}{\Delta}{e'}{\tau}$
+\end{theorem}
 
 \begin{theorem}[Determinism]
   \label{thrm:determinism}

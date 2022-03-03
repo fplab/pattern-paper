@@ -64,11 +64,17 @@
 \excludecomment{proof}
 \begin{document}
 
+In the main paper, we present only a single constraint language. However, conceptually, we work with this language in two distinct stages: first, the constraints directly emitted by lists of rules, then, for use in redundancy and exhaustiveness checking, the constraints which are in the image of the truify and falsify functions and their duals. While irrelevant to the overall theory, to simplify some proofs, it is useful to make this distinction explicit.
+
+In \autoref{sec:incompleteconstraint}, we present the first stage of constraints, called the \emph{incomplete constraint language}. This consists of any constraint emitted by a pattern, and in particular, includes the $\cunknown$ constraint. In order to define the constraint emitted by a list of rules, we also include $\cfalsity$ and allow taking the $\vee$ of incomplete constraints. At this stage, we often require two versions of each judgement: one describing a determinate result, and one describing a result which is indeterminate due to the presence of the $\cunknown$ constraint.
+
+In turn, in \autoref{sec:completeconstraint}, we discuss those constraints in the image of the truify and falsify functions, as well as their duals. We call this the \emph{complete constraint language}, and it includes almost all of the incomplete language, but excludes the $\cunknown$ constraint. To support the dual operation, we also may take the $\wedge$ of complete constraints, and we add a $\cnotnum{n}$ constraint. Due to the absence of $\cunknown$, judgements related to the complete language do not have to consider indeterminacy, and thus are often simpler than their counterparts in the incomplete language. This is the primary motivation for distinguishing these languages at all.
+
 \input{simple-constraint}
 \input{complete-constraint}
-\input{statics}
+\pagebreak
 \input{dynamics}
-\input{type-safety}
+\input{statics}
 \input{decidability}
 
 \end{document}

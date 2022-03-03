@@ -1,64 +1,58 @@
 \section{Introduction}
 \label{sec:intro}
 
-Programming language definitions typically assign meaning to programs only once they are fully-formed and fully-typed. 
+Language definitions typically assign meaning to programs only once they are fully-formed and fully-typed. 
 However, programming tools---type checkers, language-aware editors, interpreters, program synthesizers, and so on---%
-are frequently exhorted to reason about and manipulate programs that are missing pieces or that have errors,
-whether because the programmer has made a mistake or because the programmer, or perhaps a collaborator of theirs, is in the midst of an editing task. 
-These formally meaningless inputs, which are sometimes transient but can also persist over long periods of time such as during a large refactoring, cause many tools to exhibit gaps in service or to turn to  
-\emph{ad hoc} heuristics, e.g. insertion of arbitrary tokens or wholesale removal of problematic lines of code, to offer best-effort feedback and assistance.\todo{cite snapl hazel paper,error-recovery parsing work}{}
+are frequently asked to reason about and manipulate programs with missing pieces or type errors,
+whether because the programmer has made a mistake or because the programmer, or perhaps a collaborator, is in the midst of an editing task. 
+These formally meaningless states, which are sometimes transient but can also persist through long refactoring tasks, cause many tools to exhibit gaps in service or to turn to  
+\emph{ad hoc} heuristics, e.g. insertion of arbitrary tokens or wholesale removal of problematic lines of code, to offer best-effort feedback and assistance \cite{HazelnutSNAPL, DBLP:conf/oopsla/KatsJNV09}.
 % To put it succinctly: definitional gaps lead to gaps in service.
 
 In recognition of this pernicious \emph{gap problem}, several programming systems, 
-including GHC Haskell, Agda, Idris, and Hazel\todo{citations}{}, have introduced
-support for \emph{typed holes}. Typed holes come in two forms. \emph{Empty holes} 
+including GHC Haskell \cite{GHCHoles}, Agda \cite{norell:thesis}, Idris \cite{brady2013idris}, and Hazel \cite{DBLP:conf/popl/OmarVHAH17}, have introduced \emph{typed holes}. Typed holes come in two forms. \emph{Empty holes} 
 stand for terms that have yet to be constructed by the programmer. 
 \emph{Non-empty holes} 
 operate as membranes around erroneous terms, e.g. as-yet-type-inconsistent
 expressions or as-yet-unbound variables, 
 isolating them from the rest of the program.
-
-In most systems, the programmer manually inserts these holes where necessary.
-Luckily, holes are syntactically lightweight: in GHC Haskell, for example, an unnamed expression
-hole is simply \li{_} and a named hole is \li{_name}. 
-Non-empty holes are inserted implicitly around static errors, when an appropriate\todo{which?}{} compiler flag
-is activated. In Agda, programmers can express  
-non-empty holes explicitly as \li{\{e\}n} where \li{e} is an expression and \li{n} is an identifying hole number.
-Editors for these languages sometimes insert holes, or at least hole numbers, automatically, e.g. in response to errors. 
-The Hazel editor inserts both empty and non-empty holes fully automatically during editing when using its structure editing interface.\todo{cite hybrid approach too, e.g. Emacs mode}
-For example, Fig.~\ref{fig:exhaustiveness}(a), discussed further in the next section, shows an automatically inserted hole to the right of the \li{::} operator, numbered \li{161}. Without this hole, the program would be syntactically malformed.\todo{check number in final screenshots / use smaller number?}
-
-By incorporating holes into a language's syntax and semantics, 
+By incorporating holes into the syntax and semantics, 
 it is possible to assign meaning to a greater number of notionally incomplete programs.
 With a formally meaningful term to work with, language services can avoid gaps without needing to rely on \emph{ad hoc} heuristics.
-Services can also be developed specifically for working with holes, e.g. the systems mentioned above report  
+Services can also be developed specifically for working with holes, e.g. all of the systems mentioned above report  
 the expected type and the variables in scope at each hole, and they are also able to synthesize hole fillings in various ways.\todo{citations}
 
-Hazel is unique amongst systems with typed holes in that it strives to to eliminate the gap problem entirely, offering a \emph{maximal liveness} invariant: Hazel inserts any necessary holes automatically during editing and assigns both static and dynamic meaning to every possible resulting 
-editor state\todo{cite hazelnut,hazelnut live}{}. This allows Hazel language services to remain fully functional at all
+In most such systems the programmer manually inserts holes where necessary.
+Luckily, holes are syntactically lightweight: in GHC Haskell, for example, an unnamed empty expression
+hole is simply \li{_} and a named hole is \li{_name}. 
+Non-empty holes can be inserted implicitly around static errors, with an appropriate compiler flag. 
+In Agda, programmers can express  
+non-empty holes explicitly as \li{\{e\}n} where \li{e} is an expression and \li{n} is an identifying hole number.
+
+The Hazel structure editor is distinct in that inserts both empty and non-empty holes fully automatically during editing.\todo{cite hybrid approach too, e.g. Emacs mode}
+For example, Fig.~\ref{fig:exhaustiveness}(a), discussed further below, shows an automatically inserted empty hole to the right of the \li{::} operator, numbered \li{161}.\todo{check number in final screenshots / use smaller number?} Going further still, Hazel eliminates the gap problem entirely by maintaining a maximal \emph{liveness invariant}: Hazel assigns both static and dynamic meaning to every possible editor state \cite{DBLP:conf/popl/OmarVHAH17, DBLP:journals/pacmpl/OmarVCH19}. This allows Hazel language services to remain fully functional at all
 times. This includes services that require running the program, because Hazel is capable of evaluating ``around'' 
-expression holes, producing evaluation results that themselves retain holes (with accompanying closures). Hazel also supports programs with holes in type annotations, including those where static type inference is unable to find a solution, because Hazel is gradually typed. Dynamic type errors are reformulated as run-time holes to localize their effect on evaluation.\todo{cite}\footnote{GHC Haskell can also run programs with expression holes, but the program crashes when a hole is reached. It also supports holes in type annotations, but the type inference system must be able to uniquely solve for the hole.}\todo{Example?} 
+expression holes, producing evaluation results that themselves retain holes (with accompanying closures). Hazel also supports programs that appear in type annotations, including those where static type inference is unable to find a solution, because Hazel is gradually typed. Dynamic type errors are reformulated as run-time holes to localize their effect on evaluation \cite{DBLP:journals/pacmpl/OmarVCH19}.\footnote{GHC Haskell can also run programs with expression holes, but the program crashes when a hole is reached. It also supports holes in type annotations, but the type inference system must be able to uniquely solve for these holes.}\todo{Example?} 
 
-In Hazel and all of the other systems just described, 
-holes can appear in expression position.
-In some of these systems, holes can also appear in types. 
+In all of the systems just described, 
+holes can appear in expressions and types.
 None of these systems have previously introduced holes into patterns. 
-Pattern holes would, however, be helpful in all of these systems for much the same reason as expression holes are helpful: patterns are compositional in nature and are governed by a type discipline. 
-In Hazel, pattern holes become necessary in order to support pattern matching while maintaining Hazel's maximal liveness invariant: the user will necessarily construct patterns incrementally, and Hazel must be able to make sense of each step of this editing process.
-Previously, the Hazel language was only a simply typed lambda calculus with binary products and sums equipped with the primitive projections and binary case analysis eliminators, respectively.
+Pattern holes would, however, be useful in all of these systems for much the same reason as expression holes are useful: patterns are compositional in nature and are governed by a type discipline. 
+In Hazel, pattern holes are in fact necessary to maintain the liveness invariant: the user will necessarily construct patterns incrementally, and Hazel must be able to assign meaning to each step of this editing process.
+This paper describes our integration of full-scale live pattern matching with holes into Hazel (Sec. 2). We then capture the essential ideas by defining a type-theoretic calculus called Peanut, which extends the Hazelnut Live calculus with pattern matching and pattern holes (Sec. 3). We have mechanized the metatheory of Peanut using Agda (Sec. 3 and Supplemental Material). To go from Peanut to Hazel, we generalize it to support finite labeled sums, including sums with \emph{datatype constructor holes} (Sec. 4), and implement a simple decision procedure for the necessary static analyses, expressed declaratively as logical entailments. The result is the first general-purpose typed functional programming environment maintaining the maximal liveness invariant.
 
-Before discussing the problem of pattern holes in detail, let us review the necessary concepts. 
-\emph{Structural pattern matching} is a ubiquitous feature of ML-family functional languages, 
-and increasingly, many languages from other language families as well. Briefly,
-structural pattern matching combines structural case analysis with destructuring binding. 
+\section{Background}
+\label{sec:background}
+Before discussing pattern holes, let us briefly review the necessary background and terminology, which will be familiar to users of typed functional programming languages. 
+Briefly,
+\emph{structural pattern matching} combines structural case analysis with destructuring binding. 
 Patterns are compositional, so pattern matching can dramatically collapse what would otherwise 
-need to be a deeply nested sequence of case analyses and destructurings. For example,
-the patterns in the \li{match} expressions in Fig.~\ref{fig:basic-examples} below 
-match against the outer constructor of the \emph{scrutinee}, \li{tree}, and, when its value was constructed using \li{Node}, simultaneously match against the argument value using list patterns.
-\begin{figure}[h!]
+need to be a deeply nested sequence of case analyses and destructurings. The central construct is the \li{match} expression, examples of which appear in  Fig.~\ref{fig:basic-examples}. A match expression consists of a \emph{scrutinee} and an ordered sequence of \li{|}-separated \emph{rules}. Each rule consists of a \emph{pattern} and a \emph{branch expression} separated by \li{->}. The value of the scrutinee is matched against each pattern in order, and if there is a match, the corresponding branch is taken. The examples in  Fig.~\ref{fig:basic-examples} 
+case analyze on the outer constructor of the value of the {scrutinee}, \li{tree}. In cases where the scrutinee was constructed by the application of the \li{Node} constructor, they simultaneously match on the structure of the list argument. Pattern variables match any value and become bound to that value in the corresponding branch expression.
+\begin{figure}[h]
 \begin{subfigure}{.45\textwidth}
 \begin{lstlisting}[numbers=none]
-match tree {
+match tree
 | Node([]) -> Empty
 | Node([x]) -> Node([f x, Empty])
 | Node([x, y]) -> Node([f x, f y])
@@ -66,43 +60,44 @@ match tree {
   [f x, f (Node (y::tl))])
 | Leaf x -> Leaf x
 | Empty -> Empty
-}
+end
 \end{lstlisting}
-\caption{Exhaustive + No Redundancy\label{fig:basic-examples-correct}}
+\caption{Exhaustive + Irredundant\label{fig:basic-examples-correct}}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
 \begin{lstlisting}[numbers=none]
-match tree {
+match tree
 | Node(x::y::tl) -> Node(
   [f x, f (Node (y::tl))])
 | Node([x, y]) -> Node([f x, f y])
 | Node([x]) -> Node([f x, Empty])
 | Node([]) -> Empty
 | Empty -> Empty
-}
+end
 ##
 \end{lstlisting}
-\caption{Non-Exhaustive + Redundancy\label{fig:basic-examples-wrong}}
+\caption{Inexhaustive + Redundant (Second Pattern)\label{fig:basic-examples-wrong}}
 \end{subfigure}
 \caption{Two examples demonstrating structural pattern matching and common pitfalls.}
 \label{fig:basic-examples}
 \end{figure}
 
 Although superficially similar, Fig.~\ref{fig:basic-examples-correct} and Fig.~\ref{fig:basic-examples-wrong}
-behave quite differently. In particular, the \li{match} expression in Fig.~\ref{fig:basic-examples-wrong} is \emph{non-exhaustive}: there are values of the scrutinee, namely values of the form \li{Leaf n}, for which none of the patterns will match, leading to a run-time error or undefined behavior. 
-Moreover, the second pattern in Fig.~\ref{fig:basic-examples-wrong} is \emph{redundant}: there are no values that match that pattern that do not also match a
-previous pattern. In particular, nodes with exactly two children, e.g. \li{Node([Leaf 1, Leaf 2])}, will match the first pattern, 
-binding \li{x} to \li{Leaf 1}, \li{y} to \li{Leaf 2}, and \li{tl} to \li{[]}.
-In contrast, Fig.~\ref{fig:basic-examples-correct} has no redundant patterns, having avoided the issue by swapping the two patterns so that the pattern \li{Node([x, y])} matches first.
-Subtleties like these are easy to miss, even for experienced programmers when working with complex datatypes. 
+behave quite differently. In particular, the \li{match} expression in Fig.~\ref{fig:basic-examples-wrong} is \emph{inexhaustive}: there are values of the scrutinee's type, namely values of the form \li{Leaf n}, for which none of the patterns will match, leading to a run-time error or undefined behavior. 
+Moreover, the second pattern in Fig.~\ref{fig:basic-examples-wrong} is \emph{redundant}: there are no values that match \li{Node([x, y])} that do not also match a
+previous pattern, \li{Node(x::y::tl)}, because \li{[x, y]} is syntactic sugar for \li{x::y::[]}.
+%In particular, nodes with exactly two children, e.g. \li{Node([Leaf 1, Leaf 2])}, will match \li{Node(x::y::tl)} because, after desugaring the list literal, we match \li{x} to \li{Leaf 1}, \li{y} to \li{Leaf 2}, and \li{tl} to \li{[]}.
+By contrast, Fig.~\ref{fig:basic-examples-correct} has no redundant patterns because \li{Node([x, y])} matches first.
+Subtleties like these are easy to miss, particularly for novices but even for experienced programmers when working with complex datatypes. 
 
 Fortunately,
-type checkers can statically detect both non-exhaustive \li{match}es and redundant patterns within a \li{match} expression, generating static errors (or warnings) for the programmer. 
-By mandating exhaustiveness, these checks compel programmers to consider all possible inputs, including rare cases that often cause unexpected behavior or even major security issues in other settings (e.g. null pointer exceptions\todo{cite data}). Exhaustiveness checking is also a critical tool when extending datatype definitions with new constructors, because the errors 
-alert the programmer of every \li{match} expression that needs to be updated to handle the new case (except those that made use of catch-all wildcard patterns, \li{_}, which for this reason are discouraged in functional programming practice).
-By alerting the programmer of redundant patterns, these systems help programmers consider order-related subtleties and duplicated or unnecessary code paths. These static checks have become indispensable tools for improving the quality of programs written in all modern typed functional languages. In the setting of a theorem prover, exhaustiveness checking is necessary to ensure totality and thus soundness. \todo{cites?} 
+modern typed functional languages perform static analyses to detect inexhaustive rule sequences and redundant patterns within a rule sequence.
+Exhaustiveness checking compels programmers to consider all possible inputs, including rare cases that may lead to undesirable or undefined behavior. Indeed, many major security issues can be understood as a failure to exhaustively case analyze (e.g. null pointer exceptions).
+In the setting of a dependently-typed theorem prover, exhaustiveness checking is necessary to ensure totality and thus logical soundness.
+Exhaustiveness checking also supports program evolution: when extending datatype definitions with new constructors, exhaustiveness errors 
+serve to alert the programmer of every \li{match} expression that needs to be updated to handle the new case, excepting those that use catch-all wildcard patterns, \li{_} (which for this reason are discouraged in functional programming practice).
+Redundancy checking similarly improves software quality by helping programmers avoid subtle order-related bugs and duplicated or unnecessary code paths.
 
-Adding support for holes to patterns is syntactically simple: we only need to take care to distinguish the syntax of holes from wildcards, \li{_}, which are \emph{not} holes. The subtleties arise (1) when we introduce holes into the static semantics and these two critical static analyses, and (2) in the dynamic semantics of live programming with holes \emph{a la} Hazel. In both situations, the key consideration is that a hole represents an \emph{unknown pattern}, so previously binary distinctions -- between exhaustiveness and non-exhaustiveness, or redundancy and irredundancy, or between a dynamic match or non-match --become ternary distinctions: we need to consider indeterminate situations, while not becoming overly conservative in situations where a decision can be made no matter how a hole is filled. We will consider the problem informally by example in Sec.X, showing . Then, we consider the problem formally in Sec.Y by developing a core calculus, Peanut, based on Hazelnut Live. Finally, we scale up Peanut with labeled finite sums and discuss our implementation of these ideas in the Hazel programming environment. We conclude with a discussion of related and future work in Sec. Z and Q.
 
 % (Maybe: add gradual typing? add fill-and-resume? add speculative evaluation?)
 
