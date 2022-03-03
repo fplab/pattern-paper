@@ -1,0 +1,6 @@
+(library
+ (name incon)
+ (libraries z3)
+ (inline_tests)
+ (preprocess
+  (pps ppx_inline_test)))
