@@ -1,103 +1,123 @@
-\section{Pattern Matching in Hazel}\label{sec:examples}
-\todo{Make sure this section uses consistent wording with the rest of the paper (e.g. case vs. match, branch vs. rule, indeterminate) - if using match should probably have footnote or something saying we call it case in Hazel}
-Let us begin with some examples to develop the intuition for pattern matching with typed holes.
-Our examples are shown in the implementation in Hazel.
+\section{Pattern Matching with Typed Holes in Hazel}\label{sec:examples}
+Adding holes to patterns is syntactically straightforward. In (our extension of) Hazel, pattern and expression holes look identical, represented by a gray, automatically generated numeric identifier (cf. pattern hole 161 and expression hole 149 in Fig.~\ref{fig:exhaustiveness}). In other systems with typed holes, we would need to take care to distinguish the syntax of pattern holes, perhaps \li{??}, from wildcard patterns, \li{_}.
 
-Suppose a programmer is writing a function \texttt{has\_odd\_length} which should take in a list of \texttt{Int}s and result in a \texttt{Bool} indicating if that list has an odd number of elements. 
+The subtleties arise when we introduce  (1) holes into the static semantics and, in particular, into exhaustiveness and redundancy checking, and (2) into the dynamic semantics of a system with support for live programming with holes \emph{a la} Hazel. In both regards, the key concept is that a pattern hole represents an \emph{unknown  pattern}, so previously binary distinctions---between exhaustiveness and inexhaustiveness, redundancy and irredundancy, or match and mismatch---become ternary distinctions: we need to consider \emph{indeterminate} situations, i.e. where the determination cannot be made without filling one or more holes, including perhaps expression holes in the scrutinee. However, we also seek to avoid becoming unnecessarily conservative in situations where a determination \emph{can} be made no matter how the holes are filled.
 
-First we will build the intuition for exhaustiveness checking when there are holes in the patterns of a match expression. 
-When there are holes, we consider if there is a way that the holes \emph{could} be filled such that the match expression would be exhaustive. 
-If there is, we say that the match expression may or may not be exhaustive because we do not know if the holes will be filled with one of the exhaustive hole fillings or if a non-exhaustive hole filling will be used. 
-If there is no way to fill the holes such that the match expression would be exhaustive, then we say that the expression must not be exhaustive. 
+Let us consider several characteristic examples of each of these distinctions in turn. As a simple running example, suppose a programmer is writing a function \texttt{odd\_length}\todo{remove has}{} which determines, by returning a \li{Bool}ean value, whether an input list, of type \li{[Int]}, has an odd number of elements. Let us consider
+various intermediate editor states that the programmer may produce, and the live feedback that Hazel offers in each of these \cite{Potter2020HazelTG}.
 
-Let us look at \autoref{fig:exhaustiveness} for an example of exhaustiveness checking using our \texttt{has\_odd\_length} function. 
-We see in \autoref{fig:may-exhaustive} that the pattern of the second branch of the match expression contains a hole.\todo{Should probably indicate that you don't need to worry about the numbers other than just considering them as identifiers}\footnote{In the Hazel UI, hole numbers are shown as light grey text inside the hole. } 
-This hole could be filled in such that the match is exhaustive, for example using a variable pattern \texttt{xs}. 
-This filling would result in a match expression where the first branch matches all empty lists and the second branch matches all non-empty lists, making the branches exhaustive. 
-However, the hole in the pattern of the second branch could also be filled in such a way that the branches are not exhaustive, for example using a cons pattern \texttt{y::xs}. 
-The resulting pattern \texttt{x::y::xs} from this hole filling matches lists with at least two elements.
-Now the branches of the match expression only match empty lists and lists of at least two elements, leaving lists with only one element unmatched. 
-Therefore, we see that this hole filling results in a non-exhaustive match expression. 
-In our implementation in Hazel, we only want to show warnings for match expressions that \emph{must} not be exhaustive, therefore we do not display any messages to the user when the expression may or may not be exhaustive. 
+\subsection{Exhaustiveness Checking with Pattern Holes}
+\label{sec:hazel-exhaustiveness}
+We begin with the editor state in Fig.~\ref{fig:may-exhaustive}, 
+where there is a hole in the tail position of the cons (\li{::}) pattern.
+In determining whether this match expression is inexhaustive, we 
+must reason over all potential hole fillings. In this case, the 
+match expression is \emph{indeterminately exhaustive}, because there are hole fillings,
+such as a pattern variable \li{tl}, which would result in a determination
+of exhaustiveness, while there are other hole fillings, such as \li{[]} or \li{y::tl},
+where the determination would instead be inexhaustiveness. In the Hazel user interface, we choose to alert the programmer with an error
+indicator only when the match expression is necessarily inexhaustive,
+so no error appears. The reason is that we do not want to draw the programmer's attention for a problem that may or may not actually persist once the user has filled the holes.
 
-\begin{figure}[h]
+The mere presence of a pattern hole in a \emph{match} 
+expression does not mean that exhaustiveness errors are suppressed, however. Consider now
+the editor state in Fig.~\ref{fig:not-exhautive}. In this case,
+although there is again a pattern hole in the second pattern, 
+it can be determined that this match expression is \emph{necessarily inexhaustive}
+because no matter how that hole is filled, this match expression will fail to 
+match lists with exactly one element (singleton lists). Since this match expression is non-exhaustive no matter how the hole is filled,
+we alert the user to the problem with an error indicator and an error message when the cursor is on the match expression. More diagnostic information would be displayed by clicking the triangle, not shown.\todo{triangle}
+
+\begin{figure}
   \centering
-  \subfloat[May or may not be exhaustive.\label{fig:may-exhaustive}]{
+  \subfloat[Indeterminately Exhaustive\label{fig:may-exhaustive}]{
     \includegraphics[scale=0.5]{imgs/maybe_exhaustive.png}
 }
 \hfill
-  \subfloat[Must not be exhaustive.\label{fig:not-exhautive}]{
+  \subfloat[Necessarily Inexhaustive\label{fig:not-exhautive}]{
 \includegraphics[scale=0.5]{imgs/not_exhaustive.png}
 }
-  \caption{Exhaustiveness Checking in Incomplete Match Expressions}
+  \caption{Exhaustiveness Checking with Pattern Holes}
   \label{fig:exhaustiveness}
 \end{figure}
 
-It is possible for a match expression with pattern holes to be known to be not exhaustive. 
-We see in \autoref{fig:not-exhautive} that again the pattern of the match expression contains a hole. 
-However, there is no way to fill in this hole such that the branches are exhaustive following the same reasoning as before. Regardless of how the hole is filled, this pattern will not match lists with fewer than two elements. 
-Hazel displays a warning message to the programmer in this situation because it is known that the match expression must not be exhaustive.
+It is also possible for a match expression with pattern holes to be necessarily exhaustive, e.g. below.\todo{make figure} Here, the first and third pattern are
+exhaustive, regardless of how the hole in the second pattern is filled (e.g. with \li{[]} to special case singleton lists). We choose not to visually distinguish between necessarily and indeterminately exhaustive match expressions, again to avoid drawing
+the programmer's attention to information that is unlikely to be actionable, but the
+underlying semantic distinction is interesting to observe.
+\begin{lstlisting}
+match list
+| [] -> false
+| x::?? -> true
+| x::tl -> not (odd_length tl)
+end
+\end{lstlisting}
 
-Next, let us discuss redundancy checking when pattern holes are present. 
-Similar to exhaustiveness checking, we consider if there is a way that the pattern holes could be filled such that the match expression might not be redundant. 
-If there is, we say that the match expression may or may not be redundant. 
-If there is no such way to fill the holes, then the expression must be redundant.
+\subsection{Redundancy Checking with Pattern Holes}
+\label{sec:hazel-redundancy}
+A pattern is redundant if, for every value of the scrutinee's type that match that pattern, one of the preceding patterns in the \li{match} expression will necessarily 
+match it. In the presence of pattern holes, we again have to consider all possible hole fillings in this analysis, leading to three possibilities: \emph{necessarily irredundant}, \emph{indeterminately irredundant}, and \emph{necessarily redundant} patterns.
 
-Let us consider the example shown in \autoref{fig:redundancy}. 
-In \autoref{fig:may-redundant}, we see that there is a pattern hole in the second branch of the match expression. 
-It is possible to fill in this hole in a way that would not make the branches redundant, such as the empty list pattern, \texttt{[]}. 
-However, it is also possible that the hole could be filled in a way that causes a redundancy, such as the cons pattern \texttt{y::xs}. 
-This cons filling would make the third branch redundant since there is no expression that would match the third branch that would not first match with the second branch.
-Again, similarly to exhaustiveness checking, since the branches are not known to be redundant, Hazel does not display a warning message to the programmer.
+In the editor state in Fig.~\ref{fig:may-redundant}, there is a pattern hole in the \emph{second} branch of the match expression. It is possible to fill this hole in a way that would make the \emph{third} branch irredundant, such as the empty list pattern, \texttt{[]}. 
+However, it is also possible that the hole could be filled in a way that causes the third pattern to become redundant, such as the cons pattern \texttt{y::tl}. Consequently, the third pattern in this \li{match} expression is indeterminately irredundant (we chose ``irredundant'' rather than ``redundant'' in this phrase because, like exhaustiveness, irredundancy is the programmer's goal).
 
-\begin{figure}[h]
+The second pattern itself, although it contains a pattern hole, is necessarily irredundant because no matter how the hole is filled, the first pattern, \li{[]}, does not overlap with it. The first pattern is always necessarily irredundant, even when it is a hole, because
+there are no previous patterns (except if the scrutinee has the nullary sum, i.e. \li{void}, type, which has no values; see Sec.~\ref{sec:labeledsums}).
+
+The editor state in Fig.~\ref{fig:must-redundant} shows that a pattern with a hole can nevertheless be determined to be necessarily redundant.
+In this case, the previous pattern handles every non-empty list, so no matter how the pattern hole is filled, it will be redundant.
+Indeed, even an empty hole pattern in the third rule would be redundant because the two preceding patterns are exhaustive.
+ As with exhaustiveness, we only alert
+the user to necessarily redundant rules, so this is the only rule in Fig.~\ref{fig:redundancy} where an error is reported.
+
+\begin{figure}
   \centering
-    \subfloat[May or may not be redundant. \label{fig:may-redundant}]{
+    \subfloat[Necessarily Irredundant (first two) + Indeterminately Irredundant (third pattern)\label{fig:may-redundant}]{
     \includegraphics[scale=0.5]{imgs/maybe_redundant.png}
     } 
     \hfill
-  \subfloat[Must be redundant. \label{fig:must-redundant}]{
+  \subfloat[Necessarily Redundant (third pattern) \label{fig:must-redundant}]{
   \includegraphics[scale=0.5]{imgs/redundant.png}
   }%
-  \caption{Redundancy Checking in Incomplete Match Expressions}
+  \caption{Redundancy Checking with Pattern Holes}
   \label{fig:redundancy}
 \end{figure}
 
-Now let us look at \autoref{fig:must-redundant}. 
-Here we see a situation where there is a hole in the pattern for the third branch of the match expression. 
-However, there is no way to fill the hole such that this third branch would not be redundant. 
-This is because the first and second branches will match all empty and non-empty lists, respectively, meaning that no expression would be matched by the third branch that would not already have been matched in prior branches.
-Thus we can see that this third rule must be redundant, and Hazel shows a warning on the redundant rule.
 
-Now that we have introduced the intuition for exhaustiveness and redundancy checking, we move to live evaluation of match expressions in the presence of pattern and expression holes. 
-We first look at the situation where there are expression holes. 
-We see in \autoref{fig:exp-hole} that the argument to \texttt{has\_odd\_length} has a hole. 
-During evaluation, Hazel checks which pattern matches this expression. 
-We can determine that the first branch does not match since regardless of how the expression hole is filled, the argument list is not empty. 
-Similarly, we can also determine that the second branch does not match because regardless of how the expression hole is filled, the list is at least of length two. 
-When checking the third branch, we see that we have a pattern that matches a list of at least two elements.
-As just stated, our input list with a hole will have at least two elements regardless of how that hole is filled.
-Thus, Hazel can take this third branch, binding \texttt{xs} to hole \todo{fill in with ending hole number}. 
-The expression is then evaluated, applying \texttt{has\_odd\_length} again, this time with argument hole \todo{fill in with ending hole number}. 
-When we evaluate to the match again, we cannot determine which branch to take since the empty hole may match (but also may not) the first rule. 
-Therefore, our evaluation stops. Hazel indicates to the programmer which branch evaluation stopped on by greying out all previous branches, as can be seen on the bottom of \autoref{fig:exp-hole}. \todo{Screenshot doesn't have anything greyed out...}
+\subsection{Live Evaluation with Expression and Pattern Holes}
+\label{sec:hazel-live-eval}
+In the examples above, we considered only {static analysis} of programs with pattern holes.
+However, Hazel also supports live evaluation with holes, proceeding ``around'' holes
+as necessary to produce a result with a possibly \emph{indeterminate value}, i.e. an expression that might retain holes in critical elimination positions \cite{DBLP:journals/pacmpl/OmarVCH19}.\todo{CMTT reference? } %\cite{DBLP:journals/tocl/NanevskiPP08}.
 
-\begin{figure}[h]
+In a language without holes, the value of the scrutinee can be determined to either \emph{match} or \emph{mismatch} every pattern of the same type.
+In order to support live evaluation with both expression and pattern holes, we have to consider now a third possiblilty: an \emph{indeterminate match} between the scrutinee, which may now itself have an indeterminate value, and a pattern. Let us consider several possibilities in Fig.~\ref{fig:evaluation-ex}. 
+
+We first look in Fig.~\ref{fig:exp-hole} at the situation where there are expression holes but no pattern holes. 
+We see in \autoref{fig:exp-hole} that the argument to \li{odd_length} has a hole, so evaluation cannot determine a unique value. Instead,
+the argument has an \emph{indeterminate value}. 
+When we proceed through pattern matching, we can only make decisions that would be valid no matter how the hole in the tail of the list
+would be filled. 
+We can determine that the first pattern necessarily mismatches since the argument is necessarily not empty. 
+Similarly, we can also determine that the second branch necessarily mismatches because regardless of how the hole is filled, the list is at least of length two. 
+When checking the third branch, we see that we have a pattern that matches any list of at least two elements.
+We know that the scrutinee necessarily matches this pattern, and that the match would bind \li{xs} to whatever the hole is filled with, so we can take this branch matching \li{xs} with the hole and proceed to recurse, now with the hole itself as the argument. In the recursive call, we cannot determine whether the first pattern, \li{[]}, matches, since an empty expression hole could be filled with \li{[]} or with any other list. This indeterminate match leaves the entire match expression with an indeterminate value, and we cannot proceed any further as shown in the 
+result at the bottom of Fig.~\ref{fig:exp-hole}.
+
+\begin{figure}
 \centering
-\subfloat[Pattern matching with expression  holes.\label{fig:exp-hole}]{\includegraphics[scale=0.47]{imgs/pat_match_exp_holes.png}}
+\subfloat[Pattern matching proceeds until an indeterminate match\label{fig:exp-hole}]{\includegraphics[scale=0.47]{imgs/pat_match_exp_holes.png}}
 \hfill
 \subfloat[Pattern matching with pattern holes.\label{fig:pat-hole}]{\includegraphics[scale=0.47]{imgs/pat_match_pat_holes.png}}
-  \caption{Pattern Matching with Holes}
+  \caption{Live Evaluation with Expression and Pattern Holes}
   \label{fig:evaluation-ex}
 \end{figure}
 
-Next we look at the situation where there are pattern holes during evaluation. 
-We see in \autoref{fig:pat-hole} that we have a hole in the patterns of the match expression. 
-Hazel evaluates down to the match expression, branching on the function argument \texttt{1::[]}. 
-This argument does not match the pattern of the first branch, so evaluation moves to the second. 
-While the pattern of the second branch has a hole, we are still able to determine that this branch does not match. 
-We can do this because there is no way to fill in hole \todo{fill in with ending hole number} such that that pattern will match a list with two elements. 
-Hazel uses hole based filling, so the only patterns that can fill in the pattern hole have to be for the head of the list, and the head of a list is only one element. 
-Evaluation therefore moves to the third branch. 
-Here evaluation stops since in this scenario of a pattern hole, we cannot determine if the expression we are branching on will match this pattern. \todo{This does not match up with the screenshot (is there supposed to be two elements in the input list and a hole somewhere in the third pattern}
-Therefore, evaluation stops on the third branch as indicated in the Hazel UI. \todo{Again, no indication right now...}
+
+Next we consider in \autoref{fig:pat-hole} the situation where there are (several) pattern holes encountered during evaluation. 
+We know that the first pattern, \li{[]}, necessarily mismatches the scrutinee, \li{1::[]}, for the usual reasons.
+The second pattern, which contains two holes but which matches only lists of length two, also necessarily mismatches the scrutinee.
+The third pattern, however, matches singleton lists. However, a pattern hole appears at its head, so it cannot be determined 
+whether there is necessarily a match or a mismatch with \li{1::[]}. For example, if the pattern hole is filled with the pattern \li{2}, 
+then there would be a mismatch. This indeterminate match causes the match expression itself has an indeterminate value.
+However, the prior mismatches allow us report to the programmer, by graying out mismatched rules, how far down we got before evaluation could not proceed any further.

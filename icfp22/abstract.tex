@@ -1,6 +1,6 @@
 \begin{abstract}
     Several programming systems, including GHC Haskell, Agda, Idris, and Hazel, now support \emph{typed holes}. 
-    By assigning static and, to varying degree, dynamic meaning to programs with holes, editors and other tools can offer more meaningful  feedback and suggestions throughout the editing process, i.e. \emph{live}.
+    By assigning static and, to varying degree, dynamic meaning to programs with holes, editors and other tools can offer more meaningful  feedback and suggestions throughout the editing process, i.e. in a \emph{live} manner.
     % In these languages, empty holes serve as placeholders for missing program terms, while
     % non-empty holes operate as semantic membranes around erroneous terms, 
     % isolating them so that the remainder of the program remains statically meaningful,
@@ -20,7 +20,7 @@
     to evaluate around holes in both expressions and patterns.
     We mechanize the metatheory of Peanut in Agda and formalize a procedure capable of 
     deciding the necessary entailments.
-    Finally, we scale up the core calculus to support finite labeled sums and integrate the mechanism into Hazel, a live functional 
+    Finally, we scale up the core calculus to support finite labeled sums, adding support for \emph{datatype constructor holes} in the process, and integrate the mechanism into Hazel, a live functional 
     programming environment for a dialect of Elm that automatically inserts holes during editing to provide rich static and dynamic feedback to the programmer without gaps in service, i.e. for every possible editor state. 
     % Hazel is the first gap-free environment for a language supporting pattern matching. 
   \keywords{pattern matching \and typed holes \and live programming}

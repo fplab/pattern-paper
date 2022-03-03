@@ -1,2 +1,16 @@
 \section{Discussion}
 We can adapt our core calculus to fit in a more expressive setting.
+
+\begin{itemize}
+\item richer pattern matching features
+\begin{itemize}
+    \item \cite{DBLP:journals/corr/abs-1909-04160} use SMT solver to handle guards with high precision
+\end{itemize}
+\item witness generation
+\end{itemize}
+
+\subsection{Limitations}
+In order to reason about indeterminate exhaustiveness and indeterminate redundancy, we conservatively consider all possible hole fillings. 
+However, we are not encoding exhaustiveness requirement and irredundancy requirement for each branch into a monolithic constraint solving problem. 
+Instead, we check the exhaustiveness and redundancy of each branch separately. 
+The drawback here is that, there are cases where two of the requirements can be indeterminately fulfilled respectively but cannot be fulfilled together regardless of the pattern holes' filling. Given such scenarios, a user may have to, first complete the program in a way such that one of the two requirements is fulfilled, and then get the error/warning from the type checker that the other requirement can not be fulfilled. That is saying, we have not realized the full potential of indeterminacy, giving error/warning at the earliest possible point. On the other hand, it is worth more discussion on whether it is a good thing to just tell user that several requirements cannot be fulfilled at the same time as it may be overwhelming to the user. But that opens up space for pattern synthesis.

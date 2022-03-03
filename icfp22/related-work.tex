@@ -1,22 +1,21 @@
 \section{Related Work}
 
 \subsubsection{Typed Holes}
-Peanut is based on Hazelnut Live, a typed lambda calculus that includes only expression and type holes.
+Peanut is based on Hazelnut Live, a typed lambda calculus that includes only expressions and type holes.
 The Hazel programming environment, which our implementation extends, is based directly on Hazelnut Live. 
 Peanut is derived from Hazelnut Live, retaining expression holes and introducing  
 structural pattern matching and pattern holes. (Some small technical differences are described in \todo{refer part of Sec 3 where we say more about technical distinctions}.) 
 Like Hazelnut Live, evaluation is able to proceed around holes, including pattern holes, in Peanut. An evaluation step is taken 
 only if it would be justified for all possible hole fillings.
 
-Peanut omits type holes, i.e. the unknown types from gradual type theory\todo{cite Siek and Taha + Siek et al SNAPL 2015}{}. Type holes obscure type information, so 
+Peanut omits type holes, i.e. the unknown types from gradual type theory \cite{Siek2006, DBLP:conf/snapl/SiekVCB15}. Type holes obscure type information, so 
 is possible to reason statically about exhaustiveness and redundancy in only a limited manner when the scrutinee is of unknown type.\footnote{Constraint-based type inference could be deployed to discover a type for the scrutinee in some cases, at which point it would be possible to use our mechanisms as described. Whether inference is deployed for this purpose is an orthogonal consideration.} Allowing scrutinees of unknown type would also require performing run-time checks, e.g. in the form of casts inserted on terms matched by variables of unknown type. 
-We have implemented this cast insertion machinery, which follows straightforwardly from prior work on cast insertion for binary sum types\todo{SNAPL15 paper has it}{}, into Hazel. This machinery is orthogonal to the machinery
-we consider in this paper, so we did not include type holes and casts in Peanut.
+We have implemented this cast insertion machinery, which follows straightforwardly from prior work on cast insertion for binary sum types \cite{DBLP:conf/snapl/SiekVCB15}, into Hazel. This machinery is orthogonal to the machinery we consider in this paper, so we did not include type holes and casts in Peanut.
 
 Hazelnut Live augments each expression hole instance with a closure, which serves to record deferred substitutions 
-(it is therefore a contextual type theory\todo{cite cmtt}). This information can be presented to the user and it enables soundly resuming from the current evaluation state when the programmer fills a hole (as long as there are no non-commutative side effects in the language).
+(it is therefore a contextual type theory \cite{DBLP:journals/tocl/NanevskiPP08}). This information can be presented to the user and it enables soundly resuming from the current evaluation state when the programmer fills a hole (as long as there are no non-commutative side effects in the language).
 The addition of pattern holes does not interfere with this mechanism. Pattern holes do not themselves need closures because patterns bind,
-rather than consume, variables. (In a language where patterns contain expressions, e.g. when guards are integrated into patterns\todo{cite ML workshop paper by Reppy}, closures on pattern holes would be necessary to support resumption.) It would not be possible to resume evaluation after filling a pattern hole because doing so can, in general, change the binding structure of the program by introducing shadowing. We leave to future work consideration of 
+rather than consume, variables. (In a language where patterns contain expressions, e.g. when guards are integrated into patterns \cite{Reppy2019}, closures on pattern holes would be necessary to support resumption.) It would not be possible to resume evaluation after filling a pattern hole because doing so can, in general, change the binding structure of the program by introducing shadowing. We leave to future work consideration of 
 conditional resumption when pattern hole filling happens not to cause shadowing.
 
 In Hazel, holes are inserted automatically during editing. Formally, Hazel is a type-aware structure editor governed by an edit action semantics derived from Hazelnut \cite{DBLP:conf/popl/OmarVHAH17}, a type-aware structure editor calculus 
@@ -30,9 +29,9 @@ Extending the edit action semantics to allow us to enter patterns presents no sp
 Moreover, our contributions do not require a structure editor: they are also relevant to languages where typed holes are inserted 
 manually by programmers, rather than automatically by an editor. 
 For example, GHC Haskell, Agda, and Idris, all feature manually inserted typed holes, both empty and non-empty, in expression position. 
-None of these systems support pattern holes as of this writing, however. Haskell does support unbound data constructors in patterns, but these bring compilation to a halt and do not interact with the exhaustiveness and redundancy checker, much less the run-time system. With the appropriate flags set, Haskell will attempt to evaluate programs with expression holes, but it stops with an exception whenever a hole is reached\todo{cite}{}. In contrast, our system supports evaluating around holes of all sorts, as described in \autoref{sec:examples} and formalized in \todo{refer to dynamics section}{}. We hope that this paper will prompt other languages to 
+None of these systems support pattern holes as of this writing, however. Haskell does support unbound data constructors in patterns, but these bring compilation to a halt and do not interact with the exhaustiveness and redundancy checker, much less the run-time system. With the appropriate flags set, Haskell will attempt to evaluate programs with expression holes, but it stops with an exception whenever a hole is reached \cite{GHCHoles}. In contrast, our system supports evaluating around holes of all sorts, as described in \autoref{sec:examples} and formalized in \autoref{sec:dynamics}. We hope that this paper will prompt other languages to 
 consider adding pattern holes. Our work on the Peanut calculus provides a minimal formal characterization 
-that captures the essential character of pattern matching with typed holes and our implementation in Hazel 
+that captures the essential character of pattern matching with holes and our implementation in Hazel 
 demonstrates a practical realization, complete with editor integration.
 
 \subsubsection{Pattern Matching}

@@ -42,27 +42,27 @@
 }
 
 \Infer{\CINCInl}{
-  \cincon{\Xi}
+  \cincon{\setof{\xi' | \cinl{\xi'} \in \Xi},\xi}
 }{
-  \cincon{\cinl{\Xi}}
+  \cincon{\Xi, \cinl{\xi}}
 }
 
 \Infer{\CINCInr}{
-  \cincon{\Xi}
+  \cincon{\setof{\xi' | \cinr{\xi'} \in \Xi},\xi}
 }{
-  \cincon{\cinr{\Xi}}
+  \cincon{\Xi, \cinr{\xi}}
 }
 
 \Infer{\CINCPairL}{
-  \cincon{\Xi_1}
+    \cincon{\setof{\xi_1' | \cpair{\xi_1'}{\xi_2'} \in \Xi},\xi_1}
 }{
-  \cincon{\cpair{\Xi_1}{\Xi_2}}
+    \cincon{\Xi, \cpair{\xi_1}{\xi_2}}
 }
 
 \Infer{\CINCPairR}{
-  \cincon{\Xi_2}
+    \cincon{\setof{\xi_2' | \cpair{\xi_1'}{\xi_2'} \in \Xi},\xi_2}
 }{
-  \cincon{\cpair{\Xi_1}{\Xi_2}}
+    \cincon{\Xi, \cpair{\xi_1}{\xi_2}}
 }
 \end{mathpar}
 
