@@ -1,5 +1,5 @@
 \section{Pattern Matching with Typed Holes in Hazel}\label{sec:examples}
-Adding holes to patterns is syntactically straightforward. In (our extension of) Hazel, pattern and expression holes look identical, represented by a gray, automatically generated numeric identifier (cf. pattern hole 40 and expression hole 38 in Fig.~\ref{fig:evaluation-ex}). In other systems with typed holes, we would need to take care to distinguish the syntax of pattern holes, perhaps \li{??}, from wildcard patterns, \li{_}.
+Adding holes to patterns is syntactically straightforward. In (our extension of) Hazel, pattern and expression holes look identical, represented by a gray, automatically generated numeric identifier (cf. pattern hole 40 and expression hole 38 in Fig.~\ref{fig:evaluation-ex}). In other systems with typed holes, we would need to take care to distinguish the syntax of pattern holes, perhaps \li{??}, from wildcard patterns, \li{_}.\todo{we will see that a pattern hole is semantically quite distinct from a wildcard pattern}{}
 
 The subtleties arise when we introduce  (1) holes into the static semantics and, in particular, into exhaustiveness and redundancy checking, and (2) into the dynamic semantics of a system with support for live programming with holes \emph{a la} Hazel. In both regards, the key concept is that a pattern hole represents an \emph{unknown  pattern}, so previously binary distinctions---between exhaustiveness and inexhaustiveness, redundancy and irredundancy, or match and mismatch---become ternary distinctions: we need to consider \emph{indeterminate} situations, i.e. where the determination cannot be made without filling one or more holes, including perhaps expression holes in the scrutinee. However, we also seek to avoid becoming unnecessarily conservative in situations where a determination \emph{can} be made no matter how the holes are filled.
 
@@ -24,7 +24,7 @@ the editor state in Fig.~\ref{fig:not-exhautive}. In this case,
 although there are again pattern holes in the second pattern, 
 it can be determined that this \li{match} expression is \emph{necessarily inexhaustive}
 because no matter how those holes are filled, this \li{match} expression will fail to 
-match lists with exactly one element (singleton lists). Since this \li{match} expression is non-exhaustive no matter how the holes are filled,
+match lists with exactly one element (singleton lists). Since this \li{match} expression is inexhaustive no matter how the holes are filled,
 we alert the user to the problem with an error indicator and an error message when the cursor is on the \li{match} expression.
 
 \begin{figure}
@@ -69,15 +69,17 @@ Indeed, even an empty hole pattern in the third pattern would be redundant becau
 the user to necessarily redundant patterns, so this is the only pattern in Fig.~\ref{fig:redundancy} where an error is reported.
 
 \begin{figure}
-  \centering
-    \subfloat[Necessarily Irredundant (first two patterns) + Indeterminately Irredundant (third pattern)\label{fig:may-redundant}]{
+    \begin{subfigure}[t]{0.45\textwidth}
+    \centering
     \includegraphics[scale=0.5,valign=t]{imgs/maybe_redundant.png}%
     \vphantom{\includegraphics[scale=0.5,valign=t]{imgs/redundant.png}}
-    } 
-    \hfil
-  \subfloat[Necessarily Redundant (third pattern) \label{fig:must-redundant}]{
+    \caption{Necessarily Irredundant (first two patterns) + Indeterminately Irredundant (third pattern)\label{fig:may-redundant}}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+    \centering
   \includegraphics[scale=0.5,valign=t]{imgs/redundant.png}
-  }%
+  \caption{Necessarily Redundant (third pattern) \label{fig:must-redundant}}
+  \end{subfigure}
   \caption{Redundancy Checking with Pattern Holes}
   \label{fig:redundancy}
 \end{figure}
@@ -104,10 +106,16 @@ We know that the scrutinee necessarily matches this pattern, bind \li{xs} to wha
 evaluation result at the bottom of Fig.~\ref{fig:exp-hole}.
 
 \begin{figure}
+\begin{subfigure}[t]{0.45\textwidth}
 \centering
-\subfloat[Pattern matching with expression holes\label{fig:exp-hole}]{\includegraphics[scale=0.47,valign=t]{imgs/pat_match_exp_holes.png}\vphantom{\includegraphics[scale=0.47,valign=t]{imgs/pat_match_pat_holes.png}}}
-\hfil
-\subfloat[Pattern matching with pattern holes\label{fig:pat-hole}]{\includegraphics[scale=0.47,valign=t]{imgs/pat_match_pat_holes.png}}
+\includegraphics[scale=0.47,valign=t]{imgs/pat_match_exp_holes.png}\vphantom{\includegraphics[scale=0.47,valign=t]{imgs/pat_match_pat_holes.png}}
+\caption{Pattern matching with expression holes\label{fig:exp-hole}}
+\end{subfigure}
+\begin{subfigure}[t]{0.45\textwidth}
+\centering
+{\includegraphics[scale=0.47,valign=t]{imgs/pat_match_pat_holes.png}}
+\caption{Pattern matching with pattern holes\label{fig:pat-hole}}
+\end{subfigure}
   \caption{Live Evaluation with Expression and Pattern Holes}
   \label{fig:evaluation-ex}
 \end{figure}

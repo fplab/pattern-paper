@@ -54,15 +54,16 @@
   \end{mathpar}
 
   \judgbox{
-    \chrultyp{\Gamma}{\Delta}{\hrulP{p}{e}}{\tau}{\xi}{\tau'}
+    \chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi}{\tau'}
   }{$r$ transforms a final expression of type $\tau$ \\ to a final expression of type $\tau'$}
 
   \begin{mathpar}
     \Infer{\TRule}{
+      r = \hrulP{p}{e} \\
       \chpattyp{p}{\tau}{\xi}{\Gamma_p}{\Delta_p} \\
       \hexptyp{\Gamma \uplus \Gamma_p}{\Delta \uplus \Delta_p}{e}{\tau'}
     }{
-      \chrultyp{\Gamma}{\Delta}{\hrulP{p}{e}}{\tau}{\xi}{\tau'}
+      \chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi}{\tau'}
     }
   \end{mathpar}
 

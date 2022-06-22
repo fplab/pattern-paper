@@ -2,7 +2,7 @@
 
 In this section, we conservatively extend Peanut with finite labeled finite sums, which is a practical necessity in general-purpose functional languages.
 
-The first step is to generalize the syntax of binary sums to other than two variants:
+The first step is to generalize the syntax of binary sums to more than two variants:
 \[
   \arraycolsep=4pt\begin{array}{lll}
     \tau & ::= & \ldots ~\vert~ \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset} \\
@@ -15,7 +15,7 @@ Labeled sums introduce a new sort $C$ for labels, a.k.a. datatype constructors, 
 Since we are not usually concerned with the length of any particular sum,
 we adopt a slightly more general and compact notation $\tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset}$
 for the sum consisting of labels $\tagset = \setof{C_i}_{i \leq n}$ with respective argument types $\setof{\tau_i}_{i \leq n}$.
-The introductory form is the \emph{labeled injection expression} $\hinj{C}{\tau}{e}$ for injecting expression $e$ into sum $\tau$ at label $C$.
+The introduction form is the \emph{labeled injection expression} $\hinj{C}{\tau}{e}$ for injecting expression $e$ into sum $\tau$ at label $C$.
 The elimination form is the \emph{labeled injection pattern} $\hinj{C}{\tau}{p}$ 
 for expressions matching pattern $p$ that have been injected into sum $\tau$ at label $C$.
 % For the remainder of this section, we assume all injections are labeled unless otherwise stated,
@@ -69,7 +69,7 @@ Finally, we extend the inconsistency relations as shown in \autoref{fig:labeled-
 Rule \RXInj establishes that constraints for nontrivial sums are refutable, i.e., that the set of dual constraints is not empty.
 The dual of a constraint with a concrete label consists of injections of the same label with dual arguments as well as injections of other labels into the sum.
 A constraint with a label hole is dual to all injections into the sum with concrete labels.
-The premises of Rule \RXInj merely express the fact that there are no alternatives injections into singleton sums, and none at all into void sums.
+The premises of Rule \RInjMult merely express the fact that there are no alternatives injections into singleton sums, and none at all into void sums.
 Rule \PInj establishes that it is possible to satisfy a labeled injection constraint whenever it is possible to satisfy its argument constraint.
 
 \input{fig-labeled-sums-decidability}
