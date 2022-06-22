@@ -1,0 +1,233 @@
+
+% !TEX root = pattern-paper.tex
+%% Statics
+
+% typing of internal expressions
+\newrulecommand{TVar}{TVar}
+\newrulecommand{TNum}{TNum}
+\newrulecommand{TLam}{TLam}
+\newrulecommand{TAp}{TAp}
+\newrulecommand{TPair}{TPair}
+\newrulecommand{TFst}{TFst}
+\newrulecommand{TSnd}{TSnd}
+\newrulecommand{TInl}{TInl}
+\newrulecommand{TInr}{TInr}
+\newrulecommand{TMatchZPre}{TMatchZPre}
+\newrulecommand{TMatchNZPre}{TMatchNZPre}
+\newrulecommand{TEHole}{TEHole}
+\newrulecommand{THole}{THole}
+
+% typing of rule and rules
+\newrulecommand{TRule}{TRule}
+\newrulecommand{TOneRules}{TOneRules}
+\newrulecommand{TRules}{TRules}
+
+% typing of pattern
+\newrulecommand{PTVar}{PTVar}
+\newrulecommand{PTNum}{PTNum}
+\newrulecommand{PTWild}{PTWild}
+\newrulecommand{PTPair}{PTPair}
+\newrulecommand{PTInl}{PTInl}
+\newrulecommand{PTInr}{PTInr}
+\newrulecommand{PTEHole}{PTEHole}
+\newrulecommand{PTHole}{PTHole}
+
+%% Dynamics
+
+% typing of substitution
+\newrulecommand{STEmpty}{STEmpty}
+\newrulecommand{STExtend}{STExtend}
+
+% syntactically not value
+\newrulecommand{NVEHole}{NVEHole}
+\newrulecommand{NVHole}{NVHole}
+\newrulecommand{NVAp}{NVAp}
+\newrulecommand{NVMatch}{NVMatch}
+\newrulecommand{NVFst}{NVFst}
+\newrulecommand{NVSnd}{NVSnd}
+
+% refutable pattern
+\newrulecommand{RNum}{RNum}
+\newrulecommand{REHole}{REHole}
+\newrulecommand{RHole}{RHole}
+\newrulecommand{RInl}{RInl}
+\newrulecommand{RInr}{RInr}
+\newrulecommand{RPairL}{RPairL}
+\newrulecommand{RPairR}{RPairR}
+
+% refutable constraint
+\newrulecommand{RXNum}{RXNum}
+\newrulecommand{RXNotNum}{RXNotNum}
+\newrulecommand{RXUnknown}{RXUnknown}
+\newrulecommand{RXFalsity}{RXFalsity}
+\newrulecommand{RXInl}{RXInl}
+\newrulecommand{RXInr}{RXInr}
+\newrulecommand{RXPairL}{RXPairL}
+\newrulecommand{RXPairR}{RXPairR}
+
+% possible constraint
+\newrulecommand{PTruth}{PTruth}
+\newrulecommand{PUnknown}{PUnknown}
+\newrulecommand{PNum}{PNum}
+\newrulecommand{PNotNum}{PNotNum}
+\newrulecommand{PInl}{PInl}
+\newrulecommand{PInr}{PInr}
+\newrulecommand{PPair}{PPair}
+\newrulecommand{POrL}{POrL}
+\newrulecommand{POrR}{POrR}
+
+% match
+\newrulecommand{MVar}{MVar}
+\newrulecommand{MNum}{MNum}
+\newrulecommand{MWild}{MWild}
+\newrulecommand{MPair}{MPair}
+\newrulecommand{MNotIntroPair}{MNotIntroPair}
+\newrulecommand{MInl}{MInl}
+\newrulecommand{MInr}{MInr}
+
+% may match
+\newrulecommand{MMEHole}{MMEHole}
+\newrulecommand{MMHole}{MMHole}
+\newrulecommand{MMNotIntro}{MMNotIntro}
+\newrulecommand{MMPairL}{MMPairL}
+\newrulecommand{MMPairR}{MMPairR}
+\newrulecommand{MMPair}{MMPair}
+\newrulecommand{MMInl}{MMInl}
+\newrulecommand{MMInr}{MMInr}
+
+% not match
+\newrulecommand{NMNum}{NMNum}
+\newrulecommand{NMPairL}{NMPairL}
+\newrulecommand{NMPairR}{NMPairR}
+\newrulecommand{NMConfL}{NMConfL}
+\newrulecommand{NMConfR}{NMConfR}
+\newrulecommand{NMInl}{NMInl}
+\newrulecommand{NMInr}{NMInr}
+
+% value
+\newrulecommand{VNum}{VNum}
+\newrulecommand{VLam}{VLam}
+\newrulecommand{VPair}{VPair}
+\newrulecommand{VInl}{VInl}
+\newrulecommand{VInr}{VInr}
+
+% indeterminate
+\newrulecommand{IEHole}{IEHole}
+\newrulecommand{IHole}{IHole}
+\newrulecommand{IAp}{IAp}
+\newrulecommand{IPairL}{IPairL}
+\newrulecommand{IPairR}{IPairR}
+\newrulecommand{IPair}{IPair}
+\newrulecommand{IFst}{IFst}
+\newrulecommand{ISnd}{ISnd}
+\newrulecommand{IInl}{IInl}
+\newrulecommand{IInr}{IInr}
+\newrulecommand{IMatch}{IMatch}
+
+% final
+\newrulecommand{FVal}{FVal}
+\newrulecommand{FIndet}{FIndet}
+
+% step
+\newrulecommand{ITHole}{ITHole}
+\newrulecommand{ITApFun}{ITApFun}
+\newrulecommand{ITApArg}{ITApArg}
+\newrulecommand{ITAp}{ITAp}
+\newrulecommand{ITPairL}{ITPairL}
+\newrulecommand{ITPairR}{ITPairR}
+\newrulecommand{ITFst}{ITFst}
+\newrulecommand{ITSnd}{ITSnd}
+\newrulecommand{ITFstPair}{ITFstPair}
+\newrulecommand{ITSndPair}{ITSndPair}
+\newrulecommand{ITInl}{ITInl}
+\newrulecommand{ITInr}{ITInr}
+\newrulecommand{ITExpMatch}{ITExpMatch}
+\newrulecommand{ITSuccMatch}{ITSuccMatch}
+\newrulecommand{ITFailMatch}{ITFailMatch}
+
+% typing of constraints
+\newrulecommand{CTTruth}{CTTruth}
+\newrulecommand{CTFalsity}{CTFalsity}
+\newrulecommand{CTUnknown}{CTUnknown}
+\newrulecommand{CTNum}{CTNum}
+\newrulecommand{CTNotNum}{CTNotNum}
+\newrulecommand{CTAnd}{CTAnd}
+\newrulecommand{CTOr}{CTOr}
+\newrulecommand{CTInl}{CTInl}
+\newrulecommand{CTInr}{CTInr}
+\newrulecommand{CTPair}{CTPair}
+
+% satisfaction judgment
+\newrulecommand{CSTruth}{CSTruth}
+\newrulecommand{CSNum}{CSNum}
+\newrulecommand{CSNotNum}{CSNotNum}
+\newrulecommand{CSAnd}{CSAnd}
+\newrulecommandONE{CSOrL}{CSOrL}
+\newrulecommandONE{CSOrR}{CSOrR}
+\newrulecommand{CSInl}{CSInl}
+\newrulecommand{CSInr}{CSInr}
+\newrulecommand{CSPair}{CSPair}
+\newrulecommand{CSNotIntroPair}{CSNotIntroPair}
+
+% maybe satisfaction judgment
+\newrulecommand{CMSUnknown}{CMSUnknown}
+\newrulecommand{CMSNotIntro}{CMSNotIntro}
+\newrulecommand{CMSAndL}{CMSAndL}
+\newrulecommand{CMSAndR}{CMSAndR}
+\newrulecommand{CMSAnd}{CMSAnd}
+\newrulecommand{CMSOrL}{CMSOrL}
+\newrulecommand{CMSOrR}{CMSOrR}
+\newrulecommand{CMSInl}{CMSInl}
+\newrulecommand{CMSInr}{CMSInr}
+\newrulecommand{CMSPairL}{CMSPairL}
+\newrulecommand{CMSPairR}{CMSPairR}
+\newrulecommand{CMSPair}{CMSPair}
+
+% must or maybe satisfaction judgment
+\newrulecommand{CSMSMay}{CSMSMay}
+\newrulecommand{CSMSSat}{CSMSSat}
+
+% incon
+\newrulecommand{CINCTruth}{CINCTruth}
+\newrulecommand{CINCFalsity}{CINCFalsity}
+\newrulecommand{CINCNum}{CINCNum}
+\newrulecommand{CINCNotNum}{CINCNotNum}
+\newrulecommand{CINCAnd}{CINCAnd}
+\newrulecommand{CINCOr}{CINCOr}
+\newrulecommand{CINCInj}{CINCInj}
+\newrulecommand{CINCInl}{CINCInl}
+\newrulecommand{CINCInr}{CINCInr}
+\newrulecommand{CINCPairL}{CINCPairL}
+\newrulecommand{CINCPairR}{CINCPairR}
+
+%% labeled sum dynamics
+\newrulecommand{ITInj}{ITInj}
+\newrulecommand{VInj}{VInj}
+\newrulecommand{IEInj}{IEInj}
+\newrulecommand{IEInjHole}{IEInjHole}
+\newrulecommand{MInj}{MInj}
+\newrulecommand{NMInj}{NMInj}
+\newrulecommand{NMInjTag}{NMInjTag}
+\newrulecommand{NMInjArg}{NMInjArg}
+\newrulecommand{MMInjTag}{MMInjTag}
+\newrulecommand{MMInjArg}{MMInjArg}
+\newrulecommand{TMMSym}{TMMSym}
+\newrulecommand{TMMHole}{TMMHole}
+\newrulecommand{TMMEHole}{TMMEHole}
+\newrulecommand{TNMTag}{TNMTag}
+\newrulecommand{RInjSing}{RInjSing}
+\newrulecommand{RInjMult}{RInjMult}
+
+% labeled sum statics
+\newrulecommand{TInj}{TInj}
+\newrulecommand{PTInj}{PTInj}
+\newrulecommand{CTInj}{CTInj}
+\newrulecommand{RXInj}{RXInj}
+\newrulecommand{PInj}{PInj}
+\newrulecommand{CSInj}{CSInj}
+\newrulecommand{CMSInjTag}{CMSInjTag}
+\newrulecommand{CMSInjArg}{CMSInjArg}
+
+% labeled sum incon
+\newrulecommand{CINCInjTag}{CINCInjTag}
+\newrulecommand{CINCInjArg}{CINCInjArg}

@@ -1,0 +1,95 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[t]
+$\arraycolsep=4pt\begin{array}{lll}
+\xi & ::= &
+  \ctruth ~\vert~
+  \cfalsity ~\vert~
+  \cunknown ~\vert~
+  \cnum{n} ~\vert~
+  \cnotnum{n} ~\vert~
+  \cand{\xi_1}{\xi_2} ~\vert~
+  \cor{\xi_1}{\xi_2} ~\vert~
+  \cinl{\xi} ~\vert~
+  \cinr{\xi} ~\vert~
+  \cpair{\xi_1}{\xi_2}
+\end{array}$
+
+\begin{minipage}[t][][b]{.62\linewidth}
+\judgbox{\ctyp{\xi}{\tau}}{$\xi$ is of type $\tau$}
+\begin{mathpar}
+\Infer{\CTTruth}{ }{
+  \ctyp{\ctruth}{\tau}
+}
+
+\Infer{\CTFalsity}{ }{
+  \ctyp{\cfalsity}{\tau}
+}
+
+\Infer{\CTUnknown}{ }{
+  \ctyp{\cunknown}{\tau}
+}
+
+\Infer{\CTNum}{ }{
+  \ctyp{\cnum{n}}{\tnum}
+}
+
+\Infer{\CTNotNum}{ }{
+  \ctyp{\cnotnum{n}}{\tnum}
+}
+
+\Infer{\CTAnd}{
+  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
+}{
+  \ctyp{\cand{\xi_1}{\xi_2}}{\tau}
+}
+
+\Infer{\CTOr}{
+  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
+}{
+  \ctyp{\cor{\xi_1}{\xi_2}}{\tau}
+}
+
+\Infer{\CTInl}{
+  \ctyp{\xi_1}{\tau_1}
+}{
+  \ctyp{\cinl{\xi_1}}{\tsum{\tau_1}{\tau_2}}
+}
+
+\Infer{\CTInr}{
+  \ctyp{\xi_2}{\tau_2}
+}{
+  \ctyp{\cinr{\xi_2}}{\tsum{\tau_1}{\tau_2}}
+}
+
+\Infer{\CTPair}{
+  \ctyp{\xi_1}{\tau_1} \\ \ctyp{\xi_2}{\tau_2}
+}{
+  \ctyp{\cpair{\xi_1}{\xi_2}}{\tprod{\tau_1}{\tau_2}}
+}
+\end{mathpar}
+\end{minipage}%
+\begin{minipage}[t][][b]{.3\linewidth}
+\judgbox{\cdual{\xi_1} = \xi_2}{dual of $\xi_1$ is $\xi_2$}
+\begin{align*}
+  \cdual{\ctruth} &= \cfalsity \\
+  \cdual{\cfalsity} &= \ctruth \\
+  \cdual{\cnum{n}} &= \cnotnum{n} \\
+  \cdual{\cnotnum{n}} &= \cnum{n} \\
+  \cdual{\cand{\xi_1}{\xi_2}} &= \cor{\cdual{\xi_1}}{\cdual{\xi_2}} \\
+  \cdual{\cor{\xi_1}{\xi_2}} &= \cand{\cdual{\xi_1}}{\cdual{\xi_2}} \\
+  \cdual{\cinl{\xi_1}} &= \cor{ \cinl{\cdual{\xi_1}} }{ \cinr{\ctruth} } \\
+  \cdual{\cinr{\xi_2}} &= \cor{ \cinr{\cdual{\xi_2}} }{ \cinl{\ctruth} } \\
+  \cdual{\cpair{\xi_1}{\xi_2}} &=
+  \cor{ \cor{ 
+    \cpair{\xi_1}{\cdual{\xi_2}}
+  }{
+    \cpair{\cdual{\xi_1}}{\xi_2}
+  }}{
+    \cpair{\cdual{\xi_1}}{\cdual{\xi_2}}
+  }
+\end{align*}
+\end{minipage}
+  \caption{Match Constraints}
+  \label{fig:constraint}
+\end{figure}

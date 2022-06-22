@@ -1,0 +1,258 @@
+% !TEX root = pattern-paper.tex
+\usepackage{centernot}
+% reverse Vdash
+\newcommand{\dashV}{\mathbin{\rotatebox[origin=c]{180}{$\Vdash$}}}
+
+% Violet hotdogs; highlight color helps distinguish them
+\newcommand{\llparenthesiscolor}{\textcolor{violet}{\llparenthesis}}
+\newcommand{\rrparenthesiscolor}{\textcolor{violet}{\rrparenthesis}}
+
+% HTyp and HExp
+\newcommand{\hcomplete}[1]{#1~\mathsf{complete}}
+
+% HTyp
+\newcommand{\htau}{\dot{\tau}}
+\newcommand{\tarr}[2]{\inparens{#1 \rightarrow #2}}
+\newcommand{\tarrnp}[2]{#1 \rightarrow #2}
+\newcommand{\trul}[2]{\inparens{#1 \Rightarrow #2}}
+\newcommand{\trulnp}[2]{#1 \Rightarrow #2}
+\newcommand{\tnum}{\mathtt{num}}
+\newcommand{\tehole}{\llparenthesiscolor\rrparenthesiscolor}
+\newcommand{\tsum}[2]{\inparens{#1 + #2}}
+\newcommand{\tprod}[2]{\inparens{#1 \times #2}}
+\newcommand{\tunit}{\mathtt{1}}
+\newcommand{\tvoid}{\mathtt{0}}
+
+\newcommand{\tlabeledsum}[1]{+\mathopen{}\left\{#1\right\}}
+
+\newcommand{\tcompat}[2]{#1 \sim #2}
+\newcommand{\tincompat}[2]{#1 \nsim #2}
+
+
+% HTag
+\newcommand{\tagC}{\underline{\mathbf{C}}}
+\newcommand{\tagset}{\mathcal{C}}
+\newcommand{\tagehole}[1]{\llparenthesiscolor\rrparenthesiscolor^{#1}}
+\newcommand{\taghole}[2]{\llparenthesiscolor#1\rrparenthesiscolor^{#2}}
+
+\newcommand{\tagmaymatch}[2]{#1 \mathbin{?} #2}
+
+% HExp
+\newcommand{\hexp}{\dot{e}}
+\newcommand{\hlam}[3]{\lambda #1:#2.#3}
+\newcommand{\hap}[2]{#1(#2)}
+\newcommand{\hapP}[2]{(#1)~(#2)} % Extra paren around function term
+\newcommand{\hnum}[1]{\underline{#1}}
+\newcommand{\hadd}[2]{\inparens{#1 + #2}}
+\newcommand{\hpair}[2]{(#1 , #2)}
+\newcommand{\htriv}{()}
+\newcommand{\hehole}[1]{\llparenthesiscolor\rrparenthesiscolor^{#1}}
+\newcommand{\hhole}[2]{\llparenthesiscolor#1\rrparenthesiscolor^{#2}}
+\newcommand{\heholep}[1]{\llparenthesiscolor\rrparenthesiscolor^{#1}}
+\newcommand{\hholep}[3]{\llparenthesiscolor#1\rrparenthesiscolor^{#2}_{#3}}
+\newcommand{\hindet}[1]{\lceil#1\rceil}
+\newcommand{\hinj}[3]{\mathtt{inj}_{#1}^{#2}({#3})}
+\newcommand{\hinl}[2]{\mathtt{inl}_{#1}({#2})}
+\newcommand{\hinr}[2]{\mathtt{inr}_{#1}({#2})}
+\newcommand{\hinjp}[2]{\mathtt{inj}_{#1}(#2)}
+\newcommand{\hinlp}[1]{\mathtt{inl}(#1)}
+\newcommand{\hinrp}[1]{\mathtt{inr}(#1)}
+\newcommand{\hfst}[1]{\mathtt{fst}(#1)}
+\newcommand{\hsnd}[1]{\mathtt{snd}(#1)}
+\newcommand{\hmatch}[2]{\mathtt{match}(#1) \{#2\}}
+\newcommand{\hcase}[5]{\mathtt{case}({#1},{#2}.{#3},{#4}.{#5})}
+\newcommand{\hrules}[2]{#1 \mid #2}
+\newcommand{\hrulesP}[2]{\inparens{#1 \mid #2}}
+\newcommand{\hrul}[2]{#1 \Rightarrow #2}
+\newcommand{\hrulP}[2]{\inparens{#1 \Rightarrow #2}}
+
+\newcommand{\refutable}[1]{#1 ~\mathtt{refutable}_?}
+\newcommand{\frefutable}[1]{\textit{refutable}_?\inparens{#1}}
+\newcommand{\possible}[1]{#1 ~\mathtt{possible}}
+\newcommand{\fpossible}[1]{\textit{possible}\inparens{#1}}
+\newcommand{\inValues}[3]{#1 \in \mathtt{values}[#2]\inparens{#3}}
+
+\newcommand{\hGamma}{\dot{\Gamma}}
+\newcommand{\domof}[1]{\text{dom}(#1)}
+\newcommand{\hsyn}[3]{#1 \vdash #2 \Rightarrow #3}
+\newcommand{\hana}[3]{#1 \vdash #2 \Leftarrow #3}
+\newcommand{\hexptyp}[4]{#1 \mathbin{;} #2 \vdash #3 : #4}
+\newcommand{\hpattyp}[4]{#4 \vdash #1 : #2 \dashV #3}
+\newcommand{\hsubstyp}[4]{#1 \mathbin{;} #2 \vdash #3 : #4}
+\newcommand{\hpatmatch}[3]{#1 \vartriangleright #2 \dashV #3}
+\newcommand{\hnotnotmatch}[2]{#1 \mathbin{\cancel{\bot}} #2}
+\newcommand{\hnotmatch}[2]{#1 \mathbin{\bot} #2}
+\newcommand{\hmaymatch}[2]{#1 \mathbin{?} #2}
+\newcommand{\htrans}[2]{#1 \mapsto #2}
+\newcommand{\hlongtrans}[2]{#1 \newline \mapsto #2}
+
+\newcommand{\isVal}[1]{#1 ~\mathtt{val}}
+\newcommand{\isErr}[1]{#1 ~\mathtt{err}}
+\newcommand{\isIndet}[1]{#1 ~\mathtt{indet}}
+\newcommand{\isFinal}[1]{#1 ~\mathtt{final}}
+\newcommand{\notIntro}[1]{#1 ~\mathtt{notintro}}
+\newcommand{\fnotIntro}[1]{\textit{notintro}\inparens{#1}}
+
+\newcommand{\setof}[1]{\{#1\}}
+
+% ZTyp and ZExp
+\newcommand{\zlsel}[1]{{\bowtie}{#1}}
+\newcommand{\zrsel}[1]{{#1}{\bowtie}}
+\newcommand{\zwsel}[1]{
+  \setlength{\fboxsep}{0pt}
+  \colorbox{green!10!white!100}{
+    \ensuremath{{{\textcolor{Green}{{\hspace{-2px}\triangleright}}}}{#1}{\textcolor{Green}{\triangleleft{\vphantom{\tehole}}}}}}
+}
+
+\newcommand{\removeSel}[1]{#1^{\diamond}}
+
+% ZTyp
+\newcommand{\ztau}{\hat{\tau}}
+
+% ZExp
+\newcommand{\zexp}{\hat{e}}
+
+% rules with pointer
+
+\newcommand{\zrulsP}[3]{\inparens{#1 \mid #2 \mid #3}}
+\newcommand{\zruls}[3]{#1 \mid #2 \mid #3}
+\newcommand{\zrules}{\hat{rs}}
+\newcommand{\rmpointer}[1]{\inparens{#1}^\diamond}
+
+% Constraint
+\newcommand{\hxi}{\dot{\xi}}
+\newcommand{\ctyp}[2]{#1 : #2}
+\newcommand{\cdual}[1]{\overline{#1}}
+\newcommand{\ctruify}[1]{\dot{\top}\inparens{#1}}
+\newcommand{\cfalsify}[1]{\dot{\bot}\inparens{#1}}
+\newcommand{\ctruth}{\top}
+\newcommand{\cfalsity}{\bot}
+\newcommand{\cnum}[1]{\underline{#1}}
+\newcommand{\cnotnum}[1]{\underline{\cancel{#1}}}
+\newcommand{\cunit}{()}
+\newcommand{\cunknown}{\mathtt{?}}
+\newcommand{\cor}[2]{#1 \vee #2}
+\newcommand{\cand}[2]{#1 \wedge #2}
+\newcommand{\cinj}[3]{\mathtt{inj}_{#1}^{#2}(#3)}
+\newcommand{\notC}{\cancel{C}}
+\newcommand{\nottagC}{\cancel{\tagC}}
+\newcommand{\cinl}[1]{\mathtt{inl}(#1)}
+\newcommand{\cinr}[1]{\mathtt{inr}(#1)}
+\newcommand{\cpair}[2]{(#1 , #2)}
+\newcommand{\csatisfy}[2]{#1 \models #2}
+\newcommand{\cnotsatisfy}[2]{#1 \centernot{\models} #2}
+\newcommand{\cmaysatisfy}[2]{#1 \models_{?} #2}
+\newcommand{\cnotmaysatisfy}[2]{#1 \centernot{\models}_{?} #2}
+\newcommand{\csatisfyormay}[2]{#1 \models_{?}^{\dag} #2}
+\newcommand{\cnotsatisfyormay}[2]{#1 \centernot{\models}_{?}^{\dag} #2}
+%temporary change, need to get it back to make appendix right
+%\newcommand{\csatisfy}[2]{#1 \dot{\models} #2}
+%\newcommand{\cnotsatisfy}[2]{#1 \centernot{\dot{\models}} #2}
+%\newcommand{\cmaysatisfy}[2]{#1 \dot{\models}_{?} #2}
+%\newcommand{\cnotmaysatisfy}[2]{#1 \centernot{\dot{\models}}_{?} #2}
+%\newcommand{\csatisfyormay}[2]{#1 \dot{\models}_{?}^{\dag} #2}
+%\newcommand{\cnotsatisfyormay}[2]{#1 \centernot{\dot{\models}}_{?}^{\dag} #2}
+\newcommand{\ccsatisfy}[2]{#1 \models #2}
+\newcommand{\ccnotsatisfy}[2]{#1 \centernot{\models} #2}
+\newcommand{\cincon}[1]{#1 ~\mathtt{incon}}
+\newcommand{\cmayincon}[1]{#1 ~\cancel{\mathtt{not~incon}}}
+
+\newcommand{\fsatisfy}[2]{\textit{satisfy}\inparens{#1, #2}}
+\newcommand{\fmaysatisfy}[2]{\textit{maysatisfy}\inparens{#1, #2}}
+\newcommand{\fsatisfyormay}[2]{\textit{satisfyormay}\inparens{#1, #2}}
+
+\newcommand{\chpattyp}[5]{#5 \vdash #1 : #2 [#3] \dashV #4}
+\newcommand{\crultyp}[5]{#1 \vdash #2 : #3 [#4] \Rightarrow #5}
+\newcommand{\chrultyp}[6]{#1 \mathbin{;} #2 \vdash #3 : #4 [#5] \Rightarrow #6}
+\newcommand{\crulstyp}[6]{#1 \vdash [#2] #3 : #4 [#5] \Rightarrow #6}
+\newcommand{\chrulstyp}[7]{#1 \mathbin{;} #2 \vdash [#3] #4 : #5 [#6] \Rightarrow #7}
+\newcommand{\czrulstyp}[7]{#1 \mathbin{;} #2 \vdash [#3] #4 [#5] : #6 \Rightarrow #7}
+
+% Direction
+\newcommand{\dParent}{\mathtt{parent}}
+\newcommand{\dChildn}[1]{\mathtt{child}~\mathtt{{#1}}}
+\newcommand{\dChildnm}[1]{\mathtt{child}~{#1}}
+
+% Action
+\newcommand{\aMove}[1]{\mathtt{move}~#1}
+	\newcommand{\zrightmost}[1]{\mathsf{rightmost}(#1)}
+	\newcommand{\zleftmost}[1]{\mathsf{leftmost}(#1)}
+\newcommand{\aSelect}[1]{\mathtt{sel}~#1}
+\newcommand{\aDel}{\mathtt{del}}
+\newcommand{\aReplace}[1]{\mathtt{replace}~#1}
+\newcommand{\aConstruct}[1]{\mathtt{construct}~#1}
+\newcommand{\aConstructx}[1]{#1}
+\newcommand{\aFinish}{\mathtt{finish}}
+
+\newcommand{\performAna}[5]{#1 \vdash #2 \xlongrightarrow{#4} #5 \Leftarrow #3}
+\newcommand{\performAnaI}[5]{#1 \vdash #2 \xlongrightarrow{#4}\hspace{-3px}{}^{*}~ #5 \Leftarrow #3}
+\newcommand{\performSyn}[6]{#1 \vdash #2 \Rightarrow #3 \xlongrightarrow{#4} #5 \Rightarrow #6}
+\newcommand{\performSynI}[6]{#1 \vdash #2 \Rightarrow #3 \xlongrightarrow{#4}\hspace{-3px}{}^{*}~ #5 \Rightarrow #6}
+\newcommand{\performTyp}[3]{#1 \xlongrightarrow{#2} #3}
+\newcommand{\performTypI}[3]{#1 \xlongrightarrow{#2}\hspace{-3px}{}^{*}~#3}
+
+\newcommand{\performMove}[3]{#1 \xlongrightarrow{#2} #3}
+\newcommand{\performDel}[2]{#1 \xlongrightarrow{\aDel} #2}
+
+% Form
+\newcommand{\farr}{\mathtt{arrow}}
+\newcommand{\fnum}{\mathtt{num}}
+\newcommand{\fsum}{\mathtt{sum}}
+
+\newcommand{\fasc}{\mathtt{asc}}
+\newcommand{\fvar}[1]{\mathtt{var}~#1}
+\newcommand{\flam}[1]{\mathtt{lam}~#1}
+\newcommand{\fap}{\mathtt{ap}}
+% \newcommand{\farg}{\mathtt{arg}}
+\newcommand{\fnumlit}[1]{\mathtt{lit}~#1}
+\newcommand{\fplus}{\mathtt{plus}}
+\newcommand{\fhole}{\mathtt{hole}}
+\newcommand{\fnehole}{\mathtt{nehole}}
+
+\newcommand{\finj}[1]{\mathtt{inj}~#1}
+\newcommand{\fcase}[2]{\mathtt{case}~#1~#2}
+
+% Talk about formal rules in example
+\newcommand{\refrule}[1]{\textrm{Rule~(#1)}}
+
+\newcommand{\herase}[1]{\left|#1\right|_\textsf{erase}}
+
+\newcommand{\arrmatch}[2]{#1 \blacktriangleright_{\rightarrow} #2}
+
+
+\newcommand{\TABperformAna}[5]{#1 \vdash & #2                & \xlongrightarrow{#4} & #5 & \Leftarrow #3}
+\newcommand{\TABperformSyn}[6]{#1 \vdash & #2 \Rightarrow #3 & \xlongrightarrow{#4} & #5 \Rightarrow #6}
+\newcommand{\TABperformTyp}[3]{& #1 & \xlongrightarrow{#2} & #3}
+
+\newcommand{\TABperformMove}[3]{#1 & \xlongrightarrow{#2} & #3}
+\newcommand{\TABperformDel}[2]{#1 \xlongrightarrow{\aDel} #2}
+
+\newcommand{\sumhasmatched}[2]{#1 \mathrel{\textcolor{black}{\blacktriangleright_{+}}} #2}
+
+\newcommand{\subminsyn}[1]{\mathsf{submin}_{\Rightarrow}(#1)}
+\newcommand{\subminana}[1]{\mathsf{submin}_{\Leftarrow}(#1)}
+
+
+\newcommand{\inparens}[1]{{\color{gray}(}#1{\color{gray})}}
+\newcommand{\true}{\text{true}}
+\newcommand{\false}{\text{false}}
+
+\newcommand{\textnot}{\text{not }}
+\newcommand{\textor}{\text{ or }}
+\newcommand{\textand}{\text{ and }}
+\newcommand{\textif}{\quad\text{if }}
+
+%% rule names for appendix
+\newcommand{\rname}[1]{\textsc{#1}}
+\newcommand{\gap}{\vspace{7pt}}
+
+%% just for examples
+\newcommand{\match}{\mathtt{match}}
+\newcommand{\?}{\mathtt{?}}
+\newcommand{\nil}{[~]}
+\newcommand{\some}[1]{\mathtt{Some\inparens{#1}}}
+\newcommand{\none}{\mathtt{None}}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "appendix/appendix"
+%%% End:

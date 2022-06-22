@@ -1,0 +1,474 @@
+\section{Incomplete Constraint Language}\label{sec:incompleteconstraint}
+
+$\arraycolsep=4pt\begin{array}{lll}
+\hxi & ::= &
+  \ctruth ~\vert~
+  \cfalsity ~\vert~
+  \cunknown ~\vert~
+  \cnum{n} ~\vert~
+  \cinl{\hxi} ~\vert~
+  \cinr{\hxi} ~\vert~
+  \cpair{\hxi}{\hxi} ~\vert~
+  \cor{\hxi}{\hxi}
+\end{array}$
+
+\judgboxa{\ctyp{\hxi}{\tau}}{$\hxi$ constrains final expressions of type $\tau$}
+\begin{subequations}\label{rules:CTyp}
+\begin{equation}\label{rule:CTTruth}
+\inferrule[CTTruth]{ }{
+  \ctyp{\ctruth}{\tau}
+}
+\end{equation}
+\begin{equation}\label{rule:CTFalsity}
+\inferrule[CTFalsity]{ }{
+  \ctyp{\cfalsity}{\tau}
+}
+\end{equation}
+\begin{equation}\label{rule:CTUnknown}
+\inferrule[CTUnknown]{ }{
+  \ctyp{\cunknown}{\tau}
+}
+\end{equation}
+\begin{equation}\label{rule:CTNum}
+\inferrule[CTNum]{ }{
+  \ctyp{\cnum{n}}{\tnum}
+}
+\end{equation}
+\begin{equation}\label{rule:CTInl}
+\inferrule[CTInl]{
+  \ctyp{\hxi_1}{\tau_1}
+}{
+  \ctyp{\cinl{\hxi_1}}{\tsum{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CTInr}
+\inferrule[CTInr]{
+  \ctyp{\hxi_2}{\tau_2}
+}{
+  \ctyp{\cinr{\hxi_2}}{\tsum{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CTPair}
+\inferrule[CTPair]{
+  \ctyp{\hxi_1}{\tau_1} \\ \ctyp{\hxi_2}{\tau_2}
+}{
+  \ctyp{\cpair{\hxi_1}{\hxi_2}}{\tprod{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CTOr}
+\inferrule[CTOr]{
+  \ctyp{\hxi_1}{\tau} \\ \ctyp{\hxi_2}{\tau}
+}{
+  \ctyp{\cor{\hxi_1}{\hxi_2}}{\tau}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{
+  \refutable{\hxi}
+}{$\hxi$ is refutable}
+
+\begin{subequations}\label{rules:xi-refutable}
+\begin{equation}\label{rule:RXFalsity}
+\inferrule[RXFalsity]{ }{
+  \refutable{\cfalsity}
+}
+\end{equation}
+\begin{equation}\label{rule:RXUnknown}
+\inferrule[RXUnknown]{ }{
+  \refutable{\cunknown}
+}
+\end{equation}
+\begin{equation}\label{rule:RXNum}
+\inferrule[RXNum]{ }{
+  \refutable{\cnum{n}}
+}
+\end{equation}
+\begin{equation}\label{rule:RXInl}
+\inferrule[RXInl]{ }{
+  \refutable{\cinl{\hxi}}
+}
+\end{equation}
+\begin{equation}\label{rule:RXInr}
+\inferrule[RXInr]{ }{
+  \refutable{\cinr{\hxi}}
+}
+\end{equation}
+\begin{equation}\label{rule:RXPairL}
+\inferrule[RXPairL]{
+  \refutable{\hxi_1}
+}{
+  \refutable{\cpair{\hxi_1}{\hxi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:RXPairR}
+\inferrule[RXPairR]{
+  \refutable{\hxi_2}
+}{
+  \refutable{\cpair{\hxi_1}{\hxi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:RXOr}
+  \inferrule[RXOr]{
+    \refutable{\hxi_1} \\
+    \refutable{\hxi_2}
+  }{
+    \refutable{\cor{\hxi_1}{\hxi_2}}
+  }
+  \end{equation}
+\end{subequations}
+
+% \judgboxa{\frefutable{\hxi}}{}
+% \begin{subequations}\label{defn:xi-refutable}
+% \begin{align}
+%     \frefutable{\ctruth} &= \false \\
+%     \frefutable{\cfalsity} &= \true \\
+%     \frefutable{\cunknown} &= \true \\
+%     \frefutable{\cnum{n}} &= \true \\
+%     \frefutable{\cinl{\hxi}} &= \true \\
+%     \frefutable{\cinr{\hxi}} &= \true \\
+%     \frefutable{\cpair{\hxi_1}{\hxi_2}} &= \frefutable{\hxi_1} \textor \frefutable{\hxi_2} \\
+%     \frefutable{\cor{\hxi_1}{\hxi_2}} &= \frefutable{\hxi_1} \textand \frefutable{\hxi_2}
+% \end{align}
+% \end{subequations}
+
+% \begin{lemma}[Soundness and Completeness of Refutable Constraints]
+%   \label{lem:sound-complete-xi-refutable}
+%   $\refutable{\hxi}$ iff $\frefutable{\hxi} = \true$.
+% \end{lemma}
+
+\judgboxa{
+  \possible{\hxi}
+}{$\hxi$ is possible}
+
+\begin{subequations}\label{rules:xi-possible}
+\begin{equation}\label{rule:PTruth}
+\inferrule[PTruth]{ }{
+  \possible{\ctruth}
+}
+\end{equation}
+\begin{equation}\label{rule:PUnknown}
+\inferrule[PUnknown]{ }{
+  \possible{\cunknown}
+}
+\end{equation}
+\begin{equation}\label{rule:PNum}
+\inferrule[PNum]{ }{
+  \possible{\cnum{n}}
+}
+\end{equation}
+\begin{equation}\label{rule:PInl}
+\inferrule[PInl]{ 
+  \possible{\hxi} 
+}{
+  \possible{\cinl{\hxi}}
+}
+\end{equation}
+\begin{equation}\label{rule:PInr}
+\inferrule[PInr]{ 
+  \possible{\hxi}
+}{
+  \possible{\cinr{\hxi}}
+}
+\end{equation}
+\begin{equation}\label{rule:PPair}
+\inferrule[PPair]{
+  \possible{\hxi_1} \\ 
+  \possible{\hxi_2}
+}{
+  \possible{\cpair{\hxi_1}{\hxi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:POrL}
+\inferrule[POrL]{
+  \possible{\hxi_1}
+}{
+  \possible{\cor{\hxi_1}{\hxi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:POrR}
+\inferrule[POrR]{
+  \possible{\hxi_2}
+}{
+  \possible{\cor{\hxi_1}{\hxi_2}}
+}
+\end{equation}
+\end{subequations}
+
+% \judgboxa{\fpossible{\hxi}}{}
+% \begin{subequations}\label{defn:xi-possible}
+% \begin{align}
+%     \fpossible{\ctruth} &= \true \\
+%     \fpossible{\cfalsity} &= \false \\
+%     \fpossible{\cunknown} &= \true \\
+%     \fpossible{\cnum{n}} &= \true \\
+%     \fpossible{\cinl{\hxi}} &= \fpossible{\hxi} \\
+%     \fpossible{\cinr{\hxi}} &= \fpossible{\hxi} \\
+%     \fpossible{\cpair{\hxi_1}{\hxi_2}} &= \fpossible{\hxi_1} \textand \fpossible{\hxi_2} \\
+%     \fpossible{\cor{\hxi_1}{\hxi_2}} &= \fpossible{\hxi_1} \textor \fpossible{\hxi_2}
+% \end{align}
+% \end{subequations}
+
+% \begin{lemma}[Soundness and Completeness of Possible Constraints]
+%   \label{lem:sound-complete-xi-possible}
+%   $\possible{\hxi}$ iff $\fpossible{\hxi} = \true$.
+% \end{lemma}
+
+\judgboxa{\csatisfy{e}{\hxi}}{$e$ satisfies $\hxi$}
+\begin{subequations}\label{rules:Satisfy}
+\begin{equation}\label{rule:CSTruth}
+\inferrule[CSTruth]{ }{
+  \csatisfy{e}{\ctruth}
+}
+\end{equation}
+\begin{equation}\label{rule:CSNum}
+\inferrule[CSNum]{ }{
+  \csatisfy{\hnum{n}}{\cnum{n}}
+}
+\end{equation}
+\begin{equation}\label{rule:CSInl}
+\inferrule[CSInl]{
+  \csatisfy{e_1}{\hxi_1}
+}{
+  \csatisfy{
+    \hinl{\tau_2}{e_1}
+  }{
+    \cinl{\hxi_1}
+  }
+}
+\end{equation}
+\begin{equation}\label{rule:CSInr}
+\inferrule[CSInr]{
+  \csatisfy{e_2}{\hxi_2}
+}{
+  \csatisfy{
+    \hinr{\tau_1}{e_2}
+  }{
+    \cinr{\hxi_2}
+  }
+}
+\end{equation}
+\begin{equation}\label{rule:CSPair}
+\inferrule[CSPair]{
+  \csatisfy{e_1}{\hxi_1} \\
+  \csatisfy{e_2}{\hxi_2}
+}{
+\csatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CSNotIntroPair}
+\inferrule[CSNotIntroPair]{
+  \notIntro{e} \\
+  \csatisfy{\hfst{e}}{\hxi_1} \\
+  \csatisfy{\hsnd{e}}{\hxi_2}
+}{
+  \csatisfy{e}{\cpair{\hxi_1}{\hxi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CSOr1}
+\inferrule[CSOrL]{
+  \csatisfy{e}{\hxi_1}
+}{
+  \csatisfy{e}{\cor{\hxi_1}{\hxi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CSOr2}
+\inferrule[CSOrR]{
+  \csatisfy{e}{\hxi_2}
+}{
+  \csatisfy{e}{\cor{\hxi_1}{\hxi_2}}
+}
+\end{equation}
+\end{subequations}
+
+% \judgboxa{\fsatisfy{e}{\hxi}}{}
+% \begin{subequations}\label{defn:satisfy}
+% \begin{align}
+%   \fsatisfy{e}{\ctruth} ={}& \true \label{defn:satisfy-truth}\\
+%   \fsatisfy{\hnum{n_1}}{\cnum{n_2}} ={}& (n_1 = n_2) \label{defn:num-satisfy-num}\\
+%   \fsatisfy{e}{\cor{\hxi_1}{\hxi_2}} ={}& \fsatisfy{e}{\hxi_1} \textor \fsatisfy{e}{\hxi_2} \label{defn:satisfy-or}\\
+%   \fsatisfy{\hinl{\tau_2}{e_1}}{\cinl{\hxi_1}} ={}& \fsatisfy{e_1}{\hxi_1} \label{defn:inl-satisfy-inl}\\
+%   \fsatisfy{\hinr{\tau_1}{e_2}}{\cinr{\hxi_2}} ={}& \fsatisfy{e_2}{\hxi_2} \label{defn:inr-satisfy-inr}\\
+%   \fsatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}} ={}& \fsatisfy{e_1}{\hxi_1} \textand \fsatisfy{e_2}{\hxi_2} \label{defn:pair-satisfy-pair}\\
+%   \text{Otherwise}\quad \fsatisfy{e}{\cpair{\hxi_1}{\hxi_2}} ={}& \fnotIntro{e} \textand \fsatisfy{\hfst{e}}{\hxi_1} \notag\\
+%   &\textand \fsatisfy{\hsnd{e}}{\hxi_2} \label{defn:notintro-satisfy-pair}\\
+%   \fsatisfy{e}{\hxi} ={}& \false \label{defn:not-satisfy}
+% \end{align}
+% \end{subequations}
+
+% \begin{lemma}[Soundness and Completeness of Satisfaction Judgment]
+%   \label{lem:sound-complete-satisfy}
+%   $\csatisfy{e}{\hxi}$ iff $\fsatisfy{e}{\hxi} = \true$.
+% \end{lemma}
+
+\judgboxa{\cmaysatisfy{e}{\hxi}}{$e$ may satisfy $\hxi$}
+\begin{subequations}\label{rules:MaySatisfy}
+\begin{equation}\label{rule:CMSUnknown}
+\inferrule[CMSUnknown]{ }{
+  \cmaysatisfy{e}{\cunknown}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSInl}
+\inferrule[CMSInl]{
+  \cmaysatisfy{e_1}{\hxi_1}
+}{
+  \cmaysatisfy{
+    \hinl{\tau_2}{e_1}
+  }{
+    \cinl{\hxi_1}
+  }
+}
+\end{equation}
+\begin{equation}\label{rule:CMSInr}
+\inferrule[CMSInr]{
+  \cmaysatisfy{e_2}{\hxi_2}
+}{
+  \cmaysatisfy{
+    \hinr{\tau_1}{e_2}
+  }{
+    \cinr{\hxi_2}
+  }
+}
+\end{equation}
+\begin{equation}\label{rule:CMSPair1}
+\inferrule[CMSPairL]{
+  \cmaysatisfy{e_1}{\hxi_1} \\
+  \csatisfy{e_2}{\hxi_2}
+}{
+  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSPair2}
+\inferrule[CMSPairR]{
+  \csatisfy{e_1}{\hxi_1} \\
+  \cmaysatisfy{e_2}{\hxi_2}
+}{
+  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSPair3}
+\inferrule[CMSPair]{
+  \cmaysatisfy{e_1}{\hxi_1} \\
+  \cmaysatisfy{e_2}{\hxi_2}
+}{
+  \cmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSOr1}
+\inferrule[CMSOrL]{
+  \cmaysatisfy{e}{\hxi_1} \\
+  \cnotsatisfy{e}{\hxi_2}
+}{
+  \cmaysatisfy{e}{\cor{\hxi_1}{\hxi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSOr2}
+\inferrule[CMSOrR]{
+  \cnotsatisfy{e}{\hxi_1} \\
+  \cmaysatisfy{e}{\hxi_2}
+}{
+  \cmaysatisfy{e}{\cor{\hxi_1}{\hxi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CMSNotIntro}
+\inferrule[CMSNotIntro]{
+  \notIntro{e} \\
+  \refutable{\hxi} \\
+  \possible{\hxi}
+}{
+  \cmaysatisfy{e}{\hxi}
+}
+\end{equation}
+\end{subequations}
+
+% \judgboxa{\fmaysatisfy{e}{\hxi}}{}
+% \begin{subequations}\label{defn:maysatisfy}
+%   \begin{align}
+%     \fmaysatisfy{e}{\cunknown} ={}& \true \label{defn:maysat-unknown}\\
+%     \fmaysatisfy{\hinl{\tau_2}{e_1}}{\cinl{\hxi_1}} ={}& \fmaysatisfy{e_1}{\hxi_1} \label{defn:maysat-inl}\\
+%     \fmaysatisfy{\hinr{\tau_1}{e_2}}{\cinr{\hxi_2}} ={}& \fmaysatisfy{e_2}{\hxi_2} \label{defn:maysat-inr}\\
+%     \fmaysatisfy{\hinl{\tau_2}{e_1}}{\cinr{\hxi_2}} ={}& \false \label{defn:not-inl-maysat-inr}\\
+%     \fmaysatisfy{\hinr{\tau_1}{e_2}}{\cinl{\hxi_1}} ={}& \false \label{defn:not-inr-maysat-inl}\\
+%     \fmaysatisfy{\hpair{e_1}{e_2}}{\cpair{\hxi_1}{\hxi_2}} ={}& \left(\fmaysatisfy{e_1}{\hxi_1} \textand \fsatisfy{e_2}{\hxi_2}\right) \notag\\
+%     &\textor \left(\fsatisfy{e_1}{\hxi_1} \textand \fmaysatisfy{e_2}{\hxi_2}\right) \notag\\
+%     &\textor \left(\fmaysatisfy{e_1}{\hxi_1} \textand \fmaysatisfy{e_2}{\hxi_2}\right) \label{defn:maysat-pair}\\
+%     \fmaysatisfy{e}{\cor{\hxi_1}{\hxi_2}} ={}& \left(\fmaysatisfy{e}{\hxi_1} \textand \left(\textnot \fsatisfy{e}{\hxi_2}\right)\right) \notag\\
+%     &\textor \left(\left(\textnot \fsatisfy{e}{\hxi_1}\right) \textand \fmaysatisfy{e}{\hxi_2}\right) \label{defn:maysat-or}\\
+%     \fmaysatisfy{e}{\hxi} =& \fnotIntro{e} \textand \frefutable{\hxi} \textand \fpossible{\hxi} \label{defn:notintro-maysat}
+%   \end{align}
+% \end{subequations}
+
+% \begin{lemma}[Soundness and Completeness of Maybe Satisfaction Judgment]
+%   \label{lem:sound-complete-maysatisfy}
+%   $\cmaysatisfy{e}{\hxi}$ iff $\fmaysatisfy{e}{\hxi} = \true$.
+% \end{lemma}
+
+\judgboxa{\csatisfyormay{e}{\hxi}}{$e$ satisfies or may satisfy $\hxi$}
+\begin{subequations}\label{rules:satormay}
+\begin{equation}\label{rule:CSMSMay}
+\inferrule[CSMSMay]{
+  \cmaysatisfy{e}{\hxi}
+}{
+  \csatisfyormay{e}{\hxi}
+}
+\end{equation}
+\begin{equation}\label{rule:CSMSSat}
+\inferrule[CSMSSat]{
+  \csatisfy{e}{\hxi}
+}{
+  \csatisfyormay{e}{\hxi}
+}
+\end{equation}
+\end{subequations}
+
+% \judgboxa{\fsatisfyormay{e}{\hxi}}{}
+% \begin{equation}\label{defn:satormay}
+%   \fsatisfyormay{e}{\hxi} = \fsatisfy{e}{\hxi} \textor \fmaysatisfy{e}{\hxi}
+% \end{equation}
+
+% \begin{lemma}[Soundness and Completeness of Satisfaction or Maybe Satisfaction]
+%   \label{lem:sound-complete-satormay}
+%   $\csatisfyormay{e}{\hxi}$ iff $\fsatisfyormay{e}{\hxi}$.
+% \end{lemma}
+
+\begin{lemma}
+  \label{lem:notintro-maysat-or-notsat-refutable}
+  Assume $\notIntro{e}$. If $\cmaysatisfy{e}{\hxi}$ or $\cnotsatisfy{e}{\hxi}$ then $\refutable{\hxi}$.
+\end{lemma}
+
+\begin{lemma}
+\label{lem:satisfy-not-refutable}
+If $\notIntro{e}$ and $\csatisfy{e}{\hxi}$ then $\cancel{\refutable{\hxi}}$.
+\end{lemma}
+
+\begin{theorem}[Exclusiveness of Satisfaction Judgment]
+  \label{thrm:exclusive-constraint-satisfaction}
+  If $\ctyp{\hxi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ then exactly one of the following holds
+  \begin{enumerate}
+    \item $\csatisfy{e}{\hxi}$
+    \item $\cmaysatisfy{e}{\hxi}$
+    \item $\cnotsatisfyormay{e}{\hxi}$
+  \end{enumerate}
+\end{theorem}
+
+\begin{definition}[Entailment of Constraints]
+  \label{defn:const-entailment}
+  Suppose that $\ctyp{\hxi_1}{\tau}$ and $\ctyp{\hxi_2}{\tau}$.
+  Then $\csatisfy{\hxi_1}{\hxi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isVal{e}$ we have $\csatisfyormay{e}{\hxi_1}$ implies $\csatisfy{e}{\hxi_2}$
+\end{definition}
+
+\begin{definition}[Potential Entailment of Constraints]
+  \label{defn:nn-entailment}
+  Suppose that $\ctyp{\hxi_1}{\tau}$ and $\ctyp{\hxi_2}{\tau}$. Then $\csatisfyormay{\hxi_1}{\hxi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\hxi_1}$ implies $\csatisfyormay{e}{\hxi_2}$ 
+\end{definition}
+
+\begin{corollary}
+  \label{corol:nn-exhaust}
+  Suppose that $\ctyp{\hxi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$. Then $\csatisfyormay{\ctruth}{\hxi}$ implies $\csatisfyormay{e}{\hxi}$
+\end{corollary}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "appendix"
+%%% TeX-master: "appendix"
+%%% End:

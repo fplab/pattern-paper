@@ -1,0 +1,28 @@
+\begin{abstract}
+    Several modern programming systems, including GHC Haskell, Agda, Idris, and Hazel,  support \emph{typed holes}. 
+    By assigning static and, to varying degree, dynamic meaning to programs with holes, program editors and other tools can offer more meaningful  feedback and suggestions throughout editing, i.e. in a \emph{live} manner.
+    Prior work, however, has considered only holes appearing in expressions and types. 
+    This paper considers, from type theoretic and logical first principles,
+    the problem of typed pattern holes.
+    We confront two main difficulties, (1) statically reasoning about exhaustiveness and irredundancy 
+    when patterns are not fully known, and (3) live evaluation of expressions
+    containing both pattern and expression holes. 
+    In both cases, this requires reasoning conservatively about all 
+    possible hole fillings.
+    We develop a typed lambda calculus, Peanut, 
+    where reasoning about exhaustiveness and redundancy is mapped to the
+    problem of deriving first order entailments. 
+    We also equip Peanut with an operational semantics in the style of Hazelnut Live that allows us 
+    to evaluate around holes in both expressions and patterns.
+    We mechanize the metatheory of Peanut in Agda and formalize a procedure capable of 
+    deciding the necessary entailments.
+    Finally, we scale up the core calculus to support finite labeled sums, adding support for \emph{datatype constructor holes} in the process, and implement the mechanism within Hazel, a functional 
+    programming environment for a dialect of Elm that automatically inserts holes during editing to provide static and dynamic feedback to the programmer in a maximally live manner, i.e. for every possible editor state. Hazel is the first such environment for a typed general-purpose language.
+    % Hazel is the first maximally live environment for a general-purpose functional language. 
+        % In these languages, empty holes serve as placeholders for missing program terms, while
+    % non-empty holes operate as semantic membranes around erroneous terms, 
+    % isolating them so that the remainder of the program remains statically meaningful,
+    % and, in certain cases, even dynamically meaningful.
+
+  \keywords{pattern matching \and typed holes \and live programming}
+\end{abstract}

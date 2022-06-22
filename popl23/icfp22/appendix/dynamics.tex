@@ -1,0 +1,673 @@
+\section{Dynamic Semantics}
+\judgboxa{\isVal{e}}{$e$ is a value}
+\begin{subequations}\label{rules:Value}
+\begin{equation}\label{rule:VNum}
+\inferrule[VNum]{ }{
+  \isVal{\hnum{n}}
+}
+\end{equation}
+\begin{equation}\label{rule:VLam}
+\inferrule[VLam]{ }{
+  \isVal{\hlam{x}{\tau}{e}}
+}
+\end{equation}
+\begin{equation}\label{rule:VPair}
+\inferrule[VPair]{
+  \isVal{e_1} \\
+  \isVal{e_2}
+}{\isVal{\hpair{e_1}{e_2}}}
+\end{equation}
+\begin{equation}\label{rule:VInl}
+\inferrule[VInl]{
+  \isVal{e}
+}{
+  \isVal{\hinl{\tau}{e}}
+}
+\end{equation}
+\begin{equation}\label{rule:VInr}
+\inferrule[VInr]{
+  \isVal{e}
+}{
+  \isVal{\hinr{\tau}{e}}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{\isIndet{e}}{$e$ is indeterminate}
+\begin{subequations}\label{rules:Indet}
+\begin{equation}\label{rule:IEHole}
+\inferrule[IEHole]{ }{
+  \isIndet{\hehole{u}}
+}
+\end{equation}
+\begin{equation}\label{rule:IHole}
+\inferrule[IHole]{
+  \isFinal{e}
+}{
+  \isIndet{\hhole{e}{u}}
+}
+\end{equation}
+\begin{equation}\label{rule:IAp}
+\inferrule[IAp]{
+  \isIndet{e_1} \\ \isFinal{e_2}
+}{
+  \isIndet{\hap{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:IPairL}
+\inferrule[IPairL]{
+  \isIndet{e_1} \\ \isVal{e_2}
+}{
+  \isIndet{\hpair{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:IPairR}
+\inferrule[IPairR]{
+  \isVal{e_1} \\
+  \isIndet{e_2}
+}{
+  \isIndet{\hpair{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:IPair}
+\inferrule[IPair]{
+  \isIndet{e_1} \\ \isIndet{e_2}
+}{
+  \isIndet{\hpair{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:IFst}
+\inferrule[IFst]{
+  \isFinal{e}
+}{
+  \isIndet{\hfst{e}}
+}
+\end{equation}
+\begin{equation}\label{rule:ISnd}
+\inferrule[ISnd]{
+  \isFinal{e}
+}{
+  \isIndet{\hsnd{e}}
+}
+\end{equation}
+\begin{equation}\label{rule:IInl}
+\inferrule[IInL]{
+  \isIndet{e}
+}{
+  \isIndet{\hinl{\tau}{e}}
+}
+\end{equation}
+\begin{equation}\label{rule:IInr}
+\inferrule[IInR]{
+  \isIndet{e}
+}{
+  \isIndet{\hinr{\tau}{e}}
+}
+\end{equation}
+\begin{equation}\label{rule:IMatch}
+\inferrule[IMatch]{
+  \isFinal{e} \\
+  \hmaymatch{e}{p_r}
+}{
+  \isIndet{
+    \hmatch{e}{\zruls{rs_{pre}}{\hrulP{p_r}{e_r}}{rs_{post}}}
+  }
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{\isFinal{e}}{$e$ is final}
+\begin{subequations}\label{rules:Final}
+  \begin{equation}\label{rule:FVal}
+\inferrule[FVal]{
+  \isVal{e}
+}{
+  \isFinal{e}
+}
+\end{equation}
+\begin{equation}\label{rule:FIndet}
+\inferrule[FIndet]{
+  \isIndet{e}
+}{
+  \isFinal{e}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{
+  \notIntro{e}
+}{
+  $e$ cannot be a value syntactically
+}
+\begin{subequations}\label{rules:notintro}
+\begin{equation}\label{rule:NVEHole}
+\inferrule[NVEHole]{ }{
+  \notIntro{\hehole{u}}
+}
+\end{equation}
+\begin{equation}\label{rule:NVHole}
+\inferrule[NVHole]{ }{
+  \notIntro{\hhole{e}{u}}
+}
+\end{equation}
+\begin{equation}\label{rule:NVAp}
+\inferrule[NVAp]{ }{
+  \notIntro{\hap{e_1}{e_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:NVMatch}
+\inferrule[NVMatch]{ }{
+  \notIntro{\hmatch{e}{\zrules}}
+}
+\end{equation}
+\begin{equation}\label{rule:NVFst}
+\inferrule[NVFst]{ }{
+  \notIntro{\hfst{e}}
+}
+\end{equation}
+\begin{equation}\label{rule:NVSnd}
+\inferrule[NVSnd]{ }{
+  \notIntro{\hsnd{e}}
+}
+\end{equation}
+\end{subequations}
+
+% \judgboxa{\fnotIntro{e}}{}
+% \begin{subequations}\label{defn:notintro}
+%   \begin{align}
+%     \fnotIntro{\hehole{u}} ={}& \true \label{defn:ehole-notintro}\\
+%     \fnotIntro{\hhole{e}{u}} ={}& \true \label{defn:hole-notintro}\\
+%     \fnotIntro{\hap{e_1}{e_2}} ={}& \true \label{defn:ap-notintro}\\
+%     \fnotIntro{\hmatch{e}{\zrules}} ={}& \true \label{defn:match-notintro}\\
+%     \fnotIntro{\hfst{e}} ={}& \true \label{defn:fst-notintro}\\
+%     \fnotIntro{\hsnd{e}} ={}& \true \label{defn:snd-notintro}\\
+%     \text{Otherwise}\quad \fnotIntro{e} ={}& \false \label{defn:not-notintro}
+%   \end{align}
+% \end{subequations}
+
+% \begin{lemma}[Soundness and Completeness of NotIntro Judgment]
+%   \label{lem:sound-complete-notintro}
+%   $\notIntro{e}$ iff $\fnotIntro{e} = \true$.
+% \end{lemma}
+
+\judgboxa{
+  \inValues{e'}{\Delta}{e}
+}{
+  $e'$ is one of the possible values of $e$
+}
+\begin{subequations}\label{rules:inValues}
+  \begin{equation}\label{rule:IVVal}
+    \inferrule[IVVal]{
+      \isVal{e} \\
+      \hexptyp{\cdot}{\Delta}{e}{\tau}
+    }{
+      \inValues{e}{\Delta}{e}
+    }
+  \end{equation}
+  \begin{equation}\label{rule:IVIndet}
+    \inferrule[IVIndet]{
+      \notIntro{e} \\
+      \hexptyp{\cdot}{\Delta}{e}{\tau} \\
+      \isVal{e'} \\
+      \hexptyp{\cdot}{\Delta}{e'}{\tau}
+    }{
+      \inValues{e'}{\Delta}{e}
+    }
+  \end{equation}
+  \begin{equation}\label{rule:IVInl}
+    \inferrule[IVInl]{
+      \inValues{e_1'}{\Delta}{e_1} \\
+    }{ 
+      \inValues{\hinl{\tau_2}{e_1'}}{\Delta}{\hinl{\tau_2}{e_1}}
+    }
+  \end{equation}
+  \begin{equation}\label{rule:IVInr}
+    \inferrule[IVInr]{
+      \inValues{e_2'}{\Delta}{e_2} \\
+    }{ 
+      \inValues{\hinr{\tau_1}{e_2'}}{\Delta}{\hinr{\tau_1}{e_2}}
+    }
+  \end{equation}
+  \begin{equation}\label{rule:IVPair}
+    \inferrule[IVPair]{
+      \inValues{e_1'}{\Delta}{e_1} \\
+      \inValues{e_2'}{\Delta}{e_2}
+    }{
+      \inValues{\hpair{e_1'}{e_2'}}{\Delta}{\hpair{e_1}{e_2}}
+    }
+  \end{equation}
+\end{subequations}
+
+\begin{lemma}
+  \label{lem:invalues-typ}
+  If $\inValues{e'}{\Delta}{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then $\hexptyp{\cdot}{\Delta}{e'}{\tau}$.
+\end{lemma}
+
+\begin{lemma}
+  \label{lem:invalues-val}
+  If $\inValues{e'}{\Delta}{e}$ then $\isVal{e'}$.
+\end{lemma}
+
+\begin{lemma}
+  \label{lem:invalues-derivable}
+  If $\isIndet{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ then there exists $e'$ such that $\inValues{e'}{\Delta}{e}$.
+\end{lemma}
+
+\begin{lemma}
+  \label{lem:complete-not-satormay}
+  Assume $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and
+  $\ctyp{\hxi}{\tau}$. If $\cnotsatisfyormay{e}{\hxi}$ then and
+  $\inValues{e'}{\Delta}{e}$ then $\cnotsatisfyormay{e'}{\hxi}$.
+\end{lemma}
+
+\begin{lemma}
+  \label{lem:incomplete-satormay}
+  If $\isIndet{e}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and
+  $\ctyp{\hxi}{\tau}$ and there exists $e'$ such that $\inValues{e'}{\Delta}{e}$
+  and $\csatisfyormay{e'}{\hxi}$ then $\csatisfyormay{e}{\hxi}$.
+\end{lemma}
+
+\judgboxa{
+  \hsubstyp{\Gamma}{\Delta}{\theta}{\Gamma\theta}
+}{
+  $\theta$ is of type $\Gamma\theta$
+}
+\begin{subequations}
+\begin{equation}
+\inferrule[STEmpty]{ }{
+  \hsubstyp{\Gamma}{\Delta}{\emptyset}{\cdot}
+}
+\end{equation}
+\begin{equation}
+\inferrule[STExtend]{
+  \hsubstyp{\Gamma}{\Delta}{\theta}{\Gamma_\theta} \\
+  \hexptyp{\Gamma}{\Delta}{e}{\tau}
+}{
+  \hsubstyp{\Gamma}{\Delta}{\theta , x / e}{\Gamma_\theta , x : \tau}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{
+  \refutable{p}
+}{$p$ is refutable}
+\begin{subequations}\label{rules:p-refutable}
+\begin{equation}\label{rule:RNum}
+\inferrule[RNum]{ }{
+  \refutable{\hnum{n}}
+}
+\end{equation}
+\begin{equation}\label{rule:REHole}
+\inferrule[REHole]{ }{
+  \refutable{\heholep{w}}
+}
+\end{equation}
+\begin{equation}\label{rule:RHole}
+\inferrule[RHole]{ }{
+  \refutable{\hholep{p}{w}{\tau}}
+}
+\end{equation}
+\begin{equation}\label{rule:RInl}
+\inferrule[RInl]{ }{
+  \refutable{\hinlp{p}}
+}
+\end{equation}
+\begin{equation}\label{rule:RInr}
+\inferrule[RInr]{ }{
+  \refutable{\hinrp{p}}
+}
+\end{equation}
+\begin{equation}\label{rule:RPairL}
+\inferrule[RPairL]{
+  \refutable{p_1}
+}{
+  \refutable{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:RPairR}
+\inferrule[RPairR]{
+  \refutable{p_2}
+}{
+  \refutable{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{
+  \hpatmatch{e}{p}{\theta}
+}{
+  $e$ matches $p$, emitting $\theta$
+}
+\begin{subequations}\label{rules:match}
+\begin{equation}\label{rule:MVar}
+\inferrule[MVar]{ }{
+  \hpatmatch{e}{x}{e / x}
+}
+\end{equation}
+\begin{equation}\label{rule:MWild}
+\inferrule[MWild]{ }{
+  \hpatmatch{e}{\_}{\cdot}
+}
+\end{equation}
+\begin{equation}\label{rule:MNum}
+\inferrule[MNum]{ }{
+  \hpatmatch{\hnum{n}}{\hnum{n}}{\cdot}
+}
+\end{equation}
+\begin{equation}\label{rule:MPair}
+\inferrule[MPair]{
+  \hpatmatch{e_1}{p_1}{\theta_1} \\
+  \hpatmatch{e_2}{p_2}{\theta_2}
+}{
+  \hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+}
+\end{equation}
+\begin{equation}\label{rule:MInl}
+\inferrule[MInl]{
+  \hpatmatch{e}{p}{\theta}
+}{
+  \hpatmatch{\hinl{\tau}{e}}{\hinlp{p}}{\theta}
+}
+\end{equation}
+\begin{equation}\label{rule:MInr}
+\inferrule[MInr]{
+  \hpatmatch{e}{p}{\theta}
+}{
+  \hpatmatch{\hinr{\tau}{e}}{\hinrp{p}}{\theta}
+}
+\end{equation}
+\begin{equation}\label{rule:MNotIntroPair}
+\inferrule[MNotIntroPair]{
+  \notIntro{e} \\
+  \hpatmatch{\hfst{e}}{p_1}{\theta_1} \\
+  \hpatmatch{\hsnd{e}}{p_2}{\theta_2}
+}{
+  \hpatmatch{e}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{
+  \hmaymatch{e}{p}
+}{
+  $e$ may match $p$
+}
+\begin{subequations}\label{rules:maymatch}
+\begin{equation}\label{rule:MMEHole}
+\inferrule[MMEHole]{ }{
+  \hmaymatch{e}{\heholep{w}}
+}
+\end{equation}
+\begin{equation}\label{rule:MMHole}
+\inferrule[MMHole]{ }{
+  \hmaymatch{e}{\hholep{p}{w}{\tau}}
+}
+\end{equation}
+\begin{equation}\label{rule:MMNotIntro}
+\inferrule[MMNotIntro]{
+  \notIntro{e} \\
+  \refutable{p}
+}{
+  \hmaymatch{e}{p}
+}
+\end{equation}
+\begin{equation}\label{rule:MMPairL}
+\inferrule[MMPairL]{
+  \hmaymatch{e_1}{p_1} \\
+  \hpatmatch{e_2}{p_2}{\theta_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:MMPairR}
+\inferrule[MMPairR]{
+  \hpatmatch{e_1}{p_1}{\theta_1} \\
+  \hmaymatch{e_2}{p_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:MMPair}
+\inferrule[MMPair]{
+  \hmaymatch{e_1}{p_1} \\
+  \hmaymatch{e_2}{p_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:MMInl}
+\inferrule[MMInl]{
+  \hmaymatch{e}{p}
+}{
+  \hmaymatch{\hinl{\tau}{e}}{\hinlp{p}}
+}
+\end{equation}
+\begin{equation}\label{rule:MMInr}
+\inferrule[MMInr]{
+  \hmaymatch{e}{p}
+}{
+  \hmaymatch{\hinr{\tau}{e}}{\hinrp{p}}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{
+  \hnotmatch{e}{p}
+}{
+  $e$ does not match $p$
+}
+\begin{subequations}\label{rules:notmatch}
+\begin{equation}\label{rule:NMNum}
+\inferrule[NMNum]{
+  n_1 \neq n_2
+}{
+  \hnotmatch{\hnum{n_1}}{\hnum{n_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:NMPairL}
+\inferrule[NMPairL]{
+  \hnotmatch{e_1}{p_1}
+}{
+  \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:NMPairR}
+\inferrule[NMPairR]{
+  \hnotmatch{e_2}{p_2}
+}{
+  \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:NMConfL}
+\inferrule[NMConfL]{ }{
+  \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
+}
+\end{equation}
+\begin{equation}\label{rule:NMConfR}
+\inferrule[NMConfR]{ }{
+  \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
+}
+\end{equation}
+\begin{equation}\label{rule:NMInl}
+\inferrule[NMInl]{
+  \hnotmatch{e}{p}
+}{
+  \hnotmatch{\hinl{\tau}{e}}{\hinlp{p}}
+}
+\end{equation}
+\begin{equation}\label{rule:NMInr}
+\inferrule[NMInr]{
+  \hnotmatch{e}{p}
+}{
+  \hnotmatch{\hinr{\tau}{e}}{\hinrp{p}}
+}
+\end{equation}
+\end{subequations}
+
+\pagebreak
+
+\judgboxa{\rmpointer{\zrules} = rs}
+        {$rs$ can be obtained by erasing pointer from $\zrules$}
+\begin{subequations}\label{defn:rmpointer}
+\begin{align}
+  \rmpointer{\zruls{\cdot}{r}{rs}} &= \hrules{r}{rs} \\
+  \rmpointer{\zruls{\hrulesP{r'}{rs'}}{r}{rs}} &= \hrules{r'}{\rmpointer{\zruls{rs'}{r}{rs}}}
+\end{align}
+\end{subequations}
+
+\judgboxa{\htrans{e}{e'}}{$e$ takes a step to $e'$}
+\begin{subequations}\label{rules:ITExp}
+\begin{equation}
+\inferrule[ITHole]{
+  \htrans{e}{e'}
+}{
+  \htrans{\hhole{e}{u}}{\hhole{e'}{u}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITApFun]{
+  \htrans{e_1}{e_1'}
+}{
+  \htrans{\hap{e_1}{e_2}}{\hap{e_1'}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITApArg]{
+  \isVal{e_1} \\
+  \htrans{e_2}{e_2'}
+}{
+  \htrans{\hap{e_1}{e_2}}{\hap{e_1}{e_2'}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITAp]{
+  \isVal{e_2}
+}{
+  \hap{\hlam{x}{\tau}{e_1}}{e_2} \mapsto
+    [e_2/x]e_1
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITPairL]{
+  \htrans{e_1}{e_1'}
+}{
+  \htrans{\hpair{e_1}{e_2}}{\hpair{e_1'}{e_2}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITPairR]{
+  \isVal{e_1} \\
+  \htrans{e_2}{e_2'}
+}{
+  \htrans{\hpair{e_1}{e_2}}{\hpair{e_1}{e_2'}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITFstPair]{
+  \isFinal{\hpair{e_1}{e_2}}
+}{
+  \htrans{\hfst{\hpair{e_1}{e_2}}}{e_1}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITSndPair]{
+  \isFinal{\hpair{e_1}{e_2}}
+}{
+  \htrans{\hsnd{\hpair{e_1}{e_2}}}{e_2}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITInl]{
+  \htrans{e}{e'}
+}{
+  \htrans{\hinl{\tau}{e}}{\hinl{\tau}{e'}}
+}
+\end{equation}
+\begin{equation}
+\inferrule[ITInr]{
+  \htrans{e}{e'}
+}{
+  \htrans{\hinr{\tau}{e}}{\hinr{\tau}{e'}}
+}
+\end{equation}
+\begin{equation}\label{rule:ITExpMatch}
+\inferrule[ITExpMatch]{
+  \htrans{e}{e'}
+}{
+  \htrans{\hmatch{e}{\zrules}}{\hmatch{e'}{\zrules}}
+}
+\end{equation}
+\begin{equation}\label{rule:ITSuccMatch}
+\inferrule[ITSuccMatch]{
+  \isFinal{e} \\
+  \hpatmatch{e}{p_r}{\theta}
+}{
+  \htrans{
+    \hmatch{e}{\zruls{rs_{pre}}{\hrulP{p_r}{e_r}}{rs_{post}}}
+  }{
+    [\theta](e_r)
+  }
+}
+\end{equation}
+\begin{equation}\label{rule:ITFailMatch}
+\inferrule[ITFailMatch]{
+  \isFinal{e} \\
+  \hnotmatch{e}{p_r}
+}{
+  \htrans{
+    \hmatch{e}{\zruls{rs}{\hrulP{p_r}{e_r}}{\hrulesP{r'}{rs'}}}
+  }{
+    \hmatch{e}{
+      \zruls{
+        \rmpointer{\zruls{rs}{\hrulP{p_r}{e_r}}{\cdot}}
+      }{r'}{rs'}
+    }
+  }
+}
+\end{equation}
+\end{subequations}
+
+\begin{lemma}
+  \label{lem:final-notintro-indet}
+  If $\isFinal{e}$ and $\notIntro{e}$ then $\isIndet{e}$.
+\end{lemma}
+
+\begin{lemma}
+  \label{lem:val-not-indet}
+  There doesn't exist such an expression $e$ such that both $\isVal{e}$ and $\isIndet{e}$.
+\end{lemma}
+
+\begin{lemma}
+  \label{lem:val-not-notintro}
+  There doesn't exist such an expression $e$ such that both $\isVal{e}$ and $\notIntro{e}$.
+\end{lemma}
+
+\begin{lemma}[Finality]
+  \label{lem:finality}
+  There doesn't exist such an expression $e$ such that both $\isFinal{e}$ and $\htrans{e}{e'}$ for some $e'$
+\end{lemma}
+
+\begin{lemma}[Matching Determinism]
+  \label{lem:match-determinism}
+  If $\isFinal{e}$ and $\hexptyp{\cdot}{\Delta_e}{e}{\tau}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$ then exactly one of the following holds
+  \begin{enumerate}
+    \item $\hpatmatch{e}{p}{\theta}$ for some $\theta$
+    \item $\hmaymatch{e}{p}$
+    \item $\hnotmatch{e}{p}$
+  \end{enumerate}
+\end{lemma}
+
+\begin{lemma}[Matching Coherence of Constraint]
+  \label{lem:const-matching-coherence}
+  Suppose that $\hexptyp{\cdot}{\Delta_e}{e}{\tau}$ and $\isFinal{e}$ and $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$. Then we have
+  \begin{enumerate}
+  \item $\csatisfy{e}{\xi}$ iff $\hpatmatch{e}{p}{\theta}$
+  \item $\cmaysatisfy{e}{\xi}$ iff $\hmaymatch{e}{p}$
+  \item $\cnotsatisfyormay{e}{\xi}$ iff $\hnotmatch{e}{p}$
+  \end{enumerate}
+\end{lemma}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "appendix"
+%%% End:

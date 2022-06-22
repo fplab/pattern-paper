@@ -1,0 +1,46 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+\begin{minipage}[t][][b]{.47\linewidth}
+  \judgbox{\htrans{e}{e'}}{$e$ takes a step to $e'$}
+
+  \begin{mathpar}
+    \Infer{\ITInj}{
+      \htrans{e}{e'}
+    }{
+      \htrans{\hinj{C}{\tau}{e}}{\hinj{C}{\tau}{e'}}
+    }
+  \end{mathpar}
+
+  \judgbox{\isVal{e}}{$e$ is a value}
+
+  \begin{mathpar}
+    \Infer{\VInj}{
+      \isVal{e}
+    }{
+      \isVal{\hinj{\tagC}{\tau}{e}}
+    }
+  \end{mathpar}
+\end{minipage}
+\begin{minipage}[t][][b]{.47\linewidth}
+  \judgbox{\isIndet{e}}{$e$ is indeterminate}
+
+  \begin{mathpar}
+    \Infer{\IEInj}{
+      \isIndet{e}
+    }{
+      \isIndet{\hinj{\tagC}{\tau}{e}}
+    }
+
+    \Infer{\IEInjHole}{
+      C \neq \tagC \\
+      \isFinal{e}
+    }{
+      \isIndet{\hinj{C}{\tau}{e}}
+    }
+  \end{mathpar}
+\end{minipage}
+
+  \caption{Evaluation rules for labeled injections}
+  \label{fig:labeled-sums-evaluation-rules}
+\end{figure}

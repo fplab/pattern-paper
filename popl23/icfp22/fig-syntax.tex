@@ -1,0 +1,53 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+    \centering
+    \begin{minipage}{.5\linewidth}
+  $\arraycolsep=4pt\begin{array}{lll}
+    e & ::= &
+      x ~\vert~
+      \hnum{n} \\
+      & ~\vert~ &
+      \hlam{x}{\tau}{e} ~\vert~
+      \hap{e_1}{e_2} \\
+      & ~\vert~ &
+      \hpair{e_1}{e_2} ~\vert~
+      \hfst{e} ~\vert~ \hsnd{e} \\
+      & ~\vert~ &
+      \hinl{\tau}{e} ~\vert~
+      \hinr{\tau}{e} \\
+      & ~\vert~ &
+      \hmatch{e}{\hat{rs}} \\
+      & ~\vert~ &
+      \hehole{u} ~\vert~
+      \hhole{e}{u} \\
+    \end{array}$
+    \end{minipage}%
+    \begin{minipage}{.5\linewidth}
+  $\arraycolsep=4pt\begin{array}{lll}
+    \tau & ::= &
+      \tnum ~\vert~
+      \tarr{\tau_1}{\tau_2} ~\vert~
+      \tprod{\tau_1}{\tau_2} ~\vert~
+      \tsum{\tau_1}{\tau_2} \\
+    \hat{rs} & ::= &
+      \zrulsP{rs}{r}{rs} \\
+    rs & ::= &
+      \cdot ~\vert~ \hrulesP{r}{rs'} \\
+    r & ::= &
+      \hrul{p}{e} \\
+    p & ::= &
+      x ~\vert~
+      \_ ~\vert~
+      \hnum{n} ~\vert~
+      \hpair{p_1}{p_2} \\
+      & ~\vert~ &
+      \hinlp{p} ~\vert~
+      \hinrp{p} ~\vert~
+      \heholep{w} ~\vert~
+      \hholep{p}{w}{\tau}
+    \end{array}$
+    \end{minipage}
+\caption{Syntax}
+\label{fig:syntax}
+\end{figure}
