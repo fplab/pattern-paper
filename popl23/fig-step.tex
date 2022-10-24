@@ -1,6 +1,6 @@
 % !TEX root= pattern-paper.tex
 
-\begin{figure}[h]
+\begin{figure}[t]
 
 \judgbox{\htrans{e}{e'}}{$e$ takes a step to $e'$}
 
@@ -79,7 +79,7 @@
 %}{
 %  \htrans{\hinr{\tau}{e}}{\hinr{\tau}{e'}}
 %}
-
+%
 \Infer{\ITExpMatch}{
   \htrans{e}{e'}
 }{
@@ -97,7 +97,7 @@
   }
 }
 
-\Infer{\ITFailMatch}{
+\Infer{\ITMisMatch}{
   \isFinal{e} \\
   \hnotmatch{e}{p_r}
 }{
@@ -112,7 +112,8 @@
   }
 }
 \end{mathpar}
-
-  \caption{Stepping}
+\vspace{-10px}
+  \caption{Stepping Match Expressions}
+\vspace{5px}
   \label{fig:step}
 \end{figure}

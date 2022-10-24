@@ -59,11 +59,10 @@
 
   \begin{mathpar}
     \Infer{\TRule}{
-      r = \hrulP{p}{e} \\
       \chpattyp{p}{\tau}{\xi}{\Gamma_p}{\Delta_p} \\
       \hexptyp{\Gamma \uplus \Gamma_p}{\Delta \uplus \Delta_p}{e}{\tau'}
     }{
-      \chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi}{\tau'}
+      \chrultyp{\Gamma}{\Delta}{\hrulP{p}{e}}{\tau}{\xi}{\tau'}
     }
   \end{mathpar}
 
@@ -71,14 +70,14 @@
   {$rs$ transforms a final expression of type $\tau$ \\ to a final expression of type $\tau'$}
 
   \begin{mathpar}
-  \Infer{\TOneRules}{
+  \Infer{TOneRules}{
     \chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi_r}{\tau'} \\
     \cnotsatisfy{\xi_r}{\xi_{pre}}
   }{
     \chrulstyp{\Gamma}{\Delta}{\xi_{pre}}{\hrulesP{r}{\cdot}}{\tau}{\xi_r}{\tau'}
   }
 
-  \Infer{\TRules}{
+  \Infer{TRules}{
     \chrultyp{\Gamma}{\Delta}{r}{\tau}{\xi_r}{\tau'} \\
     \chrulstyp{\Gamma}{\Delta}{\cor{\xi_{pre}}{\xi_r}}{rs}
     {\tau}{\xi_{rs}}{\tau'} \\

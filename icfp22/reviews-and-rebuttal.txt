@@ -1,0 +1,344 @@
+ Review #22A
+===========================================================================
+
+Overall merit
+-------------
+4. Weak accept (will not argue to accept)
+
+Paper summary
+-------------
+The paper presents a design for extending a language with typed holes
+(a somehwat more explored idea) to a language where patterns may
+contain holes; and proposes a dynamic execution for programs (and
+patterns) with wholes. The key idea is that pattern matching
+exhaustiveness and redundancy now obtain a middle "indeterminate"
+form. In the operational semantics, we may also have indeterminate
+terms -- terms that get ``stuck'' in a pattern matching clause where
+the pattern indeterminately matches. The authors present a
+formalization of the ideas, including dynamic and static semantics, as
+well as an algorithm to check for (definite) exhaustiveness.
+
+Comments for author
+-------------------
+Opinion
+=======
+
+Pros:
+
+- Clearly written paper, accessible.
+- Results are technically solid and the formalization is detailed and
+  careful. It's practically a textbook-like execution.
+
+Cons:
+
+- Motivation for pattern holes (the main problem the authors adress)
+  is not incredibly strong and it seems like the authors take the
+  importance of the problem as given. I suppose one could claim that
+  IDE integration is one motivation, and the other is to allow holes
+  anywhere in the syntax of the language to eliminate
+  irregularities. I'd still be interested to understand if there is
+  data supporting how important the feature is; do we get 90% of
+  programmer satisfaction with type holes and this is just the
+  remaining 10%, or are they equally (or more) important?
+
+- Research novelty: on one hand side I am not aware of previous work
+  on this problem (btw this is why I am also questioning above whether
+  it may be a bit niche) so one could consider the work novel.
+  On the other hand, once one subscribes to the problem, I think the
+  ideas and the technical path followed are fairly unsurprising and
+  perhaps the ICFP readers could intuitively reproduce similar ideas
+  without the need of this paper.
+
+
+Overall: I could see this paper accepted but cannot explicitly argue for it.
+
+Comments
+========
+
+* There are interesting ideas, e.g. the rule-pointer pattern matching formulation that allows us
+   to cross out definitely not-matching patterns and get stuck at the pattern that may match. Is
+   this idea coming from Hazel or is it a contribution of this paper? (Or maybe it's already in
+   Harper 2012?)
+* line 336 -> subscript typo in the non-empty pattern holes.
+
+* The section on the SMT encoding; not sure it adds that much, since IIUC, the
+  authors dismiss this encoding in the end, it almost could be squeezed into
+  a discussion paragraph.
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+Review #22B
+===========================================================================
+* Updated: 17 May 2022 4:28:06am AoE
+
+Overall merit
+-------------
+4. Weak accept (will not argue to accept)
+
+Paper summary
+-------------
+This paper considers the problem of pattern-matching with incomplete information, more precisely, pattern-matching where both the pattern and the expression to be matched have "holes". The holes represent unknown or partially written sub-expressions/sub-patterns.
+The paper shows how to analyse patterns with holes to determine exhaustiveness and irredundancy, and how to evaluate expressions with holes (both things require to consider all possible ways to fill the holes).
+The theoretical work is complemented by an implementation: a typed lambda calculus, called Peanut. The metatheory of Peanut has been formalised in Agda.
+Prior work considered expressions with holes, but not patterns with holes. The latter introduce more challenges, in particular because the usual checks (exhaustiveness, redundancy, match) have ternary rather than binary answers, since there are indeterminate situations (where the result of the check cannot be determined without filling the holes).
+The paper is well written, although presentation can be improved in places (see comments for authors below).
+
+Comments for author
+-------------------
+The paper is well structured and well-chosen examples are provided for most concepts.  I would suggest adding an example to explain the concept of Rule Pointer Erasure (Fig 6).
+
+Line 407 introduces a judgement re. Fig 9, however, this was already used in Fig 7, so the explanation should come earlier.
+
+Line 412 mentions Theorem 4.1, but it is Lemma 4.1.
+
+The notation used in Lemma 4.3 (line 586) needs an explanation.
+
+Typo in line 667: "To simply the proof"
+
+Section 4.6: There are good was to deal with alpha-equivalence, see e.g. Copello's work
+"Alpha-Structural Induction and Recursion for the Lambda Calculus in Constructive Type Theory", LSFA 2015: 109-124
+
+Section 6.2: There are much earlier works on pattern matching: it is used to define rewriting (see e.g. the book of Baader and Nipkow "Term rewriting and all that").
+
+Questions for authors’ response
+-------------------------------
+Holes in expressions seem to correspond to the concept of a meta-variable in higher-order rewriting (or variables in nominal syntax). Could you comment on this?
+Term rewriting is also defined on terms with variables, is this related to the evaluation of expressions with holes?
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+Review #22C
+===========================================================================
+
+Overall merit
+-------------
+4. Weak accept (will not argue to accept)
+
+Paper summary
+-------------
+The present work introduces Peanut, a typed-lambda calculus with support for pattern matching and pattern holes. This can be seen as a continuation on the work of Omar et al. on  live functional programming with typed holes. Peanut is given a small-step operational semantics and a type system which guarantees that well-typed patterns are intrinsically (possibly indeterminately)  irredundant and exhaustive. This is achieved by the introduction of a small logic of constraints on expressions and patterns, which allows to express redundancy and exhaustiveness checking as side conditions in typing rules, e.g. in the one for the $\mathsf{match}$ constructor. The paper includes a discussion of the associated Agda formalization, and on the algorithms underlying decidability and inconsistency checking of constraints. The final part of the paper presents an extension of the language with labelled sums, where labels can themselves contain holes.
+
+Comments for author
+-------------------
+The paper is very well-written. The technical discussion on syntax and semantics is appropriately anticipated by a gentle introduction on the required background on pattern matching and a display of the 3 main features of exhaustiveness checking, redundancy checking and live evaluation around holes. The more technical sections are also well-organized. The associated related work in the literature is also properly discussed.
+
+Nevertheless I am personally a bit puzzled by the actual contribution of this work, and the motivation behind it. I surely understand the need for typed holes in program editing, which allow programmers to look at variables in scope and interactively build terms of a certain type (the type of the hole). But it is not as clear to me what is the practical usefulness of having the ability of incrementally construct patterns in a hole.  Pattern matching à la Agda already does a lot of work, exhibiting the canonical forms that an element of an inductive type can take. The programmer then has the ability to manipulate and modify these canonical forms, and possible redundancy and inexhaustiveness are possibly captured afterwards during type-checking. The author(s) don't state explicitly the usefulness of their work, the only piece of motivation is provided in the introductive section: "Pattern holes would, however, be useful in all of these systems for much the same reason as expression holes are useful: patterns are compositional in nature and are governed by a type discipline." Which, at least in my perspective, does not really say much about the utility of pattern holes.
+
+In a nutshell, I think this is a well-written article with a lot of potentially interesting work inside. Nevertheless, I would like to see a more thorough discussion on motivation for the central notion of pattern holes.
+
+Some extra small comments and a few typos I caught:
+
+- Line 336, $\tau$ should be subscript
+- Line 410, "the the"
+- Many times, e.g. in line 412, you write Theorem instead of Lemma, or Theorem instead of Definition.
+- Is $\theta$ at the end of page 12 existentially quantified?
+- Line 667, "simply" should probably be "simplify"
+- In line 693, should $\bot \vee \xi_{pre}$ be $\xi_{pre}$ instead?
+- In Figure 15 (typing of patterns), can the constraint $\xi$ be inferred directly from the pattern? In other words, can you write a function that associates a constraint to a pattern/rule/list of rules? So that in typing rules you do not need to explicitly carry around constraint information. Redundancy and exhaustiveness checking would then become side conditions about the inferred constraint.
+- In the paragraph starting at line 907, what are $b_{x_l}$ and $b_{x_r}$?
+-  Line 925, $\Xi$ should be $\xi$.
+- Line 1079, what is rule RXInj?
+- What results you have about the extension with labelled sums? Type safety?
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+Review #22D
+===========================================================================
+* Updated: 17 May 2022 3:31:14am AoE
+
+Overall merit
+-------------
+4. Weak accept (will not argue to accept)
+
+Paper summary
+-------------
+A number of programming languages support typed holes in expressions
+representing missing parts of a program. This paper extends the idea
+to support holes in patterns as well as in expressions. It develops a
+core calculus of typed holes along with a static and a dynamic
+semantics - supporting evaluation in the presence of typed pattern and
+expression holes. The metatheory has been implemented as part of the
+Hazel programming language and is mechanised in Agda.
+
+Comments for author
+-------------------
+As far as I am aware the extension of typed holes to patterns is novel
+and it is clearly a useful extension. I enjoyed reading the examples
+section, which did a good job of motivating the design. The meat of
+the paper is a comprehensive description of the core calculus,
+peanut. This is broadly fine, technically speaking, but there's quite
+a lot of detail, many grammatical errors, and I have the feeling that
+it should be possible to structure it in a way that would be quite a
+bit easier on the reader. Moreover, I did run into one technical
+issue, which I'll come back to shortly. The extension with labelled
+sums is obviously necessary, albeit the details seem somewhat obvious.
+
+The technical issue in Section 4, which concerns me a little, though I
+suspect it doesn't invalidate your results (particularly as they're
+proved in Agda), but rather makes them slightly weaker than they could
+be. In the MNotIntroPair rule in Figure 9 you essentially
+$\eta$-expand neutral expressions of product type. I don't understand
+why you don't have a similar MNotIntroSum rule that $\eta$-expands
+neutral expressions of sum type.
+
+l16: I initially thought it seemed odd that you didn't have sums in
+your core calculus - otherwise pattern-matching would be pretty
+boring. I suggest you make it clear that your core calculus does
+include sums and products.
+
+l52: distinct from what?
+
+l52: "that inserts"
+
+l93, l184, l187: Is it "inexhaustive" or "non-exhaustive"? You should
+at least be consistent.
+
+l134: it's a little jarring to have to jump forward several pages to
+find the example you refer to
+
+l151: Your tiny grey numbers are pretty hard to read on some devices.
+
+l176: "for a problem" should be "to a problem"
+
+l195: I wonder if you could use more subtle cues to distinguish the
+necessarily and the indeterminately exhaustive cases.
+
+l223: first pattern of any match?
+
+l315: Having $=$ appear as part of a relational judgement in a box
+looks a bit odd. I was initially a bit confused by this.
+
+l331: "introductory forms" are usually called "introduction forms"
+
+l332: Have you considered a bidirectional core language?
+
+l336: The $\tau$ should be a subscript.
+
+l349: Why do you start with the dynamic semantics first. I almost
+invariably find the dynamic semantics much easier to understand if
+I've already seen the static semantics.
+
+l378: I initially found the as yet undefined judgement definitions
+confusing. A forward reference to these earlier on would be nice.
+
+l390: Why?
+
+l459: Alarm bells start ringing for me here. You are performing a kind
+of $\eta$-expansion for products here, but why not for sums too?
+Surely we should be able to match an expression against an injection
+pattern using case in an analogous way to projections in the
+MNotIntroPair rule.
+
+l491: presumably "refutable" should be "indeterminately refutable"
+
+l531: "we introduce match constraint language"
+
+l537: "subset satisfy"
+
+l604: "satisfy" should be "satisfies"
+
+l625: "satisfy" should be "satisfies"
+
+l693: isn't $\bot \vee \xi$ equivalent to just $\xi$?
+
+l723: "emission of constraint"
+
+l751: $r$ should appear in the judgement box
+
+l751, l756: why final?
+
+l786: "While constraint..." - what constraint?
+
+l788: "We will ... in Sec. 4.3" - Section 4.3 was earlier in the
+paper!
+
+l883: Section 4.7 is full of grammatical errors.
+
+l924: "such procedure"
+
+l957: "other than two" should be "more than two"
+
+l967: "introductory form"
+
+l1170: You mention the origins of pattern matching in the 1970s. It'd
+be nice if you cite some of the early publications (e.g. in "The view
+from the left", McBride and McKinna credit Burstall with first
+describing pattern matching in 1969 and McBride senior with first
+implementing it in 1970).
+
+l1192: Other interesting extensions to pattern matching you could add
+to your laundry list include join patterns and the computation
+patterns in the Frank programming language ("Doo bee doo bee doo",
+Convent et al., JFP 2020).
+
+# Update following author response
+
+* Thanks for the answer about the MNotIntroPair rule. That makes sense.
+
+* It's not particularly important, but you didn't actually answer my question about whether you considered a bidirectional *core* language (l332). What you did write is not an answer to my question.
+
+Questions for authors’ response
+-------------------------------
+Why is there a MNotIntroPair rule, but no corresponding MNotIntroSum
+rule in Figure 9?
+
+Comments
+===========================================================================
+
+Resp Response by Yongwei Yuan <yuan311@purdue.edu> (944 words)
+---------------------------------------------------------------------------
+# Motivation
+
+We would be happy to address concerns about motivation (RA and RC) by including the following at the end of Sec1 and/or Sec7, expanding on our admittedly terse discussion of motivation:
+
+1. Expression holes are certainly central, but match expressions can in practice involve a very large number of patterns and/or very deeply nested patterns. In the Hazel implementation, for example, one match expression has 68 rules and multiple patterns have depth 5 and span multiple lines of code. Entering correct patterns is not always a quick or simple task.
+
+2. Pattern holes are structurally necessary to maintain Hazel's maximal liveness invariant while the programmer edits patterns. This paper solves the last significant problems in achieving the first maximally live IDE for a typed functional language, we believe a notable milestone.
+
+    More practically, liveness is useful when working with large patterns. We want to know as soon as it is knowable when we have introduced a redundancy. As we refactor large patterns into smaller patterns,  we also want to know that we have not necessarily broken exhaustiveness guarantees even before finalizing all of the details of the refactoring.
+
+3. Pattern holes provide a site for *localized* pattern synthesis, driven by types plus the goal of exhaustiveness and irredundancy. As RC mentions, Agda can synthesize an exhaustive and irredundant collection of patterns based on canonical forms, but this is only a one-shot process generating many patterns at once. Pattern holes allow you to decide on one pattern at a time, necessary if your pattern matching is specialized and deeply nested, as in Hazel's implementation where we match on particular configurations of actions and cursor positions. This is similar to the sort of synthesis Agda supports via expression holes. (Though synthesis was not a topic of this paper, it is being implemented in Hazel).
+
+# Clarity
+
+We thank the reviewers for pointing out a number of ways to improve the clarity of the writing, particularly in Section 4, which we will thoroughly revise for clarity. RD suggested introducing the static semantics before the dynamic semantics. We would be happy to consider this approach, leaving the discussion of premises related to exhaustiveness and redundancy to a corresponding section that follows the presentation of the dynamic semantics.
+
+# RB Question
+Expression holes indeed correspond to metavariables (e.g. from contextual modal logic, see  [Omar et al, POPL 2019]) and evaluation of incomplete programs corresponds to evaluation of programs with metavariables. Pattern holes can also be understood as metavariables, albeit a bit simpler in that they do not refer to variables. We discuss this briefly on p24 but would happy to expand on this description if requested.
+
+# RD Question
+The reason we can eta expand in MNotIntroPair is that product types have only one introduction form, so a match will necessarily eventually succeed, while binary sums have two, so it is not possible to know whether a match succeeds for arbitrary e until it has been reduced to an injection.
+
+# Additional Responses (below fold)
+## RA
+* The rule-pointer approach is a novel contribution of this paper in support of run-time liveness.
+* Regarding overall novelty of the idea and the approach presented, we believe that there were several conceptual and technical decisions that we explored, ultimately settling on the decisions presented which has led to a fully formally specified system that presents as a clean "textbook" solution to a problem that arises in any functional language aiming to support a full complement of holes, or in editor designs that aim to maximal or high liveness.
+* The section on SMT encoding was intended both to connect with an existing body of work on logical approaches to constraint solving and also prepares for future work to integrate guards into our system following the approach described in [Lower Your Guards](https://doi.org/10.1145/3408989). We will clarify this purpose.
+
+## RC
+* At the end of page 12, yes, $\theta$ should be existentially quantified here. We will clarify.
+* Line 693, we should just use $\xi_{pre}$ to avoid confusion.
+* Line 907, Since Peanut only has binary sums, we can use a boolean to denote whether a constraint is injection left or right. For the constraint given in the paragraph, it is of product type consisting of two sum types, and thus $b_{x_l}$ corresponds to the left side of the pairs while $b_{x_r}$ corresponds to the right side of the pairs.
+* Line 1079, rule name RXInj is a typo, it should be rule RInjMult
+* The extension with labelled sum should still enjoy the type safety though we didn’t mechanize this portion, choosing to formalize only the essential core. And the extension does provide theoretical support for integration into Hazel.
+* It is possible to separate out constraint emission from pattern typing, and individual pattern constraints correspond directly to the pattern itself. The constraint language is mainly useful when we start defining logical connectives and complement, which are not part of patterns directly. It simplifies the presentation and in the Agda, it is convenient to pair types with constraints, so we keep them together for presentation.
+
+## RD
+* Line 332, Hazel is implemented as a bidirectional external language defined by elaboration to an internal language. This paper need only describes an internal language for simplicity. Elaboration is formalized in [Omar et al, POPL 2019].
+* Line 390, we choose a standard small step semantics mainly for operational simplicity: we would need to handle match expressions proceeding through the rule sequence in the syntax of evaluation contexts, and this ends up being straightforward but tedious compared to a standard operational semantics.
+* Line 693, we should just use $\xi_{pre}$ to avoid confusion.
+* We will cite the additional related work mentioned, thank you.
+
+Thank you for the thorough and thoughtful reviews!
+
+Comment @A1
+---------------------------------------------------------------------------
+PC summary
+
+The reviewers found the paper technically sound and clearly written but no reviewer felt they would be able to confidently champion this work. An important reason was the lack of a technical comparison and demonstration of novelty compared to older work in rewriting and higher-order unification. The reviewers felt that this shortcoming might be difficult to address simply as a revision in related work. Other aspects of the paper that could be improved to boost the reviewers' confidence in the work would be a stronger motivation with perhaps concrete examples and more emphasis/explaining text on how this work addresses the maximal liveness property of an IDE, particularly when a (surely much more naive) version of all of this might be to simply use catch-all patterns (_).

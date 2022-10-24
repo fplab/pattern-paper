@@ -1,5 +1,5 @@
 %% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
-\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+\documentclass[acmsmall,review,screen,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
 %% For double-blind review submission, w/ CCS and ACM Reference
 %\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true}
 %% For single-blind review submission, w/o CCS and ACM Reference (max submission space)
@@ -16,7 +16,7 @@
 %\acmJournal{PACMPL}
 %\acmVolume{1}
 %\acmNumber{CONF} % CONF = POPL or ICFP or OOPSLA
-\acmConference[ABC '00]{A Boilerplate Conference}{January 0000}{}
+\acmConference[Under Review]{A Boilerplate Conference}{July 2022}{-}
 %\acmArticle{1}
 %\acmYear{2018}
 %\acmMonth{1}
@@ -66,12 +66,47 @@
 \usepackage{todonotes}
 \usepackage{listings}
 \usepackage{tikz}
+\usepackage[inline]{enumitem}
 \usetikzlibrary{calc,fit,tikzmark,plotmarks,arrows.meta,positioning,overlay-beamer-styles}
 
 \usepackage{cancel} % slash over symbol
 \usepackage{hyperref}
+
+\makeatletter
+% an adaption from 
+% https://tex.stackexchange.com/questions/15728/multiple-references-with-autoref
+% define a macro \Autoref to allow multiple references to be passed to \autoref
+\newcommand\Autoref[1]{\@first@ref#1,@}
+\def\@throw@dot#1.#2@{#1}% discard everything after the dot
+\def\@set@refname#1{%    % set \@refname to autoefname+s using \getrefbykeydefault
+    \edef\@tmp{\getrefbykeydefault{#1}{anchor}{}}%
+    \xdef\@tmp{\expandafter\@throw@dot\@tmp.@}%
+    \ltx@IfUndefined{\@tmp autorefnameplural}%
+         {\def\@refname{\@nameuse{\@tmp autorefname}}}%
+         {\def\@refname{\@nameuse{\@tmp autorefnameplural}}}%
+}
+\def\@first@ref#1,#2{%
+  \ifx#2@\autoref{#1}\let\@nextref\@gobble% only one ref, revert to normal \autoref
+  \else%
+    \@set@refname{#1}%  set \@refname to autoref name
+    \@refname~\ref{#1}% add autoefname and first reference
+    \let\@nextref\@next@ref% push processing to \@next@ref
+  \fi%
+  \@nextref#2%
+}
+\def\@next@ref#1,#2{%
+   \ifx#2@ and~\ref{#1}\let\@nextref\@gobble% at end: print and+\ref and stop
+   \else, \ref{#1}% print  ,+\ref and continue
+   \fi%
+   \@nextref#2%
+}
+\makeatother
 \renewcommand\UrlFont{\color{blue}\rmfamily}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
 \def\figureautorefname{Fig.}
+\def\definitionautorefname{Defn.}
 \def\lemmaautorefname{Lemma}
 \def\sectionautorefname{Sec.}
 \let\subsectionautorefname\sectionautorefname
@@ -86,6 +121,8 @@
 \definecolor{hazellightyellow}{RGB}{254,254,234}
 
 \newcommand{\highlight}[1]{\colorbox{yellow}{$\displaystyle #1$}}
+
+\renewcommand{\figurename}{Fig.}
 
 %% Jana Dunfield macros
 \def\OPTIONConf{1}
@@ -119,13 +156,15 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 \newcommand{\li}[1]{\lstinline[basicstyle=\ttfamily\fontsize{9pt}{1em}\selectfont]{#1}}
 \newcommand{\lismall}[1]{\lstinline[basicstyle=\ttfamily\fontsize{9pt}{1em}\selectfont]{#1}}
 
+\captionsetup{belowskip=-5pt}
+
 \input{macros}
 \input{rulecommands}
 
 \begin{document}
 
 %% Title information
-\title[Pattern Matching with Typed Holes]{Pattern Matching with Typed Holes}         %% [Short Title] is optional;
+\title[Live Pattern Matching with Typed Holes]{Live Pattern Matching with Typed Holes}         %% [Short Title] is optional;
                                         %% when present, will be used in
                                         %% header instead of Full Title.
 % \titlenote{with title note}             %% \titlenote is optional;

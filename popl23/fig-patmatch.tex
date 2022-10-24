@@ -1,6 +1,6 @@
 % !TEX root= pattern-paper.tex
 
-\begin{figure}[!b]
+\begin{figure}[t]
 
 \judgbox{
   \hpatmatch{e}{p}{\theta}
@@ -21,13 +21,6 @@
   \hpatmatch{\hnum{n}}{\hnum{n}}{\cdot}
 }
 
-\Infer{\MPair}{
-  \hpatmatch{e_1}{p_1}{\theta_1} \\
-  \hpatmatch{e_2}{p_2}{\theta_2}
-}{
-  \hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
-}
-
 \Infer{\MInl}{
   \hpatmatch{e}{p}{\theta}
 }{
@@ -38,6 +31,13 @@
   \hpatmatch{e}{p}{\theta}
 }{
   \hpatmatch{\hinr{\tau}{e}}{\hinrp{p}}{\theta}
+}
+
+\Infer{\MPair}{
+  \hpatmatch{e_1}{p_1}{\theta_1} \\
+  \hpatmatch{e_2}{p_2}{\theta_2}
+}{
+  \hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
 }
 
 \Infer{\MNotIntroPair}{
@@ -110,13 +110,6 @@
 \Infer{\MMHole}{ }{
   \hmaymatch{e}{\hholep{p}{w}{\tau}}
 }
-\\
-\Infer{\MMNotIntro}{
-  \notIntro{e} \\
-  \refutable{p}
-}{
-  \hmaymatch{e}{p}
-}
 
 \Infer{\MMPairL}{
   \hmaymatch{e_1}{p_1} \\
@@ -150,8 +143,16 @@
 }{
   \hmaymatch{\hinr{\tau}{e}}{\hinrp{p}}
 }
-\end{mathpar}
 
-\caption{Three possible outcomes of pattern matching}
+\Infer{\MMNotIntro}{
+  \notIntro{e} \\
+  \refutable{p}
+}{
+  \hmaymatch{e}{p}
+}
+\end{mathpar}
+\vspace{-10px}
+\caption{The three possible outcomes of pattern matching}
 \label{fig:patmatch}
+\vspace{-5px}
 \end{figure}

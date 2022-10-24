@@ -3,19 +3,19 @@
 \begin{figure}[!ht]
 \judgbox{
   \refutable{p}
-}{$p$ is refutable}
+}{$p$ is indeterminately refutable}
 
 \begin{mathpar}
-\Infer{\RNum}{ }{
-  \refutable{\hnum{n}}
-}
-
 \Infer{\REHole}{ }{
   \refutable{\heholep{w}}
 }
 
 \Infer{\RHole}{ }{
   \refutable{\hholep{p}{w}{\tau}}
+}
+
+\Infer{\RNum}{ }{
+  \refutable{\hnum{n}}
 }
 
 \Infer{\RInl}{ }{
@@ -38,6 +38,6 @@
   \refutable{\hpair{p_1}{p_2}}
 }
 \end{mathpar}
-\caption{Refutable Patterns}
+\caption{Indeterminately Refutable Patterns}
 \label{fig:refutable}
 \end{figure}

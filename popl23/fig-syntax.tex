@@ -1,46 +1,46 @@
 % !TEX root= pattern-paper.tex
 
-\begin{figure}[ht]
+\begin{figure}[t]
     \centering
-    \begin{minipage}{.5\linewidth}
-  $\arraycolsep=4pt\begin{array}{lll}
-    e & ::= &
+    \begin{minipage}{.44\linewidth}
+  $\arraycolsep=4pt\begin{array}{lcll}
+    \mathsf{Exp} & e & ::= &
       x ~\vert~
-      \hnum{n} \\
+      \hnum{n} \\&
       & ~\vert~ &
       \hlam{x}{\tau}{e} ~\vert~
-      \hap{e_1}{e_2} \\
+      \hap{e_1}{e_2} \\&
       & ~\vert~ &
       \hpair{e_1}{e_2} ~\vert~
-      \hfst{e} ~\vert~ \hsnd{e} \\
+      \hfst{e} ~\vert~ \hsnd{e} \\&
       & ~\vert~ &
       \hinl{\tau}{e} ~\vert~
-      \hinr{\tau}{e} \\
+      \hinr{\tau}{e} \\&
       & ~\vert~ &
-      \hmatch{e}{\hat{rs}} \\
+      \hmatch{e}{\hat{rs}} \\&
       & ~\vert~ &
       \hehole{u} ~\vert~
-      \hhole{e}{u} \\
+      \hhole{e}{u}
     \end{array}$
     \end{minipage}%
-    \begin{minipage}{.5\linewidth}
-  $\arraycolsep=4pt\begin{array}{lll}
-    \tau & ::= &
+    \begin{minipage}{.55\linewidth}
+  $\arraycolsep=4pt\begin{array}{llcl}
+    \mathsf{Typ} & \tau & ::= &
       \tnum ~\vert~
       \tarr{\tau_1}{\tau_2} ~\vert~
       \tprod{\tau_1}{\tau_2} ~\vert~
       \tsum{\tau_1}{\tau_2} \\
-    \hat{rs} & ::= &
+    \mathsf{ZRules} & \hat{rs} & ::= &
       \zrulsP{rs}{r}{rs} \\
-    rs & ::= &
+    \mathsf{Rules} & rs & ::= &
       \cdot ~\vert~ \hrulesP{r}{rs'} \\
-    r & ::= &
+    \mathsf{Rule} & r & ::= &
       \hrul{p}{e} \\
-    p & ::= &
+    \mathsf{Pat} & p & ::= &
       x ~\vert~
       \_ ~\vert~
       \hnum{n} ~\vert~
-      \hpair{p_1}{p_2} \\
+      \hpair{p_1}{p_2} \\&
       & ~\vert~ &
       \hinlp{p} ~\vert~
       \hinrp{p} ~\vert~
@@ -48,6 +48,6 @@
       \hholep{p}{w}{\tau}
     \end{array}$
     \end{minipage}
-\caption{Syntax}
+\caption{Syntax of Peanut. Here, $n$ ranges over mathematical numbers (of any suitable sort), $x$ over variables, $u$ over expression hole names, and $w$ over pattern hole names.}
 \label{fig:syntax}
 \end{figure}
