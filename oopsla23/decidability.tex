@@ -1,0 +1,58 @@
+\subsection{Decidability}
+\label{sec:decidability}
+In this subsection, we show that the validity of a "fully known" constraint (\autoref{definition:valid-constraint}) is decidable.
+
+\subsubsection{SAT Encoding}
+ One approach is to reduce the validity checking to a boolean satisfiability problem (SAT). 
+If we revisit the analogy between constraint and set of expressions discussed in \autoref{sec:constraint}, we can think of constraints as subsets of values of type $\tau$.
+Then $\ccsatisfy{}{\xi}$ basically says that $\xi$ exactly represents the set of all values of type $\tau$. 
+However, such set may be infinite (e.g. top constraint $\ctruth$),
+and thus defining operations on such infinite sets is nontrivial. 
+
+Nevertheless, we may use logical predicates to encode the subset of values corresponding to a constraint. 
+For example, $\xi=\cnum{2}$ represents a set with one value $\hnum{2}$, and thus can be encoded as a predicate $x=2$. 
+If there is any connectives ($\cand{}{}$ and $\cor{}{}$) in $\xi$, we can use the connectives of the same form in logical formula. 
+It is tricky to encode $inl$, $inr$, and $pair$ constraint as predicate. 
+If we think of a constraint as a set again, a value $e=\cpair{e_1}{e_2}$ belongs to $\xi=\cpair{\xi_1}{\xi_2}$ iff $e_1$ belongs to $\xi_1$ and $e_2$ belongs to $\xi_2$. 
+Therefore, the logical encoding of $\cpair{\xi_1}{\xi_2}$ would be a conjunction of encoding of both side of the pair, with a variable for each.
+As for injections, we can use a boolean value $b$ to denote whether a constraint is $inl$ or $inr$, and conjoin it with the encoding of $\xi_1$. In the following example, we use $b=\mathtt{true}$ for $inl$ and $b=\mathtt{false}$ for $inr$.
+
+One last thing to notice here is that we need to make sure when transforming constraints on the same set of values into a predicate, the same variable would be used. To demonstrate how that might work, let's consider a more involved example:
+\[ \cpair{\cinl{\cnum{1}}}{\cinl{\cnum{3}}} \vee \cpair{\cinl{\cnum{2}}}{\cinr{\cnum{1}}} \]
+Both $\cpair{\cinl{\cnum{1}}}{\cinl{\cnum{3}}}$ and $\cpair{\cinl{\cnum{2}}}{\cinr{\cnum{1}}}$ place constraints on the same variable $x$.
+Therefore, their left/right side also place constraints on the same variable, though unnecessary to be introduced explicitly.
+If we let $b_{x_l}$($b_{x_r}$) correspond to the left(right) side of the pairs, and $x_l'$($x_r'$) encode the number constraints under injections, 
+then 
+we encode $\cinl{\cnum{1}}$ as $b_{x_l} \wedge (x_l'=1)$, 
+$\cinl{\cnum{3}}$ as $b_{x_r} \wedge (x_r'=3)$,
+$\cinl{\cnum{2}}$ as $b_{x_l} \wedge (x_l'=2)$,
+$\cinr{\cnum{1}}$ as $\neg b_{x_r} \wedge (x_r'=1)$. 
+Put them together and we get the logical encoding of the entire constraint, 
+\[
+(b_{x_l} \wedge (x_l'=1) \wedge
+b_{x_r} \wedge (x_r'=3))
+\vee
+(b_{x_l} \wedge (x_l'=2) \wedge
+\neg b_{x_r} \wedge (x_r'=1))
+\]
+
+As a result, the validity of a constraint $\xi$, $\ccsatisfy{}{\xi}$, is equivalent to the validity of its logical encoding. Exhaustiveness and redundancy checking are reduced to boolean satisfiability problem, which is NP-complete but decidable, and several tools exist for doing so. For handling numeric patterns we only need SAT modulo numeric equality and disequality.
+
+\subsubsection{Constraint Inconsistency Checking}\label{sec:incon}
+
+Using an SMT solver to decide constraint entailments is, however, an overkill. Moreover, it may incur run-time and space overhead in a  development environment. When incorporating Peanut into Hazel, we use a different but more lightweight decision procedure. \figurename~\ref{fig:incon} describes such a procedure by defining a new judgment $\cincon{\Xi}$, where $\Xi$ represents a list of constraint $\xi$. Assuming constraint $\xi$ is fully known and is of type $\tau$, $\cincon{\xi}$ means constraint $\xi$ is inconsistent in the sense that no values of type $\tau$ satisfy $\xi$, which corresponds to the insatisfiability of $\xi$'s logical encoding. Therefore, a constraint is valid, written as $\ccsatisfy{}{\xi}$, iff its dual is inconsistent, written as $\cincon{\cdual{\xi}}$. Note that this is not fully mechanized in Agda. Such proofs require reasoning about finite sets in a non-structurally recursive way, making them inordinately difficult to verify in Agda, but our implementation uses this algorithm.
+
+\input{fig-incon}
+
+
+%\begin{theorem}
+%\textbf{}  Assume $\ctruify{\xi}=\xi$. It is decidable whether $\cincon{\xi}$.
+%\end{theorem}
+%
+%\begin{theorem}
+%  Assume $\ctruify{\xi}=\xi$. Then $\cincon{\cdual{\xi}}$ iff $\csatisfy{\ctruth}{\xi}$.
+%\end{theorem}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "pattern-paper"
+%%% End:

@@ -1,0 +1,84 @@
+\RequirePackage{etex}
+\documentclass{article}
+
+\usepackage[T1]{fontenc} % fix missing font cmtt
+\usepackage{amsmath}
+\usepackage{amssymb} % Vdash
+\usepackage{amsthm} % proof
+\usepackage{graphicx} % rotatebox
+\usepackage{stmaryrd} % llparenthesis
+\usepackage{anyfontsize} % workaround for font size difference warning
+\usepackage{todonotes}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{calc,fit,tikzmark,plotmarks,arrows.meta,positioning,overlay-beamer-styles}
+\usepackage[caption=false]{subfig}
+
+
+\usepackage{cancel} % slash over symbol
+\usepackage{hyperref}
+\renewcommand\UrlFont{\color{blue}\rmfamily}
+\let\figureautorefname\figurename
+\def\sectionautorefname{Sec.}
+\def\lemmaautorefname{Lemma}
+\def\equationautorefname{Definition}
+\def\definitionautorefname{Definition}
+\def\theoremautorefname{Theorem}
+\def\corollaryautorefname{Corollary}
+\let\subsectionautorefname\sectionautorefname
+\let\subsubsectionautorefname\sectionautorefname
+\newcommand{\rulesref}[1]{Rules (\ref{#1})}
+\newcommand{\ruleref}[1]{Rule (\ref{#1})}
+
+\usepackage{xcolor}
+\definecolor{hazelgreen}{RGB}{7,63,36}
+\definecolor{hazellightgreen}{RGB}{103,138,97}
+\definecolor{hazelyellow}{RGB}{245,222,179}
+\definecolor{hazellightyellow}{RGB}{254,254,234}
+
+\newcommand{\highlight}[1]{\colorbox{yellow}{$\displaystyle #1$}}
+
+%% Joshua Dunfield macros
+\def\OPTIONConf{1}
+\usepackage{jdunfield}
+\usepackage{pfsteps}
+\makeatletter
+\newcommand{\savelocalsteps}[1]{
+  \@ifundefined{c@#1}
+    {% the counter doesn't exist
+     \newcounter{#1}
+   }{}
+  \setcounter{#1}{\value{pfsteps@pfc@local}}
+}
+\makeatother
+\newcommand{\restorelocalsteps}[1]{\setcounter{pfsteps@pfc@local}{\value{#1}}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}{Lemma}[theorem]
+\newtheorem{definition}{Definition}[theorem]
+
+\input{../macros.tex}
+
+\usepackage{comment}
+\excludecomment{proof}
+\begin{document}
+
+In the main paper, we present only a single constraint language. However, conceptually, we work with this language in two distinct stages: first, the constraints directly emitted by lists of rules, then, for use in redundancy and exhaustiveness checking, the constraints which are in the image of the truify and falsify functions and their duals. While irrelevant to the overall theory, to simplify some proofs, it is useful to make this distinction explicit.
+
+In \autoref{sec:incompleteconstraint}, we present the first stage of constraints, called the \emph{incomplete constraint language}. This consists of any constraint emitted by a pattern, and in particular, includes the $\cunknown$ constraint. In order to define the constraint emitted by a list of rules, we also include $\cfalsity$ and allow taking the $\vee$ of incomplete constraints. At this stage, we often require two versions of each judgment: one describing a determinate result, and one describing a result which is indeterminate due to the presence of the $\cunknown$ constraint.
+
+In turn, in \autoref{sec:completeconstraint}, we discuss those constraints in the image of the truify and falsify functions, as well as their duals. We call this the \emph{complete constraint language}, and it includes almost all of the incomplete language, but excludes the $\cunknown$ constraint. To support the dual operation, we also may take the $\wedge$ of complete constraints, and we add a $\cnotnum{n}$ constraint. Due to the absence of $\cunknown$, judgments related to the complete language do not have to consider indeterminacy, and thus are often simpler than their counterparts in the incomplete language. This is the primary motivation for distinguishing these languages at all.
+
+\input{simple-constraint}
+\input{complete-constraint}
+\pagebreak
+\input{dynamics}
+\input{statics}
+\input{decidability}
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

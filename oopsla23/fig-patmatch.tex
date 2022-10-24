@@ -1,0 +1,158 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[t]
+
+\judgbox{
+  \hpatmatch{e}{p}{\theta}
+}{
+  $e$ matches $p$, emitting $\theta$
+}
+
+\begin{mathpar}
+\Infer{\MVar}{ }{
+  \hpatmatch{e}{x}{e / x}
+}
+
+\Infer{\MWild}{ }{
+  \hpatmatch{e}{\_}{\cdot}
+}
+
+\Infer{\MNum}{ }{
+  \hpatmatch{\hnum{n}}{\hnum{n}}{\cdot}
+}
+
+\Infer{\MInl}{
+  \hpatmatch{e}{p}{\theta}
+}{
+  \hpatmatch{\hinl{\tau}{e}}{\hinlp{p}}{\theta}
+}
+
+\Infer{\MInr}{
+  \hpatmatch{e}{p}{\theta}
+}{
+  \hpatmatch{\hinr{\tau}{e}}{\hinrp{p}}{\theta}
+}
+
+\Infer{\MPair}{
+  \hpatmatch{e_1}{p_1}{\theta_1} \\
+  \hpatmatch{e_2}{p_2}{\theta_2}
+}{
+  \hpatmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+}
+
+\Infer{\MNotIntroPair}{
+  \notIntro{e} \\
+  \hpatmatch{\hfst{e}}{p_1}{\theta_1} \\
+  \hpatmatch{\hsnd{e}}{p_2}{\theta_2}
+}{
+  \hpatmatch{e}{\hpair{p_1}{p_2}}{\theta_1 \uplus \theta_2}
+}
+\end{mathpar}
+
+\judgbox{
+  \hnotmatch{e}{p}
+}{
+  $e$ does not match $p$
+}
+
+\begin{mathpar}
+
+\Infer{\NMNum}{
+  n_1 \neq n_2
+}{
+  \hnotmatch{\hnum{n_1}}{\hnum{n_2}}
+}
+
+\Infer{\NMPairL}{
+  \hnotmatch{e_1}{p_1}
+}{
+  \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+
+\Infer{\NMPairR}{
+  \hnotmatch{e_2}{p_2}
+}{
+  \hnotmatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+
+\Infer{\NMConfL}{ }{
+  \hnotmatch{\hinr{\tau}{e}}{\hinlp{p}}
+}
+
+\Infer{\NMConfR}{ }{
+  \hnotmatch{\hinl{\tau}{e}}{\hinrp{p}}
+}
+
+\Infer{\NMInl}{
+  \hnotmatch{e}{p}
+}{
+  \hnotmatch{\hinl{\tau}{e}}{\hinlp{p}}
+}
+
+\Infer{\NMInr}{
+  \hnotmatch{e}{p}
+}{
+  \hnotmatch{\hinr{\tau}{e}}{\hinrp{p}}
+}
+\end{mathpar}
+
+\judgbox{
+  \hmaymatch{e}{p}
+}{
+  $e$ indeterminately matches $p$
+}
+
+\begin{mathpar}
+\Infer{\MMEHole}{ }{
+  \hmaymatch{e}{\heholep{w}}
+}
+
+\Infer{\MMHole}{ }{
+  \hmaymatch{e}{\hholep{p}{w}{\tau}}
+}
+
+\Infer{\MMPairL}{
+  \hmaymatch{e_1}{p_1} \\
+  \hpatmatch{e_2}{p_2}{\theta_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+
+\Infer{\MMPairR}{
+  \hpatmatch{e_1}{p_1}{\theta_1} \\
+  \hmaymatch{e_2}{p_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+
+\Infer{\MMPair}{
+  \hmaymatch{e_1}{p_1} \\
+  \hmaymatch{e_2}{p_2}
+}{
+  \hmaymatch{\hpair{e_1}{e_2}}{\hpair{p_1}{p_2}}
+}
+
+\Infer{\MMInl}{
+  \hmaymatch{e}{p}
+}{
+  \hmaymatch{\hinl{\tau}{e}}{\hinlp{p}}
+}
+
+\Infer{\MMInr}{
+  \hmaymatch{e}{p}
+}{
+  \hmaymatch{\hinr{\tau}{e}}{\hinrp{p}}
+}
+
+\Infer{\MMNotIntro}{
+  \notIntro{e} \\
+  \refutable{p}
+}{
+  \hmaymatch{e}{p}
+}
+\end{mathpar}
+\vspace{-10px}
+\caption{The three possible outcomes of pattern matching}
+\label{fig:patmatch}
+\vspace{-5px}
+\end{figure}

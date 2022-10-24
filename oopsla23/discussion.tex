@@ -1,0 +1,32 @@
+\section{Conclusion}
+\begin{quote}
+    \emph{As we have struggled through the ages to fathom this strange and wondrous cosmos in which we find ourselves, few ideas have been richer than the concept of nothingness. For to understand anything, as Aristotle argued, we must understand what it is not.}
+    \\\null\hfill --- Alan Lightman
+\end{quote}
+
+\noindent
+Programming can perhaps be understood as a progression, full of fits and starts, from an initial nothingness, an empty hole, toward a complete, meaningful world. This paper continues a promising line of research into applying principled logical methods to understand and support this process \cite{DBLP:conf/popl/OmarVHAH17,HazelnutSNAPL}. In the future, we hope that robust support for typed holes, whether inserted manually or automatically, will be as ubiquitous as other editor services, such as code completion and type inspection, have become today. 
+Pattern matching is a central feature of modern typed functional programming languages (and increasingly many other modern 
+programming languages), so we believe that the semantics for typed pattern holes contributed by this paper represents a significant step toward realizing the goal of \emph{maximally live} programming environments.
+
+\section*{Acknowledgements}
+Thank you for taking the time to referee our paper! (acknowledgments 
+omitted for peer review)
+% rntz
+% Yuning
+% rwh
+
+% \begin{itemize}
+% \item richer pattern matching features
+% \begin{itemize}
+%     \item \cite{DBLP:journals/corr/abs-1909-04160} use SMT solver to handle guards with high precision
+%     \item redundancy vs inaccessibility in \cite{DBLP:journals/pacmpl/GrafJS20}, seems relevant to void type
+% \end{itemize}
+% \item witness generation
+% \end{itemize}
+
+% \subsection{Limitations}
+% In order to reason about indeterminate exhaustiveness and indeterminate redundancy, we conservatively consider all possible hole fillings. 
+% However, we are not encoding exhaustiveness requirement and irredundancy requirement for each branch into a monolithic constraint solving problem. 
+% Instead, we check the exhaustiveness and redundancy of each branch separately. 
+% The drawback here is that, there are cases where two of the requirements can be indeterminately fulfilled respectively but cannot be fulfilled together regardless of the pattern holes' filling. Given such scenarios, a user may have to, first complete the program in a way such that one of the two requirements is fulfilled, and then get the error/warning from the type checker that the other requirement can not be fulfilled. That is saying, we have not realized the full potential of indeterminacy, giving error/warning at the earliest possible point. On the other hand, it is worth more discussion on whether it is a good thing to just tell user that several requirements cannot be fulfilled at the same time as it may be overwhelming to the user. But that opens up space for pattern synthesis.

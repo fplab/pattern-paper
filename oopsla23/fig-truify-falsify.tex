@@ -1,0 +1,35 @@
+% !TEX root= pattern-paper.tex
+\begin{figure}[ht]
+\noindent\begin{minipage}{.5\linewidth}
+\judgbox{\ctruify{\xi_1} = \xi_2}{}
+\begin{align*}
+  \ctruify{\ctruth} &= \ctruth \\
+  \ctruify{\cfalsity} &= \cfalsity \\
+  \ctruify{\cunknown} &= \ctruth \\
+  \ctruify{\cnum{n}} &= \cnum{n} \\
+  \ctruify{\cnotnum{n}} &= \cnotnum{n} \\
+  \ctruify{\cand{\xi_1}{\xi_2}} &= \cand{\ctruify{\xi_1}}{\ctruify{\xi_2}} \\
+  \ctruify{\cor{\xi_1}{\xi_2}} &= \cor{\ctruify{\xi_1}}{\ctruify{\xi_2}} \\
+  \ctruify{\cinl{\xi}} &= \cinl{\ctruify{\xi}} \\
+  \ctruify{\cinr{\xi}} &= \cinr{\ctruify{\xi}} \\
+  \ctruify{\cpair{\xi_1}{\xi_2}} &= \cpair{\ctruify{\xi_1}}{\ctruify{\xi_2}}
+\end{align*}
+\end{minipage}%
+\begin{minipage}{.5\linewidth}
+\judgbox{\cfalsify{\xi_1} = \xi_2}{}
+\begin{align*}
+  \cfalsify{\ctruth} &= \ctruth \\
+  \cfalsify{\cfalsity} &= \cfalsity \\
+  \cfalsify{\cunknown} &= \cfalsity \\
+  \cfalsify{\cnum{n}} &= \cnum{n} \\
+  \cfalsify{\cnotnum{n}} &= \cnotnum{n} \\
+  \cfalsify{\cand{\xi_1}{\xi_2}} &= \cand{\cfalsify{\xi_1}}{\cfalsify{\xi_2}} \\
+  \cfalsify{\cor{\xi_1}{\xi_2}} &= \cor{\cfalsify{\xi_1}}{\cfalsify{\xi_2}} \\
+  \cfalsify{\cinl{\xi}} &= \cinl{\cfalsify{\xi}} \\
+  \cfalsify{\cinr{\xi}} &= \cinr{\cfalsify{\xi}} \\
+  \cfalsify{\cpair{\xi_1}{\xi_2}} &= \cpair{\cfalsify{\xi_1}}{\cfalsify{\xi_2}}
+\end{align*}
+\end{minipage}
+  \caption{Truify and Falsify Constraints}
+  \label{fig:truify-falsify}
+\end{figure}

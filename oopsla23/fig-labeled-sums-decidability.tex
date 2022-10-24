@@ -1,0 +1,37 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+\begin{minipage}[t][][b]{.47\linewidth}
+  \judgbox{\ctruify{\xi_1} = \xi_2}{}
+
+  \begin{align*}
+    \ctruify{\cinj{C}{\tau}{\xi}} & = \cinj{C}{\tau}{\ctruify{\xi}}
+  \end{align*}
+
+  \judgbox{\cfalsify{\xi_1} = \xi_2}{}
+
+  \begin{align*}
+    \cfalsify{\cinj{C}{\tau}{\xi}} & = \cinj{C}{\tau}{\cfalsify{\xi}}
+  \end{align*}
+\end{minipage}
+\begin{minipage}[t][][b]{.47\linewidth}
+  \judgbox{\cincon{\Xi}}{}
+
+  \begin{mathpar}
+    \Infer{\CINCInjTag}{
+      \tagC \neq \tagC'
+    }{
+      \cincon{\Xi,\cinj{\tagC'}{\tau}{\xi'},\cinj{\tagC}{\tau}{\xi}}
+    }
+
+    \Infer{\CINCInjArg}{
+      \cincon{\setof{\xi' | \cinj{C'}{\tau}{\xi'} \in \Xi}, \xi}
+    }{
+      \cincon{\Xi,\cinj{C}{\tau}{\xi}}
+    }
+  \end{mathpar}
+\end{minipage}
+
+  \caption{Inconsistency rules for labeled injections}
+  \label{fig:labeled-sums-decidability}
+\end{figure}

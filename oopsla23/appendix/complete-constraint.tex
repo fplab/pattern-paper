@@ -1,0 +1,219 @@
+\section{Complete Constraint Language}\label{sec:completeconstraint}
+$\arraycolsep=4pt\begin{array}{lll}
+\xi & ::= &
+  \ctruth ~\vert~
+  \cfalsity ~\vert~
+  \cnum{n} ~\vert~
+  \cnotnum{n} ~\vert~
+  \cand{\xi_1}{\xi_2} ~\vert~
+  \cor{\xi_1}{\xi_2} ~\vert~
+  \cinl{\xi} ~\vert~
+  \cinr{\xi} ~\vert~
+  \cpair{\xi_1}{\xi_2}
+\end{array}$
+
+\judgboxa{\ctyp{\xi}{\tau}}{$\xi$ constrains final expressions of type $\tau$}
+\begin{subequations}\label{rules:CCTyp}
+\begin{equation}\label{rule:CCTTruth}
+\inferrule[CTTruth]{ }{
+  \ctyp{\ctruth}{\tau}
+}
+\end{equation}
+\begin{equation}\label{rule:CCTFalsity}
+\inferrule[CTFalsity]{ }{
+  \ctyp{\cfalsity}{\tau}
+}
+\end{equation}
+\begin{equation}\label{rule:CCTNum}
+\inferrule[CTNum]{ }{
+  \ctyp{\cnum{n}}{\tnum}
+}
+\end{equation}
+\begin{equation}\label{rule:CCTNotNum}
+\inferrule[CTNotNum]{ }{
+  \ctyp{\cnotnum{n}}{\tnum}
+}
+\end{equation}
+\begin{equation}\label{rule:CCTAnd}
+\inferrule[CTAnd]{
+  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
+}{
+  \ctyp{\cand{\xi_1}{\xi_2}}{\tau}
+}
+\end{equation}
+\begin{equation}\label{rule:CCTOr}
+\inferrule[CTOr]{
+  \ctyp{\xi_1}{\tau} \\ \ctyp{\xi_2}{\tau}
+}{
+  \ctyp{\cor{\xi_1}{\xi_2}}{\tau}
+}
+\end{equation}
+\begin{equation}\label{rule:CCTInl}
+\inferrule[CTInl]{
+  \ctyp{\xi_1}{\tau_1}
+}{
+  \ctyp{\cinl{\xi_1}}{\tsum{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CCTInr}
+\inferrule[CTInr]{
+  \ctyp{\xi_2}{\tau_2}
+}{
+  \ctyp{\cinr{\xi_2}}{\tsum{\tau_1}{\tau_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CCTPair}
+\inferrule[CTPair]{
+  \ctyp{\xi_1}{\tau_1} \\ \ctyp{\xi_2}{\tau_2}
+}{
+  \ctyp{\cpair{\xi_1}{\xi_2}}{\tprod{\tau_1}{\tau_2}}
+}
+\end{equation}
+\end{subequations}
+
+\judgboxa{\cdual{\xi_1} = \xi_2}{dual of $\xi_1$ is $\xi_2$}
+\begin{subequations}\label{defn:dual}
+\begin{align*}
+  \cdual{\ctruth} &= \cfalsity \\
+  \cdual{\cfalsity} &= \ctruth \\
+  \cdual{\cnum{n}} &= \cnotnum{n} \\
+  \cdual{\cnotnum{n}} &= \cnum{n} \\
+  \cdual{\cand{\xi_1}{\xi_2}} &= \cor{\cdual{\xi_1}}{\cdual{\xi_2}} \\
+  \cdual{\cor{\xi_1}{\xi_2}} &= \cand{\cdual{\xi_1}}{\cdual{\xi_2}} \\
+  \cdual{\cinl{\xi_1}} &= \cor{ \cinl{\cdual{\xi_1}} }{ \cinr{\ctruth} } \\
+  \cdual{\cinr{\xi_2}} &= \cor{ \cinr{\cdual{\xi_2}} }{ \cinl{\ctruth} } \\
+  \cdual{\cpair{\xi_1}{\xi_2}} &=
+  \cor{ \cor{ 
+    \cpair{\xi_1}{\cdual{\xi_2}}
+  }{
+    \cpair{\cdual{\xi_1}}{\xi_2}
+  }}{
+    \cpair{\cdual{\xi_1}}{\cdual{\xi_2}}
+  }
+\end{align*}
+\end{subequations}
+
+\judgboxa{\ccsatisfy{e}{\xi}}{$e$ satisfies $\xi$}
+\begin{subequations}\label{rules:cSatisfy}
+\begin{equation}\label{rule:CCSTruth}
+\inferrule[CSTruth]{ }{
+  \ccsatisfy{e}{\ctruth}
+}
+\end{equation}
+\begin{equation}\label{rule:CCSNum}
+\inferrule[CSNum]{ }{
+  \ccsatisfy{\hnum{n}}{\cnum{n}}
+}
+\end{equation}
+\begin{equation}\label{rule:CCSNotNum}
+\inferrule[CSNotNum]{
+  n_1 \neq n_2
+}{
+  \ccsatisfy{\hnum{n_1}}{\cnotnum{n_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CCSAnd}
+\inferrule[CSAnd]{
+  \ccsatisfy{e}{\xi_1} \\
+  \ccsatisfy{e}{\xi_2}
+}{
+  \ccsatisfy{e}{\cand{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CCSOr1}
+\inferrule[CSOrL]{
+  \ccsatisfy{e}{\xi_1}
+}{
+  \ccsatisfy{e}{\cor{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CCSOr2}
+\inferrule[CSOrR]{
+  \ccsatisfy{e}{\xi_2}
+}{
+  \ccsatisfy{e}{\cor{\xi_1}{\xi_2}}
+}
+\end{equation}
+\begin{equation}\label{rule:CCSInl}
+\inferrule[CSInl]{
+  \ccsatisfy{e_1}{\xi_1}
+}{
+  \ccsatisfy{
+    \hinl{\tau_2}{e_1}
+  }{
+    \cinl{\xi_1}
+  }
+}
+\end{equation}
+\begin{equation}\label{rule:CCSInr}
+\inferrule[CSInr]{
+  \ccsatisfy{e_2}{\xi_2}
+}{
+  \ccsatisfy{
+    \hinr{\tau_1}{e_2}
+  }{
+    \cinr{\xi_2}
+  }
+}
+\end{equation}
+\begin{equation}\label{rule:CCSPair}
+\inferrule[CSPair]{
+  \ccsatisfy{e_1}{\xi_1} \\
+  \ccsatisfy{e_2}{\xi_2}
+}{
+\ccsatisfy{\hpair{e_1}{e_2}}{\cpair{\xi_1}{\xi_2}}
+}
+\end{equation}
+\end{subequations}
+
+\begin{lemma}
+  \label{lem:notsatisfy-dual}
+  Assume $\isVal{e}$. Then $\ccnotsatisfy{e}{\xi}$ iff $\ccsatisfy{e}{\cdual{\xi}}$.
+\end{lemma}
+
+\begin{theorem}[Exclusiveness of Satisfaction Judgment]
+  \label{thrm:exclusive-complete-constraint-satisfaction}
+  If $\ctyp{\xi}{\tau}$ and $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isVal{e}$ then exactly one of the following holds
+  \begin{enumerate}
+    \item $\ccsatisfy{e}{\xi}$
+    \item $\ccsatisfy{e}{\cdual{\xi}}$
+  \end{enumerate}
+\end{theorem}
+
+\begin{definition}[Entailment of Constraints]
+  \label{defn:complete-constraint-entailment}
+  Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$.
+  Then $\ccsatisfy{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isVal{e}$ we have $\ccsatisfy{e}{\xi_1}$ implies $\ccsatisfy{e}{\xi_2}$
+\end{definition}
+
+\begin{lemma}[Material Entailment of Complete Constraints]
+\label{lem:material-entailment}
+  $\ccsatisfy{\xi_1}{\xi_2}$ iff $\ccsatisfy{\ctruth}{\cor{\cdual{\xi_1}}{\xi_2}}$.
+\end{lemma}
+
+\subsection{Relationship with Incomplete Constraint Language}
+
+\begin{lemma}
+  \label{lem:val-satisfy-truify}
+  Assume that $\isVal{e}$. Then $\csatisfyormay{e}{\hxi}$ iff $\ccsatisfy{e}{\ctruify{\hxi}}$.
+\end{lemma}
+
+\begin{lemma}
+  \label{lem:satisfy-falsify}
+  $\csatisfy{e}{\hxi}$ iff $\ccsatisfy{e}{\cfalsify{\hxi}}$
+\end{lemma}
+
+\begin{lemma}
+  \label{lem:val-final-satormay}
+  Suppose $\ctyp{\hxi}{\tau}$. Then $\csatisfyormay{e}{\hxi}$ for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ \textbf{iff} $\csatisfyormay{e}{\hxi}$ for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isVal{e}$.
+\end{lemma}
+
+\begin{theorem}
+\label{thrm:demystify-exhaustiveness}
+$\csatisfyormay{\ctruth}{\hxi}$ iff $\ccsatisfy{\ctruth}{\ctruify{\hxi}}$.
+\end{theorem}
+
+\begin{theorem}
+\label{thrm:demystify-redundancy}
+$\csatisfy{\hxi_1}{\hxi_2}$ iff $\ccsatisfy{\ctruify{\hxi_1}}{\cfalsify{\hxi_2}}$.
+\end{theorem}

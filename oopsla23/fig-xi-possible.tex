@@ -1,0 +1,58 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[!ht]
+\judgbox{
+  \possible{\xi}
+}{$\xi$ is possible}
+
+\begin{mathpar}
+\Infer{\PTruth}{ }{
+  \possible{\ctruth}
+}
+
+\Infer{\PUnknown}{ }{
+  \possible{\cunknown}
+}
+
+\Infer{\PNum}{ }{
+  \possible{\cnum{n}}
+}
+
+\Infer{\PNotNum}{ }{
+  \possible{\cnotnum{n}}
+}
+
+\Infer{\PInl}{
+  \possible{\xi}
+}{
+  \possible{\cinl{\xi}}
+}
+
+\Infer{\PInr}{
+  \possible{\xi}
+}{
+  \possible{\cinr{\xi}}
+}
+
+\Infer{\PPair}{
+  \possible{\xi_1} \\ \possible{\xi_2}
+}{
+  \possible{\cpair{\xi_1}{\xi_2}}
+}
+
+\Infer{\POrL}{
+  \possible{\xi_1}
+}{
+  \possible{\cor{\xi_1}{\xi_2}}
+}
+
+\Infer{\POrR}{
+  \possible{\xi_2}
+}{
+  \possible{\cor{\xi_1}{\xi_2}}
+}
+
+\end{mathpar}
+\caption{Possible Constraints}
+\label{fig:xi-possible}
+\end{figure}

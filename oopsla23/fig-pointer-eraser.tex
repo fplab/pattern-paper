@@ -1,0 +1,14 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[t]
+
+\judgbox{\rmpointer{\zrules} = rs}
+        {$rs$ can be obtained by erasing the pointer from $\zrules$}
+\begin{align*}
+  \rmpointer{\zruls{\cdot}{r}{rs}} &= \hrules{r}{rs} \\
+  \rmpointer{\zruls{\hrulesP{r'}{rs'}}{r}{rs}} &= \hrules{r'}{\rmpointer{\zruls{rs'}{r}{rs}}}
+\end{align*}%
+\vspace{-10px}
+\caption{Rule Pointer Erasure}
+\label{fig:pointer-eraser}
+\end{figure}
