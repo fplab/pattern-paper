@@ -27,8 +27,8 @@
 \def\corollaryautorefname{Corollary}
 \let\subsectionautorefname\sectionautorefname
 \let\subsubsectionautorefname\sectionautorefname
-\newcommand{\rulesref}[1]{Rules (\ref{#1})}
-\newcommand{\ruleref}[1]{Rule (\ref{#1})}
+\newcommand{\rulesref}[1]{Rules~\ref{#1}}
+\newcommand{\ruleref}[1]{Rule~\ref{#1}}
 
 \usepackage{xcolor}
 \definecolor{hazelgreen}{RGB}{7,63,36}
@@ -40,7 +40,8 @@
 
 %% Joshua Dunfield macros
 \def\OPTIONConf{1}
-\usepackage{jdunfield}
+\usepackage{../jdunfield}
+\usepackage{../rulelinks} % hyperlink of rule name
 \usepackage{pfsteps}
 \makeatletter
 \newcommand{\savelocalsteps}[1]{
@@ -59,6 +60,7 @@
 \newtheorem{definition}{Definition}[theorem]
 
 \input{../macros.tex}
+\input{../rulecommands}
 
 \usepackage{comment}
 \excludecomment{proof}
@@ -70,13 +72,19 @@ In \autoref{sec:incompleteconstraint}, we present the first stage of constraints
 
 In turn, in \autoref{sec:completeconstraint}, we discuss those constraints in the image of the truify and falsify functions, as well as their duals. We call this the \emph{complete constraint language}, and it includes almost all of the incomplete language, but excludes the $\cunknown$ constraint. To support the dual operation, we also may take the $\wedge$ of complete constraints, and we add a $\cnotnum{n}$ constraint. Due to the absence of $\cunknown$, judgments related to the complete language do not have to consider indeterminacy, and thus are often simpler than their counterparts in the incomplete language. This is the primary motivation for distinguishing these languages at all.
 
+Finally, we extend Peanut with finite labeled sums in
+\autoref{sec:labeledsums}, and discuss necessary changes to static
+semantics, dynmics semantics, as well as match constraint language with
+respect to what is presented in the main paper.
+
 \input{simple-constraint}
 \input{complete-constraint}
 \pagebreak
 \input{dynamics}
 \input{statics}
 \input{decidability}
-
+\pagebreak
+\input{labeled-sums}
 \end{document}
 %%% Local Variables:
 %%% mode: latex

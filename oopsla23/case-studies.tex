@@ -63,7 +63,7 @@ In the editor state in Fig.~\ref{fig:may-redundant}, there is a pattern hole in 
 However, it is also possible that the hole could be filled in a way that causes the third pattern to become redundant, such as the cons pattern \texttt{y::tl}. Consequently, the third pattern in this \li{match} expression is indeterminately irredundant (we chose ``irredundant'' rather than ``redundant'' in this phrase because, like exhaustiveness, irredundancy is the programmer's goal).
 
 The second pattern itself, although it contains a pattern hole, is necessarily irredundant because no matter how the hole is filled, the first pattern, \li{[]}, does not overlap with it. The first pattern is always necessarily irredundant, even when it is a hole, because
-there are no previous patterns (except if the scrutinee has the nullary sum, i.e. \li{void}, type, which has no values; see Sec.~\ref{sec:labeledsums}).
+there are no previous patterns (except if the scrutinee has the nullary sum, i.e. \li{void}, type, which has no values; see Supplementary Material).
 
 The editor state in Fig.~\ref{fig:must-redundant} shows that a pattern with a hole can nevertheless be determined to be necessarily redundant.
 In this case, the previous pattern handles every non-empty list, so no matter how the pattern hole is filled, it will be redundant.
