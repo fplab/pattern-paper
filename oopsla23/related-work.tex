@@ -33,15 +33,16 @@ Our contributions do not require a structure editor: they are also relevant to l
 manually by programmers, rather than automatically by an editor. 
 For example, GHC Haskell, Agda, and Idris, all feature manually inserted typed holes, both empty and non-empty, in expression position.
 %
-There has also been recent progress on bringing graduality to dependent type
-\cite{DBLP:journals/pacmpl/EremondiTG19,DBLP:journals/pacmpl/EremondiGT22,DBLP:journals/toplas/Lennon-Bertrand22,DBLP:journals/pacmpl/MaillardLTT22}.
-%
 None of these systems support pattern holes as of this writing, however. Haskell does support unbound data constructors in patterns, but these bring compilation to a halt and do not interact with the exhaustiveness and redundancy checker, much less the run-time system. With the appropriate flags set, Haskell will attempt to evaluate programs with expression holes, but it stops with an exception whenever a hole is reached \cite{DBLP:conf/icfp/VytiniotisJM12}. In contrast, our system supports evaluating around holes of all sorts, as described in \autoref{sec:examples} and formalized in \autoref{sec:dynamics}. We hope that this paper will prompt other languages to 
 consider pattern holes. Our work on Peanut captures the essential character of pattern matching with holes and our implementation in Hazel 
 demonstrates a practical realization, complete with editor integration.
 
 We did not consider the problem of synthesizing pattern hole fillings in this paper, but type-driven techniques used for expression holes, e.g. in Haskell \cite{DBLP:conf/haskell/Gissurarson18}, could likely be adapted. The exhaustiveness and redundancy analyses could help guide these techniques to search for hole fillings that increase the exhaustiveness of the \li{match} expression.
 
+There has also been recent progress in bringing graduality to dependent type as an attempt to reason about unknown terms/types
+\cite{DBLP:journals/pacmpl/EremondiTG19,DBLP:journals/pacmpl/EremondiGT22,DBLP:journals/toplas/Lennon-Bertrand22,DBLP:journals/pacmpl/MaillardLTT22}. 
+\todo{want to make sure this is accurate}
+Their goal is to make dependent type system more usable in general, while we want to enable reasoning at \textit{all} program editing states with a focus on patterns.
 
 \subsection{Pattern Matching}
 Pattern matching has a long history, first described in \cite{DBLP:journals/cj/Burstall69} and implemented as an extension to LISP in \cite{DBLP:phd/ethos/McBride70}. Early functional languages,
@@ -68,8 +69,8 @@ of pattern matching during program construction. It applies general
 principles from gradual typing to lift exhaustiveness checking given
 datatypes with unknown constructors. However, unknown patterns or
 unknown constructors in patterns are beyond their scope, and are the
-central contribution of this paper. This opens opportunities to
-combine complementary approaches to achieve maximal liveness.
+central contribution of this paper. Therefore, it is a complementary 
+approach to achieve maximal liveness that can be combined with ours.
 
 % The current state of the art is Lower Your Guards by Graf et al., which can handle GADTs and the wide variety of pattern matching features in Haskell, e.g., guards, view patterns, pattern synonyms, etc.
 % This work abandons simple structural pattern matching altogether, instead compiling the various pattern forms into a simpler intermediate representation called a guard tree.
