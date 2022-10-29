@@ -1,0 +1,81 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+\begin{minipage}[t][][b]{.47\linewidth}
+  \judgbox{\hpatmatch{e}{p}{\theta}}{$e$ matches $p$, emitting $\theta$}
+
+  \begin{mathpar}
+    \Infer{\MInj}{
+      \hpatmatch{e}{p}{\theta}
+    }{
+      \hpatmatch{\hinj{C}{\tau}{e}}{\hinjp{C}{p}}{\theta}
+    }
+  \end{mathpar}
+
+  \judgbox{\hmaymatch{e}{p}}{$e$ indeterminately matches $p$}
+
+  \begin{mathpar}
+    \Infer{\MMInjTag}{
+      \tagmaymatch{C}{C'} \\
+      \hnotnotmatch{e}{p}
+    }{
+      \hmaymatch{\hinj{C}{\tau}{e}}{\hinjp{C'}{p}}
+    }
+
+    \Infer{\MMInjArg}{
+      \hmaymatch{e}{p}
+    }{
+      \hmaymatch{\hinj{C}{\tau}{e}}{\hinjp{C}{p}}
+    }
+  \end{mathpar}
+\end{minipage}
+\hfill
+\begin{minipage}[t][][b]{.47\linewidth}
+  \judgbox{\hnotmatch{e}{p}}{$e$ does not match $p$}
+
+  \begin{mathpar}
+    \Infer{\NMInj}{
+      \tagC \neq \tagC'
+    }{
+      \hnotmatch{\hinj{\tagC}{\tau}{e}}{\hinjp{\tagC'}{p}}
+    }
+
+    \Infer{\NMInjTag}{
+      \tagmaymatch{C}{C'} \\
+      \hnotmatch{e}{p}
+    }{
+      \hnotmatch{\hinj{C}{\tau}{e}}{\hinjp{C'}{p}}
+    }
+
+    \Infer{\NMInjArg}{
+      \hnotmatch{e}{p}
+    }{
+      \hnotmatch{\hinj{C}{\tau}{e}}{\hinjp{C}{p}}
+    }
+  \end{mathpar}
+\end{minipage}
+
+  \judgbox{\tagmaymatch{C}{C'}}{$C$ indeterminately matches $C'$}
+
+  \begin{mathpar}
+    \Infer{\TMMSym}{
+      \tagmaymatch{C'}{C}
+    }{
+      \tagmaymatch{C}{C'}
+    }
+
+    \Infer{\TMMHole}{
+      \tagehole{u} \neq C
+    }{
+      \tagmaymatch{\tagehole{u}}{C}
+    }
+
+    \Infer{\TMMEHole}{
+      \tagC \neq C
+    }{
+      \tagmaymatch{\taghole{\tagC}{u}}{C}
+    }
+  \end{mathpar}
+  \caption{Pattern matching rules for labeled sums}
+  \label{fig:labeled-sums-pattern-matching-rules}
+\end{figure}

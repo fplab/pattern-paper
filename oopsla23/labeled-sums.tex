@@ -1,0 +1,58 @@
+\section{Labeled Sums}\label{sec:labeledsums}
+
+In this section, we conservatively extend Peanut with finite labeled
+sums, which is a practical necessity in general-purpose functional
+languages. Besides adding labeled sums to syntax, we will only cover
+pattern matching for labeled sums as this is the most interesting bit
+of the extension, and leave the others to the Supplementary Material.
+
+Labeled sums introduce a new sort $C$ for labels, a.k.a. datatype constructors, and a new type-level connective $C_1(\tau_1) + \cdots + C_n(\tau_n)$ for gathering and labeling types.
+Since we are not usually concerned with the length of any particular sum,
+we adopt a slightly more general and compact notation $\tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset}$
+for the sum consisting of labels $\tagset = \setof{C_i}_{i \leq n}$ with respective argument types $\setof{\tau_i}_{i \leq n}$.
+The introduction form is the \emph{labeled injection expression} $\hinj{C}{\tau}{e}$ for injecting expression $e$ into sum $\tau$ at label $C$.
+The elimination form is the \emph{labeled injection pattern} $\hinj{C}{\tau}{p}$ 
+for expressions matching pattern $p$ that have been injected into sum $\tau$ at label $C$.
+% For the remainder of this section, we assume all injections are labeled unless otherwise stated,
+% and we elide sorts that are irrelevant or implied by the context.
+
+To ensure maximal liveness, we distinguish \emph{concrete labels} $\tagC$
+from \emph{label holes} which are either empty $\tagehole{u}$ or not empty $\taghole{\tagC}{u}$.
+Empty holes arise where labels have yet to be constructed, for example during incremental construction of a sum or injection.
+Non-empty holes operate as membranes around labels that are syntactically malformed or that violate a semantic constraint.
+Non-empty holes around syntactically valid labels indicate duplication for sum type declarations and non-membership for injections.
+
+\input{fig-labeled-sums-pattern-matching-rules}
+
+Extending \autoref{fig:patmatch}, the rules in
+\autoref{fig:labeled-sums-pattern-matching-rules} define pattern
+matching on injections with label holes, subject to the matching
+determinism conditions imposed by \autoref{lemma:match-determinism}.
+Rule \MInj is a straightforward rule for matching labeled injections.
+Rules \MMInjTag and \MMInjArg allow indeterminate matching against a
+pattern whose label or argument indeterminately match, respectively.
+Rule \NMInj forbids matching of concrete but unequal labels, and Rules
+\NMInjTag and \NMInjArg forbid matching when the arguments do not
+match.  Rules \TMMSym, \TMMHole, and \TMMEHole define indeterminate
+matching of labels by establishing a partial equivalence among
+distinct labels when at least one of them is a hole.  Rule \MMNotIntro
+works for refutable patterns, and rules \RInjMult and \RInjSing define
+refutable patterns of labeled sum type.  Rule \RInjMult establishes
+that patterns for nontrivial sums are refutable, i.e., that the set of
+dual constraints is not empty.  The premises of Rule \RInjSing merely express
+the fact that there are no alternatives injections into singleton
+sums, and none at all into void sums.
+
+% The inclusion of finite labeled sums with label holes adds substantial complexity to type consistency checking.
+% For example, given two finite labeled sum types of cardinality $n$,
+% whether they are consistent depends on whether there is a consistent pairing of the elements.
+% Naively generating all $n^2$ pairings and then checking every subset of size $n$ 
+% would require $\binom{n^2}{n} \gg n^2$ checks.
+% If we instead model the search space as a complete bipartite graph with the elements of the sums on opposing sides,
+% the problem reduces to one of finding a maximum matching in a bipartite graph with $2n$ vertices and $n^2$ edges,
+% which can be solved by Hopcroft-Karp\todo{cite} in $O(n^{5/2})$ steps.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "pattern-paper.tex"
+%%% End:

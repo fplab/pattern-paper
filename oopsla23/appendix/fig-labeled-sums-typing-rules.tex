@@ -1,0 +1,29 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+  \judgbox{\hexptyp{\Gamma}{\Delta}{e}{\tau}}{$e$ is of type \(\tau\)}
+
+  \begin{mathpar}
+    \Infer{\TInj}{
+      \tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset} \\
+      C_j \in \tagset \\
+      \hexptyp{\Gamma}{\Delta}{e}{\tau_j}
+    }{
+      \hexptyp{\Gamma}{\Delta}{\hinj{C_j}{\tau}{e}}{\tau}
+    }
+  \end{mathpar}
+
+  \judgbox{\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}}{$p$ is assigned type $\tau$ and emits constraint $\xi$}
+
+  \begin{mathpar}
+    \Infer{\PTInj}{
+      \tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset} \\
+      C_j \in \tagset \\
+      \chpattyp{p}{\tau_j}{\xi}{\Gamma}{\Delta}
+    }{
+      \chpattyp{\hinjp{C_j}{p}}{\tau}{\hinjp{C_j}{\xi}}{\Gamma}{\Delta}
+    }
+  \end{mathpar}
+  \caption{Typing rules for labeled sums and injections}
+  \label{fig:labeled-sums-typing-rules}
+\end{figure}

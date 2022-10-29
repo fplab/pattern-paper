@@ -1,0 +1,61 @@
+% !TEX root= pattern-paper.tex
+
+\begin{figure}[ht]
+\begin{minipage}[t][][b]{.47\linewidth}
+  \judgbox{\ctyp{\xi}{\tau}}{$\xi$ constrains final expressions of type $\tau$}
+
+  \begin{mathpar}
+    \Infer{\CTInj}{
+      \tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset} \\
+      C_j \in \tagset \\
+      \ctyp{\xi}{\tau_j}
+    }{
+      \ctyp{\cinj{C_j}{\tau}{\xi}}{\tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset}}
+    }
+  \end{mathpar}
+
+  \judgbox{\csatisfy{e}{\xi}}{$e$ satisfies $\xi$}
+
+  \begin{mathpar}
+    \Infer{\CSInj}{
+      C = C' \\
+      \csatisfy{e}{\xi}
+    }{
+      \csatisfy{\hinj{C}{\tau}{e}}{\cinj{C'}{\tau}{\xi}}
+    }
+  \end{mathpar}
+\end{minipage}
+\begin{minipage}[t][][b]{.47\linewidth}
+  \judgbox{\cdual{\xi_1} = \xi_2}{dual of $\xi_1$ is $\xi_2$}
+
+  \begin{align*}
+    \cdual{\cinj{\tagC}{\tau}{\xi}}              & = \cinj{\tagC}{\tau}{\cdual{\xi}} \vee \left(
+    \bigvee_{C_i \in \tagset \setminus \{\tagC\}} \cinj{C_i}{\tau}{\ctruth}
+    \right)                                                                                                      \\
+    \cdual{\cinj{\tagehole{u}}{\tau}{\xi}}       & = \bigvee_{\tagC_i \in \tagset} \cinj{\tagC_i}{\tau}{\ctruth} \\
+    \cdual{\cinj{\taghole{\tagC}{u}}{\tau}{\xi}} & = \bigvee_{\tagC_i \in \tagset} \cinj{\tagC_i}{\tau}{\ctruth}
+  \end{align*}
+  
+  $\left(\text{where }\tau = \tlabeledsum{C_i(\tau_i)}_{C_i \in \tagset}\right)$
+\end{minipage}
+  \judgbox{\cmaysatisfy{e}{\xi}}{$e$ may satisfy $\xi$}
+
+  \begin{mathpar}
+    \Infer{\CMSInjTag}{
+      \tagmaymatch{C}{C'} \\
+      \csatisfyormay{e}{\xi}
+    }{
+      \cmaysatisfy{\hinj{C}{\tau}{e}}{\cinj{C'}{\tau}{\xi}}
+    }
+
+    \Infer{\CMSInjArg}{
+      C = C' \\
+      \cmaysatisfy{e}{\xi}
+    }{
+      \cmaysatisfy{\hinj{C}{\tau}{e}}{\cinj{C'}{\tau}{\xi}}
+    }
+  \end{mathpar}
+
+  \caption{Constraint satisfaction rules for labeled sums}
+  \label{fig:labeled-sums-constraint-rules}
+\end{figure}

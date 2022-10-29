@@ -2,6 +2,8 @@
 \label{sec:decidability}
 In this subsection, we show that the validity of a "fully known" constraint (\autoref{definition:valid-constraint}) is decidable.
 
+\input{fig-incon}
+
 \subsubsection{SAT Encoding}
  One approach is to reduce the validity checking to a boolean satisfiability problem (SAT). 
 If we revisit the analogy between constraint and set of expressions discussed in \autoref{sec:constraint}, we can think of constraints as subsets of values of type $\tau$.
@@ -41,8 +43,6 @@ As a result, the validity of a constraint $\xi$, $\ccsatisfy{}{\xi}$, is equival
 \subsubsection{Constraint Inconsistency Checking}\label{sec:incon}
 
 Using an SMT solver to decide constraint entailments is, however, an overkill. Moreover, it may incur run-time and space overhead in a  development environment. When incorporating Peanut into Hazel, we use a different but more lightweight decision procedure. \figurename~\ref{fig:incon} describes such a procedure by defining a new judgment $\cincon{\Xi}$, where $\Xi$ represents a list of constraint $\xi$. Assuming constraint $\xi$ is fully known and is of type $\tau$, $\cincon{\xi}$ means constraint $\xi$ is inconsistent in the sense that no values of type $\tau$ satisfy $\xi$, which corresponds to the insatisfiability of $\xi$'s logical encoding. Therefore, a constraint is valid, written as $\ccsatisfy{}{\xi}$, iff its dual is inconsistent, written as $\cincon{\cdual{\xi}}$. Note that this is not fully mechanized in Agda. Such proofs require reasoning about finite sets in a non-structurally recursive way, making them inordinately difficult to verify in Agda, but our implementation uses this algorithm.
-
-\input{fig-incon}
 
 
 %\begin{theorem}
