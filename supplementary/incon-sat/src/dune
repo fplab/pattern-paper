@@ -1,4 +1,5 @@
 (library
+ (public_name incon)
  (name incon)
  (libraries z3)
  (inline_tests)

@@ -1,0 +1,9 @@
+OCAML_VERSION=4.12.0
+if ! command -v opam &> /dev/null
+then
+	echo "OPAM could not be found. Please visit https://opam.ocaml.org/doc/Install.html"
+fi
+opam switch create $OCAML_VERSION
+eval $(opam env)
+opam install --yes dune utop ocamlformat z3 ppx_inline_test
+dune build @runtest

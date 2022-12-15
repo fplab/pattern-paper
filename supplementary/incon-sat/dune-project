@@ -1,1 +1,11 @@
-(lang dune 2.5)
+(lang dune 3.4)
+
+(name incon)
+
+(generate_opam_files true)
+
+(package
+ (name incon)
+ (synopsis "Solver-based decision procedure of Incon judgment")
+ (description "See main paper for what is an incon judgment")
+ (depends ocaml dune utop ocamlformat z3 ppx_inline_test))

@@ -1,16 +1,39 @@
-# A Solver-based implementation `Incon`
+# A Solver-based implementation of `Incon`
 
-# Dependencies
+A simple solver-based inconsistency checker for constraint language described in the paper.
 
-This implementation is very lightweight and only use one package `Z3` from `opam`. Any recent opam version should work. At the time of development, we use opam version 4.12.0.
+# Setup
 
-Assume you have `opam` installed on your machine, simply run `make` would install `Z3` and build the project.
+Assuming you have `opam` installed, the `build` script create a new opam switch, install necessary dependencies, and build the project.
 
-# File Structure
+```shell
+./build
+```
+
+# File Structure in `src`
 
 * `constraint.ml` defines the constraint language along with three operations on constraints, `dual`, `truify`, and `falsify`. They are all described in the main paper.
 
-* `solver.ml` offers a dozen of helper function and an interface for satisfiability checking.
+* `solver.ml` offers a dozen of helper function and an interface for satisfiability checking in `Z3`.
 
-* `incon.ml` gives an equivalent decision procedure to check inconsistency of constraint, dubbed "incon" judgment in the paper. 
-Function `incon` is the entry point to the decision procedure. It first transforms the constraint into a logical formula (via function `trans`) and return the negation of the result checking the satisfiability of the formula.
+* `incon.ml` describes a decision procedure to check inconsistency of
+constraints, equivalent to `incon` judgment in the paper.  Function
+`trans` turns a constraint (that encodes exhaustiveness checking or
+redundancy checking) into a logical formula.  As a result, checking satisfiability of the formula is equivalent to checking the consistency of the constrain.
+
+# Try it yourself!
+
+Launch ocaml top-level.
+```bash
+dune utop src
+```
+
+Within the top-level, bring the functions into scope with `open Incon;;`, and you may check exhaustiveness and redundancy as follows.
+
+```ocaml
+is_exhaustive (disjunct [ Inl Truth; Inr Unknown ]);;
+```
+
+```ocaml
+is_redundant (disjunct [ Num 2; Unknown ]) (disjunct [ Num 2; Num 3 ]);;
+```
