@@ -31,7 +31,7 @@ various intermediate editor states that the programmer may produce, and the live
 
 We begin with the editor state in Fig.~\ref{fig:may-exhaustive}, 
 where there is a hole in the tail position of the cons (\li{::}) pattern.
-In determining whether this \li{match} expression is inexhaustive, we 
+In determining whether this \li{match} expression is exhaustive, we 
 must reason over all potential hole fillings. In this case, the 
 \li{match} expression is \emph{indeterminately exhaustive}, because there are hole fillings,
 such as a pattern variable \li{tl}, which would result in a determination
@@ -40,7 +40,7 @@ where the determination would instead be inexhaustiveness. In the Hazel user int
 indicator only when the \li{match} expression is necessarily inexhaustive,
 so no error appears for this editor state. The motivation for this choice is that we do not want to draw the programmer's attention for a problem that may or may not actually persist once the user has filled the holes. The cursor inspector does, however, provide typing information for the pattern hole when the programmer places their cursor there, as seen in Fig.~\ref{fig:may-exhaustive}. This and other pattern holes can be typed using information about how they are used. In this example, Hazel can determine that the pattern hole must have type \li{[Int]} because that is the only valid type for the right-hand side of the cons pattern when we are matching on \li{xs}, which is of type \li{[Int]}.
 
-While we cannot always determine the exhaustiveness of a \li{match} expression, the mere presence of a pattern hole does not mean that exhaustiveness errors never arise. Consider now
+While pattern holes can make it impossible to conclusively determine the exhaustiveness of a \li{match} expression, the mere presence of a pattern hole does not mean that exhaustiveness errors never arise. Consider now
 the editor state in Fig.~\ref{fig:not-exhautive}. In this case,
 although there are again pattern holes in the second pattern, 
 it can be determined that this \li{match} expression is \emph{necessarily inexhaustive}

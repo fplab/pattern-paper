@@ -27,7 +27,7 @@ Hazel, by combining machinery from Hazelnut and Hazelnut Live, maintains a power
 and a well-defined result, both possibly containing holes.
 Our extension of Hazel maintains the same invariant, now with the addition of algebraic datatypes with match expressions 
 as described in this paper. 
-Extending the edit action semantics to allow us to enter patterns presented no special challenges relative to prior work, so we omit formal consideration of editing from this paper. The work in this paper has enabled Hazel to be the first general-purpose language (i.e. one that goes beyond the minimal calculus of Hazelnut) with such a maximal liveness invariant.
+Extending the edit action semantics to allow us to enter patterns presented no challenges relative to prior work, so we omit formal consideration of editing from this paper. The work in this paper has enabled Hazel to be the first general-purpose language (i.e. one that goes beyond the minimal calculus of Hazelnut) with a maximal liveness invariant.
 
 Our contributions do not require a structure editor: they are also relevant to languages where typed holes are inserted 
 manually by programmers, rather than automatically by an editor. 
@@ -39,29 +39,28 @@ demonstrates a practical realization, complete with editor integration.
 
 We did not consider the problem of synthesizing pattern hole fillings in this paper, but type-driven techniques used for expression holes, e.g. in Haskell \cite{DBLP:conf/haskell/Gissurarson18}, could likely be adapted. The exhaustiveness and redundancy analyses could help guide these techniques to search for hole fillings that increase the exhaustiveness of the \li{match} expression.
 
-There has also been recent progress in bringing graduality to dependent type as an attempt to reason about unknown terms/types
+There has also been recent progress in bringing graduality to dependent types as an attempt to reason about unknown terms/types
 \cite{DBLP:journals/pacmpl/EremondiTG19,DBLP:journals/pacmpl/EremondiGT22,DBLP:journals/toplas/Lennon-Bertrand22,DBLP:journals/pacmpl/MaillardLTT22}. 
-\todo{want to make sure this is accurate}
-Their goal is to make dependent type system more usable in general, while we want to enable reasoning at \textit{all} program editing states with a focus on patterns.
+Their goal is to make dependent type system more usable in general, while we want to enable reasoning at \textit{all} program editing states with a focus on patterns. The prior work  in this direction has not considered pattern holes. While in this paper, we focused on simple types, the logical character of the work makes it suitable for direct extension to support dependent pattern matching. We leave problems of integration with higher-order unification as is used to make pattern matching more convenient in languages like Agda as future work.
 
 \subsection{Pattern Matching}
-Pattern matching has a long history, first described in \cite{DBLP:journals/cj/Burstall69} and implemented as an extension to LISP in \cite{DBLP:phd/ethos/McBride70}. Early functional languages,
+Pattern matching has a long history, first described by \citet{DBLP:journals/cj/Burstall69} and implemented as an extension to LISP by \citet{DBLP:phd/ethos/McBride70}. Early functional languages,
 such as Hope \cite{DBLP:conf/lfp/BurstallMS80}, SASL \cite{DBLP:journals/spe/Turner79}, and ML \cite{DBLP:journals/jcss/Milner78}, start to adopt pattern matching in the 1970s.
 All prior work on pattern matching assumes that the patterns and expressions being matched are
 complete, i.e., do not contain any holes.
 Uniquely, the indeterminate matching and exhaustiveness and redundancy checks in Peanut
-take into account how the programmer may fill or correct these holes in a future edit state,
+reason over future edit states,
 following the modal interpretation of holes \cite{DBLP:journals/tocl/NanevskiPP08,DBLP:journals/pacmpl/OmarVCH19}.
 
-Much of the early work on pattern matching focus on compilation. Some earliest work targets the end-to-end compilation of pattern matching into machine code \cite{DBLP:conf/lfp/Cardelli84,DBLP:conf/lfp/Augustsson84,DBLP:conf/fpca/Augustsson85}, while later methods focus on efficient compilation. Some methods construct decision trees encoding the matching procedure, the goal being to minimize the sizes of the constructed trees, obtaining exhaustiveness and redundancy checks as easy by-products \cite{Aitken92smlnj,Baudinet85treepattern,Sestoft96mlpattern}.
+Much of the early work on pattern matching focus on compilation. The earliest work targets the end-to-end compilation of pattern matching into machine code \cite{DBLP:conf/lfp/Cardelli84,DBLP:conf/lfp/Augustsson84,DBLP:conf/fpca/Augustsson85}, while later methods focus on efficient compilation. Some methods construct decision trees encoding the matching procedure, the goal being to minimize the sizes of the constructed trees, obtaining exhaustiveness and redundancy checks as easy by-products \cite{Aitken92smlnj,Baudinet85treepattern,Sestoft96mlpattern}.
 Other methods compile pattern matching to backtracking automata \cite{Maranget94lazybacktracking,DBLP:journals/jfp/Maranget07};
 while these methods avoid potential exponential behavior exhibited by decision trees, they require separate methods for reporting inexhaustive and redundant patterns \cite{DBLP:journals/jfp/Maranget07}.
 In our setting of incomplete programs, the question of compilation is not (yet) relevant. Our goal in this paper, which was inspired by a sketch of a similar constraint language by \citet{Harper2012}, is to provide a complete and, notably, mathematically elegant declarative semantics of pattern matching with holes that extends the incomplete program evaluation of Hazelnut Live, then consider decidability separately via the truthification, falsification and material entailment techniques described in this paper.  
-Efficiency considerations are, however, a fruitful avenue for further work (alongside the more general question of efficient evaluation or compilation of programs with expression holes). One potential direction is to adapt the pattern matrices approach introduced in \cite{DBLP:journals/jfp/Maranget07} to support unknown patterns.
+Efficient compilation of programs with pattern holes is, however, an interesting avenue for further work (alongside the more general question of efficient evaluation or compilation of programs with expression holes). One potential direction is to adapt the pattern matrices approach introduced in \citet{DBLP:journals/jfp/Maranget07} to support unknown patterns.
 
 More contemporary work focuses on extending pattern matching to settings with more sophisticated types and pattern matching features \cite{DBLP:conf/icfp/VazouSJVJ14,DBLP:journals/pacmpl/CockxA18,DBLP:conf/itp/Sozeau10,DBLP:conf/icfp/KarachaliasSVJ15,DBLP:journals/pacmpl/GrafJS20,DBLP:journals/jfp/ConventLMM20}.
-However, whereas prior work of this sort concerns itself with analyzing increasingly sophisticated predicates delineating a match from a failure (or divergence in the lazy setting), our work introduces new pattern matching \emph{outcomes}---indeterminacy.
-To that end, we narrow our focus to the novel aspects of our system and leave integration with existing, richer pattern matching features and checkers to future work. Again, the logical character of our system is likely to simplify integration with systems that rely on SMT solving or other logical techniques, e.g. the work of \citet{DBLP:journals/pacmpl/GrafJS20} on exhaustiveness checking in the presence of arbitrary boolean guards. Indeed, we observed that deciding the entailments of interest in our system can be reduced to an SMT problem in Sec.~\ref{sec:algorithm} (inspired directly by this recent work).
+This work concerns itself with analyzing increasingly sophisticated predicates delineating a match from a failure (or divergence in the lazy setting), our work introduces new pattern matching \emph{outcomes}---indeterminacy.
+To that end, we narrow our focus to the novel aspects of our system and leave integration with existing, richer pattern matching features and checkers to future work. Again, the logical character of our system is likely to simplify integration with systems that rely on SMT solving or other logical techniques, e.g. the work of \citet{DBLP:journals/pacmpl/GrafJS20} on exhaustiveness checking in the presence of arbitrary boolean guards. Indeed, we observed that deciding the entailments of interest in our system can be reduced to an SMT problem in Sec.~\ref{sec:decidability} (inspired directly by this recent work).
 
 Gradually structured data \cite{DBLP:journals/pacmpl/MalewskiGT21} is
 the only work we are aware of that also concerns the static reasoning
