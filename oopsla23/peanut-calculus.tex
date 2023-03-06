@@ -16,14 +16,14 @@ holes. \autoref{sec:agda} describes the Agda mechanization of Peanut's metatheor
 \autoref{fig:syntax} presents the syntax of Peanut.
 Peanut is based on the internal language of Hazelnut Live, a typed lambda calculus featuring holes in expression position \cite{DBLP:journals/pacmpl/OmarVCH19}.
 We choose numbers as the base type and add binary sums and binary products so that we have interesting
-patterns to consider. We also remove the machinery related to gradual typing (casts and failed casts) and expression hole closures to focus our attention on pattern matching in particular, though these features are retained in our Hazel implementation. Most forms are standard (we base our formulation on \cite{Harper2012}). We include functions, function application, pairs, explicit projection operators (for reasons we will consider below), and left and right injections, which are the introductory forms for sum types. Functions and injections include type annotations so that we can define a simple type assignment system. In our Hazel implementation, there is a corresponding bidirectionally typed external language where type annotations are not always necessary, given meaning as in Hazelnut Live by an elaboration process \cite{DBLP:journals/pacmpl/OmarVCH19}, but the details follow straightforwardly from this prior work, so we favor a minimal presentation in this paper. 
+patterns to consider. We also remove the machinery related to gradual typing (casts and failed casts) and expression hole closures to focus our attention on pattern matching in particular, though these features are retained in our Hazel implementation. Most forms are standard (we base our formulation of the basic constructs on \citet{Harper2012}). We include functions, function application, pairs, explicit projection operators (for reasons we will consider below), and left and right injections, which are the introduction forms for sum types. Functions and injections include type annotations so that we can define a simple type assignment system. In our Hazel implementation, there is a corresponding bidirectionally typed external language where type annotations are not always necessary, given meaning as in Hazelnut Live by an elaboration process \cite{DBLP:journals/pacmpl/OmarVCH19}, but the details follow straightforwardly from the prior work, so we favor a minimal presentation here. 
 
 Empty expression holes are written $\hehole{u}$ and non-empty expression holes, which serve as membranes around type inconsistencies, are written $\hhole{e}{u}$. Similarly, empty pattern holes are written $\heholep{w}$ and non-empty pattern holes, which are analogous, are written $\hholep{p}{w}{\tau}$. Here, $u$ denotes the name of an expression hole, $w$ denotes the name of a pattern hole, and $\tau$ is the type of the enclosed pattern $p$ (which serves to ensure that the typing judgment in Sec.~\ref{sec:statics} is straightforwardly algorithmic).
 We assume that hole names 
 correspond to unique holes in the external language, which we do not model here. We do not impose a uniqueness constraint, however, because we are defining an internal language so substitution can cause a hole can appear multiple times during evaluation.
 
 A match expression, $\hmatch{e}{\zrules}$, 
-consists of a scrutinee, $e$, and a zipper of rules, $\zrules$, which takes the form of a triple, $\zruls{rs_{pre}}{r}{rs_{post}}$, consisting of a prefix rule sequence, $rs_{pre}$, a current rule, $r$, and a suffix rule sequence, $rs_{post}$. In other words, it is a sequence of one or more rules with a pointer marking the rule currently being considered during evaluation (starting on the first rule). This zippered representation, which is unique to Peanut, is necessary to provide an intermediate result when the evaluation is stuck due to indeterminate pattern matching as shown in Fig.~\ref{fig:pat-hole}. Specifically, $rs_{pre}$ corresponds the first two rules that are crossed out, $r$ corresponds to the rule where pattern matching was indeterminate, and $rs_{post}$ corresponds to the last rule that is yet to be considered. We define a \text{pointer erasure operator} $\rmpointer{\zrules}$ in \autoref{fig:pointer-eraser}. 
+consists of a scrutinee, $e$, and a zipper of rules, $\zrules$, which takes the form of a triple, $\zruls{rs_{pre}}{r}{rs_{post}}$, consisting of a prefix rule sequence, $rs_{pre}$, a current rule, $r$, and a suffix rule sequence, $rs_{post}$. In other words, it is a sequence of one or more rules with a pointer marking the rule currently being considered during evaluation (starting on the first rule). This zippered representation, which is unique to Peanut, is necessary to provide an intermediate result when the evaluation is stuck due to indeterminate pattern matching as shown in Fig.~\ref{fig:pat-hole}. Specifically, $rs_{pre}$ corresponds to the first two rules that are crossed out, $r$ corresponds to the rule where pattern matching was indeterminate, and $rs_{post}$ corresponds to the last rule that is yet to be considered. We define a \text{pointer erasure operator} $\rmpointer{\zrules}$ in \autoref{fig:pointer-eraser}. 
 Each rule, $r$, consists of a pattern, $p$, and a branch expression, $e$.
 
 \subsection{Live Operational Semantics}\label{sec:dynamics}
@@ -70,8 +70,8 @@ Let us now consider each of the three possible outcomes in more detail.
 %Rules \ITSuccMatch, \ITFailMatch, and \IMatch describe the cases where a match expression takes a step to evaluate the matched branch, move the rule cursor to the next branch due to match failure, and are already indeterminate due to indeterminate match. The second premises of these three rules corresponds to three possible outcomes of matching $e$ against $p$.
 
 The judgment $\hpatmatch{e}{p}{\theta}$ denotes a successful match as witnessed by the substitution $\theta$ over the variables bound in $p$. This substitution is applied, written $[\theta](e_r)$, when the corresponding branch is taken in the conclusion of \ITSuccMatch. Notice that for an irrefutable pattern like $x$ and $\_$, all scrutinees match, including indeterminate scrutinees. 
-Pair patterns are an interesting case. If the scrutinee is a pair, then \MPair matches the corresponding expressions and patterns. However, the scrutinee may also be an indeterminate expression of product type that is not syntactically a pair. Because pairs are the only introductory form of product type, we know that no matter how the scrutinee is eventually completed, it will eventually become a pair, so we can successfully match even in this situation. %
-The \MNotIntroPair rule handles this case by taking the first and second projections of the scrutinee in any case where the scrutinee is not an introductory form of the language, defined by the judgment $\notIntro{e}$ in \autoref{fig:notintro}.
+Pair patterns are an interesting case. If the scrutinee is a pair, then \MPair matches the corresponding expressions and patterns. However, the scrutinee may also be an indeterminate expression of product type that is not syntactically a pair. Because pairs are the only introduction form of product type, we know that no matter how the scrutinee is eventually completed, it will eventually become a pair, so we can successfully match even in this situation. %
+The \MNotIntroPair rule handles this case by taking the first and second projections of the scrutinee in any case where the scrutinee is not an introduction form of the language, defined by the judgment $\notIntro{e}$ in \autoref{fig:notintro}.
 
 The judgment $\hnotmatch{e}{p}$ denotes that $e$ does not match $p$. In the case of such a mismatch,
 \ITMisMatch moves the focus of the zipper to the next rule. Note that if there are no remaining rules, 
@@ -81,7 +81,7 @@ only generates a warning, it would be straightforward (but tedious) to add match
 
 
 \input{fig-refutable}
-Finally, the judgment $\hmaymatch{e}{p}$ indicates an \emph{indeterminate match} due to the presence of holes in $e$ or $p$. \IMatch designates the entire match expression indeterminate once it has stepped to a rule where there is such an indeterminate match. \MMEHole and \MMHole specify that pattern holes always indeterminate match any scrutinee, because the hole has not been filled. \MMPairL, \MMPairR, and \MMPair specify that pairs indeterminately match as long as at least one of the corresponding projections of the scrutinee indeterminately match and neither mismatches. \MMInl and \MMInr specify that matching injections indeterminately match if the arguments indeterminately match. Finally, \MMNotIntro handles all situations where the scrutinee is not an introductory form (e.g. a hole or indeterminate function application), as specified in \autoref{fig:notintro}, and $p$ is indeterminately refutable, i.e. it is not a variable, wildcard, or pair with irrefutable patterns on both sides, as specified by the judgment $\refutable{p}$ defined in \autoref{fig:refutable}. (Irrefutable patterns lead to matches, as described above, so failing to exclude these would violate \autoref{lemma:match-determinism}.)
+Finally, the judgment $\hmaymatch{e}{p}$ indicates an \emph{indeterminate match} due to the presence of holes in $e$ or $p$. \IMatch designates the entire match expression indeterminate once it has stepped to a rule where there is such an indeterminate match. \MMEHole and \MMHole specify that pattern holes always indeterminate match any scrutinee, because the hole has not been filled. \MMPairL, \MMPairR, and \MMPair specify that pairs indeterminately match as long as at least one of the corresponding projections of the scrutinee indeterminately match and neither mismatches. \MMInl and \MMInr specify that matching injections indeterminately match if the arguments indeterminately match. Finally, \MMNotIntro handles all situations where the scrutinee is not an introduction form (e.g. a hole or indeterminate function application), as specified in \autoref{fig:notintro}, and $p$ is indeterminately refutable, i.e. it is not a variable, wildcard, or pair with irrefutable patterns on both sides, as specified by the judgment $\refutable{p}$ defined in \autoref{fig:refutable}. (Irrefutable patterns lead to matches, as described above, so failing to exclude these would violate \autoref{lemma:match-determinism}.)
 
 \subsection{Match Constraint Language}\label{sec:constraint}
 We can now move on in this and the remaining subsections to the static semantics of Peanut. Before continuing to describe the typing judgments in \autoref{sec:statics}, we must introduce \emph{match constraints}, $\xi$,
@@ -133,7 +133,7 @@ Indetermine entailment is defined as follows.
 \begin{definition}[Indeterminate Entailment of Constraints]
   \label{definition:const-entailment}
   Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$.
-  Then $\csatisfy{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isVal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$
+  Then $\csatisfy{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isVal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$.
 \end{definition}
 Indeterminate entailment allows us to reason about redundancy, namely we need $\cnotsatisfy{\xi_r}{\xi_{pre}}$ to ensure the constraint for the branch $r$ of interest is not redundant with respect to its preceding branches, conjoined in $rs_{pre}$ (see Rules \TOneRules and \TRules in the next section).
 The branch $r$ would never be taken only when for all values that determinately or indeterminately match the pattern in $r$, they determinately match the pattern in one of the previous branches.
@@ -142,7 +142,7 @@ The branch $r$ would never be taken only when for all values that determinately 
 Potential entailment is defined as follows.
 \begin{definition}[Potential Entailment of Constraints]
   \label{definition:nn-entailment}
-  Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$. Then $\csatisfyormay{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfyormay{e}{\xi_2}$ 
+  Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$. Then $\csatisfyormay{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfyormay{e}{\xi_2}$.
 \end{definition}
 Potential entailment will be used for exhaustiveness checking. In particular, if we choose $\xi_1$ to be $\ctruth$, then the entailment $\csatisfyormay{\ctruth}{\xi}$ ensures that $\xi$ is either necessarily or indeterminately exhaustive (we will see this appear in Rules \TMatchZPre and \TMatchNZPre). 
 The type checker should give an error/warning about the inexhaustiveness only when a case must have been missed, i.e. when there is a value that does not match any rule's pattern, no matter how the programmer may fill the holes in the program. That is, a match expression is indeterminately exhaustive if all values indeterminately match one of its constituent rules' patterns.
@@ -156,12 +156,12 @@ In this way, even when the scrutinee $e$ is indeterminate, we can still be confi
 
 We can now describe the type system of Peanut, which utilizes entailments between constraints to enforce exhaustiveness and irredundancy.
   Specifically, we build a similar type system to
-\cite{DBLP:journals/pacmpl/OmarVCH19} by defining typing judgments for both
+\citet{DBLP:journals/pacmpl/OmarVCH19} by defining typing judgments for both
 expressions and patterns. The expression typing judgment, $\hexptyp{\Gamma}{\Delta}{e}{\tau}$, is defined in \autoref{fig:exptyp}. It takes both a variable context $\Gamma$ and a hole context $\Delta$ as input, and produces a type as output. The pattern typing judgment, $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$, is defined in \autoref{fig:pat-rulestyp}. It takes a hole context $\Delta$ and a type as input and produces a variable context $\Gamma$ and a constraint, $\xi$. \autoref{fig:pat-rulestyp} also defines typing judgments for rules, which we consider below.
 
 \subsubsection{Typing of Expressions and Exhaustiveness Checking} \label{sec:exptyp}
 
-We start by specifying the typing of expressions in \autoref{fig:exptyp}, giving particular attention to match expressions. We will see that our definitions enforce exhaustiveness of the constituent branches of any match expression. Alternatively, one could include exhaustiveness as a separate judgment, as is done in our Agda mechanization, but we integrate them for simplicity in our presentation.
+We start by specifying the typing of expressions in \autoref{fig:exptyp}, giving particular attention to match expressions. We will see that our definitions enforce exhaustiveness of the constituent branches of any match expression. Alternatively, one could include exhaustiveness as a separate judgment, modifying the statement of type safety appropriately to include the requirement that all match expressions in an expression are exhaustive, as is done in our Agda mechanization, but we integrate them for simplicity in our presentation.
 
 Rule \TMatchZPre corresponds to the case when we are yet to start pattern
 matching, i.e. the rules zipper has no prefix. The first premise specifies that the scrutinee $e$ is of type $\tau$,
@@ -174,7 +174,7 @@ As the inductive base case, we supply $\cfalsity$ as the initial constraint (it 
 The 
 third premise $\csatisfyormay{\ctruth}{\xi}$ checks for necessary or indeterminate exhaustiveness. 
 In other words, for a well-typed match expression,
-it is impossible that the final scrutinee would determinately fail to match all the patterns as we consider branches $rs$ in order.
+it is impossible that the scrutinee would determinately fail to match all the patterns as we consider branches $rs$ in order.
 Intuitively, constraint $\xi$ encodes the set of possible expressions that determinately or indeterminately match any of the branches and the entailment from $\ctruth$ ensures that all expressions are considered.
 
 Rule \TMatchNZPre corresponds to the case that we have already started pattern
@@ -230,10 +230,9 @@ constraint collected from rules $\hrules{r}{rs}$, which helps exhaustiveness che
 Rule \TOneRules corresponds to the single rule case. The premises are similar to that of Rule \TRules except that
 there is no trailing rules to check the type of. The reason why we regard one
 rule as the base case instead of empty rules, is that since our match expression
-takes zipper rules, we will never need to check the type of empty rule set. The
-only case that it makes sense to allow a match expression with no rule, is when we match on a final expression of \textit{Void} type and thus
-don't need to worry about exhaustiveness checking. It turns out that we do not
-have to sacrifice the generality.
+consists of a zipper of rules, we will never need to check the type of an empty set of rules. The
+only case that it makes sense to allow a match expression with no rules is when we match on a final expression of \textit{Void} type and thus
+do not need to worry about exhaustiveness checking.
 
 As mentioned above, Rule \TRule specifies that rule
 $\hrul{p}{e}$ transforms final expressions of type $\tau_1$ to final expressions
@@ -294,13 +293,13 @@ In this section, we eliminate the indeterminacy in constraint entailments by sho
 \begin{definition}[Validity of Complete Constraints]
   \label{definition:valid-constraint}
   Suppose that $\ctruify{\xi}=\xi$ and $\ctyp{\xi}{\tau}$.
-  Then $\ccsatisfy{}{\xi}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isVal{e}$ we have $\ccsatisfy{e}{\xi}$
+  Then $\ccsatisfy{}{\xi}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isVal{e}$ we have $\ccsatisfy{e}{\xi}$.
 \end{definition}
 
 
 As discussed in previous sections, only when a match expression is necessarily inexhaustive, no matter how the programmer fills it, shall the type checking fail. As a human being, such a process can be naturally performed by thinking of all the pattern holes as wildcards and checking if the transformed patterns cover all the possible cases. 
 
-Similarly, if we are going to reason about the redundancy of one branch with respect to its previous ones in the presence of pattern holes, the programmer should only get an error/warning if that branch will never be matched no matter how the pattern holes are filled. It is natural to imagine all the previous branches with pattern holes would be refuted during run-time as the programmer may fill them with any refutable patterns. On the other hand, it makes sense to have the branch of our interest to cover as many cases as possible, by thinking of any of its pattern holes as wild cards.% Then, we may see if there is a case that is covered by the branch but not its previous branches.
+Similarly, if we are going to reason about the redundancy of one branch with respect to its previous ones in the presence of pattern holes, the programmer should only get an error/warning if that branch will never be matched no matter how the pattern holes are filled. It is natural to imagine all the previous branches with pattern holes would be refuted during run-time as the programmer may fill them with any refutable patterns. On the other hand, it makes sense to have the branch of our interest to cover, by thinking of its pattern holes as wildcards, as many cases as possible.% Then, we may see if there is a case that is covered by the branch but not its previous branches.
 
 % The justification of falsifying an unknown constraint is that there are infinite inhabitants in arbitrary type of Peanut. Let's say we are checking the redundancy of pattern $p$, as we have number as our base type, no matter what $p$ is, we can assume any incomplete patterns in its preceding branches can be completed in a way such that $p$ does not cover all the cases covered by the completed pattern.
 % What if we add unit type? (We actually need unit type to represent empty list!) Then we no longer have infinite patterns that is of arbitrary given type. We can simply emit Truth constraint $\ctruth$ when assigning unit type to pattern holes.

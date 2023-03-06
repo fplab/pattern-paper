@@ -2,9 +2,9 @@
 
 In this section, we conservatively extend Peanut with finite labeled
 sums, which is a practical necessity in general-purpose functional
-languages. Besides adding labeled sums to syntax, we will only cover
+languages. Besides adding labeled sums to the syntax, we will only cover
 pattern matching for labeled sums as this is the most interesting bit
-of the extension, and leave the others to the Supplementary Material.
+of the extension, and leave the other details to the Supplementary Material.
 
 Labeled sums introduce a new sort $C$ for labels, a.k.a. datatype constructors, and a new type-level connective $C_1(\tau_1) + \cdots + C_n(\tau_n)$ for gathering and labeling types.
 Since we are not usually concerned with the length of any particular sum,
@@ -39,9 +39,8 @@ distinct labels when at least one of them is a hole.  Rule \MMNotIntro
 works for refutable patterns, and rules \RInjMult and \RInjSing define
 refutable patterns of labeled sum type.  Rule \RInjMult establishes
 that patterns for nontrivial sums are refutable, i.e., that the set of
-dual constraints is not empty.  The premises of Rule \RInjSing merely express
-the fact that there are no alternatives injections into singleton
-sums, and none at all into void sums.
+dual constraints is not empty.  The premises of Rule \RInjSing express that there are no alternatives for singleton
+sums, and no choices at all for void sums.
 
 % The inclusion of finite labeled sums with label holes adds substantial complexity to type consistency checking.
 % For example, given two finite labeled sum types of cardinality $n$,
