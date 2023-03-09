@@ -1,5 +1,5 @@
 %% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
-\documentclass[acmsmall,review,screen,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+% \documentclass[acmsmall,review,screen,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
 %% For double-blind review submission, w/ CCS and ACM Reference
 %\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true}
 %% For single-blind review submission, w/o CCS and ACM Reference (max submission space)
@@ -7,7 +7,7 @@
 %% For single-blind review submission, w/ CCS and ACM Reference
 %\documentclass[acmsmall,review]{acmart}\settopmatter{printfolios=true}
 %% For final camera-ready submission, w/ required CCS and ACM Reference
-%\documentclass[acmsmall]{acmart}\settopmatter{}
+\documentclass[acmsmall,screen]{acmart}\settopmatter{}
 
 
 %% Journal information
@@ -16,7 +16,7 @@
 %\acmJournal{PACMPL}
 %\acmVolume{1}
 %\acmNumber{CONF} % CONF = POPL or ICFP or OOPSLA
-\acmConference[Under Review]{A Boilerplate Conference}{October 2022}{-}
+% \acmConference[Under Review]{A Boilerplate Conference}{October 2022}{-}
 %\acmArticle{1}
 %\acmYear{2018}
 %\acmMonth{1}
@@ -27,11 +27,26 @@
 %% Supplied to authors (based on authors' rights management selection;
 %% see authors.acm.org) by publisher for camera-ready submission;
 %% use 'none' for review submission.
-\setcopyright{none}
+% \setcopyright{none}
 %\setcopyright{acmcopyright}
 %\setcopyright{acmlicensed}
 %\setcopyright{rightsretained}
 %\copyrightyear{2018}           %% If different from \acmYear
+
+% TODO
+% \setcopyright{ACMUNKNOWN} 
+\acmPrice{}
+\acmDOI{10.1145/3586048}
+\acmYear{2023}
+\copyrightyear{2023}
+\acmSubmissionID{oopslaa23main-p103-p}
+\acmJournal{PACMPL}
+\acmVolume{7}
+\acmNumber{OOPSLA1}
+\acmArticle{96}
+\acmMonth{4}
+\received{2022-10-28}
+\received[accepted]{2023-02-25}
 
 %% Bibliography style
 \bibliographystyle{ACM-Reference-Format}
@@ -75,6 +90,7 @@
 \usepackage{hyperref}
 
 \renewcommand\UrlFont{\color{blue}\rmfamily}
+\theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{definition}[theorem]{Definition}
@@ -161,50 +177,76 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 %% extraction tools.
 
 %% Author with single affiliation.
-\author{First1 Last1}
-\authornote{with author1 note}          %% \authornote is optional;
+\author{Yongwei Yuan}
+% \authornote{with author1 note}          %% \authornote is optional;
                                         %% can be repeated if necessary
-\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\orcid{0000-0002-2619-2288}             %% \orcid is optional
 \affiliation{
-  \position{Position1}
-  \department{Department1}              %% \department is recommended
-  \institution{Institution1}            %% \institution is required
-  \streetaddress{Street1 Address1}
-  \city{City1}
-  \state{State1}
-  \postcode{Post-Code1}
-  \country{Country1}                    %% \country is recommended
+  % \position{Position1}
+  % \department{Department1}              %% \department is recommended
+  \institution{Purdue University}            %% \institution is required
+  % \streetaddress{Street1 Address1}
+  % \city{West Lafayette}
+  % \state{State1}
+  % \postcode{Post-Code1}
+  \country{USA}                    %% \country is recommended
 }
-\email{first1.last1@inst1.edu}          %% \email is recommended
+\email{yuan311@purdue.edu}          %% \email is recommended
 
 %% Author with two affiliations and emails.
-\author{First2 Last2}
-\authornote{with author2 note}          %% \authornote is optional;
+\author{Scott Guest}
+% \authornote{with author2 note}          %% \authornote is optional;
                                         %% can be repeated if necessary
+\orcid{0009-0005-1751-6470}             %% \orcid is optional
+\affiliation{
+  % \position{Position2a}
+  % \department{Department2a}             %% \department is recommended
+  \institution{University of Michigan}           %% \institution is required
+  % \streetaddress{Street2a Address2a}
+  % \city{City2a}
+  % \state{State2a}
+  % \postcode{Post-Code2a}
+  \country{USA}                   %% \country is recommended
+}
+\email{sguest@umich.edu}         %% \email is recommended
+
+\author{Eric Griffis}
 \orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
 \affiliation{
-  \position{Position2a}
-  \department{Department2a}             %% \department is recommended
-  \institution{Institution2a}           %% \institution is required
-  \streetaddress{Street2a Address2a}
-  \city{City2a}
-  \state{State2a}
-  \postcode{Post-Code2a}
-  \country{Country2a}                   %% \country is recommended
+  % \position{Position2b}
+  % \department{Department2b}             %% \department is recommended
+  \institution{University of Michigan}           %% \institution is required
+  % \streetaddress{Street3b Address2b}
+  % \city{City2b}
+  % \state{State2b}
+  % \postcode{Post-Code2b}
+  \country{USA}                   %% \country is recommended
 }
-\email{first2.last2@inst2a.com}         %% \email is recommended
-\affiliation{
-  \position{Position2b}
-  \department{Department2b}             %% \department is recommended
-  \institution{Institution2b}           %% \institution is required
-  \streetaddress{Street3b Address2b}
-  \city{City2b}
-  \state{State2b}
-  \postcode{Post-Code2b}
-  \country{Country2b}                   %% \country is recommended
-}
-\email{first2.last2@inst2b.org}         %% \email is recommended
+\email{egriffis@umich.edu>}         %% \email is recommended
 
+\author{Hannah Potter}
+\orcid{0000-0002-8502-1657}
+\affiliation{
+  \institution{University of Washington}
+  \country{USA}
+}
+\email{hkpotter@cs.washington.edu}
+
+\author{David Moon}
+\orcid{0000-0002-1081-2235}
+\affiliation{
+  \institution{University of Michigan}
+  \country{USA}
+}
+\email{dmoo@umich.edu}
+
+\author{Cyrus Omar}
+\orcid{0000-0003-4502-7971}
+\affiliation{
+  \institution{University of Michigan}
+  \country{USA}
+}
+\email{comar@umich.edu}
 
 %% Abstract
 %% Note: \begin{abstract}...\end{abstract} environment must come
@@ -216,27 +258,33 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
 %% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
 \begin{CCSXML}
 <ccs2012>
-<concept>
-<concept_id>10011007.10011006.10011008</concept_id>
-<concept_desc>Software and its engineering~General programming languages</concept_desc>
-<concept_significance>500</concept_significance>
-</concept>
-<concept>
-<concept_id>10003456.10003457.10003521.10003525</concept_id>
-<concept_desc>Social and professional topics~History of programming languages</concept_desc>
-<concept_significance>300</concept_significance>
-</concept>
-</ccs2012>
+   <concept>
+       <concept_id>10003752.10003790.10011740</concept_id>
+       <concept_desc>Theory of computation~Type theory</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+   <concept>
+       <concept_id>10011007.10011006.10011008.10011009.10011012</concept_id>
+       <concept_desc>Software and its engineering~Functional languages</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+   <concept>
+       <concept_id>10011007.10011006.10011008.10011024.10011036</concept_id>
+       <concept_desc>Software and its engineering~Patterns</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+ </ccs2012>
 \end{CCSXML}
 
-\ccsdesc[500]{Software and its engineering~General programming languages}
-\ccsdesc[300]{Social and professional topics~History of programming languages}
+\ccsdesc[500]{Theory of computation~Type theory}
+\ccsdesc[500]{Software and its engineering~Functional languages}
+\ccsdesc[500]{Software and its engineering~Patterns}
 %% End of generated code
 
 
 %% Keywords
 %% comma separated list
-% \keywords{keyword1, keyword2, keyword3}  %% \keywords are mandatory in final camera-ready submission
+\keywords{pattern matching, typed holes}  %% \keywords are mandatory in final camera-ready submission
 
 
 %% \maketitle
@@ -262,6 +310,8 @@ moredelim=**[is][\color{red}]{SSTR}{ESTR}
   %% \grantnum[<url>]{<sponsorID>}{<number>} should be used to
   %% acknowledge financial support and will be used by metadata
   %% extraction tools.
+  We thank the anonymous referees for their insights and feedback over
+  the iterations of the work.
   This material is based upon work supported by the
   \grantsponsor{GS100000001}{National Science
     Foundation}{http://dx.doi.org/10.13039/100000001} under Grant

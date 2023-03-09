@@ -89,6 +89,7 @@ which generalize patterns to form a simple first-order logic. Constraints are ge
 
 \input{fig-constraint}
 \input{fig-satisfy}
+\input{fig-xi-possible}
 
 \autoref{fig:constraint} defines the syntax of the match constraint language. 
 Excluding the unknown constraint $\cunknown$ for a moment, a constraint $\xi$ identifies a satisfying subset of final expressions of some type $\tau$ as specified by the constraint typing judgment,  $\ctyp{\xi}{\tau}$, in \autoref{fig:constraint}.
@@ -98,7 +99,7 @@ We must also model indeterminacy in our constraint language. So just as there ar
 \autoref{fig:satisfy} defines the satisfaction judgments that encode such relationships. Assuming
 final expression $e$ and constraint $\xi$ are of the same type, the
 judgment $\csatisfy{e}{\xi}$ specifies that $e$ satisfies $\xi$ while
-the judgment $\cmaysatisfy{e}{\xi}$ specifies that $e$ indeterminately satisfies $\xi$. Both judgments closely follow the definition of pattern matching judgments $\hpatmatch{e}{p}{\theta}$ and $\hmaymatch{e}{p}$, adding disjunction and conjunction. The main differences of note are in Rule \CSNotIntroPair and Rule \CMSNotIntro. The refutability premise follows the one in the dynamics (the definition of $\refutable{\xi}$ is in the Supplementary Material). The \CMSNotIntro rule includes a third premise, $\possible{\xi}$. This is due to the presence of a bottom constraint, $\cfalsity$, which does not correspond to a pattern but rather is the dual of the top constraint, $\ctruth$, which corresponds to variable and wildcard patterns. 
+the judgment $\cmaysatisfy{e}{\xi}$ specifies that $e$ indeterminately satisfies $\xi$. Both judgments closely follow the definition of pattern matching judgments $\hpatmatch{e}{p}{\theta}$ and $\hmaymatch{e}{p}$, adding disjunction and conjunction. The main differences of note are in Rule \CSNotIntroPair and Rule \CMSNotIntro. The refutability premise follows the one in the dynamics (the definition of $\refutable{\xi}$ is in the Supplementary Material). The \CMSNotIntro rule includes a third premise, $\possible{\xi}$ (defined in \autoref{fig:xi-possible}). This is due to the presence of a bottom constraint, $\cfalsity$, which does not correspond to a pattern but rather is the dual of the top constraint, $\ctruth$, which corresponds to variable and wildcard patterns. 
 $\possible{\xi}$ rules out the cases where $\xi$ contains $\cfalsity$. $\refutable{\xi}$ and $\possible{\xi}$ together says that constraint $\xi$ is neither necessarily irrefutable nor necessarily refuted.
 The judgment $\csatisfyormay{e}{\xi}$ is simply the disjunction of necessary and indeterminate satisfaction. 
 We say $e$ does not satisfy $\xi$ when $\csatisfyormay{e}{\xi}$ is not derivable, written $\cnotsatisfyormay{e}{\xi}$.
@@ -129,12 +130,7 @@ And the exclusiveness of satisfaction judgments directly follows from the exclus
   \end{enumerate*}
 \end{theorem}
 
-\clearpage
-\input{fig-xi-possible} % had to put it after clearpage
-
 Exhaustiveness and redundancy checking can be reduced to the problem of deciding \emph{entailments} between two constraints. We need to define two kinds of entailment: indeterminate entailment and potential entailment.
-
-
 
 \begin{definition}[Indeterminate Entailment of Constraints]
   \label{definition:const-entailment}
@@ -291,7 +287,7 @@ To prove \autoref{theorem:preservation}, we need standard substitution lemmas, f
 
 \subsection{Elimination of Indeterminacy}\label{sec:algorithm}
 
-\autoref{sec:statics} has already described exhaustiveness checking and redundancy checking using constraint entailments -- \Autoref{definition:const-entailment,definition:nn-entailment} --- defined in \autoref{sec:constraint}. In order for the type system to be decidable, we need to show that the constraint entailments, where both expressions and constraints may involve holes, are decidable. This is nontrivial. But the validity (\autoref{definition:valid-constraint}) of a complete constraint (denoted $\ctruify{\xi}=\xi$, where $\ctruify{\xi}$ replaces all occurrences of $\cunknown$ in $\xi$ with $\ctruth$)\todo{is this ok?} that only concerns values is decidable, as we will show shortly in \autoref{sec:decidability}.
+\autoref{sec:statics} has already described exhaustiveness checking and redundancy checking using constraint entailments --- \Autoref{definition:const-entailment,definition:nn-entailment} --- defined in \autoref{sec:constraint}. In order for the type system to be decidable, we need to show that the constraint entailments, where both expressions and constraints may involve holes, are decidable. This is nontrivial. But the validity (\autoref{definition:valid-constraint}) of a complete constraint (denoted $\ctruify{\xi}=\xi$, where $\ctruify{\xi}$ replaces all occurrences of $\cunknown$ in $\xi$ with $\ctruth$) that only concerns values is decidable, as we will show shortly in \autoref{sec:decidability}.
 %
 In this section, we eliminate the indeterminacy in constraint entailments by showing that they can be reduced to \autoref{definition:valid-constraint}. 
 
