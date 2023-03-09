@@ -2,7 +2,7 @@
 \label{sec:agda}
 
 Our described system is fairly intricate, with many of the proofs
-requiring significant case-work.
+requiring extensive case analysis.
 %
 For instance, while \autoref{theorem:exhaustive-truify} and
 \autoref{theorem:redundant-truify-falsify} are intuitively correct, it
@@ -21,4 +21,4 @@ In general, our mechanization takes an approach similar to that used in the mech
 
 Furthermore, again following the mechanization of Hazelnut Live, we restrict variable names to natural numbers, and we encode typing contexts and hole contexts as metafunctions $\mathbb{N} \to \text{Maybe } T$ for appropriate types $T$. While not strictly necessary, we postulate function extensionality to improve the ergonomics of such an encoding. This postulate is fairly innocuous, as function extensionality is known to be independent of Agda’s axioms \cite{DBLP:conf/lics/AwodeyGS12}. We assume no other postulates.
 
-In a few places, the mechanization also differs slightly from the definitions laid out on paper. Most notably, the mechanization removes exhaustiveness and redundancy checking from the typing judgment, and instead includes them separately as their own judgments. This has the advantage of making these checks optional, while also avoiding a morally-irrelevant but technically-inconvenient positivity issue with the encoding of the typing judgment in Agda. As a consequence, we also prove separate preservation theorems for each of these judgments, and take exhaustiveness as an additional assumption in the Progress theorem. The documentation provided with the mechanization has more details, enumerating all deviations from the paper and their motivation.
+In a few places, the mechanization also differs slightly from the definitions laid out on paper. Most notably, the mechanization removes exhaustiveness and redundancy checking from the typing judgment, and instead includes them separately as their own judgments. This has the advantage of making these checks optional, while also avoiding a morally irrelevant but technically inconvenient positivity issue with the encoding of the typing judgment in Agda. As a consequence, we also prove separate preservation theorems for each of these judgments, and take exhaustiveness as an additional assumption in the progress theorem. The documentation provided with the mechanization has more details, enumerating all deviations from the paper and their motivation.

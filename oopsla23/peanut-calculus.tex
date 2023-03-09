@@ -89,7 +89,7 @@ which generalize patterns to form a simple first-order logic. Constraints are ge
 
 \input{fig-constraint}
 \input{fig-satisfy}
-\input{fig-xi-possible}
+
 \autoref{fig:constraint} defines the syntax of the match constraint language. 
 Excluding the unknown constraint $\cunknown$ for a moment, a constraint $\xi$ identifies a satisfying subset of final expressions of some type $\tau$ as specified by the constraint typing judgment,  $\ctyp{\xi}{\tau}$, in \autoref{fig:constraint}.
 Assuming $\ctyp{\xi}{\tau}$, then the dual of $\xi$, denoted by $\cdual{\xi}$ and defined also in \autoref{fig:constraint}, represents the complement of the subset identified by $\xi$ under the set of final expressions of type $\tau$.
@@ -106,6 +106,7 @@ We say $e$ does not satisfy $\xi$ when $\csatisfyormay{e}{\xi}$ is not derivable
 \autoref{lemma:const-matching-coherence} establishes a correspondence
 between pattern matching results and satisfaction judgments, which makes
 reasoning about pattern matching in the type system possible and helps prove Preservation (\autoref{theorem:preservation}).
+Here, $\chpattyp{p}{\tau}{\xi}{\Gamma}{\Delta}$ not only tells us that the pattern $p$ is of the same type as the scrutinee, but also emits to a constraint $\xi$, and the judgment will be properly defined in \autoref{sec:statics}.
 
 \begin{lemma}[Matching Coherence of Constraint]
   \label{lemma:const-matching-coherence}
@@ -128,24 +129,28 @@ And the exclusiveness of satisfaction judgments directly follows from the exclus
   \end{enumerate*}
 \end{theorem}
 
+\clearpage
+\input{fig-xi-possible} % had to put it after clearpage
+
 Exhaustiveness and redundancy checking can be reduced to the problem of deciding \emph{entailments} between two constraints. We need to define two kinds of entailment: indeterminate entailment and potential entailment.
-Indetermine entailment is defined as follows.
+
+
+
 \begin{definition}[Indeterminate Entailment of Constraints]
   \label{definition:const-entailment}
   Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$.
   Then $\csatisfy{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isVal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfy{e}{\xi_2}$.
 \end{definition}
-Indeterminate entailment allows us to reason about redundancy, namely we need $\cnotsatisfy{\xi_r}{\xi_{pre}}$ to ensure the constraint for the branch $r$ of interest is not redundant with respect to its preceding branches, conjoined in $rs_{pre}$ (see Rules \TOneRules and \TRules in the next section).
+Indeterminate entailment (\autoref{definition:const-entailment}) allows us to reason about redundancy, namely we need $\cnotsatisfy{\xi_r}{\xi_{pre}}$ to ensure the constraint for the branch $r$ of interest is not redundant with respect to its preceding branches, conjoined in $rs_{pre}$ (see Rules \TOneRules and \TRules in the next section).
 The branch $r$ would never be taken only when for all values that determinately or indeterminately match the pattern in $r$, they determinately match the pattern in one of the previous branches.
 
-
-Potential entailment is defined as follows.
 \begin{definition}[Potential Entailment of Constraints]
   \label{definition:nn-entailment}
   Suppose that $\ctyp{\xi_1}{\tau}$ and $\ctyp{\xi_2}{\tau}$. Then $\csatisfyormay{\xi_1}{\xi_2}$ iff for all $e$ such that $\hexptyp{\cdot}{\Delta}{e}{\tau}$ and $\isFinal{e}$ we have $\csatisfyormay{e}{\xi_1}$ implies $\csatisfyormay{e}{\xi_2}$.
 \end{definition}
-Potential entailment will be used for exhaustiveness checking. In particular, if we choose $\xi_1$ to be $\ctruth$, then the entailment $\csatisfyormay{\ctruth}{\xi}$ ensures that $\xi$ is either necessarily or indeterminately exhaustive (we will see this appear in Rules \TMatchZPre and \TMatchNZPre). 
+Potential entailment (\autoref{definition:nn-entailment}) will be used for exhaustiveness checking. In particular, if we choose $\xi_1$ to be $\ctruth$, then the entailment $\csatisfyormay{\ctruth}{\xi}$ ensures that $\xi$ is either necessarily or indeterminately exhaustive (we will see this appear in Rules \TMatchZPre and \TMatchNZPre). 
 The type checker should give an error/warning about the inexhaustiveness only when a case must have been missed, i.e. when there is a value that does not match any rule's pattern, no matter how the programmer may fill the holes in the program. That is, a match expression is indeterminately exhaustive if all values indeterminately match one of its constituent rules' patterns.
+
 We consider final expressions in the definition of potential entailment, rather than values as with indeterminate entailment. 
 In this way, even when the scrutinee $e$ is indeterminate, we can still be confident that either one of the branches will be taken or evaluation will stop on one branch due to the indeterminacy of pattern matching with holes. As we will later show in \autoref{sec:algorithm}, this is equivalent to quantifying over all potential values of a final expression.
 
@@ -286,7 +291,7 @@ To prove \autoref{theorem:preservation}, we need standard substitution lemmas, f
 
 \subsection{Elimination of Indeterminacy}\label{sec:algorithm}
 
-\autoref{sec:statics} has already described exhaustiveness checking and redundancy checking using constraint entailments -- \Autoref{definition:const-entailment,definition:nn-entailment} --- defined in \autoref{sec:constraint}. In order for the type system to be decidable, we need to show that the constraint entailments, where both expressions and constraints may involve holes, are decidable. This is nontrivial. But the validity of a complete constraint, as defined in \autoref{definition:valid-constraint}, that only concerns values is decidable, as we will show shortly in \autoref{sec:decidability}.
+\autoref{sec:statics} has already described exhaustiveness checking and redundancy checking using constraint entailments -- \Autoref{definition:const-entailment,definition:nn-entailment} --- defined in \autoref{sec:constraint}. In order for the type system to be decidable, we need to show that the constraint entailments, where both expressions and constraints may involve holes, are decidable. This is nontrivial. But the validity (\autoref{definition:valid-constraint}) of a complete constraint (denoted $\ctruify{\xi}=\xi$, where $\ctruify{\xi}$ replaces all occurrences of $\cunknown$ in $\xi$ with $\ctruth$)\todo{is this ok?} that only concerns values is decidable, as we will show shortly in \autoref{sec:decidability}.
 %
 In this section, we eliminate the indeterminacy in constraint entailments by showing that they can be reduced to \autoref{definition:valid-constraint}. 
 
@@ -304,7 +309,7 @@ Similarly, if we are going to reason about the redundancy of one branch with res
 % The justification of falsifying an unknown constraint is that there are infinite inhabitants in arbitrary type of Peanut. Let's say we are checking the redundancy of pattern $p$, as we have number as our base type, no matter what $p$ is, we can assume any incomplete patterns in its preceding branches can be completed in a way such that $p$ does not cover all the cases covered by the completed pattern.
 % What if we add unit type? (We actually need unit type to represent empty list!) Then we no longer have infinite patterns that is of arbitrary given type. We can simply emit Truth constraint $\ctruth$ when assigning unit type to pattern holes.
 
-As discussed in previous sections, we use a constraint language to capture the semantics of patterns, and then reason about the exhaustiveness and redundancy by reasoning about the constraint language. So we implement the aforementioned intuition through transformation on constraints. Specifically, as a pattern hole emits an unknown constraint $\cunknown$, replacing the pattern hole with a wildcard corresponds to "truify" $\cunknown$, \ie, turning $\cunknown$ into $\ctruth$. Similarly, we turn $\cunknown$ into $\cfalsity$ -- dubbed "falsify" -- to encode the idea of replacing the pattern hole with some pattern that a specific set of expressions won't match. Basically, "truify" operation $\ctruify{\xi}$ and "falsify" operation $\cfalsify{\xi}$ replace any $\cunknown$ in the input constraint with $\ctruth$ and $\cfalsity$ respectively in a recursive way, the definitions of which are omitted here as they are straightforward (see the Supplementary Material).
+As discussed in previous sections, we use a constraint language to capture the semantics of patterns, and then reason about the exhaustiveness and redundancy by reasoning about the constraint language. So we implement the aforementioned intuition through transformation on constraints. Specifically, as a pattern hole emits an unknown constraint $\cunknown$, replacing the pattern hole with a wildcard corresponds to ``truify'' $\cunknown$, \ie, turning $\cunknown$ into $\ctruth$. Similarly, we turn $\cunknown$ into $\cfalsity$ -- dubbed ``falsify'' -- to encode the idea of replacing the pattern hole with some pattern that a specific set of expressions won't match. Basically, ``truify'' operation $\ctruify{\xi}$ and ``falsify'' operation $\cfalsify{\xi}$ replace any $\cunknown$ in the input constraint with $\ctruth$ and $\cfalsity$ respectively in a recursive way, the definitions of which are omitted here as they are straightforward (see the Supplementary Material).
 
 % \input{fig-truify-falsify}
 
@@ -312,7 +317,7 @@ As discussed in previous sections, we use a constraint language to capture the s
 % Here, we use $\ctruify{\xi}=\xi$ to denote that unknown constraint $\cunknown$ does not appear in $\xi$, and thus we say $\xi$ are fully known. 
 % To differentiate with \autoref{definition:const-entailment}, we drop the dot over the entailment symbol, indicating that we have got rid of the indeterminacy. 
 
-With the above observation in mind, \Autoref{theorem:exhaustive-truify,theorem:redundant-truify-falsify} establish the "fully-known" equivalence of the entail judgments for exhaustiveness checking $\csatisfyormay{\ctruth}{\xi}$ and redundancy checking $\csatisfy{\xi_r}{\xi_{rs}}$.
+With the above observation in mind, \Autoref{theorem:exhaustive-truify,theorem:redundant-truify-falsify} establish the ``fully-known'' equivalence of the entail judgments for exhaustiveness checking $\csatisfyormay{\ctruth}{\xi}$ and redundancy checking $\csatisfy{\xi_r}{\xi_{rs}}$.
 
 \begin{theorem}
 \label{theorem:exhaustive-truify}
