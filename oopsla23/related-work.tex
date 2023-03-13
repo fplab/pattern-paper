@@ -1,20 +1,20 @@
 \section{Related and Future Work}
 
 \subsection{Typed Holes}
-Hazel, prior to this paper, implemented a minor extension of the Hazelnut Live calculus \cite{DBLP:journals/pacmpl/OmarVCH19}. Peanut is based on the Hazelnut Live internal language, a typed lambda calculus that includes expressions and type holes. 
+Hazel, prior to the effort presented in this paper, implemented a minor extension of the Hazelnut Live calculus \cite{DBLP:journals/pacmpl/OmarVCH19}. Peanut is based on the Hazelnut Live internal language, a typed lambda calculus that includes expressions and type holes. 
 Peanut retains expression holes and introduces   
 structural pattern matching, pattern holes, and exhaustiveness and redundancy checking. 
 Like Hazelnut Live, evaluation is able to proceed around holes, including pattern holes. An evaluation step is taken 
 only if it would be justified for all possible hole fillings.
 
-We did not formalize the external language, which is bidirectionally typed, because a simply typed lambda calculus like Peanut can be turned into a bidirectional one in a semi-systematic and thus straightforward way \cite{DBLP:journals/csur/DunfieldK21}. Our implementation includes a bidirectionally typed external language, whose elaboration to Peanut, the internal language, follows \citet{DBLP:journals/pacmpl/OmarVCH19} closely.
+We did not formalize the external language, which is bidirectionally typed, because a simply typed lambda calculus like Peanut can be turned into a bidirectional one in a well-understood way \cite{DBLP:journals/csur/DunfieldK21}. Our implementation includes a bidirectionally typed external language, whose elaboration to Peanut, the internal language, follows \citet{DBLP:journals/pacmpl/OmarVCH19} closely.
 
 Peanut omits type holes, i.e. the unknown types from gradual type theory \cite{Siek2006, DBLP:conf/snapl/SiekVCB15}. Type holes obscure type information and a scrutinee of unknown type allows patterns of various types to be mixed in a \li{match} expression, so it 
 is difficult to reason statically about exhaustiveness and redundancy except in trivial cases, e.g. variables and wildcards remain exhaustive.\footnote{Constraint-based type inference could be deployed to discover a type for the scrutinee in some cases, at which point it would be possible to use our mechanisms as described. Whether inference is deployed for this purpose is an orthogonal consideration.}
 Allowing scrutinees of unknown types would also require performing run-time checks, e.g. in the form of casts inserted on terms matched by variables of unknown type. 
 Building upon the sum type extension described in the appendix of Hazelnut Live paper \cite{DBLP:journals/pacmpl/OmarVCH19}, which itself follows the principles of cast insertion in \citet{DBLP:conf/snapl/SiekVCB15},
 we have implemented this cast insertion machinery into Hazel.
-This machinery is orthogonal to the machinery that we contribute in this paper, and which we intend to be relevant to systems that are not gradually typed like {GHC Haskell}, so we did not include type holes and casts here. 
+This machinery is orthogonal to the machinery that we contribute in this paper, and which we intend to be relevant to systems that are not gradually typed like {GHC Haskell}, so we did not include type holes and casts here. It would be reasonably scoped future work to extend Peanut with gradual typing directly, based on the approach implemented in Hazel.
 
 Hazelnut Live augments each expression hole instance with a closure, which serves to record deferred substitutions 
 (it is therefore a contextual type theory \cite{DBLP:journals/tocl/NanevskiPP08}). This information can be presented to the user and it enables soundly resuming from the current evaluation state when the programmer fills a hole (as long as there are no non-commutative side effects in the language).
@@ -46,21 +46,21 @@ Their goal is to make dependent type system more usable in general, while we wan
 
 \subsection{Pattern Matching}
 Pattern matching has a long history, first described by \citet{DBLP:journals/cj/Burstall69} and implemented as an extension to LISP by \citet{DBLP:phd/ethos/McBride70}. Early functional languages,
-such as Hope \cite{DBLP:conf/lfp/BurstallMS80}, SASL \cite{DBLP:journals/spe/Turner79}, and ML \cite{DBLP:journals/jcss/Milner78}, start to adopt pattern matching in the 1970s.
+such as Hope \cite{DBLP:conf/lfp/BurstallMS80}, SASL \cite{DBLP:journals/spe/Turner79}, and ML \cite{DBLP:journals/jcss/Milner78}, started to adopt pattern matching in the 1970s.
 All prior work on pattern matching assumes that the patterns and expressions being matched are
 complete, i.e., do not contain any holes.
-Uniquely, the indeterminate matching and exhaustiveness and redundancy checks in Peanut
-reason over future edit states,
+This paper contributes techniques to perform exhaustiveness and redundancy checks and run programs with pattern holes, by 
+reasoning over all future edit states,
 following the modal interpretation of holes \cite{DBLP:journals/tocl/NanevskiPP08,DBLP:journals/pacmpl/OmarVCH19}.
 
 Much of the early work on pattern matching focus on compilation. The earliest work targets the end-to-end compilation of pattern matching into machine code \cite{DBLP:conf/lfp/Cardelli84,DBLP:conf/lfp/Augustsson84,DBLP:conf/fpca/Augustsson85}, while later methods focus on efficient compilation. Some methods construct decision trees encoding the matching procedure, the goal being to minimize the sizes of the constructed trees, obtaining exhaustiveness and redundancy checks as easy by-products \cite{Aitken92smlnj,Baudinet85treepattern,Sestoft96mlpattern}.
-Other methods compile pattern matching to backtracking automata \cite{Maranget94lazybacktracking,DBLP:journals/jfp/Maranget07};
-while these methods avoid potential exponential behavior exhibited by decision trees, they require separate methods for reporting inexhaustive and redundant patterns \cite{DBLP:journals/jfp/Maranget07}.
+Other methods compile pattern matching to backtracking automata \cite{Maranget94lazybacktracking,DBLP:journals/jfp/Maranget07}. 
+While these methods avoid potential exponential behavior exhibited by decision trees, they require separate methods for reporting inexhaustive and redundant patterns \cite{DBLP:journals/jfp/Maranget07}.
 
-In our setting of incomplete programs, the question of compilation is not (yet) relevant. Our goal in this paper, which was inspired by a sketch of a similar constraint language by \citet{Harper2012}, is to provide a complete and, notably, mathematically elegant declarative semantics of pattern matching with holes that extends the incomplete program evaluation of Hazelnut Live, then consider decidability separately via the truthification, falsification and material entailment techniques described in this paper. 
+In our setting of incomplete programs, the question of compilation is not (yet) relevant. Our goal in this paper, which was inspired by a sketch of a similar constraint language in the textbook by \citet{Harper2012} (which was omitted in the second edition of the book), is to provide a complete and, notably, mathematically elegant declarative semantics of pattern matching with holes that extends the incomplete program evaluation of Hazelnut Live, then consider decidability separately via the truthification, falsification and material entailment techniques described in this paper. 
 Efficient compilation of programs with pattern holes is, however, an interesting avenue for further work (alongside the more general question of efficient evaluation or compilation of programs with expression holes). One potential direction is to adapt the pattern matrices approach introduced in \citet{DBLP:journals/jfp/Maranget07} to support unknown patterns.
 
-\citet{DBLP:conf/popl/Krishnaswami09} also establishes a logical interpretation of patterns, but not pattern holes, to characterize their exhaustiveness and non-redundancy. Their algorithm operates directly on a syntax of patterns extended with logical primitives with a dualizing operation defined over them, which is similar to our inconsistency checking algorithm in character. In contrast, we express the exhaustiveness and the non-redundancy of patterns as logical entailments over a constraint language syntactically similar to patterns, and associate the entailments with a decision procedure.
+\citet{DBLP:conf/popl/Krishnaswami09} also establishes a logical interpretation of pattern matching, in their case rooted in the technique of focusing, without considering pattern holes. Their exhaustiveness and redundancy checking algorithms operate directly on a syntax of patterns, which includes logical connectives equipped with a dualizing operation, which is similar in character to our approach. However, our work separates out the logical component into a separate pattern constraint language, which arguably simplifies and highlights the essential logical character of the problem, following the approach suggested by \citet{Harper2012}. Even excluding the pattern holes, then, this paper's approach might be useful for future work in need of a logical account of pattern matching.
 
 More contemporary work focuses on extending pattern matching to settings with more sophisticated types and pattern matching features \cite{DBLP:conf/icfp/VazouSJVJ14,DBLP:journals/pacmpl/CockxA18,DBLP:conf/itp/Sozeau10,DBLP:conf/icfp/KarachaliasSVJ15,DBLP:journals/pacmpl/GrafJS20,DBLP:journals/jfp/ConventLMM20,DBLP:conf/popl/AbelPTS13}.
 This work concerns itself with analyzing increasingly sophisticated predicates delineating a match from a failure (or divergence in the lazy setting), our work introduces new pattern matching \emph{outcomes}---indeterminacy.
@@ -73,7 +73,7 @@ principles from gradual typing to lift exhaustiveness checking given
 datatypes with unknown constructors. However, unknown patterns or
 unknown constructors in patterns are beyond their scope, and are the
 central contribution of this paper. Therefore, it is a complementary 
-approach to achieve maximal liveness that can be combined with ours.
+approach that can be combined with ours.
 
 % The current state of the art is Lower Your Guards by Graf et al., which can handle GADTs and the wide variety of pattern matching features in Haskell, e.g., guards, view patterns, pattern synonyms, etc.
 % This work abandons simple structural pattern matching altogether, instead compiling the various pattern forms into a simpler intermediate representation called a guard tree.

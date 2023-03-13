@@ -1,7 +1,7 @@
 \section{Live Pattern Matching in Hazel}\label{sec:examples}
 Adding holes to patterns is syntactically straightforward. In (our extension of) Hazel, pattern and expression holes look identical, represented by a gray, automatically generated numeric identifier (cf. pattern hole 40 and expression hole 38 in Fig.~\ref{fig:evaluation-ex}). In other systems with typed holes, we would need to take care to distinguish the syntax of pattern holes, perhaps \li{??}, from wildcard patterns, \li{_}. As we will see, wildcard patterns are semantically quite distinct from pattern holes.
 
-The subtleties arise when we introduce  (1) holes into the static semantics and, in particular, into exhaustiveness and redundancy checking, and (2) into the dynamic semantics of a system with support for live programming with holes \emph{a la} Hazel. In both regards, the key concept is that a pattern hole represents an \emph{unknown  pattern}, so previously binary distinctions---between exhaustiveness and inexhaustiveness, redundancy and irredundancy, or match and mismatch---become ternary distinctions: we need to consider \emph{indeterminate} situations, i.e. where the determination cannot be made without filling one or more holes, including perhaps expression holes in the scrutinee. However, we also seek to avoid becoming unnecessarily conservative in situations where a determination \emph{can} be made no matter how the holes are filled.
+The subtleties arise when we introduce pattern holes into (1) the static semantics and, in particular, into exhaustiveness and redundancy checking, and (2) the dynamic semantics of a system with support for live programming with holes \emph{a la} Hazel. In both regards, the key concept is that a pattern hole represents an \emph{unknown  pattern}, so previously binary distinctions---between exhaustiveness and inexhaustiveness, redundancy and irredundancy, or run-time match and mismatch---become ternary distinctions: we need to consider \emph{indeterminate} situations, i.e. where the determination cannot be made without filling one or more holes, including perhaps expression holes in the scrutinee. However, we also seek to avoid becoming unnecessarily conservative in situations where a determination \emph{can} be made no matter how the holes are filled.
 
 Let us consider several characteristic examples of each of these distinctions in turn. As a simple running example, suppose a programmer is writing a function \texttt{odd\_length} which determines, by returning a \li{Bool}ean value, whether an input list, of type \li{[Int]}, has an odd number of elements. Let us consider
 various intermediate editor states that the programmer may produce, and the live feedback that Hazel offers in each of these \cite{Potter2020HazelTG}.
@@ -34,7 +34,7 @@ where there is a hole in the tail position of the cons (\li{::}) pattern.
 In determining whether this \li{match} expression is exhaustive, we 
 must reason over all potential hole fillings. In this case, the 
 \li{match} expression is \emph{indeterminately exhaustive}, because there are hole fillings,
-such as a pattern variable \li{tl}, which would result in a determination
+such as a pattern variable \li{tl}, that would result in a determination
 of exhaustiveness, while there are other hole fillings, such as \li{[]} or \li{y::tl},
 where the determination would instead be inexhaustiveness. In the Hazel user interface, we choose to alert the programmer with an error
 indicator only when the \li{match} expression is necessarily inexhaustive,
